@@ -153,6 +153,23 @@ class RequestDelegateController extends ChangeNotifier {
     super.dispose();
   }
 
+  Future<bool> respondToRevisedOffer({
+    required int orderId,
+    required String status,
+  }) async {
+    FormData body = FormData.fromMap({'status': status});
+    final response = await ApiHelper.instance.post(
+      Urls.respondShippingRevision(orderId),
+      body: body,
+    );
+    if (response.state == ResponseState.complete) {
+      await getAcceptedDelegate(delegateOrderId: orderId);
+      return true;
+    }
+    CommonMethods.showError(message: response.data['message'], apiResponse: response);
+    return false;
+  }
+
   //============================================== calculate distance ================================
 
   double? _routeDistanceKm() {
