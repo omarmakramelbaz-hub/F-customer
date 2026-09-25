@@ -130,7 +130,7 @@ class _DelegateOfferWidgetState extends State<DelegateOfferWidget> {
                       Text(
                         'egyp'.tr.replaceAll(
                               '{}',
-                              '${widget.order?.actualPrice ?? requestDelegateController.actualPrice}',
+                              '${widget.acceptedDelegateModel?.offerPrice ?? widget.order?.actualPrice ?? requestDelegateController.actualPrice}',
                             ),
                         style: AppTextStyle.text18RS().copyWith(color: AppColors.whiteColor),
                       ),
@@ -142,7 +142,7 @@ class _DelegateOfferWidgetState extends State<DelegateOfferWidget> {
                       Expanded(
                         child: CustomButton(
                           height: 40,
-                          text: 'accept'.tr,
+                          text: context.languageCode == 'ar' ? 'قبول العرض' : 'Accept offer',
                           onPressed: () {
                             requestDelegateController.acceptedOrDeclinedDelegate(
                               orderId: requestDelegateController.orderId!,
