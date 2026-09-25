@@ -35,8 +35,9 @@ class Delegates {
   String? photoProfile;
   int? completedOrdersCount;
   num? offerPrice;
+  String? offerStatus;
 
-  Delegates({this.id, this.name, this.accountType, this.lat, this.lng, this.photoProfile, this.completedOrdersCount, this.offerPrice});
+  Delegates({this.id, this.name, this.accountType, this.lat, this.lng, this.photoProfile, this.completedOrdersCount, this.offerPrice, this.offerStatus});
 
   Delegates.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -47,6 +48,7 @@ class Delegates {
     photoProfile = json['photo_profile'];
     completedOrdersCount = json['completed_orders_count'];
     offerPrice = json['offer_price'];
+    offerStatus = json['offer_status'];
   }
 
   Map<String, dynamic> toJson() {
@@ -59,6 +61,7 @@ class Delegates {
     data['photo_profile'] = photoProfile;
     data['completed_orders_count'] = completedOrdersCount;
     data['offer_price'] = offerPrice;
+    data['offer_status'] = offerStatus;
     return data;
   }
 }
