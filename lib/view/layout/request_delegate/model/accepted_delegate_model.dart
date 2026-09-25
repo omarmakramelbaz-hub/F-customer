@@ -1,8 +1,9 @@
 class AcceptedDelegateModel {
   List<Delegates>? delegates;
   Order? order;
+  ActiveOffer? activeOffer;
 
-  AcceptedDelegateModel({this.delegates, this.order});
+  AcceptedDelegateModel({this.delegates, this.order, this.activeOffer});
 
   AcceptedDelegateModel.fromJson(Map<String, dynamic> json) {
     if (json['delegates'] != null) {
@@ -12,6 +13,7 @@ class AcceptedDelegateModel {
       });
     }
     order = json['order'] != null ? Order.fromJson(json['order']) : null;
+    activeOffer = json['active_offer'] != null ? ActiveOffer.fromJson(json['active_offer']) : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -22,8 +24,20 @@ class AcceptedDelegateModel {
     if (order != null) {
       data['order'] = order!.toJson();
     }
+    if (activeOffer != null) data['active_offer'] = activeOffer!.toJson();
     return data;
   }
+}
+
+class ActiveOffer {
+  int? delegateId;
+  num? price;
+  String? status;
+  ActiveOffer({this.delegateId, this.price, this.status});
+  ActiveOffer.fromJson(Map<String, dynamic> json) {
+    delegateId = json['delegate_id']; price = json['price']; status = json['status'];
+  }
+  Map<String, dynamic> toJson() => {'delegate_id': delegateId, 'price': price, 'status': status};
 }
 
 class Delegates {
