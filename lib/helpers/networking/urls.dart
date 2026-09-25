@@ -72,6 +72,7 @@ class Urls {
   static const String lastOrder = '${baseUrl}user/last/order';
   static const String riseActualPrice = '${baseUrl}shipping/order/update/actual/price';
   static const String acceptOrDeclinedDelegate = '${baseUrl}shipping/accept/delegate';
+  static String respondShippingRevision(int orderId) => '${baseUrl}delegate/shipping/orders/$orderId/offer/respond';
   static const String otpChecker = '${baseUrl}user/check-otp-order';
   static String getAcceptedDelegates(int orderId) => '${baseUrl}shipping/$orderId/accepted/delegates';
   static String getCartItemDetails(int itemId) => '${baseUrl}user/cart/$itemId/show';
