@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
@@ -43,7 +45,9 @@ class _TrackingDelegateOrderScreenState extends State<TrackingDelegateOrderScree
 
   Set<Polyline> polyLines = {};
   Set<Marker> markers = {};
-  bool isMapReady = false; // New flag for checking if map is ready
+  bool isMapReady = false;
+  Timer? _liveTimer;
+  bool _offerDialogOpen = false; // New flag for checking if map is ready
 
   void initMapStyle() async {
     var mapStyle = await DefaultAssetBundle.of(context).loadString('assets/map_styles/dark_map_style.json');
@@ -94,9 +98,65 @@ class _TrackingDelegateOrderScreenState extends State<TrackingDelegateOrderScree
             setState(() {});
           });
         }
+        _startLiveOrderRefresh();
+        await requestDelegateController.getAcceptedDelegate(delegateOrderId: widget.args.id);
+        if (mounted) _showRevisedOfferIfNeeded();
       });
     });
     super.initState();
+  }
+
+  void _startLiveOrderRefresh() {
+    _liveTimer?.cancel();
+    _liveTimer = Timer.periodic(const Duration(seconds: 5), (_) async {
+      if (!mounted) return;
+      await requestDelegateController.getDelegateOrderDetails(id: widget.args.id);
+      await requestDelegateController.getAcceptedDelegate(delegateOrderId: widget.args.id);
+      if (mounted) _showRevisedOfferIfNeeded();
+    });
+  }
+
+  Future<void> _showRevisedOfferIfNeeded() async {
+    final offer = requestDelegateController.acceptedDelegate?.activeOffer;
+    if (_offerDialogOpen || offer == null || offer.status != 'price_revision' || !mounted) return;
+    _offerDialogOpen = true;
+    final ar = context.languageCode == 'ar';
+    await showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(ar ? 'عرض سعر جديد من المندوب' : 'New price offer'),
+        content: Text(ar
+            ? 'المندوب اقترح سعر توصيل جديد بقيمة ${offer.price} جنيه. لن يتغير سعر الطلب إلا بعد موافقتك.'
+            : 'The driver proposed a new fare of ${offer.price} EGP. Your fare changes only if you accept.'),
+        actions: [
+          TextButton(
+            onPressed: () async {
+              final ok = await requestDelegateController.respondToRevisedOffer(orderId: widget.args.id, status: 'declined');
+              if (ok && dialogContext.mounted) Navigator.pop(dialogContext);
+            },
+            child: Text(ar ? 'رفض' : 'Decline'),
+          ),
+          FilledButton(
+            onPressed: () async {
+              final ok = await requestDelegateController.respondToRevisedOffer(orderId: widget.args.id, status: 'accepted');
+              if (ok && dialogContext.mounted) Navigator.pop(dialogContext);
+              if (ok && mounted) {
+                await requestDelegateController.getDelegateOrderDetails(id: widget.args.id);
+              }
+            },
+            child: Text(ar ? 'قبول السعر الجديد' : 'Accept new fare'),
+          ),
+        ],
+      ),
+    );
+    _offerDialogOpen = false;
+  }
+
+  @override
+  void dispose() {
+    _liveTimer?.cancel();
+    super.dispose();
   }
 
   @override
