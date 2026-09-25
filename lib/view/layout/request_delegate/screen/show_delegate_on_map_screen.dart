@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:defer_pointer/defer_pointer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/foundation.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../helpers/extensions/extensions.dart';
@@ -142,11 +143,18 @@ class _ShowDelegateOnMapScreenState extends State<ShowDelegateOnMapScreen>
       await requestDelegateController.getAcceptedDelegate(
         delegateOrderId: widget.args.orderId,
       );
-      if (requestDelegateController.acceptedDelegate?.delegates?.isNotEmpty ==
-          true) {
+      // Always mirror the server list. A driver's pre-selection decline only
+      // removes that driver; the customer keeps searching for another one.
+      // Do not turn an empty proposal list into an order cancellation.
+      if (mounted) {
         setState(() {
           acceptedDelegates =
               requestDelegateController.acceptedDelegate?.delegates ?? [];
+          final serverFare =
+              requestDelegateController.acceptedDelegate?.order?.actualPrice;
+          if (serverFare != null) {
+            _feeEC.text = serverFare.toString();
+          }
         });
       }
     } catch (e) {
@@ -247,19 +255,24 @@ class _ShowDelegateOnMapScreenState extends State<ShowDelegateOnMapScreen>
           child: DeferredPointerHandler(
             child: Stack(
               children: [
-                CustomGoogleMapsWidget(
-                  showCircle: true,
-                  addressLat: double.tryParse(
-                        '${requestDelegateController.acceptedDelegate?.order?.fromLat}',
-                      ) ??
-                      double.tryParse('${requestDelegateController.fromLat}') ??
-                      0.0,
-                  addressLan: double.tryParse(
-                        '${requestDelegateController.acceptedDelegate?.order?.fromLng}',
-                      ) ??
-                      double.tryParse('${requestDelegateController.fromLan}') ??
-                      0.0,
-                ),
+                if (!kIsWeb)
+                  CustomGoogleMapsWidget(
+                    showCircle: true,
+                    addressLat: double.tryParse(
+                          '${requestDelegateController.acceptedDelegate?.order?.fromLat}',
+                        ) ??
+                        double.tryParse('${requestDelegateController.fromLat}') ??
+                        0.0,
+                    addressLan: double.tryParse(
+                          '${requestDelegateController.acceptedDelegate?.order?.fromLng}',
+                        ) ??
+                        double.tryParse('${requestDelegateController.fromLan}') ??
+                        0.0,
+                  )
+                else
+                  const Positioned.fill(
+                    child: ColoredBox(color: Color(0xFFF3F4F6)),
+                  ),
                 Positioned.fill(
                   top: 20,
                   left: 0,
