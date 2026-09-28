@@ -393,5 +393,15 @@
   "Reload": "إعادة تحميل",
   "There is no data": "لا توجد بيانات",
   "Done": "تم",
-  "freeDelivery": "توصيل مجاني"
+  "freeDelivery": "توصيل مجاني",
+  "walletGoCustomer": "محفظة مستخدم جو",
+  "walletGoPartner": "محفظة شريك جو",
+  "walletFasakhanstaCustomer": "محفظة مستخدم فسخانستا",
+  "recipientWallet": "المحفظة المستلمة",
+  "chooseRecipientWallet": "اختر المحفظة المستلمة أولاً",
+  "walletTransferUnavailable": "تعذر تأكيد المحفظة المختارة. حدّث التطبيق وحاول مرة أخرى.",
+  "reviewWalletTransfer": "مراجعة التحويل",
+  "walletRecipientName": "اسم المستلم",
+  "walletTransferAmount": "المبلغ",
+  "walletTransferFailed": "تعذر التأكد من نتيجة التحويل. اضغط مجددًا لإعادة المحاولة بنفس بيانات التأكيد."
 }

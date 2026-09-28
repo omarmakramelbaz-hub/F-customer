@@ -7,6 +7,8 @@ import '../../../../helpers/networking/urls.dart';
 import '../../../../helpers/utils/common_methods.dart';
 import '../../../../helpers/utils/utils.dart';
 import '../model/wallet_model.dart';
+import '../model/wallet_transfer.dart';
+import '../../../../helpers/translation/all_translation.dart';
 
 class WalletController extends ChangeNotifier {
   final chargeWalletFormKey = GlobalKey<FormState>();
@@ -27,7 +29,10 @@ class WalletController extends ChangeNotifier {
     notifyListeners();
   }
 
-  ApiResponse _walletResponse = ApiResponse(state: ResponseState.sleep, data: null);
+  ApiResponse _walletResponse = ApiResponse(
+    state: ResponseState.sleep,
+    data: null,
+  );
   ApiResponse get walletResponse => _walletResponse;
   WalletResponse? _wallet;
 
@@ -63,53 +68,84 @@ class WalletController extends ChangeNotifier {
   }
 
   //=============>  charging wallet  <================
-  Future<void> chargingWallet({required dynamic amount, required Function(String link) onSuccess}) async {
+  Future<void> chargingWallet({
+    required dynamic amount,
+    required Function(String link) onSuccess,
+  }) async {
     Utils.loading();
-    FormData body = FormData.fromMap({'amount': amount, 'payment_method': _selectedPayment});
-    final response = await ApiHelper.instance.post(Urls.chargingWallet, body: body);
+    FormData body = FormData.fromMap({
+      'amount': amount,
+      'payment_method': _selectedPayment,
+    });
+    final response = await ApiHelper.instance.post(
+      Urls.chargingWallet,
+      body: body,
+    );
     Utils.loadingOff();
     if (response.state == ResponseState.complete) {
       // CommonMethods.showToast(message: response.data['message']);
       onSuccess.call(response.data['data']['link']);
     } else {
-      CommonMethods.showError(message: response.data['message'], apiResponse: response);
+      CommonMethods.showError(
+        message: response.data['message'],
+        apiResponse: response,
+      );
     }
   }
 
-  Future<void> checkMonyTransfer({
+  Future<WalletTransferPreview?> checkMonyTransfer({
     required String mobile,
     required num amount,
-    required String accountType,
-    required VoidCallback onSuccess,
+    required TransferWallet wallet,
   }) async {
-    Utils.loading();
-    FormData body = FormData.fromMap({'mobile': mobile, 'amount': amount, 'account_type': accountType});
-    final response = await ApiHelper.instance.post(Urls.checkMonyTransfer, body: body);
-    Utils.loadingOff();
+    final response = await ApiHelper.instance.post(
+      Urls.checkMonyTransfer,
+      body: FormData.fromMap({
+        'mobile': mobile,
+        'amount': amount,
+        'target_wallet': wallet.value,
+      }),
+    );
     if (response.state == ResponseState.complete) {
-      onSuccess.call();
-      //  CommonMethods.showToast(message: response.data['message']);
-    } else {
-      Utils.loadingOff();
-      CommonMethods.showError(message: response.data['message'], apiResponse: response);
+      try {
+        return WalletTransferPreview.fromJson(
+          Map<String, dynamic>.from(response.data['data']),
+          wallet: wallet,
+          mobile: mobile,
+          amount: amount,
+        );
+      } catch (_) {
+        CommonMethods.showError(message: 'walletTransferUnavailable'.tr);
+        return null;
+      }
     }
+    CommonMethods.showError(
+      message: response.data is Map && response.data['message'] is String
+          ? response.data['message'] as String
+          : 'walletTransferFailed'.tr,
+      apiResponse: response,
+    );
+    return null;
   }
 
-  Future<void> chargingMonyTransfer({
-    required String mobile,
-    required num amount,
-    required String accountType,
-    required VoidCallback onSuccess,
-  }) async {
-    //  NavigatorMethods.loading();
-    FormData body = FormData.fromMap({'mobile': mobile, 'amount': amount, 'account_type': accountType});
-    final response = await ApiHelper.instance.post(Urls.transferWallet, body: body);
-    Utils.loadingOff();
+  // null means an uncertain network result: retain the confirmation for a safe retry.
+  Future<bool?> chargingMonyTransfer(WalletTransferPreview preview) async {
+    final response = await ApiHelper.instance.post(
+      Urls.transferWallet,
+      body: FormData.fromMap(preview.payload),
+    );
     if (response.state == ResponseState.complete) {
       CommonMethods.showToast(message: response.data['message']);
-      onSuccess.call();
-    } else {
-      CommonMethods.showError(message: response.data['message'], apiResponse: response);
+      return true;
     }
+    CommonMethods.showError(
+      message: response.data is Map && response.data['message'] is String
+          ? response.data['message'] as String
+          : 'walletTransferFailed'.tr,
+      apiResponse: response,
+    );
+    return response.data is Map && response.data['transfer_rejected'] == true
+        ? false
+        : null;
   }
 }

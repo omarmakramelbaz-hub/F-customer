@@ -349,5 +349,15 @@
   "There is no data": "There is no data",
   "Done": "Done",
   "freeDelivery": "Free delivery",
-  "raffleRestaurantsShare": "Join Now"
+  "raffleRestaurantsShare": "Join Now",
+  "walletGoCustomer": "GO user wallet",
+  "walletGoPartner": "GO partner wallet",
+  "walletFasakhanstaCustomer": "Fasakhansta user wallet",
+  "recipientWallet": "Recipient wallet",
+  "chooseRecipientWallet": "Choose the recipient wallet first",
+  "walletTransferUnavailable": "Could not confirm the selected wallet. Update the app and try again.",
+  "reviewWalletTransfer": "Review transfer",
+  "walletRecipientName": "Recipient name",
+  "walletTransferAmount": "Amount",
+  "walletTransferFailed": "Could not confirm the transfer result. Retry with the same confirmation."
 }
