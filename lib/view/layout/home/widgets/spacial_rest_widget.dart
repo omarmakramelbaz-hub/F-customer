@@ -8,6 +8,7 @@ import '../../../../helpers/routes/app_routers_import.dart';
 import '../../../../helpers/theme/app_colors.dart';
 import '../../../../helpers/theme/app_text_style.dart';
 import '../../../../helpers/translation/all_translation.dart';
+import '../../../../helpers/utils/restaurant_hours.dart';
 import '../../../custom_widgets/api_response_widget/api_response_widget.dart';
 import '../../../custom_widgets/custom_image/custom_image.dart';
 import '../../../custom_widgets/custom_image/custom_network_image.dart';
@@ -45,8 +46,7 @@ class SpacialRestaurantsListViewWidget extends StatelessWidget {
           separatorBuilder: (_, __) => const SizedBox(width: 12),
           itemBuilder: (context, index) {
             final restaurant = spacialRest[index];
-            final unavailable = restaurant.status == 'closed' ||
-                restaurant.status == 'busy' ||
+            final unavailable = restaurant.status == 'busy' ||
                 restaurant.underContract == 'yes';
 
             return SizedBox(
@@ -114,7 +114,7 @@ class SpacialRestaurantsListViewWidget extends StatelessWidget {
                                 ),
                               ),
                             ),
-                          if (unavailable)
+                          if (unavailable || restaurant.status == 'closed')
                             Positioned.fill(
                               child: Container(
                                 color: AppColors.blackColor.withValues(alpha: .48),
@@ -123,7 +123,7 @@ class SpacialRestaurantsListViewWidget extends StatelessWidget {
                                   restaurant.underContract == 'yes'
                                       ? 'underContract'.tr
                                       : restaurant.status == 'closed'
-                                          ? 'closed'.tr
+                                          ? restaurantClosedLabel(context, restaurant.openAt)
                                           : 'busy'.tr,
                                   style: AppTextStyle.text14MW(),
                                 ),
