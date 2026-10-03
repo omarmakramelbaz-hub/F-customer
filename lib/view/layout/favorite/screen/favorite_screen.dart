@@ -389,6 +389,7 @@ class _FavoriteRestaurantCard extends StatelessWidget {
                         right: 6,
                         bottom: 6,
                         child: Container(
+                          constraints: const BoxConstraints(maxWidth: 94),
                           padding: const EdgeInsets.symmetric(
                             horizontal: 7,
                             vertical: 4,
@@ -405,6 +406,9 @@ class _FavoriteRestaurantCard extends StatelessWidget {
                           ),
                           child: Text(
                             statusInfo.label,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            textAlign: TextAlign.center,
                             style: AppTextStyle.text9BW(),
                           ),
                         ),
