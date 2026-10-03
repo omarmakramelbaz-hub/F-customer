@@ -4,6 +4,8 @@ import 'package:provider/provider.dart';
 import '../../../../helpers/hive/hive_methods.dart';
 import '../../../../helpers/theme/app_colors.dart';
 import '../../../../helpers/theme/app_text_style.dart';
+import '../../../../helpers/translation/all_translation.dart';
+import '../../../../helpers/utils/restaurant_hours.dart';
 import '../../../custom_widgets/custom_image/custom_network_image.dart';
 import '../controller/restaurants_controller.dart';
 import '../model/details_restaurants_model.dart';
@@ -184,7 +186,7 @@ class HeaderCoverAndImageRestaurantDetailsWidget extends StatelessWidget {
               Positioned(
                 top: imageHeight - 16,
                 left: 28,
-                child: _statusPill(),
+                child: _statusPill(context),
               ),
             ],
           ),
@@ -193,9 +195,18 @@ class HeaderCoverAndImageRestaurantDetailsWidget extends StatelessWidget {
     );
   }
 
-  Widget _statusPill() {
-    final isClosed = detailsRestaurant?.status == 'closed';
+  Widget _statusPill(BuildContext context) {
+    final status = detailsRestaurant?.status;
+    final isClosed = status == 'closed';
+    final isBusy = status == 'busy';
+    final label = isClosed
+        ? restaurantClosedLabel(context, detailsRestaurant?.openAt)
+        : isBusy
+            ? 'busy'.tr
+            : 'مفتوح الآن';
+
     return Container(
+      constraints: const BoxConstraints(maxWidth: 210),
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
         color: AppColors.whiteColor,
@@ -207,13 +218,21 @@ class HeaderCoverAndImageRestaurantDetailsWidget extends StatelessWidget {
         children: [
           Icon(
             Icons.circle,
-            color: isClosed ? Colors.red : Colors.green,
+            color: isClosed
+                ? Colors.red
+                : isBusy
+                    ? Colors.orange
+                    : Colors.green,
             size: 8,
           ),
           const SizedBox(width: 6),
-          Text(
-            isClosed ? 'مغلق الآن' : 'مفتوح الآن',
-            style: AppTextStyle.text12BS().copyWith(fontSize: 10),
+          Flexible(
+            child: Text(
+              label,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: AppTextStyle.text12BS().copyWith(fontSize: 10),
+            ),
           ),
         ],
       ),
