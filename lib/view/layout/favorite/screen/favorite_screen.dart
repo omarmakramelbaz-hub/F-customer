@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../../../../helpers/routes/app_routers_import.dart';
 import '../../../../helpers/theme/app_colors.dart';
 import '../../../../helpers/theme/app_text_style.dart';
+import '../../../../helpers/utils/restaurant_hours.dart';
 import '../../../custom_widgets/api_response_widget/api_response_widget.dart';
 import '../../../custom_widgets/custom_image/custom_network_image.dart';
 import '../../../custom_widgets/page_container/page_container.dart';
@@ -333,7 +334,7 @@ class _FavoriteRestaurantCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final restaurantId =
         model.id ?? model.resturantId ?? model.vendorId ?? 0;
-    final statusInfo = _restaurantStatus(model.status);
+    final statusInfo = _restaurantStatus(context, model.status, model.openAt);
     final title = (model.name ?? model.vendorName ?? model.resturantName ?? '').trim();
     final address = (model.address ?? '').trim();
     final image = model.bgImage?.isNotEmpty == true
@@ -514,10 +515,17 @@ class _FavoriteRestaurantCard extends StatelessWidget {
     );
   }
 
-  static _StatusInfo _restaurantStatus(String? rawStatus) {
+  static _StatusInfo _restaurantStatus(
+    BuildContext context,
+    String? rawStatus,
+    String? openAt,
+  ) {
     final status = (rawStatus ?? '').toLowerCase().trim();
     if (status == 'closed') {
-      return const _StatusInfo('مغلق', Color(0xFF777B82));
+      return _StatusInfo(
+        restaurantClosedLabel(context, openAt),
+        const Color(0xFF777B82),
+      );
     }
     if (status == 'busy') {
       return const _StatusInfo('مشغول', Color(0xFFD99100));
