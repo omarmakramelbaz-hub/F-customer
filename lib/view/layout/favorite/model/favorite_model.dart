@@ -9,6 +9,8 @@ class FavoriteModel {
   String? logo;
   String? bgImage;
   String? deliveryTime;
+  String? openAt;
+  String? closeAt;
   String? lat;
   String? lng;
   String? createdAt;
@@ -28,6 +30,8 @@ class FavoriteModel {
     this.logo,
     this.bgImage,
     this.deliveryTime,
+    this.openAt,
+    this.closeAt,
     this.lat,
     this.lng,
     this.createdAt,
@@ -48,6 +52,8 @@ class FavoriteModel {
     logo = json['logo'] ?? json['product_image'] ?? '';
     bgImage = json['bg_image'] ?? json['product_image'] ?? '';
     deliveryTime = json['delivery_time'] ?? '';
+    openAt = json['open_at'];
+    closeAt = json['close_at'];
     lat = json['lat'];
     lng = json['lng'];
     createdAt = json['created_at'];
@@ -69,6 +75,8 @@ class FavoriteModel {
     data['logo'] = logo;
     data['bg_image'] = bgImage;
     data['delivery_time'] = deliveryTime;
+    data['open_at'] = openAt;
+    data['close_at'] = closeAt;
     data['lat'] = lat;
     data['lng'] = lng;
     data['created_at'] = createdAt;
