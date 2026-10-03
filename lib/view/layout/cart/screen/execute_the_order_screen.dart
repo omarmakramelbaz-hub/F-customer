@@ -18,6 +18,7 @@ import '../../../../helpers/theme/app_colors.dart';
 import '../../../../helpers/theme/app_text_style.dart';
 import '../../../../helpers/translation/all_translation.dart';
 import '../../../../helpers/utils/date_methods.dart';
+import '../../../../helpers/utils/restaurant_hours.dart';
 import '../../../custom_widgets/api_response_widget/api_response_widget.dart';
 import '../../../custom_widgets/custom_app_bar/custom_app_bar.dart';
 import '../../../custom_widgets/custom_form_field/custom_form_field.dart';
@@ -54,6 +55,7 @@ class _ExecuteTheOrderScreenState extends State<ExecuteTheOrderScreen> {
   Timer? _debounce;
   late PusherController _pusherController; // Saved reference
   String? resturantStatus;
+  String? resturantOpenAt;
   int? resturantId;
   @override
   void dispose() {
@@ -99,6 +101,7 @@ class _ExecuteTheOrderScreenState extends State<ExecuteTheOrderScreen> {
       Provider.of<CartController>(context, listen: false).initialCart();
       Provider.of<CartController>(context, listen: false).getCart().then((value) {
         resturantStatus = context.read<CartController>().cart?.resturant?.resturantStatus;
+        resturantOpenAt = context.read<CartController>().cart?.resturant?.resturantOpenAt;
         resturantId = context.read<CartController>().cart?.resturant?.resturantId;
         setState(() {});
         // log("================>$resturantStatus");
@@ -121,6 +124,7 @@ class _ExecuteTheOrderScreenState extends State<ExecuteTheOrderScreen> {
       if (mounted) {
         final resturantModel = DetailsRestaurantModel.fromJson(resturantData as Map<String, dynamic>);
         resturantStatus = resturantModel.status;
+        resturantOpenAt = resturantModel.openAt;
         resturantId = resturantModel.id;
         setState(() {});
         // context
@@ -602,24 +606,27 @@ class _ExecuteTheOrderScreenState extends State<ExecuteTheOrderScreen> {
                           10.sbH,
                           ((resturantStatus != 'opened' &&
                                   (resturantId == cartController.cart?.resturant?.resturantId)))
-                              ? (resturantStatus == 'closed' && selectedDate != null)
-                                  ? ExecuteOrderButton(
-                                      deliveryPrice:
-                                          cartController.cart?.resturant?.resturantKmPrice != 0 ? kmPrice : 0,
-                                      cartController: cartController,
-                                      addressController: addressController,
-                                      userAddressId: widget.args.userAddressId ?? 0,
-                                      selectedDate: selectedDate,
-                                      selectedDateZone: selectedDateZone,
-                                      selectedTime: selectedTime,
-                                    )
-                                  : Center(
-                                      child: Text(
-                                        'restaurantClosedOrBusy'.tr,
-                                        style: AppTextStyle.text16BM(),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    )
+                              ? Container(
+                                  width: double.infinity,
+                                  margin: const EdgeInsets.symmetric(horizontal: 16),
+                                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFFFFF4EE),
+                                    borderRadius: BorderRadius.circular(16),
+                                    border: Border.all(
+                                      color: AppColors.mainAppColor.withValues(alpha: .22),
+                                    ),
+                                  ),
+                                  child: Text(
+                                    restaurantOrderingUnavailableLabel(
+                                      context,
+                                      status: resturantStatus,
+                                      openAt: resturantOpenAt,
+                                    ),
+                                    style: AppTextStyle.text14BM(),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                )
                               : ExecuteOrderButton(
                                   deliveryPrice: cartController.cart?.resturant?.resturantKmPrice != 0 ? kmPrice : 0,
                                   cartController: cartController,
