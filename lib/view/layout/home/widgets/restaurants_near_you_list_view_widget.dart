@@ -7,6 +7,7 @@ import '../../../../helpers/routes/app_routers_import.dart';
 import '../../../../helpers/theme/app_colors.dart';
 import '../../../../helpers/theme/app_text_style.dart';
 import '../../../../helpers/translation/all_translation.dart';
+import '../../../../helpers/utils/restaurant_hours.dart';
 import '../../../custom_widgets/api_response_widget/api_response_widget.dart';
 import '../../../custom_widgets/custom_image/custom_network_image.dart';
 import '../../../custom_widgets/custom_loading/custom_shimmer.dart';
@@ -48,8 +49,7 @@ class RestaurantsNearYouListViewWidget extends StatelessWidget {
           itemBuilder: (context, index) {
             final model = restaurantsNearYou[index];
             final canOpen = model.underContract != 'yes' &&
-                model.status != 'busy' &&
-                model.status != 'closed';
+                model.status != 'busy';
 
             return _NearbyRestaurantCard(
               model: model,
@@ -172,7 +172,7 @@ class _NearbyRestaurantCard extends StatelessWidget {
                       Positioned(
                         right: 9,
                         bottom: 7,
-                        child: _AvailabilityPill(canOpen: canOpen),
+                        child: _AvailabilityPill(model: model),
                       ),
                       IsRestaurantBusyWidget(model: model),
                     ],
@@ -367,20 +367,33 @@ class _DeliveryBadge extends StatelessWidget {
 }
 
 class _AvailabilityPill extends StatelessWidget {
-  final bool canOpen;
+  final RestaurantsNearYouHomeModel model;
 
-  const _AvailabilityPill({required this.canOpen});
+  const _AvailabilityPill({required this.model});
 
   @override
   Widget build(BuildContext context) {
+    final isOpen = model.status == 'opened' && model.underContract != 'yes';
+    final label = model.underContract == 'yes'
+        ? 'underContract'.tr
+        : model.status == 'busy'
+            ? 'busy'.tr
+            : model.status == 'closed'
+                ? restaurantClosedLabel(context, model.openAt)
+                : 'مفتوح';
+
     return Container(
+      constraints: const BoxConstraints(maxWidth: 145),
       padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 4),
       decoration: BoxDecoration(
-        color: canOpen ? const Color(0xFF0A6F6A) : const Color(0xFF6D6D6D),
+        color: isOpen ? const Color(0xFF0A6F6A) : const Color(0xFF6D6D6D),
         borderRadius: BorderRadius.circular(10),
       ),
       child: Text(
-        canOpen ? 'مفتوح' : 'غير متاح',
+        label,
+        maxLines: 2,
+        overflow: TextOverflow.ellipsis,
+        textAlign: TextAlign.center,
         style: AppTextStyle.text9BW(),
       ),
     );
@@ -479,7 +492,7 @@ class IsRestaurantBusyWidget extends StatelessWidget {
           model.underContract == 'yes'
               ? 'underContract'.tr
               : model.status == 'closed'
-                  ? 'closed'.tr
+                  ? restaurantClosedLabel(context, model.openAt)
                   : 'busy'.tr,
           style: AppTextStyle.text14MW(),
         ),
