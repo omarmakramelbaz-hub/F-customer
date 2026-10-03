@@ -272,3 +272,4 @@ jobs:
         run: python3 /tmp/prune_firebase_hosting.py
 
 # Only main pushes/workflow_dispatch may deploy the live review URL.
+# Rebuild branch visibility fix 2026-10-03
