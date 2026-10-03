@@ -8,6 +8,7 @@ import '../../../../helpers/routes/app_routers_import.dart';
 import '../../../../helpers/translation/all_translation.dart';
 import '../../../../helpers/utils/common_methods.dart';
 import '../../../../helpers/utils/date_methods.dart';
+import '../../../../helpers/utils/restaurant_hours.dart';
 import '../../../custom_widgets/buttons/custom_button.dart';
 import '../../../custom_widgets/custom_payment_web_view/custom_payment_web_view.dart';
 import '../../address/controller/address_controller.dart';
@@ -104,6 +105,19 @@ class ExecuteOrderButton extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: CustomButton(
         onPressed: () {
+          final restaurantStatus =
+              cartController.cart?.resturant?.resturantStatus;
+          if (restaurantStatus != 'opened') {
+            CommonMethods.showError(
+              message: restaurantOrderingUnavailableLabel(
+                context,
+                status: restaurantStatus,
+                openAt: cartController.cart?.resturant?.resturantOpenAt,
+              ),
+            );
+            return;
+          }
+
           log(selectedDateZone.toString());
           if (cartController.isSwitchedscheduleDate == true && selectedDate == null && selectedTime == null) {
             CommonMethods.showError(message: 'chooseReDeliveryOrder'.tr);
