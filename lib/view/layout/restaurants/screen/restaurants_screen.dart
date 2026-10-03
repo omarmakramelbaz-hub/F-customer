@@ -11,6 +11,7 @@ import '../../../../helpers/pusher_service/pusher_controller.dart';
 import '../../../../helpers/routes/app_routers_import.dart';
 import '../../../../helpers/theme/app_colors.dart';
 import '../../../../helpers/theme/app_text_style.dart';
+import '../../../../helpers/utils/restaurant_hours.dart';
 import '../../../custom_widgets/custom_image/custom_network_image.dart';
 import '../../address/screen/add_address_screen.dart';
 import '../../auth/controller/auth_controller.dart';
@@ -786,6 +787,30 @@ class _NearbyRestaurantCard extends StatelessWidget {
                           ),
                         ),
                       ),
+                      if (restaurant.status == 'closed')
+                        Positioned(
+                          right: 9,
+                          bottom: 9,
+                          child: Container(
+                            constraints: const BoxConstraints(maxWidth: 190),
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+                            decoration: BoxDecoration(
+                              color: const Color(0xCC4B4B4B),
+                              borderRadius: BorderRadius.circular(11),
+                            ),
+                            child: Text(
+                              restaurantClosedLabel(context, restaurant.openAt),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 10,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ),
+                        ),
                     ],
                   ),
                 ),
@@ -899,6 +924,17 @@ class _AllRestaurantCard extends StatelessWidget {
                               ),
                           ],
                         ),
+                        if (restaurant.status == 'closed') ...[
+                          const SizedBox(height: 5),
+                          Text(
+                            restaurantClosedLabel(context, restaurant.openAt),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: AppTextStyle.text11BS(
+                              color: const Color(0xFFB45120),
+                            ),
+                          ),
+                        ],
                         const SizedBox(height: 6),
                         Row(
                           children: [
