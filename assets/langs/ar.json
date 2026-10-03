@@ -403,5 +403,7 @@
   "reviewWalletTransfer": "مراجعة التحويل",
   "walletRecipientName": "اسم المستلم",
   "walletTransferAmount": "المبلغ",
-  "walletTransferFailed": "تعذر التأكد من نتيجة التحويل. اضغط مجددًا لإعادة المحاولة بنفس بيانات التأكيد."
+  "walletTransferFailed": "تعذر التأكد من نتيجة التحويل. اضغط مجددًا لإعادة المحاولة بنفس بيانات التأكيد.",
+  "closedOpensAt": "مغلق — يفتح الساعة {}",
+  "orderingOnlyDuringWorkingHours": "يمكنك تصفح المينيو وتكوين السلة، ويُتاح تنفيذ الطلب خلال مواعيد العمل فقط."
 }
