@@ -34,6 +34,13 @@ class BottomNavLogicController {
   bool dialogShown = false;
   late PusherController pusherController;
 
+  final OrdersController ordersController = OrdersController();
+  final NotificationsController notificationsController =
+      NotificationsController();
+
+  bool _ordersLoaded = false;
+  bool _notificationsLoaded = false;
+
   BottomNavLogicController();
 
   Future<void> init() async {
@@ -99,6 +106,22 @@ class BottomNavLogicController {
 
   void dispose() {
     pusherController.removeEventListener('user.updated', handleUserOrdersUpdate);
+    ordersController.dispose();
+    notificationsController.dispose();
+  }
+
+  void ensureOrdersLoaded() {
+    if (_ordersLoaded) return;
+    _ordersLoaded = true;
+    ordersController.initialOrders();
+    ordersController.getOrders();
+  }
+
+  void ensureNotificationsLoaded() {
+    if (_notificationsLoaded) return;
+    _notificationsLoaded = true;
+    notificationsController.initialNotifications();
+    notificationsController.getNotifications();
   }
 
   void showAdvertisingDialog() {
@@ -165,32 +188,34 @@ class BottomNavLogicController {
     });
   }
 
-  List<Widget> get screens {
-    return [
-      if (context.read<AuthController>().profile?.appMultiVendor == null)
-        const HomeScreen()
-      else
-        ChangeNotifierProvider(
+  Widget getCurrentScreen(int index) {
+    switch (index) {
+      case 1:
+        ensureOrdersLoaded();
+        return ChangeNotifierProvider.value(
+          value: ordersController,
+          child: const OrdersScreen(),
+        );
+      case 2:
+        ensureNotificationsLoaded();
+        return ChangeNotifierProvider.value(
+          value: notificationsController,
+          child: const NotificationsScreen(),
+        );
+      case 3:
+        return const MyAccountScreen();
+      case 0:
+      default:
+        if (context.read<AuthController>().profile?.appMultiVendor == null) {
+          return const HomeScreen();
+        }
+
+        return ChangeNotifierProvider(
           create: (_) => RestaurantsController(),
           child: AnotherHomeScreen(
             id: context.read<AuthController>().profile?.appMultiVendor ?? 82,
           ),
-        ),
-      ChangeNotifierProvider(
-        create: (_) => OrdersController()
-          ..initialOrders()
-          ..getOrders(),
-        child: const OrdersScreen(),
-      ),
-      ChangeNotifierProvider(
-        create: (_) => NotificationsController()
-          ..initialNotifications()
-          ..getNotifications(),
-        child: const NotificationsScreen(),
-      ),
-      const MyAccountScreen(),
-    ];
+        );
+    }
   }
-
-  Widget getCurrentScreen(int index) => screens[index];
 }
