@@ -62,6 +62,35 @@ class HomeController extends ChangeNotifier {
     notifyListeners();
   }
 
+  ApiResponse _headerImageResponse = ApiResponse(state: ResponseState.sleep, data: null);
+  ApiResponse get headerImageResponse => _headerImageResponse;
+  String? _headerImageUrl;
+  String? get headerImageUrl => _headerImageUrl;
+
+  void initialHeaderImage() {
+    _headerImageResponse = ApiResponse(state: ResponseState.sleep, data: null);
+    _headerImageUrl = null;
+    notifyListeners();
+  }
+
+  Future<void> getHeaderImage() async {
+    _headerImageResponse = ApiResponse(state: ResponseState.loading, data: null);
+    notifyListeners();
+
+    final response = await _get(Urls.setting);
+    _headerImageResponse = response;
+
+    if (response.state == ResponseState.complete) {
+      final data = response.data['data'];
+      final value = data is Map ? data['header_image'] : null;
+      _headerImageUrl = value?.toString().trim().isNotEmpty == true ? value.toString().trim() : null;
+    } else {
+      _headerImageUrl = null;
+    }
+
+    notifyListeners();
+  }
+
   ApiResponse _sliderResponse = ApiResponse(state: ResponseState.sleep, data: null);
   ApiResponse get sliderResponse => _sliderResponse;
   List<SliderModel> _slider = [];
@@ -162,17 +191,52 @@ class HomeController extends ChangeNotifier {
   }
 
   Future<void> getRestaurantsNearYou({double? lat, double? lng}) async {
-    await _fetchAndMapList<RestaurantsNearYouHomeModel>(
-      apiCall: () => _get(
-        Urls.restaurants,
-        query: {
-          if (lat != null && lng != null) ...{'lat': lat, 'lng': lng}
-        },
-      ),
-      mapper: (e) => RestaurantsNearYouHomeModel.fromJson(e),
-      setResponse: (r) => _restaurantsNearYouApiResponse = r,
-      setList: (l) => _restaurantsNearYou = l,
+    _restaurantsNearYouApiResponse = ApiResponse(
+      state: ResponseState.loading,
+      data: null,
     );
+    _restaurantsNearYou = [];
+    notifyListeners();
+
+    var response = await _get(
+      Urls.restaurants,
+      query: {
+        if (lat != null && lng != null) ...{'lat': lat, 'lng': lng}
+      },
+    );
+
+    List<RestaurantsNearYouHomeModel> mapRows(ApiResponse value) {
+      if (value.state != ResponseState.complete) {
+        return <RestaurantsNearYouHomeModel>[];
+      }
+      final data = value.data['data'];
+      if (data is! Iterable) {
+        return <RestaurantsNearYouHomeModel>[];
+      }
+      return data
+          .map((e) => RestaurantsNearYouHomeModel.fromJson(e))
+          .toList();
+    }
+
+    var rows = mapRows(response);
+
+    // The location-filtered endpoint can legitimately return no rows when an
+    // existing branch has not had its delivery-area polygon/radius configured
+    // yet. Do not make Fasakhansta disappear from the customer home screen:
+    // fall back to the normal branch list while the backend still marks closed
+    // or unavailable branches appropriately.
+    if (rows.isEmpty && lat != null && lng != null) {
+      final fallback = await _get(Urls.restaurants);
+      final fallbackRows = mapRows(fallback);
+      if (fallback.state == ResponseState.complete && fallbackRows.isNotEmpty) {
+        response = fallback;
+        rows = fallbackRows;
+      }
+    }
+
+    _restaurantsNearYouApiResponse = response;
+    _restaurantsNearYou = rows;
+    notifyListeners();
   }
 
   ApiResponse _spacialRestaurantsApiResponse = ApiResponse(state: ResponseState.sleep, data: null);
