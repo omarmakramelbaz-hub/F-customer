@@ -623,7 +623,7 @@ class _ExecuteTheOrderScreenState extends State<ExecuteTheOrderScreen> {
                                       status: resturantStatus,
                                       openAt: resturantOpenAt,
                                     ),
-                                    style: AppTextStyle.text14BM(),
+                                    style: AppTextStyle.text14BS(),
                                     textAlign: TextAlign.center,
                                   ),
                                 )
