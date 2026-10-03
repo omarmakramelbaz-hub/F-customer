@@ -359,5 +359,7 @@
   "reviewWalletTransfer": "Review transfer",
   "walletRecipientName": "Recipient name",
   "walletTransferAmount": "Amount",
-  "walletTransferFailed": "Could not confirm the transfer result. Retry with the same confirmation."
+  "walletTransferFailed": "Could not confirm the transfer result. Retry with the same confirmation.",
+  "closedOpensAt": "Closed — opens at {}",
+  "orderingOnlyDuringWorkingHours": "You can browse the menu and build your cart. Orders can only be placed during working hours."
 }
