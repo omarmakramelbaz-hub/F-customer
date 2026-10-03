@@ -24,18 +24,29 @@ class NotificationsController extends ChangeNotifier {
 
   List<NotificationsModel> _notifications = [];
   List<NotificationsModel> get notifications => _notifications;
+  bool _isFetching = false;
 
   Future<void> getNotifications() async {
-    _notificationsResponse =
-        ApiResponse(state: ResponseState.loading, data: null);
-    _notifications = [];
-    notifyListeners();
+    if (_isFetching) return;
+    _isFetching = true;
 
-    _notificationsResponse =
+    final hadData = _notifications.isNotEmpty;
+    final previousResponse = _notificationsResponse;
+
+    if (!hadData) {
+      _notificationsResponse =
+          ApiResponse(state: ResponseState.loading, data: null);
+      notifyListeners();
+    }
+
+    final response =
         await ApiHelper.instance.get(Urls.userNotifications);
 
-    if (_notificationsResponse.state == ResponseState.complete) {
-      final Iterable iterable = _notificationsResponse.data['data'];
+    if (response.state == ResponseState.complete) {
+      _notificationsResponse = response;
+      final dynamic rawData = response.data['data'];
+      final Iterable iterable =
+          rawData is Iterable ? rawData : const [];
       final hiddenIds = HiveMethods.getHiddenNotificationIds();
 
       _notifications = iterable
@@ -45,8 +56,13 @@ class NotificationsController extends ChangeNotifier {
             return id == null || id.isEmpty || !hiddenIds.contains(id);
           })
           .toList();
+    } else if (!hadData) {
+      _notificationsResponse = response;
+    } else {
+      _notificationsResponse = previousResponse;
     }
 
+    _isFetching = false;
     notifyListeners();
   }
 
