@@ -47,6 +47,8 @@ class Resturant {
   int? resturantId;
   String? resturantName;
   String? resturantStatus;
+  String? resturantOpenAt;
+  String? resturantCloseAt;
   String? resturantLogo;
   bool? resturantZone;
   String? zoneDay;
@@ -65,6 +67,8 @@ class Resturant {
     this.resturantId,
     this.resturantName,
     this.resturantStatus,
+    this.resturantOpenAt,
+    this.resturantCloseAt,
     this.resturantLogo,
     this.resturantZone,
     this.zoneDay,
@@ -85,6 +89,8 @@ class Resturant {
     resturantId = json['resturant_id'];
     resturantName = json['resturant_name'];
     resturantStatus = json['resturant_status'];
+    resturantOpenAt = json['resturant_open_at'];
+    resturantCloseAt = json['resturant_close_at'];
     resturantLogo = json['resturant_logo'];
     resturantZone = json['resturant_zone'];
     zoneDay = json['zone_day'];
@@ -111,6 +117,8 @@ class Resturant {
     data['resturant_id'] = resturantId;
     data['resturant_name'] = resturantName;
     data['resturant_status'] = resturantStatus;
+    data['resturant_open_at'] = resturantOpenAt;
+    data['resturant_close_at'] = resturantCloseAt;
     data['resturant_logo'] = resturantLogo;
     data['resturant_zone'] = resturantZone;
     data['zone_day'] = zoneDay;
