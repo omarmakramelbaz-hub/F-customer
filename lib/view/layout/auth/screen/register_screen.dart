@@ -16,9 +16,11 @@ import '../../../custom_widgets/custom_image/custom_image.dart';
 import '../../../custom_widgets/validation/validation_mixin.dart';
 import '../../bottom_navigation/bottom_navigation_bar_screen.dart';
 import '../controller/auth_controller.dart';
+import '../model/whatsapp_consent_selection.dart';
 import 'create_new_account_screen.dart';
 import 'login_screen.dart';
 import 'social_login_row_widget.dart';
+import 'whatsapp_consent_fields.dart';
 
 class RegisterScreen extends StatefulWidget {
   static const routeName = 'RegisterScreen';
@@ -34,6 +36,7 @@ class _RegisterScreenState extends State<RegisterScreen> with ValidationMixin {
   final _mobileEC = TextEditingController();
   final _passwordEC = TextEditingController();
   final _focusNode = FocusNode();
+  WhatsAppConsentSelection _whatsAppConsent = const WhatsAppConsentSelection();
 
   Country? _country;
 
@@ -287,6 +290,12 @@ class _RegisterScreenState extends State<RegisterScreen> with ValidationMixin {
             title: 'mobileNumber'.tr,
             country: _country,
           ),
+          const SizedBox(height: 12),
+          WhatsAppConsentFields(
+            isArabic: isArabic,
+            selection: _whatsAppConsent,
+            onChanged: (value) => setState(() => _whatsAppConsent = value),
+          ),
           const SizedBox(height: 14),
           CustomFormField(
             validator: validatePassword,
@@ -479,6 +488,7 @@ class _RegisterScreenState extends State<RegisterScreen> with ValidationMixin {
               NamedNavigatorImpl.push(CreateNewAccountScreen.routeName),
           mobile: _mobileEC.text.removeZero(),
           password: _passwordEC.text,
+          whatsAppConsent: _whatsAppConsent,
           onSuccess: (register, mobileVerifiedAt) {
             NamedNavigatorImpl.push(BottomNavigationBarScreen.routeName);
           },

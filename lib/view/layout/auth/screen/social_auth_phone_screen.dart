@@ -15,6 +15,8 @@ import '../../../custom_widgets/custom_form_field/custom_form_field.dart';
 import '../../../custom_widgets/validation/validation_mixin.dart';
 import '../../bottom_navigation/bottom_navigation_bar_screen.dart';
 import '../controller/auth_controller.dart';
+import '../model/whatsapp_consent_selection.dart';
+import 'whatsapp_consent_fields.dart';
 
 class SocialAuthPhoneScreen extends StatefulWidget {
   static const routeName = 'SocialAuthPhoneScreen';
@@ -31,6 +33,7 @@ class _SocialAuthPhoneScreenState extends State<SocialAuthPhoneScreen>
     with ValidationMixin {
   final _formKey = GlobalKey<FormState>();
   final _mobileEC = TextEditingController();
+  WhatsAppConsentSelection _whatsAppConsent = const WhatsAppConsentSelection();
   Country? _country;
 
   @override
@@ -52,6 +55,7 @@ class _SocialAuthPhoneScreenState extends State<SocialAuthPhoneScreen>
           socialAuthData: widget.socialAuthData,
           mobile: _mobileEC.text.removeZero(),
           countryCode: _country?.phoneCode ?? '20',
+          whatsAppConsent: _whatsAppConsent,
           onSuccess: (register, mobileVerifiedAt) {
             HiveMethods.updateIsVisitor(false);
             if (register == 0 && mobileVerifiedAt != null) {
@@ -291,6 +295,13 @@ class _SocialAuthPhoneScreenState extends State<SocialAuthPhoneScreen>
                             ),
                           ),
                           const SizedBox(height: 16),
+                          WhatsAppConsentFields(
+                            isArabic: isRtl,
+                            selection: _whatsAppConsent,
+                            onChanged: (value) =>
+                                setState(() => _whatsAppConsent = value),
+                          ),
+                          const SizedBox(height: 16),
                           Container(
                             width: double.infinity,
                             padding: const EdgeInsets.symmetric(
@@ -318,8 +329,8 @@ class _SocialAuthPhoneScreenState extends State<SocialAuthPhoneScreen>
                                   Expanded(
                                     child: Text(
                                       isRtl
-                                          ? 'رقمك يُستخدم لتأكيد الحساب والتواصل بخصوص الطلبات فقط.'
-                                          : 'Your number is used only for account verification and order communication.',
+                                          ? 'رقمك لتأكيد الحساب والتواصل بخصوص الطلبات، ورسائل واتساب حسب اختياراتك أعلاه.'
+                                          : 'Your number is used for account verification, order communication and the WhatsApp choices above.',
                                       style: const TextStyle(
                                         color: Color(0xFF7E8782),
                                         fontSize: 11.5,

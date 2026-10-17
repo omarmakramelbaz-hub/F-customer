@@ -119,6 +119,7 @@ class ApiHelper {
     void Function(int, int)? onReceiveProgress,
     void Function(int, int)? onSendProgress,
     bool hasToken = true,
+    bool redirectOnUnauthorized = true,
   }) async {
     ApiResponse responseJson;
 
@@ -136,7 +137,10 @@ class ApiHelper {
         onReceiveProgress: onReceiveProgress,
         onSendProgress: onSendProgress,
       );
-      responseJson = _buildResponse(response);
+      responseJson = _buildResponse(
+        response,
+        redirectOnUnauthorized: redirectOnUnauthorized,
+      );
       Future.delayed(Duration.zero, onFinish);
     } on DioException {
       responseJson = ApiResponse(state: ResponseState.error, data: _errorMessage());
@@ -263,7 +267,10 @@ class ApiHelper {
     return responseJson;
   }
 
-  ApiResponse _buildResponse(Response<dynamic> response) {
+  ApiResponse _buildResponse(
+    Response<dynamic> response, {
+    bool redirectOnUnauthorized = true,
+  }) {
     switch (response.statusCode) {
       case 200:
         var responseJson = response.data;
@@ -277,7 +284,7 @@ class ApiHelper {
       case 401:
         var responseJson = response.data;
         Future.delayed(Duration.zero, () {
-          if (HiveMethods.isVisitor() == false) {
+          if (redirectOnUnauthorized && HiveMethods.isVisitor() == false) {
             NamedNavigatorImpl.push(LoginScreen.routeName, clean: true);
           }
         });

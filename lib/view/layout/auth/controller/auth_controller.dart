@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer';
 
 import 'package:dio/dio.dart';
@@ -17,6 +18,7 @@ import '../../../../helpers/utils/utils.dart';
 import '../../../custom_widgets/custom_toast/custom_toast.dart';
 import '../model/area_model.dart';
 import '../model/profile_model.dart';
+import '../model/whatsapp_consent_selection.dart';
 import '../screen/login_screen.dart';
 import '../screen/social_auth_phone_screen.dart';
 
@@ -83,6 +85,7 @@ class AuthController extends ChangeNotifier {
     required String password,
     required Function(int register, String? mobileVerifiedAt) onSuccess,
     required Function() onFirstTime,
+    WhatsAppConsentSelection whatsAppConsent = const WhatsAppConsentSelection(),
     void Function(int id, String token)? onHaveIdANDToken,
   }) async {
     Utils.loading();
@@ -96,6 +99,7 @@ class AuthController extends ChangeNotifier {
       _profile = ProfileModel.fromJson(response.data['data']['user_data']);
       if (_profile?.id != null && _profile?.token != null) {
         onHaveIdANDToken?.call(_profile!.id!, _profile!.token!);
+        _saveWhatsAppConsent(whatsAppConsent, token: _profile!.token!);
         log('============================ pusher connected =======================');
       }
 
@@ -337,6 +341,7 @@ class AuthController extends ChangeNotifier {
     required Map<String, dynamic> socialAuthData,
     required String mobile,
     required String countryCode,
+    WhatsAppConsentSelection whatsAppConsent = const WhatsAppConsentSelection(),
     required Function(int register, String? mobileVerifiedAt) onSuccess,
     void Function(int id, String token)? onHaveIdANDToken,
   }) async {
@@ -366,6 +371,7 @@ class AuthController extends ChangeNotifier {
 
         if (_profile?.id != null && _profile?.token != null) {
           onHaveIdANDToken?.call(_profile!.id!, _profile!.token!);
+          _saveWhatsAppConsent(whatsAppConsent, token: _profile!.token!);
           log('============================ pusher connected =======================');
         }
 
@@ -383,6 +389,41 @@ class AuthController extends ChangeNotifier {
     } else {
       CommonMethods.showError(message: response.data['message'], apiResponse: response);
     }
+  }
+
+  void _saveWhatsAppConsent(
+    WhatsAppConsentSelection selection, {
+    required String token,
+  }) {
+    if (!selection.hasSelection || token.isEmpty) return;
+    // The successful auth response has installed this token in Hive's memory
+    // cache. Keep optional preferences independent of login/profile navigation.
+    unawaited(_submitWhatsAppConsent(selection, token: token));
+  }
+
+  Future<void> _submitWhatsAppConsent(
+    WhatsAppConsentSelection selection, {
+    required String token,
+  }) async {
+    try {
+      final response = await ApiHelper.instance.post(
+        Urls.whatsappConsent,
+        body: selection.grants,
+        // Capture the successful login's identity even if another login starts.
+        headers: {'Authorization': 'Bearer $token'},
+        redirectOnUnauthorized: false,
+      );
+      if (response.state == ResponseState.complete) return;
+    } catch (_) {
+      // No automatic retry: only a customer action can submit these choices.
+    }
+    if (HiveMethods.getToken() != token) return;
+    CommonMethods.showToast(
+      message: HiveMethods.getLang() == 'ar'
+          ? 'تعذر تأكيد حفظ اختيارات رسائل واتساب. تسجيل الدخول مستمر.'
+          : 'Could not confirm your WhatsApp choices. Sign-in will continue.',
+      type: ToastType.error,
+    );
   }
 
   Future<void> codeActivate({required String mobileCode, required VoidCallback onSuccess}) async {

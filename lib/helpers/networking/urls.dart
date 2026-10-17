@@ -10,6 +10,7 @@ class Urls {
   static const String loginWithApple = '${baseUrl}auth/apple/callback';
   static const String loginWithFacebook = '${baseUrl}auth/social/facebook/token';
   static const String profile = '${baseUrl}user/profile';
+  static const String whatsappConsent = '${baseUrl}user/whatsapp-consent';
   static const String help = '${baseUrl}help';
   static const String setting = '${baseUrl}setting';
   static const String storeContact = '${baseUrl}store-contact';
