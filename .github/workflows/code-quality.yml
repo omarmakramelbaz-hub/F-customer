@@ -28,6 +28,10 @@ jobs:
           cache: true
       - name: Install dependencies
         run: flutter pub get --enforce-lockfile
+      - name: Capture exact live activity test formatting
+        run: |
+          dart format test/delivery_activity_payload_test.dart
+          git diff --binary -- test/delivery_activity_payload_test.dart
       - name: Check maintained code and test formatting
         run: >-
           dart format --output=none --set-exit-if-changed
