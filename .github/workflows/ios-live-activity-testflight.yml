@@ -1,0 +1,44 @@
+name: Upload Live Activity Build to TestFlight
+
+on:
+  push:
+    branches: [ "codex/customer-live-activity-sync-20261018" ]
+    paths:
+      - '.github/workflows/ios-live-activity-testflight.yml'
+      - '.github/scripts/upload_live_activity_testflight.py'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: customer-testflight-2.0.7-59.1
+  cancel-in-progress: false
+
+jobs:
+  upload_testflight:
+    if: github.ref == 'refs/heads/codex/customer-live-activity-sync-20261018'
+    runs-on: macos-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Prepare App Store Connect client
+        run: |
+          python3 -m venv "$RUNNER_TEMP/testflight-client"
+          "$RUNNER_TEMP/testflight-client/bin/pip" install --quiet 'PyJWT[crypto]==2.10.1'
+      - name: Verify exact signed artifact, upload, and check processing
+        env:
+          GH_TOKEN: ${{ github.token }}
+          APP_STORE_CONNECT_KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
+          APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+          APP_STORE_CONNECT_API_KEY_BASE64: ${{ secrets.APP_STORE_CONNECT_API_KEY_BASE64 }}
+        run: '"$RUNNER_TEMP/testflight-client/bin/python" .github/scripts/upload_live_activity_testflight.py'
+      - name: Preserve sanitized upload receipt
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: TestFlight-2.0.7-59.1-receipt
+          path: ${{ runner.temp }}/live-activity-testflight-result.json
+          if-no-files-found: ignore
+          retention-days: 14

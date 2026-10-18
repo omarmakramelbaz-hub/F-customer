@@ -45,6 +45,7 @@ class Urls {
   static const String lastSearch = '${baseUrl}resturants/last/search';
   static const String orders = '${baseUrl}user/orders';
   static const String detailsOrders = '${baseUrl}user/order';
+  static String orderLiveActivity(int orderId) => '${baseUrl}user/order/$orderId/live-activity';
   static const String wallet = '${baseUrl}user/get/charging/wallet';
   static const String reviewOrders = '${baseUrl}user/review/order';
   static const String cancelOrder = '${baseUrl}user/cancel/order';

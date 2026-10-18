@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:pusher_channels_flutter/pusher_channels_flutter.dart';
 
 import '../../../../helpers/delivery_activity/delivery_provider.dart';
+import '../../../../helpers/delivery_activity/delivery_activity_payload.dart';
 import '../../../../helpers/images/app_images.dart';
 import '../../../../helpers/pusher_service/pusher_controller.dart';
 import '../../../../helpers/routes/app_routers_import.dart';
@@ -53,14 +54,17 @@ class _YourOrderSuccessfullyCompletedScreenState
     Future.delayed(
       Duration.zero,
       () async {
-        await ordersController
-            .getDetailsOrders(id: widget.args.id)
-            .whenComplete(() {
-          liveActivitiesController.init(widget.args.id).whenComplete(() {
-            liveActivitiesController
-                .startDelivery(ordersController.detailsOrders?.status);
-          });
-        });
+        await ordersController.getDetailsOrders(id: widget.args.id);
+        if (!mounted) return;
+        final order = ordersController.detailsOrders;
+        if (order == null || order.id != widget.args.id) return;
+        await liveActivitiesController.init(widget.args.id);
+        await liveActivitiesController.startDelivery(
+          DeliveryActivityPayload.status(order.toJson()),
+          orderNo: order.orderNo,
+          restaurantName: order.resturantName,
+          updatedAt: order.updatedAt,
+        );
       },
     );
   }
