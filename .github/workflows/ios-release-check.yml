@@ -3,11 +3,20 @@ name: iOS Release Check
 on:
   workflow_dispatch:
   push:
-    branches: [ "main" ]
+    branches: [ "main", "codex/customer-live-activity-sync-20261018" ]
     paths:
       - '.github/workflows/ios-release-check.yml'
       - 'ios/**'
+      - 'lib/**'
       - 'pubspec.yaml'
+      - 'pubspec.lock'
+  pull_request:
+    paths:
+      - '.github/workflows/ios-release-check.yml'
+      - 'ios/**'
+      - 'lib/**'
+      - 'pubspec.yaml'
+      - 'pubspec.lock'
 
 permissions:
   contents: read

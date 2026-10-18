@@ -1,6 +1,8 @@
 name: Flutter code quality
 
 on:
+  push:
+    branches: [codex/customer-live-activity-sync-20261018]
   pull_request:
     paths:
       - 'lib/**'
@@ -38,6 +40,9 @@ jobs:
         run: >-
           flutter analyze --no-pub --no-fatal-infos --no-fatal-warnings
           lib/helpers/app/init_services.dart
+          lib/helpers/delivery_activity/delivery_activity_model.dart
+          lib/helpers/delivery_activity/delivery_activity_native.dart
+          lib/helpers/delivery_activity/delivery_activity_payload.dart
           lib/helpers/delivery_activity/delivery_activity_push_handler.dart
           lib/helpers/delivery_activity/delivery_provider.dart
           lib/helpers/networking/api_helper.dart

@@ -21,7 +21,52 @@ let surfaceEnd = Color(hex: 0x1C1C1C)
 struct LiveActivitiesAppAttributes: ActivityAttributes, Identifiable {
     public typealias LiveDeliveryData = ContentState
 
-    public struct ContentState: Codable, Hashable {}
+    public struct ContentState: Codable, Hashable {
+        // Keep these fields optional: live_activities 2.x local updates only encode
+        // appGroupId, while ActivityKit remote pushes carry the order snapshot.
+        var appGroupId: String?
+        var order_id: String?
+        var order_no: String?
+        var order_status: String?
+        var status: String?
+        var restaurant_name: String?
+        var updateId: Double?
+
+        init(appGroupId: String? = nil, order_id: String? = nil,
+             order_no: String? = nil, order_status: String? = nil,
+             status: String? = nil, restaurant_name: String? = nil,
+             updateId: Double? = nil) {
+            self.appGroupId = appGroupId
+            self.order_id = order_id
+            self.order_no = order_no
+            self.order_status = order_status
+            self.status = status
+            self.restaurant_name = restaurant_name
+            self.updateId = updateId
+        }
+
+        private enum CodingKeys: String, CodingKey {
+            case appGroupId, order_id, order_no, order_status, status, restaurant_name, updateId
+        }
+
+        public init(from decoder: Decoder) throws {
+            let values = try decoder.container(keyedBy: CodingKeys.self)
+            appGroupId = Self.string(values, .appGroupId)
+            order_id = Self.string(values, .order_id)
+            order_no = Self.string(values, .order_no)
+            order_status = Self.string(values, .order_status)
+            status = Self.string(values, .status)
+            restaurant_name = Self.string(values, .restaurant_name)
+            updateId = try values.decodeIfPresent(Double.self, forKey: .updateId)
+        }
+
+        private static func string(_ values: KeyedDecodingContainer<CodingKeys>,
+                                   _ key: CodingKeys) -> String? {
+            if let value = try? values.decode(String.self, forKey: key) { return value }
+            if let value = try? values.decode(Int.self, forKey: key) { return String(value) }
+            return nil
+        }
+    }
 
     var id = UUID()
 }
@@ -44,7 +89,7 @@ func firstString(for keys: [String], defaultValue: String = "") -> String {
 
 func scopedKeys(prefix: String?, keys: [String]) -> [String] {
     guard let prefix = prefix, !prefix.isEmpty else { return keys }
-    return keys.map { "\(prefix)_\($0)" } + keys
+    return keys.map { "\(prefix)_\($0)" }
 }
 
 func fallbackOrderId(from prefix: String?) -> String {
@@ -70,11 +115,11 @@ func displayStatus(_ raw: String) -> String {
     switch normalizedStatus(raw) {
     case "new_order", "pending", "accepted", "preparing", "in_preparation":
         return "Preparing"
-    case "picked_up", "on_the_way", "out_for_delivery", "shipped":
+    case "picked_up", "on_the_way", "out_for_delivery", "shipped", "delivering":
         return "On the Way"
-    case "delivered", "completed":
+    case "delivered", "completed", "ended":
         return "Delivered"
-    case "cancelled":
+    case "cancelled", "canceled", "declined", "rejected", "failed", "payment_failed":
         return "Cancelled"
     default:
         return raw.isEmpty ? "Preparing" : raw
@@ -85,16 +130,17 @@ struct DeliveryLiveData: Hashable {
     let orderStatus: String
     let restaurantName: String
     let orderId: String
+    let orderNumber: String
 
     var progress: Double {
         switch normalizedStatus(orderStatus) {
         case "preparing", "pending", "new_order", "accepted", "in_preparation":
             return 0.30
-        case "picked_up", "on_the_way", "out_for_delivery", "shipped":
+        case "picked_up", "on_the_way", "out_for_delivery", "shipped", "delivering":
             return 0.72
-        case "delivered", "completed":
+        case "delivered", "completed", "ended":
             return 1.0
-        case "cancelled", "declined":
+        case "cancelled", "canceled", "declined", "rejected", "failed", "payment_failed":
             return 0.0
         default:
             return 0.20
@@ -105,11 +151,11 @@ struct DeliveryLiveData: Hashable {
         switch normalizedStatus(orderStatus) {
         case "preparing", "pending", "new_order", "accepted", "in_preparation":
             return "fork.knife.circle.fill"
-        case "picked_up", "on_the_way", "out_for_delivery", "shipped":
+        case "picked_up", "on_the_way", "out_for_delivery", "shipped", "delivering":
             return "scooter"
-        case "delivered", "completed":
+        case "delivered", "completed", "ended":
             return "checkmark.seal.fill"
-        case "cancelled", "declined":
+        case "cancelled", "canceled", "declined", "rejected", "failed", "payment_failed":
             return "xmark.seal.fill"
         default:
             return "shippingbox.fill"
@@ -120,11 +166,11 @@ struct DeliveryLiveData: Hashable {
         switch normalizedStatus(orderStatus) {
         case "preparing", "pending", "new_order", "accepted", "in_preparation":
             return "Prep"
-        case "picked_up", "on_the_way", "out_for_delivery", "shipped":
+        case "picked_up", "on_the_way", "out_for_delivery", "shipped", "delivering":
             return "On Way"
-        case "delivered", "completed":
+        case "delivered", "completed", "ended":
             return "Done"
-        case "cancelled", "declined":
+        case "cancelled", "canceled", "declined", "rejected", "failed", "payment_failed":
             return "Cancelled"
         default:
             return orderStatus
@@ -132,26 +178,32 @@ struct DeliveryLiveData: Hashable {
     }
 }
 
-func deliveryData(prefix: String? = nil) -> DeliveryLiveData {
-    let status = displayStatus(
-        firstString(
-            for: scopedKeys(prefix: prefix, keys: ["order_status", "orderStatus", "status"]),
-            defaultValue: "Preparing"
-        )
-    )
-    let restaurant = firstString(
+func deliveryData(prefix: String? = nil,
+                  state: LiveActivitiesAppAttributes.ContentState? = nil) -> DeliveryLiveData {
+    // Remote ActivityKit updates do not launch the app or write App Group
+    // defaults. Read their content-state before the local plugin fallback.
+    let status = displayStatus(state?.order_status ?? state?.status ?? firstString(
+        for: scopedKeys(prefix: prefix, keys: ["order_status", "orderStatus", "status"]),
+        defaultValue: "Preparing"
+    ))
+    let restaurant = state?.restaurant_name ?? firstString(
         for: scopedKeys(prefix: prefix, keys: ["restaurant_name", "restaurantName", "restaurant"]),
         defaultValue: "Fasakhansta"
     )
-    let orderId = firstString(
+    let orderId = state?.order_id ?? firstString(
         for: scopedKeys(prefix: prefix, keys: ["order_id", "orderId"]),
         defaultValue: fallbackOrderId(from: prefix)
+    )
+    let orderNumber = state?.order_no ?? firstString(
+        for: scopedKeys(prefix: prefix, keys: ["order_no", "orderNo", "order_number", "orderNumber"]),
+        defaultValue: orderId
     )
 
     return DeliveryLiveData(
         orderStatus: status,
         restaurantName: restaurant,
-        orderId: orderId
+        orderId: orderId,
+        orderNumber: orderNumber
     )
 }
 
@@ -253,7 +305,7 @@ struct DeliveryStatusView: View {
                             .foregroundColor(.white)
                             .lineLimit(1)
 
-                        Text("Order #\(data.orderId)")
+                        Text("Order #\(data.orderNumber)")
                             .font(.system(size: 12, weight: .regular))
                             .foregroundColor(.white.opacity(0.70))
                             .lineLimit(1)
@@ -280,7 +332,7 @@ struct DeliveryStatusView: View {
 
                     Spacer()
 
-                    Text("Order #\(data.orderId)")
+                    Text("Order #\(data.orderNumber)")
                         .font(.system(size: 12, weight: .medium))
                         .foregroundColor(.white.opacity(0.65))
                         .lineLimit(1)
@@ -295,13 +347,13 @@ struct DeliveryStatusView: View {
 struct DeliveryActivityWidget: Widget {
     var body: some WidgetConfiguration {
         ActivityConfiguration(for: LiveActivitiesAppAttributes.self) { context in
-            let data = deliveryData(prefix: "\(context.attributes.id)")
+            let data = deliveryData(prefix: "\(context.attributes.id)", state: context.state)
 
             DeliveryStatusView(data: data)
                 .activityBackgroundTint(.clear)
                 .activitySystemActionForegroundColor(.white)
         } dynamicIsland: { context in
-            let data = deliveryData(prefix: "\(context.attributes.id)")
+            let data = deliveryData(prefix: "\(context.attributes.id)", state: context.state)
 
             return DynamicIsland {
                 DynamicIslandExpandedRegion(.leading) {
@@ -324,7 +376,7 @@ struct DeliveryActivityWidget: Widget {
                         HStack(spacing: 4) {
                             Image(systemName: "number")
                                 .foregroundColor(brandColor)
-                            Text(data.orderId)
+                            Text(data.orderNumber)
                                 .font(.system(size: 12, weight: .semibold))
                                 .foregroundColor(.white.opacity(0.92))
                                 .lineLimit(1)
@@ -339,7 +391,7 @@ struct DeliveryActivityWidget: Widget {
                                 .font(.system(size: 13, weight: .bold))
                                 .foregroundColor(.white)
                                 .lineLimit(1)
-                            Text("Order #\(data.orderId)")
+                            Text("Order #\(data.orderNumber)")
                                 .font(.system(size: 11, weight: .regular))
                                 .foregroundColor(.white.opacity(0.72))
                                 .lineLimit(1)
@@ -360,7 +412,7 @@ struct DeliveryActivityWidget: Widget {
                                 Text(data.orderStatus)
                                     .lineLimit(1)
                                 Spacer()
-                                Text("Order #\(data.orderId)")
+                                Text("Order #\(data.orderNumber)")
                                     .lineLimit(1)
                             }
                             .font(.system(size: 12, weight: .semibold))
