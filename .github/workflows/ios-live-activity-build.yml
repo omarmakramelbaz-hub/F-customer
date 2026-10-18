@@ -113,6 +113,7 @@ jobs:
           flutter build ios \
             --release \
             --no-codesign \
+            --config-only \
             --build-name="$BUILD_NAME" \
             --build-number="$BUILD_NUMBER"
 
@@ -139,6 +140,8 @@ jobs:
               next unless config.name == 'Release'
               config.build_settings['CODE_SIGN_STYLE'] = 'Manual'
               config.build_settings['DEVELOPMENT_TEAM'] = '4769DGYGT3'
+              config.build_settings['MARKETING_VERSION'] = ENV.fetch('BUILD_NAME')
+              config.build_settings['CURRENT_PROJECT_VERSION'] = ENV.fetch('BUILD_NUMBER')
               config.build_settings['CODE_SIGN_IDENTITY'] = 'Apple Distribution'
               config.build_settings['CODE_SIGN_IDENTITY[sdk=iphoneos*]'] = 'Apple Distribution'
               config.build_settings['PROVISIONING_PROFILE_SPECIFIER'] = profile_name
@@ -159,6 +162,28 @@ jobs:
             -destination 'generic/platform=iOS' \
             -archivePath "$RUNNER_TEMP/Fasakhansta.xcarchive" \
             archive
+
+      - name: Verify archived app and extension versions
+        run: |
+          set -euo pipefail
+          python3 <<'PYTHON'
+          import os
+          import plistlib
+          from pathlib import Path
+
+          app = Path(os.environ['RUNNER_TEMP']) / 'Fasakhansta.xcarchive/Products/Applications/Runner.app'
+          extensions = list((app / 'PlugIns').glob('*.appex'))
+          if not extensions:
+              raise SystemExit('Archived Live Activity extension is missing')
+          expected = (os.environ['BUILD_NAME'], os.environ['BUILD_NUMBER'])
+          for bundle in [app, *extensions]:
+              with (bundle / 'Info.plist').open('rb') as file:
+                  info = plistlib.load(file)
+              actual = (info.get('CFBundleShortVersionString'), info.get('CFBundleVersion'))
+              if actual != expected:
+                  raise SystemExit(f'{bundle.name} version mismatch: {actual!r} != {expected!r}')
+              print(f'{bundle.name}: version {actual[0]}, build {actual[1]}')
+          PYTHON
 
       - name: Export signed IPA
         run: |
