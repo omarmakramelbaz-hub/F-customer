@@ -33,7 +33,8 @@ void main() {
       });
     });
 
-    test('APNs content-state overrides stale outer values without mutation', () {
+    test('APNs content-state overrides stale outer values without mutation',
+        () {
       final payload = <String, dynamic>{
         'order_status': 'pending',
         'order_id': 652,
@@ -50,9 +51,11 @@ void main() {
       final extracted = DeliveryActivityPayload.extract(payload);
       expect(extracted['order_status'], 'completed');
       expect(DeliveryActivityPayload.status(payload), 'completed');
-      expect(DeliveryActivityPayload.isTerminal(
-        DeliveryActivityPayload.status(payload),
-      ), isTrue);
+      expect(
+          DeliveryActivityPayload.isTerminal(
+            DeliveryActivityPayload.status(payload),
+          ),
+          isTrue);
       expect(DeliveryActivityPayload.orderNo(payload), '1045');
       expect(payload['order_status'], 'pending');
       expect(payload.containsKey('order_no'), isFalse);
@@ -113,7 +116,8 @@ void main() {
       expect(DeliveryActivityPayload.activityId({'order_no': 1045}), isNull);
     });
 
-    test('legacy order_id object resolves its id without stringifying a map', () {
+    test('legacy order_id object resolves its id without stringifying a map',
+        () {
       final payload = <String, dynamic>{
         'id': 'notification-42',
         'order_id': {'id': 652, 'order_no': 1045},
@@ -142,12 +146,15 @@ void main() {
         'live_activity_id',
         'liveActivityId',
       ]) {
-        expect(DeliveryActivityPayload.activityId({
-          key: 'native-activity-uuid',
-          'order_id': 652,
-        }), 'native-activity-uuid');
+        expect(
+            DeliveryActivityPayload.activityId({
+              key: 'native-activity-uuid',
+              'order_id': 652,
+            }),
+            'native-activity-uuid');
       }
-      expect(DeliveryActivityPayload.activityIdForOrderId(' 652 '), 'order_652');
+      expect(
+          DeliveryActivityPayload.activityIdForOrderId(' 652 '), 'order_652');
       expect(DeliveryActivityPayload.activityIdForOrderId(null), '');
       expect(DeliveryActivityPayload.activityIdForOrderId(' '), '');
     });
@@ -165,10 +172,12 @@ void main() {
       expect(DeliveryActivityPayload.status(notification), 'On the Way');
       expect(DeliveryActivityPayload.data(notification, null)['order_status'],
           'On the Way');
-      expect(DeliveryActivityPayload.status({
-        'status': 'accepted',
-        'tracking_status': 'shipped',
-      }), 'shipped');
+      expect(
+          DeliveryActivityPayload.status({
+            'status': 'accepted',
+            'tracking_status': 'shipped',
+          }),
+          'shipped');
     });
 
     test('branch courier API snapshot resolves accepted as on the way', () {
@@ -181,17 +190,23 @@ void main() {
 
       expect(DeliveryActivityPayload.status(snapshot), 'On the Way');
       expect(DeliveryActivityPayload.status({'order': snapshot}), 'On the Way');
-      expect(DeliveryActivityPayload.status({
-        ...snapshot,
-        'delegate_from_out': 'out_resturant',
-      }), 'accepted');
-      expect(DeliveryActivityPayload.status({
-        ...snapshot,
-        'status': 'completed',
-      }), 'completed');
-      expect(DeliveryActivityPayload.status({
-        'order': {...snapshot, 'live_activity_status': 'Delivered'},
-      }), 'Delivered');
+      expect(
+          DeliveryActivityPayload.status({
+            ...snapshot,
+            'delegate_from_out': 'out_resturant',
+          }),
+          'accepted');
+      expect(
+          DeliveryActivityPayload.status({
+            ...snapshot,
+            'status': 'completed',
+          }),
+          'completed');
+      expect(
+          DeliveryActivityPayload.status({
+            'order': {...snapshot, 'live_activity_status': 'Delivered'},
+          }),
+          'Delivered');
     });
 
     test('every terminal backend alias ends the activity', () {
@@ -240,7 +255,8 @@ void main() {
       for (final entry in expected.entries) {
         expect(DeliveryActivityPayload.displayStatus(entry.key), entry.value);
       }
-      expect(DeliveryActivityPayload.displayStatus(' On-the-way '), 'On the Way');
+      expect(
+          DeliveryActivityPayload.displayStatus(' On-the-way '), 'On the Way');
     });
 
     test('status aliases and nested order status are accepted', () {
@@ -251,66 +267,87 @@ void main() {
         'orderState',
         'status',
       ]) {
-        expect(DeliveryActivityPayload.status({key: ' completed '}), 'completed');
+        expect(
+            DeliveryActivityPayload.status({key: ' completed '}), 'completed');
       }
-      expect(DeliveryActivityPayload.status({
-        'order': {'status': 'delivered'},
-      }), 'delivered');
+      expect(
+          DeliveryActivityPayload.status({
+            'order': {'status': 'delivered'},
+          }),
+          'delivered');
     });
   });
 
   group('notification routing', () {
-    test('ordinary status-only chat cannot update unrelated order activities', () {
-      expect(DeliveryActivityPayload.isLiveActivity({
-        'status': 'delivered',
-        'title': 'Message delivered',
-        'message': 'Hello',
-      }), isFalse);
-      expect(DeliveryActivityPayload.isLiveActivity({
-        'notification_type': 'chat',
-        'status': 'delivered',
-        'conversation_id': 42,
-      }), isFalse);
-      expect(DeliveryActivityPayload.isLiveActivity({'order_no': 1045}), isFalse);
+    test('ordinary status-only chat cannot update unrelated order activities',
+        () {
+      expect(
+          DeliveryActivityPayload.isLiveActivity({
+            'status': 'delivered',
+            'title': 'Message delivered',
+            'message': 'Hello',
+          }),
+          isFalse);
+      expect(
+          DeliveryActivityPayload.isLiveActivity({
+            'notification_type': 'chat',
+            'status': 'delivered',
+            'conversation_id': 42,
+          }),
+          isFalse);
+      expect(
+          DeliveryActivityPayload.isLiveActivity({'order_no': 1045}), isFalse);
     });
 
-    test('explicit live markers or order identity with status are accepted', () {
+    test('explicit live markers or order identity with status are accepted',
+        () {
       for (final marker in [true, 1, '1', 'true', 'TRUE']) {
-        expect(DeliveryActivityPayload.isLiveActivity({'live_activity': marker}),
+        expect(
+            DeliveryActivityPayload.isLiveActivity({'live_activity': marker}),
             isTrue);
       }
-      expect(DeliveryActivityPayload.isLiveActivity({
-        'notification_type': 'live_activity',
-      }), isTrue);
-      expect(DeliveryActivityPayload.isLiveActivity({
-        'order_id': 652,
-        'order_status': 'completed',
-      }), isTrue);
-      expect(DeliveryActivityPayload.isLiveActivity({
-        'activity_id': 'native-uuid',
-        'status': 'completed',
-      }), isTrue);
-      expect(DeliveryActivityPayload.isLiveActivity({'activity_id': 'native-uuid'}),
+      expect(
+          DeliveryActivityPayload.isLiveActivity({
+            'notification_type': 'live_activity',
+          }),
+          isTrue);
+      expect(
+          DeliveryActivityPayload.isLiveActivity({
+            'order_id': 652,
+            'order_status': 'completed',
+          }),
+          isTrue);
+      expect(
+          DeliveryActivityPayload.isLiveActivity({
+            'activity_id': 'native-uuid',
+            'status': 'completed',
+          }),
+          isTrue);
+      expect(
+          DeliveryActivityPayload.isLiveActivity(
+              {'activity_id': 'native-uuid'}),
           isFalse);
     });
 
     test('optional restaurant and logo data survive normalization', () {
-      expect(DeliveryActivityPayload.data({
-        'orderId': '652',
-        'orderNo': '1045',
-        'restaurant_name': 'Fasakhansta',
-        'app_logo': 'logo.png',
-      }, 'accepted'), {
-        'order_id': '652',
-        'orderId': '652',
-        'order_no': '1045',
-        'orderNo': '1045',
-        'order_status': 'Preparing',
-        'orderStatus': 'Preparing',
-        'restaurant_name': 'Fasakhansta',
-        'restaurantName': 'Fasakhansta',
-        'app_logo': 'logo.png',
-      });
+      expect(
+          DeliveryActivityPayload.data({
+            'orderId': '652',
+            'orderNo': '1045',
+            'restaurant_name': 'Fasakhansta',
+            'app_logo': 'logo.png',
+          }, 'accepted'),
+          {
+            'order_id': '652',
+            'orderId': '652',
+            'order_no': '1045',
+            'orderNo': '1045',
+            'order_status': 'Preparing',
+            'orderStatus': 'Preparing',
+            'restaurant_name': 'Fasakhansta',
+            'restaurantName': 'Fasakhansta',
+            'app_logo': 'logo.png',
+          });
     });
   });
 
@@ -320,70 +357,88 @@ void main() {
 
     test('delayed preparing cannot replace on-the-way or delivered', () {
       for (final current in ['on_the_way', 'delivered']) {
-        expect(DeliveryActivityPayload.shouldApply(
-          currentStatus: current,
-          currentTimestamp: after,
-          nextStatus: 'preparing',
-          nextTimestamp: before,
-        ), isFalse);
-        expect(DeliveryActivityPayload.shouldApply(
-          currentStatus: current,
-          currentTimestamp: after,
-          nextStatus: 'preparing',
-          nextTimestamp: null,
-        ), isFalse);
+        expect(
+            DeliveryActivityPayload.shouldApply(
+              currentStatus: current,
+              currentTimestamp: after,
+              nextStatus: 'preparing',
+              nextTimestamp: before,
+            ),
+            isFalse);
+        expect(
+            DeliveryActivityPayload.shouldApply(
+              currentStatus: current,
+              currentTimestamp: after,
+              nextStatus: 'preparing',
+              nextTimestamp: null,
+            ),
+            isFalse);
       }
     });
 
     test('an authoritative newer timestamp permits an owner undo', () {
-      expect(DeliveryActivityPayload.shouldApply(
-        currentStatus: 'delivered',
-        currentTimestamp: before,
-        nextStatus: 'preparing',
-        nextTimestamp: after,
-      ), isTrue);
+      expect(
+          DeliveryActivityPayload.shouldApply(
+            currentStatus: 'delivered',
+            currentTimestamp: before,
+            nextStatus: 'preparing',
+            nextTimestamp: after,
+          ),
+          isTrue);
     });
 
     test('equal timestamps permit progress and reject backwards states', () {
-      expect(DeliveryActivityPayload.shouldApply(
-        currentStatus: 'preparing',
-        currentTimestamp: after,
-        nextStatus: 'on_the_way',
-        nextTimestamp: after,
-      ), isTrue);
-      expect(DeliveryActivityPayload.shouldApply(
-        currentStatus: 'on_the_way',
-        currentTimestamp: after,
-        nextStatus: 'preparing',
-        nextTimestamp: after,
-      ), isFalse);
+      expect(
+          DeliveryActivityPayload.shouldApply(
+            currentStatus: 'preparing',
+            currentTimestamp: after,
+            nextStatus: 'on_the_way',
+            nextTimestamp: after,
+          ),
+          isTrue);
+      expect(
+          DeliveryActivityPayload.shouldApply(
+            currentStatus: 'on_the_way',
+            currentTimestamp: after,
+            nextStatus: 'preparing',
+            nextTimestamp: after,
+          ),
+          isFalse);
     });
 
-    test('missing timestamps allow progress and corrections between end states', () {
-      expect(DeliveryActivityPayload.shouldApply(
-        currentStatus: 'accepted',
-        currentTimestamp: null,
-        nextStatus: 'delivered',
-        nextTimestamp: null,
-      ), isTrue);
-      expect(DeliveryActivityPayload.shouldApply(
-        currentStatus: 'completed',
-        currentTimestamp: null,
-        nextStatus: 'payment_failed',
-        nextTimestamp: null,
-      ), isTrue);
+    test('missing timestamps allow progress and corrections between end states',
+        () {
+      expect(
+          DeliveryActivityPayload.shouldApply(
+            currentStatus: 'accepted',
+            currentTimestamp: null,
+            nextStatus: 'delivered',
+            nextTimestamp: null,
+          ),
+          isTrue);
+      expect(
+          DeliveryActivityPayload.shouldApply(
+            currentStatus: 'completed',
+            currentTimestamp: null,
+            nextStatus: 'payment_failed',
+            nextTimestamp: null,
+          ),
+          isTrue);
     });
 
     test('an older update is rejected even when its status has advanced', () {
-      expect(DeliveryActivityPayload.shouldApply(
-        currentStatus: 'preparing',
-        currentTimestamp: after,
-        nextStatus: 'completed',
-        nextTimestamp: before,
-      ), isFalse);
+      expect(
+          DeliveryActivityPayload.shouldApply(
+            currentStatus: 'preparing',
+            currentTimestamp: after,
+            nextStatus: 'completed',
+            nextTimestamp: before,
+          ),
+          isFalse);
     });
 
-    test('timestamps support epoch seconds, millis, numeric strings and ISO', () {
+    test('timestamps support epoch seconds, millis, numeric strings and ISO',
+        () {
       final epochSeconds = after.millisecondsSinceEpoch / 1000;
       for (final value in [
         epochSeconds,
@@ -394,11 +449,13 @@ void main() {
         '2026-10-18T20:01:00+03:00',
       ]) {
         expect(DeliveryActivityPayload.statusTimestamp({'timestamp': value}),
-            after, reason: '$value');
+            after,
+            reason: '$value');
       }
     });
 
-    test('all timestamp aliases work including nested order and FCM envelopes', () {
+    test('all timestamp aliases work including nested order and FCM envelopes',
+        () {
       for (final key in [
         'timestamp',
         'updateId',
@@ -406,23 +463,37 @@ void main() {
         'updated_at',
         'updatedAt',
       ]) {
-        expect(DeliveryActivityPayload.statusTimestamp({
-          'data': jsonEncode({key: after.toIso8601String()}),
-        }), after, reason: key);
+        expect(
+            DeliveryActivityPayload.statusTimestamp({
+              'data': jsonEncode({key: after.toIso8601String()}),
+            }),
+            after,
+            reason: key);
       }
-      expect(DeliveryActivityPayload.statusTimestamp({
-        'order': {'updated_at': after.toIso8601String()},
-      }), after);
+      expect(
+          DeliveryActivityPayload.statusTimestamp({
+            'order': {'updated_at': after.toIso8601String()},
+          }),
+          after);
     });
 
-    test('malformed timestamps are ignored and a valid later alias survives', () {
-      expect(DeliveryActivityPayload.statusTimestamp({
-        'timestamp': 'not-a-date',
-        'updateId': {'value': 1},
-        'status_updated_at': false,
-        'updated_at': after.toIso8601String(),
-      }), after);
-      for (final value in [null, '', 'not-a-date', double.nan, double.infinity]) {
+    test('malformed timestamps are ignored and a valid later alias survives',
+        () {
+      expect(
+          DeliveryActivityPayload.statusTimestamp({
+            'timestamp': 'not-a-date',
+            'updateId': {'value': 1},
+            'status_updated_at': false,
+            'updated_at': after.toIso8601String(),
+          }),
+          after);
+      for (final value in [
+        null,
+        '',
+        'not-a-date',
+        double.nan,
+        double.infinity
+      ]) {
         expect(DeliveryActivityPayload.statusTimestamp({'timestamp': value}),
             isNull);
       }
@@ -436,8 +507,10 @@ void main() {
       }, null);
 
       expect(payload['updated_at'], after.toIso8601String());
-      expect(DeliveryActivityPayload.data({'order_id': 652}, null)
-          .containsKey('updated_at'), isFalse);
+      expect(
+          DeliveryActivityPayload.data({'order_id': 652}, null)
+              .containsKey('updated_at'),
+          isFalse);
     });
   });
 }
