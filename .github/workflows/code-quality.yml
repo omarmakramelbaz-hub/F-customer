@@ -1,0 +1,62 @@
+name: Flutter code quality
+
+on:
+  pull_request:
+    paths:
+      - 'lib/**'
+      - 'test/**'
+      - 'tool/**'
+      - 'pubspec.yaml'
+      - 'pubspec.lock'
+      - '.github/workflows/code-quality.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.47.0'
+          channel: stable
+          cache: true
+      - name: Install dependencies
+        run: flutter pub get --enforce-lockfile
+      - name: Check maintained code and test formatting
+        run: >-
+          dart format --output=none --set-exit-if-changed
+          lib/helpers/utils/location_service.dart
+          lib/helpers/utils/address_lookup_service.dart
+          lib/view/layout/map/utils/places_autocomplete_bridge_web.dart
+          test
+          tool/check_places_web_callbacks.dart
+      - name: Analyze maintained code
+        run: >-
+          flutter analyze --no-pub --no-fatal-infos --no-fatal-warnings
+          lib/helpers/app/init_services.dart
+          lib/helpers/delivery_activity/delivery_activity_push_handler.dart
+          lib/helpers/delivery_activity/delivery_provider.dart
+          lib/helpers/networking/api_helper.dart
+          lib/helpers/notification_helper/notification_helper.dart
+          lib/helpers/notification_helper/firebase_notification_helper.dart
+          lib/helpers/pusher_service/pusher_controller.dart
+          lib/helpers/utils/location_service.dart
+          lib/helpers/utils/address_lookup_service.dart
+          lib/view/layout/address/screen/map_screen.dart
+          lib/view/layout/address/screen/add_address_screen.dart
+          lib/view/layout/address/screen/update_address_screen.dart
+          lib/view/layout/auth/controller/auth_controller.dart
+          lib/view/layout/chat/controller/admin_chat_controller.dart
+          lib/view/layout/map/utils/places_autocomplete_bridge_web.dart
+          test
+          tool/check_places_web_callbacks.dart
+      - name: Verify JavaScript Places callbacks
+        run: |
+          dart compile js --no-source-maps tool/check_places_web_callbacks.dart -o /tmp/fasakhansta-places-check.js
+          node -e "globalThis.self=globalThis; require('/tmp/fasakhansta-places-check.js')"
+      - name: Run regression tests
+        run: flutter test --no-pub

@@ -33,15 +33,13 @@ void _printNotificationPayload(
     'collapseKey': message.collapseKey,
     'category': message.category,
     'threadId': message.threadId,
-    'data': message.data,
-    'notification': message.notification?.toMap(),
-    'raw': message.toMap(),
+    'dataKeys': message.data.keys.toList()..sort(),
   };
 
   final encoded = _safeJsonEncode(payload);
-  log('NOTIFICATION_PAYLOAD => $encoded');
+  log('NOTIFICATION_METADATA => $encoded');
   // Keep a plain print so it is obvious in Xcode/Android logs.
-  debugPrint('NOTIFICATION_PAYLOAD => $encoded');
+  debugPrint('NOTIFICATION_METADATA => $encoded');
 }
 
 void _printFirstNotificationPayload(RemoteMessage message, {required String source}) {
@@ -108,8 +106,6 @@ class FirebaseNotifications {
         final apnsToken = await _waitForApnsToken();
         if (apnsToken == null || apnsToken.isEmpty) {
           log('APNS token is not available yet (simulator often has this).');
-        } else {
-          log('APNS Token => \n$apnsToken');
         }
       }
 
@@ -120,8 +116,6 @@ class FirebaseNotifications {
         }
         await Future<void>.delayed(const Duration(seconds: 1));
       }
-
-      log('Device Token => \n$deviceToken');
     } catch (e) {
       log('Error getting device token $e');
       deviceToken = null;
@@ -139,7 +133,6 @@ class FirebaseNotifications {
 
     FirebaseMessaging.instance.onTokenRefresh.listen((token) {
       fcmToken = token;
-      log('FCM Token refreshed => \n$token');
     });
 
     FirebaseMessaging.onMessage.listen((RemoteMessage data) async {
@@ -155,14 +148,9 @@ class FirebaseNotifications {
         data,
         source: 'onMessage',
       );
-      log('on Message notification ${data.notification?.toMap()}');
-      log('on Message notification ${data.toMap()}');
-      log('on Message data ${data.data}');
-      log('on Message body ${data.notification?.body}');
       final notify = Map<String, dynamic>.from(data.data);
 
       final isLiveActivityPayload = DeliveryActivityPushHandler.isLiveActivityPayload(notify);
-      log('$notify');
       log('onMessage isLiveActivityPayload=$isLiveActivityPayload');
 
       await DeliveryActivityPushHandler.handlePushData(notify);
@@ -186,7 +174,6 @@ class FirebaseNotifications {
         data,
         source: 'onMessageOpenedApp',
       );
-      log('on Opened ${data.data}');
       final notify = Map<String, dynamic>.from(data.data);
       final isLiveActivityPayload = DeliveryActivityPushHandler.isLiveActivityPayload(notify);
       log('onMessageOpenedApp isLiveActivityPayload=$isLiveActivityPayload');
@@ -206,7 +193,6 @@ class FirebaseNotifications {
     });
 
     FirebaseMessaging.instance.getInitialMessage().then((value) async {
-      log('Data from initial message >>>>>> ${value?.data}');
       if (value != null) {
         _traceImmediateFcmReceipt(
           value,
@@ -229,7 +215,6 @@ class FirebaseNotifications {
 
     _notificationsPlugin!.getActiveNotifications().then((value) {
       if (value.isNotEmpty) {
-        log('on Opened From ActiveNotifications ${value[0].payload}');
         if (value[0].payload != null && value[0].payload != '') {
           handlePath(json.decode(value[0].payload!));
         }
@@ -237,9 +222,9 @@ class FirebaseNotifications {
     });
 
     _notificationsPlugin!.getNotificationAppLaunchDetails().then((NotificationAppLaunchDetails? data) {
-      log('on Opened From Notification ${json.decode(json.encode(data!.notificationResponse?.payload))}');
-      if (data.notificationResponse?.payload != null && data.notificationResponse?.payload != '') {
-        handlePath(json.decode(data.notificationResponse?.payload ?? ''));
+      final payload = data?.notificationResponse?.payload;
+      if (payload != null && payload.isNotEmpty) {
+        handlePath(json.decode(payload));
       }
     });
   }
@@ -255,7 +240,4 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   _printNotificationPayload(message, source: 'onBackgroundMessage');
   await DeliveryActivityPushHandler.handlePushData(Map<String, dynamic>.from(message.data));
   log('onBackgroundMessage handlePushData completed');
-  log('on Message background notification ${message.data}');
-  log('on Message background data ${message.notification?.body}');
-  log('Handling a background message notification: ${message.notification?.toMap()}');
 }

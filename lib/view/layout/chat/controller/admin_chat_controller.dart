@@ -82,9 +82,6 @@ class AdminChatController extends ChangeNotifier {
           'click_action': 'https://fasakhaninja.com/admin/chat/?user_id=$senderId',
         },
       );
-      log(senderName);
-      //log(text);
-      log(adminDeviceToken);
     });
   }
 }

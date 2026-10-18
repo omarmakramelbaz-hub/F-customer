@@ -99,7 +99,6 @@ class AuthController extends ChangeNotifier {
         log('============================ pusher connected =======================');
       }
 
-      log(_profile?.token ?? '');
       if (response.data['data']['register'] == 0 && _profile?.mobileVerifiedAt != null) {
         HiveMethods.updateUserId(_profile?.id);
         getProfile();
@@ -138,11 +137,6 @@ class AuthController extends ChangeNotifier {
       final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
 
       if (googleUser != null) {
-        log('------------------ Google User Data ------------------');
-        log('Display Name: ${googleUser.displayName}');
-        log('Email: ${googleUser.email}');
-        log('ID: ${googleUser.id}');
-
         Utils.loading();
 
         FormData body = FormData.fromMap({

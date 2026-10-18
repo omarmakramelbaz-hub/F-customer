@@ -133,13 +133,8 @@ class DeliveryProvider extends ChangeNotifier {
             if (latestActivityId == null ||
                 latestActivityId == active.activityId) {
               latestActivityPushToken = active.activityToken;
-              final payload = buildLiveActivityRegistrationPayload();
               PrintLog.i(
-                  'LIVE_ACTIVITY_PUSH_TOKEN_READY => ${active.activityToken} (activityId=${active.activityId})');
-              if (payload != null) {
-                PrintLog.i(
-                    'LIVE_ACTIVITY_REGISTER_PAYLOAD => ${jsonEncode(payload)}');
-              }
+                  'LIVE_ACTIVITY_PUSH_TOKEN_READY (activityId=${active.activityId})');
               notifyListeners();
             }
           },
@@ -165,13 +160,8 @@ class DeliveryProvider extends ChangeNotifier {
         final token = await _liveActivitiesPlugin.getPushToken(activityId);
         if (token != null && token.isNotEmpty) {
           latestActivityPushToken = token;
-          final payload = buildLiveActivityRegistrationPayload();
           PrintLog.i(
-              'LIVE_ACTIVITY_PUSH_TOKEN_READY => $token (activityId=$activityId)');
-          if (payload != null) {
-            PrintLog.i(
-                'LIVE_ACTIVITY_REGISTER_PAYLOAD => ${jsonEncode(payload)}');
-          }
+              'LIVE_ACTIVITY_PUSH_TOKEN_READY (activityId=$activityId)');
           notifyListeners();
           return;
         }
@@ -245,7 +235,6 @@ class DeliveryProvider extends ChangeNotifier {
 
     try {
       final data = _extractEventData(event.data);
-      PrintLog.i('Parsed event data: $data');
       final status = _extractStatus(data);
 
       if (status == null) {
@@ -353,13 +342,8 @@ class DeliveryProvider extends ChangeNotifier {
                 await _liveActivitiesPlugin.getPushToken(latestActivityId!);
             if (token != null && token.isNotEmpty) {
               latestActivityPushToken = token;
-              final payload = buildLiveActivityRegistrationPayload();
               PrintLog.i(
-                  'LIVE_ACTIVITY_PUSH_TOKEN_READY => $token (activityId=$latestActivityId)');
-              if (payload != null) {
-                PrintLog.i(
-                    'LIVE_ACTIVITY_REGISTER_PAYLOAD => ${jsonEncode(payload)}');
-              }
+                  'LIVE_ACTIVITY_PUSH_TOKEN_READY (activityId=$latestActivityId)');
               notifyListeners();
             } else {
               PrintLog.w(
@@ -446,8 +430,6 @@ class DeliveryProvider extends ChangeNotifier {
   }
 
   Map<String, dynamic> _extractEventData(String? rawData) {
-    // Log rawData safely (avoid nullable substring operations that trigger analyzer warnings)
-    PrintLog.i('➡️ _extractEventData called with rawData=${rawData ?? 'null'}');
     if (rawData == null || rawData.isEmpty) return {};
 
     dynamic decoded;
@@ -481,7 +463,6 @@ class DeliveryProvider extends ChangeNotifier {
       if (nestedMap != null) data = nestedMap;
     }
 
-    PrintLog.i('_extractEventData result: $data');
     return data;
   }
 

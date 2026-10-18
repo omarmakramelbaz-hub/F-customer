@@ -9,6 +9,7 @@ import 'package:uuid/uuid.dart';
 
 import '../../../../helpers/extensions/extensions.dart';
 import '../../../../helpers/translation/all_translation.dart';
+import '../../../../helpers/utils/address_lookup_service.dart';
 import '../../../../helpers/utils/location_service.dart';
 import '../../../custom_widgets/buttons/custom_button.dart';
 import '../../../custom_widgets/custom_form_field/custom_form_field.dart';
@@ -113,6 +114,7 @@ class MapScreen extends StatefulWidget {
 class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
   // Controllers and Services
   late final LocationService _locationService;
+  final AddressLookupService _addressLookupService = AddressLookupService();
   late final PlacesService _placesService;
   late final TextEditingController _searchController;
   late final FocusNode _searchFocusNode;
@@ -193,16 +195,18 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
   }
 
   Future<void> _updateLocationState(double lat, double lng, {bool shouldUpdatePlacemarks = false}) async {
+    if (!mounted) return;
     List<Placemark>? placemarks;
 
     if (shouldUpdatePlacemarks) {
       try {
-        placemarks = await placemarkFromCoordinates(lat, lng);
+        placemarks = await _addressLookupService.lookup(lat, lng);
       } catch (e) {
         log('Failed to get placemarks: $e');
       }
     }
 
+    if (!mounted) return;
     setState(() {
       _locationState = _locationState.copyWith(
         latitude: lat,

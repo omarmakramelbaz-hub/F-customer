@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 import '../../../../helpers/routes/app_routers_import.dart';
 import '../../../../helpers/theme/app_colors.dart';
 import '../../../../helpers/translation/all_translation.dart';
+import '../../../../helpers/utils/address_lookup_service.dart';
 import '../../../../helpers/utils/common_methods.dart';
 import '../../../../helpers/utils/location_service.dart';
 import '../../../custom_widgets/validation/validation_mixin.dart';
@@ -59,6 +60,7 @@ class _AddAddressScreenState extends State<AddAddressScreen>
   GoogleMapController? gmc;
 
   final LocationService _locationService = LocationService();
+  final AddressLookupService _addressLookupService = AddressLookupService();
 
   static const _text = Color(0xFF171A1F);
   static const _muted = Color(0xFF858B94);
@@ -113,8 +115,9 @@ class _AddAddressScreenState extends State<AddAddressScreen>
       }
     }
 
+    if (!mounted) return;
     try {
-      final result = await placemarkFromCoordinates(lat, lng);
+      final result = await _addressLookupService.lookup(lat, lng);
       if (!mounted) return;
       setState(() => placemarks = result);
     } catch (e) {

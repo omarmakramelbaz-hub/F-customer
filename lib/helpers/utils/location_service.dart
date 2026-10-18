@@ -4,13 +4,16 @@ import 'dart:developer';
 import 'package:location/location.dart';
 
 class LocationService {
-  final Location _location = Location();
+  LocationService({Location? location}) : _location = location ?? Location();
+
+  final Location _location;
   StreamSubscription<LocationData>? _locationSubscription;
   bool _isListening = false;
 
   Future<LocationData?> getCurrentLocation() async {
     try {
-      if (await checkAndRequestLocationService() && await checkAndRequestLocationPermission()) {
+      if (await checkAndRequestLocationService() &&
+          await checkAndRequestLocationPermission()) {
         return await _location.getLocation();
       }
       return null;
@@ -39,13 +42,17 @@ class LocationService {
     return permission == PermissionStatus.granted;
   }
 
-  void getLocationData(void Function(LocationData)? onData) async {
-    _location.onLocationChanged.listen(onData);
+  void getLocationData(void Function(LocationData)? onData) {
+    _locationSubscription?.cancel();
+    _locationSubscription = _location.onLocationChanged.listen(onData);
+    _isListening = true;
   }
 
   void pauseLocationStream() {
-    _locationSubscription?.pause();
-    _isListening = false;
+    if (_isListening) {
+      _locationSubscription?.pause();
+      _isListening = false;
+    }
   }
 
   void resumeLocationStream() {
@@ -56,12 +63,12 @@ class LocationService {
   }
 
   void listenToLocation(void Function(LocationData) onData) {
-    _locationSubscription?.cancel();
-    _isListening = true;
-    _locationSubscription = _location.onLocationChanged.listen(onData);
+    getLocationData(onData);
   }
 
   void dispose() {
     _locationSubscription?.cancel();
+    _locationSubscription = null;
+    _isListening = false;
   }
 }
