@@ -10,7 +10,7 @@ on:
       build_name:
         description: iOS version
         required: true
-        default: '2.0.6'
+        default: '2.0.7'
       build_number:
         description: iOS build number base (run number and attempt make each artifact unique)
         required: true
@@ -38,7 +38,7 @@ jobs:
 
       - name: Resolve build metadata
         env:
-          REQUESTED_BUILD_NAME: ${{ inputs.build_name || '2.0.6' }}
+          REQUESTED_BUILD_NAME: ${{ inputs.build_name || '2.0.7' }}
           REQUESTED_BUILD_NUMBER: ${{ inputs.build_number || '56' }}
         run: |
           set -euo pipefail
