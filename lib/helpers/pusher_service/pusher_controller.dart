@@ -11,7 +11,6 @@ class PusherController with ChangeNotifier {
 
   final String appId = '2002846';
   final String apiKEY = '0f818db2b7622218a22a';
-  final String secret = '804b44dfbb09822e5245';
   final String apiCLUSTER = 'mt1';
   final Map<String, List<void Function(PusherEvent event)>> _eventListeners = {};
 

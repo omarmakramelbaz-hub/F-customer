@@ -56,7 +56,8 @@ Future<List<WebPlacePrediction>> getWebPlacePredictions({
 
     service.callMethod('getPlacePredictions', [
       request,
-      js.allowInterop((dynamic predictions, dynamic status) {
+      // JsFunction passes the JavaScript `this` value before callback arguments.
+      js.JsFunction.withThis((dynamic _, dynamic predictions, dynamic status) {
         final results = <WebPlacePrediction>[];
 
         if (predictions is js.JsArray) {
@@ -107,7 +108,7 @@ Future<WebPlaceDetails?> getWebPlaceDetails({
 
     geocoder.callMethod('geocode', [
       request,
-      js.allowInterop((dynamic results, dynamic status) {
+      js.JsFunction.withThis((dynamic _, dynamic results, dynamic status) {
         try {
           if (results is! js.JsArray || results.isEmpty) {
             if (!completer.isCompleted) completer.complete(null);
@@ -121,7 +122,8 @@ Future<WebPlaceDetails?> getWebPlaceDetails({
           }
 
           final geometry = result['geometry'];
-          final location = geometry is js.JsObject ? geometry['location'] : null;
+          final location =
+              geometry is js.JsObject ? geometry['location'] : null;
           if (location is! js.JsObject) {
             if (!completer.isCompleted) completer.complete(null);
             return;
@@ -134,7 +136,8 @@ Future<WebPlaceDetails?> getWebPlaceDetails({
             return;
           }
 
-          final formattedAddress = '${result['formatted_address'] ?? ''}'.trim();
+          final formattedAddress =
+              '${result['formatted_address'] ?? ''}'.trim();
           if (!completer.isCompleted) {
             completer.complete(
               WebPlaceDetails(

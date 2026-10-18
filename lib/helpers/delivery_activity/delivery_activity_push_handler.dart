@@ -12,9 +12,7 @@ class DeliveryActivityPushHandler {
   static const String _appGroupId = 'group.faskhaninja.liveactivities';
 
   static Future<void> handlePushData(Map<String, dynamic> payload) async {
-    log('LiveActivityPush raw payload: ${jsonEncode(payload)}');
     final data = _extractPayload(payload);
-    log('LiveActivityPush extracted payload: ${jsonEncode(data)}');
 
     final looksLikeLiveActivity = _looksLikeLiveActivityUpdate(data);
     if (!looksLikeLiveActivity) {
@@ -44,8 +42,7 @@ class DeliveryActivityPushHandler {
 
       log(
         'LiveActivityPush resolved status=$status '
-        'activityId=$activityId isEndEvent=$isEndEvent allActivityIds=$allActivityIds '
-        'payloadData=${jsonEncode(payloadData)}',
+        'activityId=$activityId isEndEvent=$isEndEvent allActivityIds=$allActivityIds',
       );
 
       if (activityId != null && activityId.isNotEmpty) {

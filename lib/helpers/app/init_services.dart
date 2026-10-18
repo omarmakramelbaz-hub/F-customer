@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
@@ -9,7 +7,6 @@ import '../notification_helper/firebase_options.dart';
 import '../notification_helper/notification_helper.dart';
 import '../translation/all_translation.dart';
 import '../utils/date_methods.dart';
-import '../utils/http_overrides.dart';
 
 Future<void> initServices() async {
   // Firebase/FCM initialization is mobile-only for this Flutter Web build.
@@ -29,9 +26,4 @@ Future<void> initServices() async {
   await Hive.openBox('app');
   await GlobalTranslations.init();
   initTimeago();
-
-  // HttpOverrides is not needed by the browser networking stack.
-  if (!kIsWeb) {
-    HttpOverrides.global = MyHttpOverrides();
-  }
 }

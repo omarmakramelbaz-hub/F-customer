@@ -15,6 +15,7 @@ import '../../../../helpers/routes/app_routers_import.dart';
 import '../../../../helpers/theme/app_colors.dart';
 import '../../../../helpers/theme/app_text_style.dart';
 import '../../../../helpers/translation/all_translation.dart';
+import '../../../../helpers/utils/address_lookup_service.dart';
 import '../../../custom_widgets/api_response_widget/api_response_widget.dart';
 import '../../../custom_widgets/buttons/custom_button.dart';
 import '../../../custom_widgets/custom_form_field/custom_form_field.dart';
@@ -69,6 +70,7 @@ class UpdateAddressScreen extends StatefulWidget {
 }
 
 class _AddAddressScreenState extends State<UpdateAddressScreen> with ValidationMixin {
+  final AddressLookupService _addressLookupService = AddressLookupService();
   final _formKey = GlobalKey<FormState>();
   final _areaNameEc = TextEditingController();
   final _apartmentNoEc = TextEditingController();
@@ -124,6 +126,7 @@ class _AddAddressScreenState extends State<UpdateAddressScreen> with ValidationM
   }
 
   void _updateLocation(double lat, double lng) async {
+    if (!mounted) return;
     setState(() {
       currentLat = lat;
       currentLng = lng;
@@ -135,7 +138,8 @@ class _AddAddressScreenState extends State<UpdateAddressScreen> with ValidationM
       gmc!.animateCamera(CameraUpdate.newLatLng(LatLng(lat, lng)));
     }
 
-    placemarks = await placemarkFromCoordinates(lat, lng);
+    placemarks = await _addressLookupService.lookup(lat, lng);
+    if (!mounted) return;
     setState(() {});
   }
 

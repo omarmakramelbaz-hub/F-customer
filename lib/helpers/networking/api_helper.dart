@@ -37,11 +37,11 @@ class ApiHelper {
   final Dio _dio = Dio()
     ..interceptors.add(
       PrettyDioLogger(
-        requestHeader: true,
-        requestBody: true,
-        responseBody: true,
+        requestHeader: false,
+        requestBody: false,
+        responseBody: false,
         responseHeader: false,
-        error: true,
+        error: false,
         compact: true,
         maxWidth: 90,
         enabled: kDebugMode,
@@ -321,14 +321,16 @@ class ApiHelper {
 
     final httpClient = http.Client();
 
-    final credentials = await auth.obtainAccessCredentialsViaServiceAccount(
-      auth.ServiceAccountCredentials.fromJson(serviceAccountJson),
-      scopes,
-      httpClient,
-    );
-
-    httpClient.close();
-    return credentials.accessToken.data;
+    try {
+      final credentials = await auth.obtainAccessCredentialsViaServiceAccount(
+        auth.ServiceAccountCredentials.fromJson(serviceAccountJson),
+        scopes,
+        httpClient,
+      );
+      return credentials.accessToken.data;
+    } finally {
+      httpClient.close();
+    }
   }
 
   Future<void> sendNotification({
@@ -343,7 +345,6 @@ class ApiHelper {
       return;
     }
 
-    final String accessToken = await getAccessToken();
     const String url = 'https://fcm.googleapis.com/v1/projects/fasakhaninjatest/messages:send';
     final payloadData = data ?? <String, dynamic>{};
     final notificationType = payloadData['notification_type']?.toString().toLowerCase().trim();
@@ -378,11 +379,11 @@ class ApiHelper {
     final dio = Dio();
     dio.interceptors.add(
       PrettyDioLogger(
-        requestHeader: true,
-        requestBody: true,
-        responseBody: true,
+        requestHeader: false,
+        requestBody: false,
+        responseBody: false,
         responseHeader: false,
-        error: true,
+        error: false,
         compact: true,
         maxWidth: 90,
         enabled: kDebugMode,
@@ -390,6 +391,7 @@ class ApiHelper {
     );
 
     try {
+      final String accessToken = await getAccessToken();
       final response = await dio.post(
         url,
         data: messageBody,
@@ -397,17 +399,17 @@ class ApiHelper {
       );
 
       if (response.statusCode == 200) {
-        log('notification sent successfully -----> "$trimmedToken"');
-        log('FCM Response: ${response.data}');
+        log('notification sent successfully');
       } else {
-        log('notification not sent ${response.statusCode} -----> "$trimmedToken"');
-        log('FCM Response: ${response.data}');
+        log('notification not sent ${response.statusCode}');
       }
     } catch (e) {
       log('FCM ERROR: $e');
       if (e.toString().contains('UNREGISTERED')) {
         log('⚠️ Device token is invalid. REMOVE TOKEN FROM DATABASE.');
       }
+    } finally {
+      dio.close();
     }
   }
 }
