@@ -16,14 +16,14 @@ import zipfile
 import jwt
 
 REPO = 'omarmakramelbaz-hub/F-customer'
-SOURCE_RUN = 39152017799
-SOURCE_SHA = '6b0b1042c5b51bef6347d29452143d2455b252eb'
-ARTIFACT_ID = 12145253339
-ARTIFACT_NAME = f'Fasakhansta-iOS-2.0.6-58.1-signed-{SOURCE_SHA}'
-ARTIFACT_SHA256 = 'f21c10f328706876c66ab1d43ba382cedec0a2a81b5b2dac0705571c3a519d01'
+SOURCE_RUN = 39154681945
+SOURCE_SHA = '1c47f491c0e9353676a54a962ce1cb9692e6a5ac'
+ARTIFACT_ID = 12146309417
+ARTIFACT_NAME = f'Fasakhansta-iOS-2.0.7-59.1-signed-{SOURCE_SHA}'
+ARTIFACT_SHA256 = 'a15976e11fdc197971ab974cd572be2cf22b688853712e4e66cda096543a3685'
 BUNDLE = 'com.faskhaninja.clients'
 EXTENSION = BUNDLE + '.extension-example'
-VERSION, BUILD = '2.0.6', '58.1'
+VERSION, BUILD = '2.0.7', '59.1'
 RESULT_PATH = Path(os.environ['RUNNER_TEMP']) / 'live-activity-testflight-result.json'
 result = {'version': VERSION, 'build': BUILD, 'source_sha': SOURCE_SHA,
           'artifact_id': ARTIFACT_ID, 'artifact_sha256': ARTIFACT_SHA256,
@@ -125,7 +125,7 @@ def main():
                         '--output', str(bundle_zip), f'{api}/actions/artifacts/{ARTIFACT_ID}/zip'], check=True)
         if hashlib.sha256(bundle_zip.read_bytes()).hexdigest() != ARTIFACT_SHA256:
             raise RuntimeError('Downloaded artifact checksum mismatch')
-        ipa = work / 'Fasakhansta-2.0.6-58.1.ipa'
+        ipa = work / 'Fasakhansta-2.0.7-59.1.ipa'
         with zipfile.ZipFile(bundle_zip) as archive:
             files = [name for name in archive.namelist() if name.lower().endswith('.ipa') and not name.endswith('/')]
             if len(files) != 1:
