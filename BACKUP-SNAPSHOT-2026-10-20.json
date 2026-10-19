@@ -1,0 +1,218 @@
+{
+  "schema_version": 1,
+  "user_local_snapshot_date": "2026-10-20",
+  "capture_recorded_at": "2026-10-19T23:41:21.815Z",
+  "repository": "omarmakramelbaz-hub/F-customer",
+  "backup_branch": "backup/2026-10-20-all-apps",
+  "default_branch": "main",
+  "default_branch_commit": "c860232bfdcf470dfb184870cbc62a9b6b6b7704",
+  "default_tree_sha": "e41a256001774a4ab2b8659a23dfba9fe1eb92c6",
+  "branches": [
+    {
+      "ref": "refs/heads/Main",
+      "commit_sha": "92e0da405f38da562a2f45f927bf068765e01eb4"
+    },
+    {
+      "ref": "refs/heads/archive/ui-approved-a67fa5d4",
+      "commit_sha": "a67fa5d4e779eac26016c2dc33e3fd60d6e30dff"
+    },
+    {
+      "ref": "refs/heads/backup/Main-pre-full-rollback-20260928-20261003",
+      "commit_sha": "69ea6469e8783977d4a564a51ba7c6e41437ff78"
+    },
+    {
+      "ref": "refs/heads/backup/main-before-snapshot-restore-2026-08-23",
+      "commit_sha": "ecb571388398a58729ab6066d2f08708d991d216"
+    },
+    {
+      "ref": "refs/heads/backup/main-pre-full-rollback-20260928-20261003",
+      "commit_sha": "4dffc3ca16760676fa3ce532aa0293641299dac0"
+    },
+    {
+      "ref": "refs/heads/backup/pre-notifications-open-speed-20261003",
+      "commit_sha": "abd6bfa0b6735411b9ccb189dbb0a8ea09d97dfd"
+    },
+    {
+      "ref": "refs/heads/backup/pre-restaurant-hours-20261003",
+      "commit_sha": "92e0da405f38da562a2f45f927bf068765e01eb4"
+    },
+    {
+      "ref": "refs/heads/backup/pre-restaurant-visibility-fix-20261003",
+      "commit_sha": "92e0da405f38da562a2f45f927bf068765e01eb4"
+    },
+    {
+      "ref": "refs/heads/backup/pre-rollback-20261003-0303",
+      "commit_sha": "b33429b19cba6fb6db733d17acfcd623ad1a916b"
+    },
+    {
+      "ref": "refs/heads/backup/stable-2026-08-28-social-auth",
+      "commit_sha": "399fb2e166910477d8ce8cce280bb8ce8c4d3870"
+    },
+    {
+      "ref": "refs/heads/backup/2026-08-28-latest-state",
+      "commit_sha": "d6f9b45f0e13a6cc54c1d332cd85da89be3c0a5e"
+    },
+    {
+      "ref": "refs/heads/backup/2026-08-29-before-delivery-pricing",
+      "commit_sha": "9b14546cbfd0341bdb0fa79ee7cf1a78b8b03155"
+    },
+    {
+      "ref": "refs/heads/backup/2026-08-29-before-logo",
+      "commit_sha": "d1733a51fa3dd314f57c0ea4df00480e7de05705"
+    },
+    {
+      "ref": "refs/heads/backup/2026-08-29-before-restaurant-details-pricing",
+      "commit_sha": "164912d9bbc05a609034b1a7e0f20a23bdee557d"
+    },
+    {
+      "ref": "refs/heads/backup/2026-08-29-before-social-login-id-token-fix",
+      "commit_sha": "cf4f470caaed941185b4b05c94b98fab5e687dc9"
+    },
+    {
+      "ref": "refs/heads/backup/2026-08-29-latest-state",
+      "commit_sha": "201f06cbaed74bcdf1235466b68e3cfae013a682"
+    },
+    {
+      "ref": "refs/heads/backup/2026-08-29-logo-stage",
+      "commit_sha": "4df7211ba9696fd2776a67b2575ca4b8f3bd9b1e"
+    },
+    {
+      "ref": "refs/heads/backup-before-header-height-2026-08-22",
+      "commit_sha": "5522194dae475bc2b8781f8565da99e450128429"
+    },
+    {
+      "ref": "refs/heads/backup-before-home-restore-2026-08-21",
+      "commit_sha": "7c8c76b36bbc2ff8cad95c96a996102dfbb1d914"
+    },
+    {
+      "ref": "refs/heads/codex/code-quality-review-20261018",
+      "commit_sha": "367ac3bd6f001480bd40cb4df98b2eba4a69a0bd"
+    },
+    {
+      "ref": "refs/heads/codex/customer-live-activity-sync-20261018",
+      "commit_sha": "6cea7e7e6f798d38bcf82809caa9ed30f0470884"
+    },
+    {
+      "ref": "refs/heads/codex/customer-restaurant-fallback-20261003",
+      "commit_sha": "a458b1f9b213c00a81e39cc121de5d78017976d3"
+    },
+    {
+      "ref": "refs/heads/codex/wallet-destination-20260928",
+      "commit_sha": "5d5cdbc46c59a2b5e6e698ccf89316a6f7bdb9b7"
+    },
+    {
+      "ref": "refs/heads/codex/whatsapp-consent-simple-20261017",
+      "commit_sha": "09c40e6b4ce71a44f010ea983d77778ecbf87ec6"
+    },
+    {
+      "ref": "refs/heads/feature/delivery-screen-v2-safe",
+      "commit_sha": "fff05c3871af7c4c181e615f67a592fc5d5359d5"
+    },
+    {
+      "ref": "refs/heads/feature/paymob-sdk",
+      "commit_sha": "81c35ddac6f56fb10d271941e5c5bb205cb8df6a"
+    },
+    {
+      "ref": "refs/heads/fix/home-delivery-address-selector",
+      "commit_sha": "1ad7fb8d46b55fc87a7605af99120b6610d4a911"
+    },
+    {
+      "ref": "refs/heads/fix/opening-video-20260828",
+      "commit_sha": "b96b878bb37d710e1dab2f953d718f9c9aed92a2"
+    },
+    {
+      "ref": "refs/heads/fix/opening-video-file-20260828",
+      "commit_sha": "b96b878bb37d710e1dab2f953d718f9c9aed92a2"
+    },
+    {
+      "ref": "refs/heads/fix/opening-video-runtime",
+      "commit_sha": "13bc7f48200c1d661188dc6701c862758b8302aa"
+    },
+    {
+      "ref": "refs/heads/fix/opening-video-runtime-apply",
+      "commit_sha": "a9ad8540663840eb4d4c018b6e632dd2868312bd"
+    },
+    {
+      "ref": "refs/heads/fix/opening-video-runtime-final",
+      "commit_sha": "a9ad8540663840eb4d4c018b6e632dd2868312bd"
+    },
+    {
+      "ref": "refs/heads/fix/opening-video-runtime-live",
+      "commit_sha": "a9ad8540663840eb4d4c018b6e632dd2868312bd"
+    },
+    {
+      "ref": "refs/heads/fix/opening-video-runtime-now",
+      "commit_sha": "f3fdb29c0a97a31a63ac98ed616a630a7b4d29f5"
+    },
+    {
+      "ref": "refs/heads/fix/opening-video-runtime-v2",
+      "commit_sha": "a9ad8540663840eb4d4c018b6e632dd2868312bd"
+    },
+    {
+      "ref": "refs/heads/fix/splash-quality-duration-20260828",
+      "commit_sha": "d6f9b45f0e13a6cc54c1d332cd85da89be3c0a5e"
+    },
+    {
+      "ref": "refs/heads/fix-wallet-outline-final",
+      "commit_sha": "83360996887498039964a77043ce149290b59683"
+    },
+    {
+      "ref": "refs/heads/fix-wallet-outline-final-v2",
+      "commit_sha": "db8190ed1340f0e9bbf68b1d3da450f8a97ae041"
+    },
+    {
+      "ref": "refs/heads/go-drive-customer",
+      "commit_sha": "81c35ddac6f56fb10d271941e5c5bb205cb8df6a"
+    },
+    {
+      "ref": "refs/heads/main",
+      "commit_sha": "c860232bfdcf470dfb184870cbc62a9b6b6b7704"
+    },
+    {
+      "ref": "refs/heads/snapshot/ui-stage-2026-08-22-0413",
+      "commit_sha": "a67fa5d4e779eac26016c2dc33e3fd60d6e30dff"
+    },
+    {
+      "ref": "refs/heads/sync-go-drive-stages",
+      "commit_sha": "a87198d8b7507d04bc157a922974d1146d098b48"
+    },
+    {
+      "ref": "refs/heads/tmp/logo-rollout",
+      "commit_sha": "d1733a51fa3dd314f57c0ea4df00480e7de05705"
+    },
+    {
+      "ref": "refs/heads/tmp/logo-rollout-2",
+      "commit_sha": "d1733a51fa3dd314f57c0ea4df00480e7de05705"
+    },
+    {
+      "ref": "refs/heads/tmp/logo-rollout-3",
+      "commit_sha": "d1733a51fa3dd314f57c0ea4df00480e7de05705"
+    },
+    {
+      "ref": "refs/heads/tmp/logo-rollout-4",
+      "commit_sha": "d1733a51fa3dd314f57c0ea4df00480e7de05705"
+    },
+    {
+      "ref": "refs/heads/tmp/logo-rollout-5",
+      "commit_sha": "d1733a51fa3dd314f57c0ea4df00480e7de05705"
+    },
+    {
+      "ref": "refs/heads/tmp/logo-rollout-6",
+      "commit_sha": "d1733a51fa3dd314f57c0ea4df00480e7de05705"
+    }
+  ],
+  "tags": [],
+  "scope": {
+    "source_commit_histories": true,
+    "unmerged_branch_tips": true,
+    "live_server_working_tree": false,
+    "live_database": false,
+    "server_environment_secrets": false,
+    "server_uploads": false,
+    "external_lfs_payloads": false,
+    "external_submodule_repositories": false,
+    "github_release_assets": false
+  },
+  "preservation_method": "Archival ancestry anchor. The snapshot tree equals the captured default tree plus this manifest. Other branch tips are retained as parents, directly or through grouped archival commits. This is not a merge of their file contents. Do not merge this archival branch into development. Restore a specific source version by checking out its original commit from the branches/tags map.",
+  "verification": "Parent objects, archive tree, manifest and final branch ref are read back after creation. No production deployment or database restore performed."
+}
