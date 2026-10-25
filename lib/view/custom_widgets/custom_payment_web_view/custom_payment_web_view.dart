@@ -131,22 +131,27 @@ class _CustomPaymentWebViewScreenState extends State<CustomPaymentWebViewScreen>
   //     return NavigationDecision.navigate;
   //   }
   // }
+  bool _resultHandled = false;
+
   Future<NavigationActionPolicy> _pageRedirect(BuildContext context, String url) async {
     bool isSuccess = url.contains('pay-thanks');
     bool isFailed = url.contains('pay-false');
+    if (!isSuccess && !isFailed) return NavigationActionPolicy.ALLOW;
+    if (_resultHandled) return NavigationActionPolicy.CANCEL;
+    _resultHandled = true;
 
-    if (isSuccess) {
-      widget.args.onSuccess.call();
-      CommonMethods.showToast(message: 'paymentSuccess'.tr);
-      WidgetsBinding.instance.addPostFrameCallback((_) => Navigator.pop(context));
-      return NavigationActionPolicy.CANCEL;
-    } else if (isFailed) {
-      widget.args.onFailed.call();
-      CommonMethods.showError(message: 'paymentFailed'.tr);
-      WidgetsBinding.instance.addPostFrameCallback((_) => Navigator.pop(context));
-      return NavigationActionPolicy.CANCEL;
-    }
-
-    return NavigationActionPolicy.ALLOW;
+    // Close the payment page first. The callback then opens the next screen,
+    // so that screen is not closed by this page's own pop.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) Navigator.pop(context);
+      if (isSuccess) {
+        CommonMethods.showToast(message: 'paymentSuccess'.tr);
+        widget.args.onSuccess.call();
+      } else {
+        CommonMethods.showError(message: 'paymentFailed'.tr);
+        widget.args.onFailed.call();
+      }
+    });
+    return NavigationActionPolicy.CANCEL;
   }
 }

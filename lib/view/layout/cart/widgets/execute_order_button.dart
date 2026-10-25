@@ -15,6 +15,7 @@ import '../../address/controller/address_controller.dart';
 import '../controller/cart_controller.dart';
 import '../screen/order_otp_screen.dart';
 import '../screen/your_order_successfully_completed_screen.dart';
+import '../../orders/screen/tracking_your_order_screen.dart';
 
 class ExecuteOrderButton extends StatelessWidget {
   const ExecuteOrderButton({
@@ -173,9 +174,10 @@ class ExecuteOrderButton extends StatelessWidget {
                             CommonMethods.showError(message: 'paymentFailed'.tr);
                           },
                           onSuccess: () {
+                            // Paymob confirmed the payment; open order tracking directly.
                             NamedNavigatorImpl.push(
-                              YourOrderSuccessfullyCompletedScreen.routeName,
-                              arguments: YourOrderSuccessfullyCompletedArgs(id: orderId),
+                              TrackingYourOrderScreen.routeName,
+                              arguments: TrackingYourOrderArgs(id: orderId),
                             );
                             context.read<CartController>().getCart();
                           },
