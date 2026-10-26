@@ -30,6 +30,11 @@ jobs:
       - name: Configure Flutter Web platform
         run: |
           flutter create . --platforms web --no-pub
+          # Flutter scaffolds a counter-app test that imports MyApp from main.
+          # Our root widget lives in helpers/app; retain every tracked test.
+          if ! git ls-files --error-unmatch test/widget_test.dart >/dev/null 2>&1; then
+            rm -f test/widget_test.dart
+          fi
           git restore --source=HEAD -- pubspec.lock
           git diff --exit-code -- pubspec.yaml lib/
 

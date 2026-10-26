@@ -15,13 +15,13 @@ class ApiClient {
     required Map<String, String> Function() offlineMessage,
     required Map<String, String> Function() errorMessage,
     required void Function() onUnauthorized,
-  }) : _dio = dio,
-       _hasConnection = hasConnection,
-       _language = language,
-       _token = token,
-       _offlineMessage = offlineMessage,
-       _errorMessage = errorMessage,
-       _onUnauthorized = onUnauthorized;
+  })  : _dio = dio,
+        _hasConnection = hasConnection,
+        _language = language,
+        _token = token,
+        _offlineMessage = offlineMessage,
+        _errorMessage = errorMessage,
+        _onUnauthorized = onUnauthorized;
 
   final Dio _dio;
   final Future<bool> Function() _hasConnection;
@@ -38,15 +38,16 @@ class ApiClient {
     void Function()? onFinish,
     void Function(int, int)? onReceiveProgress,
     bool hasToken = true,
-  }) => _request(
-    'GET',
-    url,
-    queryParameters: queryParameters,
-    headers: headers,
-    onFinish: onFinish,
-    onReceiveProgress: onReceiveProgress,
-    hasToken: hasToken,
-  );
+  }) =>
+      _request(
+        'GET',
+        url,
+        queryParameters: queryParameters,
+        headers: headers,
+        onFinish: onFinish,
+        onReceiveProgress: onReceiveProgress,
+        hasToken: hasToken,
+      );
 
   Future<ApiResponse> post(
     String url, {
@@ -57,17 +58,18 @@ class ApiClient {
     void Function(int, int)? onReceiveProgress,
     void Function(int, int)? onSendProgress,
     bool hasToken = true,
-  }) => _request(
-    'POST',
-    url,
-    queryParameters: queryParameters,
-    body: body,
-    headers: headers,
-    onFinish: onFinish,
-    onReceiveProgress: onReceiveProgress,
-    onSendProgress: onSendProgress,
-    hasToken: hasToken,
-  );
+  }) =>
+      _request(
+        'POST',
+        url,
+        queryParameters: queryParameters,
+        body: body,
+        headers: headers,
+        onFinish: onFinish,
+        onReceiveProgress: onReceiveProgress,
+        onSendProgress: onSendProgress,
+        hasToken: hasToken,
+      );
 
   Future<ApiResponse> put(
     String url, {
@@ -78,17 +80,18 @@ class ApiClient {
     void Function(int, int)? onReceiveProgress,
     void Function(int, int)? onSendProgress,
     bool hasToken = true,
-  }) => _request(
-    'PUT',
-    url,
-    queryParameters: queryParameters,
-    body: body,
-    headers: headers,
-    onFinish: onFinish,
-    onReceiveProgress: onReceiveProgress,
-    onSendProgress: onSendProgress,
-    hasToken: hasToken,
-  );
+  }) =>
+      _request(
+        'PUT',
+        url,
+        queryParameters: queryParameters,
+        body: body,
+        headers: headers,
+        onFinish: onFinish,
+        onReceiveProgress: onReceiveProgress,
+        onSendProgress: onSendProgress,
+        hasToken: hasToken,
+      );
 
   Future<ApiResponse> patch(
     String url, {
@@ -99,17 +102,18 @@ class ApiClient {
     void Function(int, int)? onReceiveProgress,
     void Function(int, int)? onSendProgress,
     bool hasToken = true,
-  }) => _request(
-    'PATCH',
-    url,
-    queryParameters: queryParameters,
-    body: body,
-    headers: headers,
-    onFinish: onFinish,
-    onReceiveProgress: onReceiveProgress,
-    onSendProgress: onSendProgress,
-    hasToken: hasToken,
-  );
+  }) =>
+      _request(
+        'PATCH',
+        url,
+        queryParameters: queryParameters,
+        body: body,
+        headers: headers,
+        onFinish: onFinish,
+        onReceiveProgress: onReceiveProgress,
+        onSendProgress: onSendProgress,
+        hasToken: hasToken,
+      );
 
   Future<ApiResponse> delete(
     String url, {
@@ -118,15 +122,16 @@ class ApiClient {
     Map<String, String>? headers,
     void Function()? onFinish,
     bool hasToken = true,
-  }) => _request(
-    'DELETE',
-    url,
-    queryParameters: queryParameters,
-    body: body,
-    headers: headers,
-    onFinish: onFinish,
-    hasToken: hasToken,
-  );
+  }) =>
+      _request(
+        'DELETE',
+        url,
+        queryParameters: queryParameters,
+        body: body,
+        headers: headers,
+        onFinish: onFinish,
+        hasToken: hasToken,
+      );
 
   Options _options(String method, Map<String, String>? headers, bool hasToken) {
     final token = hasToken ? _token() : null;

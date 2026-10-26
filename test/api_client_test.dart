@@ -188,7 +188,8 @@ void main() {
         expect(completions, 1);
       });
 
-      test('transport failure returns an error without retrying a write', () async {
+      test('transport failure returns an error without retrying a write',
+          () async {
         adapter.failure = const SocketException('unreachable');
         var completions = 0;
         final response = await send(method, onFinish: () => completions++);
@@ -224,8 +225,8 @@ void main() {
         final expected = status == 200 || status == 201
             ? ResponseState.complete
             : status == 401
-            ? ResponseState.unauthorized
-            : ResponseState.error;
+                ? ResponseState.unauthorized
+                : ResponseState.error;
         expect(response.state, expected);
         expect(response.data, adapter.payload);
         expect(unauthorizedCount, status == 401 ? 1 : 0);
