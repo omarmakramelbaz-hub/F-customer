@@ -39,9 +39,10 @@ payment rules, or UI layout is a separate behavior change.
 ## Web review
 
 The pull request workflow compiles the same `lib/main.dart` entry point and
-deploys `review-pr-<number>` to Firebase Hosting with a seven-day expiry. PR
-deployments skip the existing live-channel deployment and version cleanup.
-Forks do not receive the same-repository preview deployment.
+exports `fasakhansta-web-review` as a seven-day artifact for a separate review
+host. PR events skip the existing live Firebase deployment and version cleanup.
+Firebase preview deployment was verified to be blocked by missing
+`serviceusage.services.get` permission; this change does not alter project IAM.
 
 Web does not initialize Firebase/FCM in this application. Direct notification
 sending and service-account token creation now exit before their native paths

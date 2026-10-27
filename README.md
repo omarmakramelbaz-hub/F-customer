@@ -54,9 +54,9 @@ See `docs/refactoring.md` for the current boundaries, preserved API contracts,
 and the next feature slices. Changes are reviewed in small pull requests.
 
 Same-repository pull requests build the actual Flutter application for Web and
-deploy a separate Firebase Hosting preview channel for seven days after the
-regression tests pass. The deployment action posts its review URL on the pull
-request. This does not replace the live site or publish mobile store builds.
+export a downloadable Web artifact for seven days after the regression tests
+pass. The tested artifact can be published to a separate review host. PR events
+do not deploy to the live Firebase channel or publish mobile store builds.
 
 Web review uses the application's existing API, so actions such as placing an
 order still affect that API. Mobile Firebase initialization and direct FCM

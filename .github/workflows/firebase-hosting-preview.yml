@@ -279,15 +279,14 @@ jobs:
           PY
           python3 /tmp/prune_firebase_hosting.py
 
-      - name: Deploy isolated pull request review
-        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
-        uses: FirebaseExtended/action-hosting-deploy@v0
+      - name: Export tested Web review build
+        if: github.event_name == 'pull_request'
+        uses: actions/upload-artifact@v4
         with:
-          repoToken: ${{ secrets.GITHUB_TOKEN }}
-          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_FASAKHANINJATEST }}
-          projectId: fasakhaninjatest
-          channelId: review-pr-${{ github.event.number }}
-          expires: 7d
+          name: fasakhansta-web-review
+          path: build/web/
+          if-no-files-found: error
+          retention-days: 7
 
       - name: Deploy to Firebase Hosting
         if: github.event_name != 'pull_request'
