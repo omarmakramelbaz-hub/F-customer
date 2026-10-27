@@ -29,6 +29,8 @@ jobs:
       - name: Check maintained code and test formatting
         run: >-
           dart format --output=none --set-exit-if-changed
+          lib/helpers/networking/api_client.dart
+          lib/helpers/networking/api_response.dart
           lib/helpers/utils/location_service.dart
           lib/helpers/utils/address_lookup_service.dart
           lib/view/layout/map/utils/places_autocomplete_bridge_web.dart
@@ -41,6 +43,8 @@ jobs:
           lib/helpers/delivery_activity/delivery_activity_push_handler.dart
           lib/helpers/delivery_activity/delivery_provider.dart
           lib/helpers/networking/api_helper.dart
+          lib/helpers/networking/api_client.dart
+          lib/helpers/networking/api_response.dart
           lib/helpers/notification_helper/notification_helper.dart
           lib/helpers/notification_helper/firebase_notification_helper.dart
           lib/helpers/pusher_service/pusher_controller.dart

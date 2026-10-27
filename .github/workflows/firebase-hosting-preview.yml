@@ -30,11 +30,21 @@ jobs:
       - name: Configure Flutter Web platform
         run: |
           flutter create . --platforms web --no-pub
+          # Flutter scaffolds a counter-app test that imports MyApp from main.
+          # Our root widget lives in helpers/app; retain every tracked test.
+          if ! git ls-files --error-unmatch test/widget_test.dart >/dev/null 2>&1; then
+            rm -f test/widget_test.dart
+          fi
           git restore --source=HEAD -- pubspec.lock
           git diff --exit-code -- pubspec.yaml lib/
 
       - name: Install Dependencies
         run: flutter pub get --enforce-lockfile
+
+      - name: Verify request pipeline and regression tests
+        run: |
+          flutter analyze --no-pub --no-fatal-infos --no-fatal-warnings lib/helpers/networking/api_client.dart lib/helpers/networking/api_response.dart test
+          flutter test --no-pub
 
       - name: Configure Google Maps and Sign-In for Web
         run: |
@@ -63,6 +73,17 @@ jobs:
           flutter build web --release --no-pub \
             --dart-define=GOOGLE_WEB_CLIENT_ID=284797821306-sgmrmkr2ibd1nan66svmn9d3oq76vtj1.apps.googleusercontent.com \
             --dart-define=FACEBOOK_APP_ID=997704678612295
+
+      - name: Verify Web build excludes private signing material
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          for path in Path('build/web').rglob('*.js'):
+              if '-----BEGIN PRIVATE KEY-----' in path.read_text(encoding='utf-8'):
+                  raise SystemExit('Private signing material found in Web output')
+          print('Web output contains no PEM private-key blocks.')
+          PY
 
       - name: Add Meta policy pages
         run: |
@@ -257,6 +278,15 @@ jobs:
           print(f'Prune finished: deleted={deleted}, skipped={skipped}.')
           PY
           python3 /tmp/prune_firebase_hosting.py
+
+      - name: Export tested Web review build
+        if: github.event_name == 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: fasakhansta-web-review
+          path: build/web/
+          if-no-files-found: error
+          retention-days: 7
 
       - name: Deploy to Firebase Hosting
         if: github.event_name != 'pull_request'
