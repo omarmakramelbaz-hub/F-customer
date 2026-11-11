@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import '../../../../helpers/routes/app_routers_import.dart';
 import '../../../../helpers/theme/app_colors.dart';
 import '../../../../helpers/theme/app_text_style.dart';
-import '../../../custom_widgets/custom_image/custom_network_image.dart';
 import '../controller/home_controller.dart';
 import '../screen/draw_resturant_screen.dart';
 import 'celebrate_widget.dart';
@@ -90,11 +89,26 @@ class _DashboardContestImage extends StatelessWidget {
           ],
         ),
         clipBehavior: Clip.antiAlias,
-        child: CustomNetworkImage(
-          imageUrl: imageUrl,
+        child: Image.network(
+          imageUrl,
           width: double.infinity,
-          radius: 0,
           fit: BoxFit.contain,
+          semanticLabel: 'صورة المسابقة المختارة',
+          // Dashboard media is hosted on a different origin without CORS.
+          // Use Flutter's supported HTML image rendering on web.
+          webHtmlElementStrategy: WebHtmlElementStrategy.prefer,
+          errorBuilder: (context, error, stackTrace) => const Center(
+            child: Padding(
+              padding: EdgeInsets.all(12),
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  'شوف تفاصيل المسابقة',
+                  style: TextStyle(color: Colors.white, fontSize: 16),
+                ),
+              ),
+            ),
+          ),
         ),
       ),
     );
