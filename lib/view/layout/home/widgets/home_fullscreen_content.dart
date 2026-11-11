@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../helpers/theme/app_text_style.dart';
+import '../controller/home_primary_action_controller.dart';
 
 /// Scrollable foreground, kept independent of providers for layout testing.
 class HomeFullscreenContent extends StatelessWidget {
@@ -10,20 +11,24 @@ class HomeFullscreenContent extends StatelessWidget {
     required this.competition,
     required this.branches,
     required this.courier,
-    required this.onStartOrder,
+    required this.onPrimaryAction,
     required this.onCompetition,
     required this.onChangeAddress,
     required this.minHeight,
     required this.bottomInset,
     this.branchesKey,
     this.hasLocation = true,
+    this.primaryAction = HomePrimaryAction.startOrder,
+    this.primaryActionLoading = false,
   });
 
   final Widget header;
   final Widget competition;
   final Widget branches;
   final Widget courier;
-  final VoidCallback onStartOrder;
+  final VoidCallback onPrimaryAction;
+  final HomePrimaryAction primaryAction;
+  final bool primaryActionLoading;
   final VoidCallback onCompetition;
   final VoidCallback onChangeAddress;
   final double minHeight;
@@ -77,11 +82,13 @@ class HomeFullscreenContent extends StatelessWidget {
               const SizedBox(height: 19),
               ElevatedButton(
                 key: const ValueKey('home-start-order'),
-                onPressed: onStartOrder,
+                onPressed: primaryActionLoading ? null : onPrimaryAction,
                 style: ElevatedButton.styleFrom(
                   elevation: 0,
                   backgroundColor: const Color(0xFFFF8A35),
                   foregroundColor: const Color(0xFF132F2C),
+                  disabledBackgroundColor: const Color(0xFFFF8A35),
+                  disabledForegroundColor: const Color(0xFF132F2C),
                   minimumSize: const Size.fromHeight(50),
                   padding: const EdgeInsets.symmetric(
                     horizontal: 16,
@@ -96,14 +103,38 @@ class HomeFullscreenContent extends StatelessWidget {
                   children: [
                     Flexible(
                       child: Text(
-                        'ابدأ طلبك',
+                        switch (primaryAction) {
+                          HomePrimaryAction.trackOrder => 'تتبّع الطلب',
+                          HomePrimaryAction.viewCart => 'الاطّلاع على السلة',
+                          HomePrimaryAction.startOrder => 'ابدأ طلبك',
+                        },
                         style: AppTextStyle.text16BS(
                           color: const Color(0xFF132F2C),
                         ),
                       ),
                     ),
                     const SizedBox(width: 10),
-                    const Icon(Icons.arrow_back_rounded, size: 21),
+                    if (primaryActionLoading)
+                      const SizedBox(
+                        width: 18,
+                        height: 18,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: Color(0xFF132F2C),
+                        ),
+                      )
+                    else
+                      Icon(
+                        switch (primaryAction) {
+                          HomePrimaryAction.trackOrder =>
+                            Icons.location_searching_rounded,
+                          HomePrimaryAction.viewCart =>
+                            Icons.shopping_cart_outlined,
+                          HomePrimaryAction.startOrder =>
+                            Icons.arrow_back_rounded,
+                        },
+                        size: 21,
+                      ),
                   ],
                 ),
               ),
