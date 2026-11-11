@@ -6,12 +6,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 class _HomeControllerForCardTest extends HomeController {
-  _HomeControllerForCardTest(this.responseState);
+  _HomeControllerForCardTest(this.responseState, this.dashboardImage);
 
   final ResponseState responseState;
+  final String? dashboardImage;
 
   @override
-  CouponModel? get coupon => null;
+  CouponModel? get coupon => dashboardImage == null
+      ? null
+      : CouponModel(flag: 'coupon', data: Data(image: dashboardImage));
 
   @override
   ApiResponse get couponResponse =>
@@ -22,10 +25,11 @@ Future<void> _pumpCompetitionCard(
   WidgetTester tester, {
   required ResponseState responseState,
   double textScale = 1.5,
+  String? dashboardImage,
 }) async {
   await tester.binding.setSurfaceSize(const Size(320, 568));
   addTearDown(() => tester.binding.setSurfaceSize(null));
-  final controller = _HomeControllerForCardTest(responseState);
+  final controller = _HomeControllerForCardTest(responseState, dashboardImage);
   addTearDown(controller.dispose);
 
   await tester.pumpWidget(
@@ -88,6 +92,23 @@ void main() {
     expect(find.byType(CircularProgressIndicator), findsOneWidget);
     expect(find.text('مسابقة فسخانستا'), findsNothing);
     expect(find.byIcon(Icons.emoji_events_outlined), findsNothing);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('failed dashboard image keeps competition readable at large text',
+      (
+    tester,
+  ) async {
+    await _pumpCompetitionCard(
+      tester,
+      responseState: ResponseState.complete,
+      textScale: 2.5,
+      dashboardImage: 'https://example.invalid/selected-contest.webp',
+    );
+    // Widget tests reject network requests with HTTP 400.
+    await tester.pumpAndSettle();
+
+    expect(find.text('شوف تفاصيل المسابقة'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 }
