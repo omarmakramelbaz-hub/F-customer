@@ -55,6 +55,13 @@ their existing navigation. Wallet balances, nearby branch logos and the contest
 image come from their existing controllers/API responses, including live updates.
 The delivery address is the only location selector on the home page.
 
+The Hosting workflow deploys the built website through the official Firebase
+Hosting REST API using the existing Hosting service account. It preserves the
+cache headers and SPA rewrite from `firebase.json` and only releases a version
+after every required content upload succeeds. Run the deployment helper with
+`--dry-run` to validate the configuration and file manifest without credentials
+or network writes.
+
 ## Order status labels
 
 | API status | Display label |
