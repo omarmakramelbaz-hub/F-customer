@@ -1,3 +1,5 @@
+import '../../home/model/draw_badge.dart';
+
 class ProductsRestaurantModel {
   int? categoryId;
   String? categoryName;
@@ -69,6 +71,8 @@ class ResturantItems {
   int? latestOrderQty;
   String? latestOrderProductClean;
   int? latestOrderProductFeature;
+  /// The draw this item qualifies for (its card shows [DrawBadge.label]), or null.
+  DrawBadge? draw;
 
   ResturantItems({
     this.id,
@@ -137,6 +141,7 @@ class ResturantItems {
     latestOrderQty = json['latest_order_qty'];
     latestOrderProductClean = json['latest_order_product_clean'];
     latestOrderProductFeature = json['latest_order_product_feature'];
+    draw = DrawBadge.fromJson(json['draw']);
   }
 
   Map<String, dynamic> toJson() {
@@ -172,6 +177,7 @@ class ResturantItems {
     data['latest_order_qty'] = latestOrderQty;
     data['latest_order_product_clean'] = latestOrderProductClean;
     data['latest_order_product_feature'] = latestOrderProductFeature;
+    if (draw != null) data['draw'] = draw!.toJson();
     return data;
   }
 }

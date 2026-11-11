@@ -1,3 +1,5 @@
+import '../../home/model/draw_badge.dart';
+
 class ProductsDetailsRestaurantModel {
   int? id;
   int? vendorId;
@@ -53,7 +55,11 @@ class ProductsDetailsRestaurantModel {
     this.createdAt,
   });
 
+  /// The draw this item qualifies for, or null.
+  DrawBadge? draw;
+
   ProductsDetailsRestaurantModel.fromJson(Map<String, dynamic> json) {
+    draw = DrawBadge.fromJson(json['draw']);
     id = json['id'];
     vendorId = json['vendor_id'];
     vendorName = json['vendor_name'];

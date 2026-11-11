@@ -9,6 +9,8 @@ import '../../../../helpers/theme/app_text_style.dart';
 import '../../../../helpers/translation/all_translation.dart';
 import '../../../custom_widgets/api_response_widget/api_response_widget.dart';
 import '../controller/home_controller.dart';
+import '../model/coupon_model.dart';
+import '../model/draw_badge.dart';
 import '../widgets/draw_widget.dart';
 import '../widgets/raffle_hero_art.dart';
 
@@ -53,8 +55,12 @@ class _DrawRestaurantScreenState extends State<DrawRestaurantScreen> {
   Widget build(BuildContext context) {
     return Consumer<HomeController>(
       builder: (context, homeController, _) {
-        final data = homeController.coupon?.data;
+        final coupon = homeController.coupon;
+        final data = coupon?.data;
         final restaurantsCount = data?.resturants?.length ?? 0;
+        final byProducts = data?.isByProducts ?? false;
+        // The other draws by products running now, each with its items and the customer's codes.
+        final otherProductDraws = (coupon?.productDraws ?? const <Data>[]).where((d) => d.id != data?.id).toList();
 
         return Scaffold(
           backgroundColor: const Color(0xFFFBFBFB),
@@ -78,7 +84,7 @@ class _DrawRestaurantScreenState extends State<DrawRestaurantScreen> {
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
                             Text(
-                              'كل طلب مؤهل يأخذك لفرصة ربح رائعة!',
+                              byProducts ? 'اشتري الأصناف المختارة من أي فرع وادخل السحب!' : 'كل طلب مؤهل يأخذك لفرصة ربح رائعة!',
                               textAlign: TextAlign.right,
                               style: AppTextStyle.text13RG(color: const Color(0xFF777777)),
                             ),
@@ -90,11 +96,32 @@ class _DrawRestaurantScreenState extends State<DrawRestaurantScreen> {
                               endDate: data?.endDate,
                             ),
                             const SizedBox(height: 18),
-                            _SubscriptionInfoCard(price: data?.price ?? ''),
-                            const SizedBox(height: 24),
-                            _SectionHeader(count: restaurantsCount),
-                            const SizedBox(height: 14),
-                            RestaurantsDrawWidget(homeController: homeController),
+                            if (data?.winnerCode != null) ...[
+                              _WinnerCodeCard(code: data!.winnerCode!, mine: data.myCodes.contains(data.winnerCode)),
+                              const SizedBox(height: 18),
+                            ],
+                            if (byProducts)
+                              _ProductsDrawCard(draw: data!, showTitle: false)
+                            else
+                              _SubscriptionInfoCard(price: data?.price ?? ''),
+                            if (!byProducts && (data?.myCodes.isNotEmpty ?? false)) ...[
+                              const SizedBox(height: 18),
+                              _MyCodesCard(codes: data!.myCodes),
+                            ],
+                            for (final draw in otherProductDraws) ...[
+                              const SizedBox(height: 18),
+                              _ProductsDrawCard(draw: draw, showTitle: true),
+                            ],
+                            if (coupon?.recentWinners.isNotEmpty ?? false) ...[
+                              const SizedBox(height: 18),
+                              _RecentWinnersCard(winners: coupon!.recentWinners),
+                            ],
+                            if (!byProducts) ...[
+                              const SizedBox(height: 24),
+                              _SectionHeader(count: restaurantsCount),
+                              const SizedBox(height: 14),
+                              RestaurantsDrawWidget(homeController: homeController),
+                            ],
                           ],
                         ),
                       ),
@@ -615,4 +642,208 @@ String _remainingText(String? value) {
   if (days > 0) return '$days يوم  $hours ساعة  $minutes دقيقة';
   if (hours > 0) return '$hours ساعة  $minutes دقيقة';
   return '$minutes دقيقة';
+}
+
+
+/// A draw by chosen products: its items (bought from any branch, the ordinary way), the prize and the customer's codes.
+class _ProductsDrawCard extends StatelessWidget {
+  const _ProductsDrawCard({required this.draw, required this.showTitle});
+  final Data draw;
+  final bool showTitle;
+
+  @override
+  Widget build(BuildContext context) {
+    final names = draw.products.map((p) => p.name).where((n) => n.trim().isNotEmpty).toList();
+    return _DrawCard(
+      icon: Icons.card_giftcard_rounded,
+      children: [
+        if (showTitle) ...[
+          Text(draw.name ?? '', style: AppTextStyle.text15BS()),
+          const SizedBox(height: 4),
+        ],
+        Text(
+          draw.badgeLabel ?? 'يؤهلك للدخول في السحب',
+          style: AppTextStyle.text14BS(color: AppColors.mainAppColor),
+        ),
+        const SizedBox(height: 6),
+        Text(
+          'اشتري أي صنف من الأصناف دي من أي فرع، وكل قطعة بتاخد بيها كود دخول بعد ما الأوردر يتسلّم.',
+          style: AppTextStyle.text11RG(color: const Color(0xFF7A7A7A)),
+        ),
+        if (names.isNotEmpty) ...[
+          const SizedBox(height: 10),
+          Wrap(
+            spacing: 6,
+            runSpacing: 6,
+            children: names.map((name) => DrawBadgeName(name: name)).toList(),
+          ),
+        ],
+        if (draw.myCodes.isNotEmpty) ...[
+          const SizedBox(height: 12),
+          _CodesWrap(codes: draw.myCodes, winner: draw.winnerCode),
+        ],
+      ],
+    );
+  }
+}
+
+/// The customer's entry codes in the draw.
+class _MyCodesCard extends StatelessWidget {
+  const _MyCodesCard({required this.codes});
+  final List<String> codes;
+
+  @override
+  Widget build(BuildContext context) {
+    return _DrawCard(
+      icon: Icons.confirmation_number_outlined,
+      children: [_CodesWrap(codes: codes)],
+    );
+  }
+}
+
+class _CodesWrap extends StatelessWidget {
+  const _CodesWrap({required this.codes, this.winner});
+  final List<String> codes;
+  final String? winner;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(codes.length == 1 ? 'كود الدخول بتاعك' : 'أكواد الدخول بتاعتك (${codes.length})', style: AppTextStyle.text13BS()),
+        const SizedBox(height: 8),
+        Wrap(
+          spacing: 6,
+          runSpacing: 6,
+          children: codes.map((code) {
+            final won = code == winner;
+            return Container(
+              padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
+              decoration: BoxDecoration(
+                color: won ? const Color(0xFFE7F7EE) : Colors.white,
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: won ? const Color(0xFF1E9E5A) : const Color(0xFFE2E2E2)),
+              ),
+              child: Text(
+                code,
+                textDirection: TextDirection.ltr,
+                style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, letterSpacing: 1.2,
+                    color: won ? const Color(0xFF1E9E5A) : const Color(0xFF132C31)),
+              ),
+            );
+          }).toList(),
+        ),
+      ],
+    );
+  }
+}
+
+/// The draw's winning code (green when it is one of the customer's).
+class _WinnerCodeCard extends StatelessWidget {
+  const _WinnerCodeCard({required this.code, required this.mine});
+  final String code;
+  final bool mine;
+
+  @override
+  Widget build(BuildContext context) {
+    return _DrawCard(
+      icon: Icons.emoji_events_rounded,
+      highlight: true,
+      children: [
+        Text(mine ? 'مبروك! كودك هو الكود الفائز' : 'الكود الفائز', style: AppTextStyle.text14BS()),
+        const SizedBox(height: 6),
+        Text(code, textDirection: TextDirection.ltr,
+            style: TextStyle(fontSize: 22, fontWeight: FontWeight.w900, letterSpacing: 2, color: AppColors.mainAppColor)),
+      ],
+    );
+  }
+}
+
+/// The draws ended lately and their winning codes.
+class _RecentWinnersCard extends StatelessWidget {
+  const _RecentWinnersCard({required this.winners});
+  final List<DrawWinner> winners;
+
+  @override
+  Widget build(BuildContext context) {
+    return _DrawCard(
+      icon: Icons.emoji_events_outlined,
+      children: [
+        Text('الأكواد الفائزة', style: AppTextStyle.text14BS()),
+        const SizedBox(height: 8),
+        for (final winner in winners)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 6),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    winner.name,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: AppTextStyle.text12RG(color: const Color(0xFF555555)),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Text(winner.code, textDirection: TextDirection.ltr,
+                    style: TextStyle(fontSize: 13, fontWeight: FontWeight.w800, letterSpacing: 1.2, color: AppColors.mainAppColor)),
+              ],
+            ),
+          ),
+      ],
+    );
+  }
+}
+
+/// A chosen item's name on the draw screen.
+class DrawBadgeName extends StatelessWidget {
+  const DrawBadgeName({super.key, required this.name});
+  final String name;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      decoration: BoxDecoration(
+        color: const Color(0xFFFFF1E6),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: AppColors.mainAppColor.withValues(alpha: .30)),
+      ),
+      child: Text(name, style: AppTextStyle.text12BS(color: const Color(0xFFB94F00))),
+    );
+  }
+}
+
+class _DrawCard extends StatelessWidget {
+  const _DrawCard({required this.icon, required this.children, this.highlight = false});
+  final IconData icon;
+  final List<Widget> children;
+  final bool highlight;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(15),
+      decoration: BoxDecoration(
+        color: highlight ? const Color(0xFFFFF9F4) : Colors.white,
+        borderRadius: BorderRadius.circular(22),
+        border: Border.all(color: highlight ? const Color(0xFFFFDFC5) : const Color(0xFFF1F1F1)),
+        boxShadow: const [BoxShadow(color: Color(0x0A000000), blurRadius: 12, offset: Offset(0, 4))],
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: 42,
+            height: 42,
+            decoration: BoxDecoration(color: AppColors.mainAppColor.withValues(alpha: .10), borderRadius: BorderRadius.circular(13)),
+            child: Icon(icon, color: AppColors.mainAppColor, size: 23),
+          ),
+          const SizedBox(width: 12),
+          Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: children)),
+        ],
+      ),
+    );
+  }
 }

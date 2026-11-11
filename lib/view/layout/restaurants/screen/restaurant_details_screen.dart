@@ -29,6 +29,7 @@ import '../model/products_restaurant_model.dart';
 import '../widgets/choices_according_to_your_taste_widget.dart';
 import '../widgets/header_cover_and_image_restaurant_details_widget.dart';
 import '../widgets/previous_orders_list_view_widget.dart';
+import '../../home/widgets/draw_badge_chip.dart';
 import 'product_details_screen.dart';
 
 class RestaurantDetailsArgs {
@@ -524,10 +525,23 @@ class _RestaurantDetailsScreenState extends State<RestaurantDetailsScreen> {
             SizedBox(
               height: 112,
               width: double.infinity,
-              child: CustomNetworkImage(
-                imageUrl: item.productImage ?? '',
-                radius: 0,
-                fit: BoxFit.cover,
+              child: Stack(
+                children: [
+                  Positioned.fill(
+                    child: CustomNetworkImage(
+                      imageUrl: item.productImage ?? '',
+                      radius: 0,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  if (item.draw != null)
+                    Positioned(
+                      left: 5,
+                      right: 5,
+                      bottom: 5,
+                      child: Align(alignment: Alignment.centerRight, child: DrawBadgeChip(badge: item.draw!, compact: true)),
+                    ),
+                ],
               ),
             ),
             Padding(
@@ -658,6 +672,13 @@ class _RestaurantDetailsScreenState extends State<RestaurantDetailsScreen> {
                       fit: BoxFit.cover,
                     ),
                   ),
+                  if (item.draw != null)
+                    Positioned(
+                      left: 6,
+                      right: 6,
+                      bottom: 6,
+                      child: Align(alignment: Alignment.centerRight, child: DrawBadgeChip(badge: item.draw!, compact: true)),
+                    ),
                   if (item.highestRated == 'yes')
                     Positioned(
                       top: 8,
