@@ -10,6 +10,9 @@ from unittest.mock import patch
 from cryptography.hazmat.primitives import hashes, serialization
 from cryptography.hazmat.primitives.asymmetric import ec
 from cryptography.hazmat.primitives.asymmetric.utils import encode_dss_signature
+from cryptography import x509
+from cryptography.x509.oid import NameOID
+from cryptography.hazmat.primitives.serialization.pkcs12 import load_key_and_certificates
 
 import apple_signing as signing
 from verify_export import validate_info
@@ -75,6 +78,21 @@ class SigningIdentityGuards(TestCase):
     def test_other_apple_resource_cannot_be_mutated(self):
         with self.assertRaises(RuntimeError):
             signing.request("synthetic-token", "/v1/certificates", {"data": {}})
+
+    def test_keychain_compatible_package_preserves_the_exact_key_and_certificate(self):
+        key = ec.generate_private_key(ec.SECP256R1())
+        name = x509.Name([x509.NameAttribute(NameOID.COMMON_NAME, "Synthetic test certificate")])
+        now = dt.datetime.now(dt.timezone.utc)
+        cert = (x509.CertificateBuilder().subject_name(name).issuer_name(name)
+                .public_key(key.public_key()).serial_number(1).not_valid_before(now)
+                .not_valid_after(now + dt.timedelta(days=1)).sign(key, hashes.SHA256()))
+        password = b"synthetic-random-ascii-import-password"
+        content = signing.keychain_package(key, cert, None, password)
+        restored_key, restored_cert, _ = load_key_and_certificates(content, password)
+        self.assertEqual(restored_cert.fingerprint(hashes.SHA256()), cert.fingerprint(hashes.SHA256()))
+        self.assertEqual(restored_key.public_key().public_numbers(), key.public_key().public_numbers())
+        with self.assertRaises(ValueError):
+            load_key_and_certificates(content, b"wrong-password")
 
     def test_export_rejects_other_application_version_and_sdk(self):
         info = {"CFBundleIdentifier": signing.BUNDLE, "CFBundleShortVersionString": "1.0.13",

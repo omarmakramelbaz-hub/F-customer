@@ -8,6 +8,7 @@ import json
 import os
 from pathlib import Path
 import plistlib
+import secrets
 import time
 import urllib.error
 import urllib.parse
@@ -16,6 +17,7 @@ import urllib.request
 from cryptography.hazmat.primitives import hashes, serialization
 from cryptography.hazmat.primitives.asymmetric import ec
 from cryptography.hazmat.primitives.asymmetric.utils import decode_dss_signature
+from cryptography.hazmat.primitives.serialization import pkcs12
 from cryptography.hazmat.primitives.serialization.pkcs12 import load_key_and_certificates
 from cryptography.x509.oid import NameOID
 
@@ -118,10 +120,23 @@ def private_file(path, content):
         output.write(content)
 
 
+def keychain_package(private_key, certificate, chain, password):
+    # Apple Keychain cannot read all OpenSSL 3 PKCS12 encodings. This transport
+    # copy exists only in a mode-0700 runner directory, with an independent
+    # random password, until import and unconditional cleanup. The repository
+    # credential, certificate, private key and API permissions stay unchanged.
+    encryption = (serialization.PrivateFormat.PKCS12.encryption_builder()
+                  .kdf_rounds(50000)
+                  .key_cert_algorithm(pkcs12.PBES.PBESv1SHA1And3KeyTripleDESCBC)
+                  .hmac_hash(hashes.SHA1()).build(password))
+    return pkcs12.serialize_key_and_certificates(b"Dashboard existing distribution", private_key,
+                                                certificate, chain, encryption)
+
+
 def preflight(prepare=False):
     certificate_bytes = decoded_secret("IOS_P12_BASE64")
     password = required("IOS_P12_PASSWORD").encode()
-    private_key, certificate, _ = load_key_and_certificates(certificate_bytes, password)
+    private_key, certificate, chain = load_key_and_certificates(certificate_bytes, password)
     if certificate is None or private_key is None:
         raise RuntimeError("The existing signing package has no public certificate")
     org_units = certificate.subject.get_attributes_for_oid(NameOID.ORGANIZATIONAL_UNIT_NAME)
@@ -180,7 +195,9 @@ def preflight(prepare=False):
     validated_profile(profile_content, fingerprint)
     signing_dir = Path(required("RUNNER_TEMP")) / "f-admin-signing"
     signing_dir.mkdir(mode=0o700)
-    private_file(signing_dir / "distribution.p12", certificate_bytes)
+    import_password = secrets.token_urlsafe(32).encode("ascii")
+    private_file(signing_dir / "distribution.p12", keychain_package(private_key, certificate, chain, import_password))
+    private_file(signing_dir / "import-password", import_password + b"\n")
     private_file(signing_dir / "dashboard.mobileprovision", profile_bytes)
     export_options = {
         "destination": "export", "method": "app-store-connect", "signingStyle": "manual",

@@ -55,7 +55,8 @@ def verify():
         raise RuntimeError("Unexpected export team")
     # The source distribution certificate remains in the runner; never copy it into an artifact.
     p12_path = Path(required("RUNNER_TEMP")) / "f-admin-signing" / "distribution.p12"
-    _, certificate, _ = load_key_and_certificates(p12_path.read_bytes(), required("IOS_P12_PASSWORD").encode())
+    import_password = (p12_path.parent / "import-password").read_bytes().strip()
+    _, certificate, _ = load_key_and_certificates(p12_path.read_bytes(), import_password)
     validated_profile(plistlib.loads(profile), certificate.fingerprint(hashes.SHA256()))
     with open(required("GITHUB_ENV"), "a", encoding="utf-8") as output:
         output.write("IPA_PATH=" + str(ipa) + "\n")
