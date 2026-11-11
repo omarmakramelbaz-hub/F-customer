@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pusher_channels_flutter/pusher_channels_flutter.dart';
 
-import '../../../../helpers/extensions/extensions.dart';
 import '../../../../helpers/hive/hive_methods.dart';
+import '../../../../helpers/networking/api_helper.dart';
 import '../../../../helpers/pusher_service/pusher_controller.dart';
 import '../../../../helpers/routes/app_routers_import.dart';
 import '../../../../helpers/theme/app_colors.dart';
@@ -15,14 +15,18 @@ import '../../../../helpers/translation/all_translation.dart';
 import '../../address/screen/add_address_screen.dart';
 import '../../auth/controller/auth_controller.dart';
 import '../../auth/model/profile_model.dart';
+import '../../restaurants/screen/restaurant_details_screen.dart';
+import '../../wallet/controller/wallet_controller.dart';
 import '../controller/home_controller.dart';
 import '../model/previous_order_home_model.dart';
 import '../model/restaurants_near_you_home_model.dart';
 import '../widgets/go_drive_card_widget.dart';
 import '../widgets/home_feature_cards.dart';
 import '../widgets/home_header.dart';
-import '../widgets/home_wallet_card.dart';
-import 'home_screen_widget.dart';
+import '../widgets/home_fullscreen_content.dart';
+import '../widgets/home_video_background.dart';
+import '../widgets/restaurants_near_you_list_view_widget.dart';
+import '../screen/draw_resturant_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -33,6 +37,19 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   late final PusherController _pusherController;
+  final _branchesKey = GlobalKey();
+
+  bool get _hasDeliveryLocation {
+    final lat = HiveMethods.getLat();
+    final lng = HiveMethods.getLan();
+    return lat != null &&
+        lng != null &&
+        lat.isFinite &&
+        lng.isFinite &&
+        lat.abs() <= 90 &&
+        lng.abs() <= 180 &&
+        (lat != 0 || lng != 0);
+  }
 
   @override
   void initState() {
@@ -43,12 +60,21 @@ class _HomeScreenState extends State<HomeScreen> {
       await _ensureProfileLoaded();
       if (!mounted) return;
       final homeController = context.read<HomeController>();
-      await homeController.getHeaderImage();
-      await homeController.getSlider();
-      await homeController.getRestaurantsNearYou(
-        lat: HiveMethods.getLat(),
-        lng: HiveMethods.getLan(),
-      );
+      // The shell also initializes home data. Reuse requests already in flight.
+      await Future.wait([
+        if (homeController.restaurantsNearYouApiResponse.state ==
+            ResponseState.sleep)
+          homeController.getRestaurantsNearYou(
+            lat: HiveMethods.getLat(),
+            lng: HiveMethods.getLan(),
+          ),
+        if (homeController.couponResponse.state == ResponseState.sleep)
+          homeController.getCoupon(
+            lat: HiveMethods.getLat(),
+            lng: HiveMethods.getLan(),
+          ),
+        context.read<WalletController>().getWallet(),
+      ]);
       if (!mounted) return;
       await _checkSelectedCity();
     });
@@ -57,13 +83,25 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _registerPusherListeners() {
-    _pusherController.addEventListener('coupon.wheel.updated', _onCouponWheelUpdated);
-    _pusherController.addEventListener('resturant.updated', _onResturantUpdated);
+    _pusherController.addEventListener(
+      'coupon.wheel.updated',
+      _onCouponWheelUpdated,
+    );
+    _pusherController.addEventListener(
+      'resturant.updated',
+      _onResturantUpdated,
+    );
   }
 
   void _unregisterPusherListeners() {
-    _pusherController.removeEventListener('resturant.updated', _onResturantUpdated);
-    _pusherController.removeEventListener('coupon.wheel.updated', _onCouponWheelUpdated);
+    _pusherController.removeEventListener(
+      'resturant.updated',
+      _onResturantUpdated,
+    );
+    _pusherController.removeEventListener(
+      'coupon.wheel.updated',
+      _onCouponWheelUpdated,
+    );
   }
 
   Future<void> _ensureProfileLoaded() async {
@@ -77,7 +115,10 @@ class _HomeScreenState extends State<HomeScreen> {
     log('Coupon Wheel Updated: ${event.data}');
     if (!mounted) return;
     final homeProvider = context.read<HomeController>();
-    homeProvider.getCoupon(lat: HiveMethods.getLat(), lng: HiveMethods.getLan());
+    homeProvider.getCoupon(
+      lat: HiveMethods.getLat(),
+      lng: HiveMethods.getLan(),
+    );
   }
 
   void _onResturantUpdated(PusherEvent event) {
@@ -86,7 +127,9 @@ class _HomeScreenState extends State<HomeScreen> {
       final resturantData = decoded['resturant'] as Map<String, dynamic>;
       if (!mounted) return;
 
-      final resturantModel = RestaurantsNearYouHomeModel.fromJson(resturantData);
+      final resturantModel = RestaurantsNearYouHomeModel.fromJson(
+        resturantData,
+      );
       final previousModel = PreviousOrderHomeModel.fromJson(resturantData);
 
       final homeController = context.read<HomeController>();
@@ -302,7 +345,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                   border: Border.all(
                                     color: isSelected
                                         ? AppColors.mainAppColor
-                                        : AppColors.borderColor.withOpacity(0.8),
+                                        : AppColors.borderColor.withOpacity(
+                                            0.8,
+                                          ),
                                     width: isSelected ? 1.5 : 1,
                                   ),
                                   boxShadow: isSelected
@@ -346,8 +391,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                             _addressPrimaryLine(address),
                                             maxLines: 2,
                                             overflow: TextOverflow.ellipsis,
-                                            style:
-                                                AppTextStyle.text16BS().copyWith(
+                                            style: AppTextStyle.text16BS()
+                                                .copyWith(
                                               color: AppColors.darkTextColor,
                                               fontSize: 15,
                                               height: 1.35,
@@ -373,8 +418,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                     ),
                                     const SizedBox(width: 10),
                                     AnimatedContainer(
-                                      duration:
-                                          const Duration(milliseconds: 180),
+                                      duration: const Duration(
+                                        milliseconds: 180,
+                                      ),
                                       width: 30,
                                       height: 30,
                                       decoration: BoxDecoration(
@@ -538,55 +584,177 @@ class _HomeScreenState extends State<HomeScreen> {
     ]);
   }
 
+  Future<void> _refreshHome() async {
+    await Future.wait([
+      context.read<HomeController>().getRestaurantsNearYou(
+            lat: HiveMethods.getLat(),
+            lng: HiveMethods.getLan(),
+          ),
+      context.read<HomeController>().getCoupon(
+            lat: HiveMethods.getLat(),
+            lng: HiveMethods.getLan(),
+          ),
+      context.read<WalletController>().getWallet(),
+    ]);
+  }
+
+  void _startOrder(HomeController controller) {
+    if (!_hasDeliveryLocation) {
+      _showCitySelectionSheet();
+      return;
+    }
+    final available = controller.restaurantsNearYou
+        .where(
+          (branch) =>
+              (branch.id ?? 0) > 0 &&
+              branch.underContract != 'yes' &&
+              branch.status != 'busy',
+        )
+        .toList();
+    if (available.length == 1) {
+      NamedNavigatorImpl.push(
+        RestaurantDetailsScreen.routeName,
+        arguments: RestaurantDetailsArgs(id: available.single.id!),
+      );
+      return;
+    }
+    // There is no hidden/current branch selection: the customer chooses a
+    // nearby branch's logo card whenever more than one menu is available.
+    final branchesContext = _branchesKey.currentContext;
+    if (branchesContext != null) {
+      Scrollable.ensureVisible(
+        branchesContext,
+        duration: MediaQuery.disableAnimationsOf(context)
+            ? Duration.zero
+            : const Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+      );
+    }
+  }
+
+  Widget _buildNearbyBranches(HomeController controller) {
+    if (!_hasDeliveryLocation) {
+      return _homeMessage(
+        'حدّد عنوان التوصيل لعرض الفروع القريبة منك',
+        action: 'اختار العنوان',
+        onTap: () => _showCitySelectionSheet(),
+      );
+    }
+    final response = controller.restaurantsNearYouApiResponse;
+    if (response.state == ResponseState.loading ||
+        response.state == ResponseState.sleep) {
+      return const SizedBox(
+        height: 84,
+        child: Center(
+          child: CircularProgressIndicator(
+            color: Color(0xFFFFA258),
+            strokeWidth: 2,
+          ),
+        ),
+      );
+    }
+    if (response.state != ResponseState.complete) {
+      return _homeMessage(
+        'تعذّر تحميل الفروع، حاول مرة تانية',
+        action: 'إعادة المحاولة',
+        onTap: () => controller.getRestaurantsNearYou(
+          lat: HiveMethods.getLat(),
+          lng: HiveMethods.getLan(),
+        ),
+      );
+    }
+    if (controller.restaurantsNearYou.isEmpty) {
+      return _homeMessage(
+        'لا توجد فروع متاحة لهذا العنوان حاليًا',
+        action: 'تغيير العنوان',
+        onTap: () => _showCitySelectionSheet(),
+      );
+    }
+    return RestaurantsNearYouListViewWidget(
+      restaurantsNearYou: controller.restaurantsNearYou,
+      handleApiResponse: false,
+      padding: EdgeInsets.zero,
+    );
+  }
+
+  Widget _homeMessage(
+    String message, {
+    required String action,
+    required VoidCallback onTap,
+  }) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+      decoration: BoxDecoration(
+        color: const Color(0xC008282E),
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: Colors.white.withValues(alpha: .16)),
+      ),
+      child: Column(
+        children: [
+          Text(
+            message,
+            textAlign: TextAlign.center,
+            style: AppTextStyle.text12BS(color: Colors.white),
+          ),
+          TextButton(
+            onPressed: onTap,
+            child: Text(
+              action,
+              style: AppTextStyle.text12BS(color: const Color(0xFFFFBB83)),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<HomeController>(
       builder: (context, controller, _) {
-        final isGuest = HiveMethods.getToken() == null;
-        final hasSelectedLocation =
-            HiveMethods.getLat() != null && HiveMethods.getLan() != null;
-        final topContentSpacer =
-            (isGuest || !hasSelectedLocation) ? 268.0 : 238.0;
-
+        final hasSelectedLocation = _hasDeliveryLocation;
         return Scaffold(
-          body: SingleChildScrollView(
-            physics: const ClampingScrollPhysics(),
-            child: Stack(
-              clipBehavior: Clip.none,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Keep the first visible home card fully below the wallet.
-                    SizedBox(height: topContentSpacer),
-                    RestaurantsNearYouWidget(controller: controller),
-                    SliderWidget(controller: controller),
-                    HomeFeatureCards(controller: controller),
-                    const SizedBox(height: 8),
-                    GoDriveCardWidget(controller: controller),
-                    20.sbH,
-                  ],
-                ),
-                Positioned(
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  child: HomeHeader(
-                    controller: controller,
-                    onLocationTap: () => _showCitySelectionSheet(),
+          backgroundColor: const Color(0xFF092225),
+          body: Stack(
+            fit: StackFit.expand,
+            children: [
+              const HomeVideoBackground(),
+              SafeArea(
+                bottom: false,
+                child: LayoutBuilder(
+                  builder: (context, constraints) => RefreshIndicator(
+                    color: const Color(0xFFFF8A35),
+                    onRefresh: _refreshHome,
+                    child: SingleChildScrollView(
+                      physics: const AlwaysScrollableScrollPhysics(
+                        parent: ClampingScrollPhysics(),
+                      ),
+                      child: HomeFullscreenContent(
+                        minHeight: constraints.maxHeight,
+                        bottomInset: MediaQuery.paddingOf(context).bottom,
+                        hasLocation: hasSelectedLocation,
+                        branchesKey: _branchesKey,
+                        header: HomeHeader(
+                          controller: controller,
+                          onLocationTap: () => _showCitySelectionSheet(),
+                        ),
+                        competition: HomeFeatureCards(
+                          controller: controller,
+                          padding: EdgeInsets.zero,
+                        ),
+                        branches: _buildNearbyBranches(controller),
+                        courier: GoDriveCardWidget(controller: controller),
+                        onStartOrder: () => _startOrder(controller),
+                        onCompetition: () => NamedNavigatorImpl.push(
+                          DrawRestaurantScreen.routeName,
+                        ),
+                        onChangeAddress: () => _showCitySelectionSheet(),
+                      ),
+                    ),
                   ),
                 ),
-                const Positioned(
-                  top: 112,
-                  left: 0,
-                  right: 0,
-                  child: Align(
-                    alignment: Alignment.topCenter,
-                    child: HomeWalletCard(),
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
         );
       },

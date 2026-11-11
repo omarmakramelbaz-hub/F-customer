@@ -7,11 +7,17 @@ import '../../../custom_widgets/custom_image/custom_network_image.dart';
 import '../controller/home_controller.dart';
 import '../screen/draw_resturant_screen.dart';
 import 'celebrate_widget.dart';
+import '../../../../helpers/networking/api_helper.dart';
 
 class HomeFeatureCards extends StatelessWidget {
   final HomeController controller;
+  final EdgeInsetsGeometry padding;
 
-  const HomeFeatureCards({super.key, required this.controller});
+  const HomeFeatureCards({
+    super.key,
+    required this.controller,
+    this.padding = const EdgeInsets.symmetric(horizontal: 16),
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -20,15 +26,33 @@ class HomeFeatureCards extends StatelessWidget {
 
     if (isWinner) {
       return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8),
+        padding: padding,
         child: CelebrateWidget(homeController: controller),
       );
     }
 
     final dashboardImage = coupon?.data?.image?.trim() ?? '';
+    final loading = dashboardImage.isEmpty &&
+        (controller.couponResponse.state == ResponseState.loading ||
+            controller.couponResponse.state == ResponseState.sleep);
+
+    if (loading) {
+      return Padding(
+        padding: padding,
+        child: const AspectRatio(
+          aspectRatio: 1320 / 502,
+          child: Center(
+            child: CircularProgressIndicator(
+              color: Color(0xFFFFA258),
+              strokeWidth: 2,
+            ),
+          ),
+        ),
+      );
+    }
 
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+      padding: padding,
       child: InkWell(
         onTap: () => NamedNavigatorImpl.push(DrawRestaurantScreen.routeName),
         borderRadius: BorderRadius.circular(22),
@@ -47,30 +71,31 @@ class _DashboardContestImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 140,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(22),
-        border: Border.all(
-          color: AppColors.mainAppColor.withValues(alpha: .20),
-          width: 1,
-        ),
-        boxShadow: const [
-          BoxShadow(
-            color: Color(0x1A000000),
-            blurRadius: 14,
-            offset: Offset(0, 6),
+    return AspectRatio(
+      aspectRatio: 1320 / 502,
+      child: Container(
+        decoration: BoxDecoration(
+          color: const Color(0xB0092225),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: AppColors.mainAppColor.withValues(alpha: .20),
+            width: 1,
           ),
-        ],
-      ),
-      clipBehavior: Clip.antiAlias,
-      child: CustomNetworkImage(
-        imageUrl: imageUrl,
-        height: 140,
-        width: double.infinity,
-        radius: 0,
-        fit: BoxFit.cover,
+          boxShadow: const [
+            BoxShadow(
+              color: Color(0x1A000000),
+              blurRadius: 14,
+              offset: Offset(0, 6),
+            ),
+          ],
+        ),
+        clipBehavior: Clip.antiAlias,
+        child: CustomNetworkImage(
+          imageUrl: imageUrl,
+          width: double.infinity,
+          radius: 0,
+          fit: BoxFit.contain,
+        ),
       ),
     );
   }
@@ -82,133 +107,40 @@ class _ContestFallbackCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 140,
-      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
+      constraints: const BoxConstraints(minHeight: 116),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [Color(0xFF102F4A), Color(0xFF0A2135)],
-        ),
-        borderRadius: BorderRadius.circular(22),
-        border: Border.all(
-          color: AppColors.mainAppColor.withValues(alpha: .28),
-          width: 1.2,
-        ),
-        boxShadow: const [
-          BoxShadow(
-            color: Color(0x26000000),
-            blurRadius: 14,
-            offset: Offset(0, 6),
-          ),
-        ],
+        color: const Color(0xD908282E),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: const Color(0x55FFAF69)),
       ),
       child: Row(
+        textDirection: TextDirection.rtl,
         children: [
-          Expanded(
-            flex: 42,
-            child: Center(
-              child: Container(
-                width: 92,
-                height: 92,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.white.withValues(alpha: .07),
-                  border: Border.all(
-                    color: AppColors.mainAppColor.withValues(alpha: .45),
-                    width: 1.4,
-                  ),
-                ),
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    const Icon(
-                      Icons.card_giftcard_rounded,
-                      size: 58,
-                      color: Color(0xFFFF8A00),
-                    ),
-                    Positioned(
-                      top: 12,
-                      right: 10,
-                      child: Icon(
-                        Icons.auto_awesome_rounded,
-                        size: 18,
-                        color: Colors.white.withValues(alpha: .92),
-                      ),
-                    ),
-                    Positioned(
-                      bottom: 12,
-                      left: 12,
-                      child: Icon(
-                        Icons.auto_awesome_rounded,
-                        size: 14,
-                        color: AppColors.mainAppColor,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
+          const Icon(
+            Icons.emoji_events_outlined,
+            size: 48,
+            color: Color(0xFFFFB874),
           ),
           const SizedBox(width: 14),
           Expanded(
-            flex: 58,
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.end,
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'المسابقة اليومية',
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  textAlign: TextAlign.right,
-                  style: AppTextStyle.text18BS().copyWith(
-                    color: Colors.white,
-                    fontSize: 19,
-                  ),
+                  'مسابقة فسخانستا',
+                  style: AppTextStyle.text16BS(color: Colors.white),
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: 5),
                 Text(
-                  'اربح جوائز قيمة كل يوم',
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  textAlign: TextAlign.right,
-                  style: AppTextStyle.text13BS().copyWith(
-                    color: AppColors.mainAppColor,
-                    fontSize: 13,
-                  ),
+                  'تفاصيل المسابقة وطريقة الاشتراك',
+                  style: AppTextStyle.text12BS(color: const Color(0xFFDDE4D6)),
                 ),
-                const SizedBox(height: 3),
+                const SizedBox(height: 8),
                 Text(
-                  'شارك الآن وكن من الفائزين المحظوظين',
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  textAlign: TextAlign.right,
-                  style: AppTextStyle.text10RG().copyWith(
-                    color: Colors.white.withValues(alpha: .82),
-                    fontSize: 11,
-                    height: 1.25,
-                  ),
-                ),
-                const SizedBox(height: 9),
-                Container(
-                  height: 32,
-                  padding: const EdgeInsets.symmetric(horizontal: 14),
-                  decoration: BoxDecoration(
-                    color: AppColors.mainAppColor,
-                    borderRadius: BorderRadius.circular(11),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Icon(Icons.card_giftcard_rounded, size: 15, color: Colors.white),
-                      const SizedBox(width: 6),
-                      Text(
-                        'شارك الآن',
-                        style: AppTextStyle.text11BS(color: Colors.white),
-                      ),
-                    ],
-                  ),
+                  'شوف المسابقة',
+                  style: AppTextStyle.text12BS(color: const Color(0xFFFFB874)),
                 ),
               ],
             ),

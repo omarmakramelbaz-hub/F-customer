@@ -45,6 +45,16 @@ identical lookups: eight geocoder calls before sharing and one while the shared
 request is active. Other tests verify retries, fresh subsequent lookups, and
 independent requests for different coordinates.
 
+## Customer home
+
+The general customer home uses the same six-second seafood film as the website,
+bundled as `assets/splash_video/home_hero.mp4`, with a poster fallback. Playback is
+silent and looping, and stops when the app or route is no longer visible.
+Foreground controls and the home navigation overlay the video; other tabs keep
+their existing navigation. Wallet balances, nearby branch logos and the contest
+image come from their existing controllers/API responses, including live updates.
+The delivery address is the only location selector on the home page.
+
 ## Order status labels
 
 | API status | Display label |

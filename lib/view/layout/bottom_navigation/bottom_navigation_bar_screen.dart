@@ -1,4 +1,7 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:upgrader/upgrader.dart';
 
@@ -23,8 +26,7 @@ class BottomNavigationBarScreen extends StatefulWidget {
       _BottomNavigationBarScreenState();
 }
 
-class _BottomNavigationBarScreenState
-    extends State<BottomNavigationBarScreen> {
+class _BottomNavigationBarScreenState extends State<BottomNavigationBarScreen> {
   late BottomNavLogicController logic;
 
   @override
@@ -46,6 +48,19 @@ class _BottomNavigationBarScreenState
       create: (_) => BottomNavigationController(),
       child: Consumer<BottomNavigationController>(
         builder: (context, controller, _) {
+          final fullVideoHome = controller.screenIndex == 0 &&
+              context.watch<AuthController>().profile?.appMultiVendor == null;
+          final scaffold = Scaffold(
+            backgroundColor: fullVideoHome ? const Color(0xFF102B2E) : null,
+            extendBody: fullVideoHome,
+            resizeToAvoidBottomInset: false,
+            body: logic.getCurrentScreen(controller.screenIndex),
+            bottomNavigationBar: _buildBottomNavBar(
+              controller,
+              fullVideoHome: fullVideoHome,
+            ),
+          );
+
           return PopScope(
             canPop: controller.screenIndex == 0,
             onPopInvoked: controller.onWillPop,
@@ -60,11 +75,16 @@ class _BottomNavigationBarScreenState
                 messages: UpgraderMessages(code: context.languageCode),
                 countryCode: 'EG',
               ),
-              child: Scaffold(
-                resizeToAvoidBottomInset: false,
-                body: logic.getCurrentScreen(controller.screenIndex),
-                bottomNavigationBar: _buildBottomNavBar(controller),
-              ),
+              child: fullVideoHome
+                  ? AnnotatedRegion<SystemUiOverlayStyle>(
+                      value: SystemUiOverlayStyle.light.copyWith(
+                        statusBarColor: Colors.transparent,
+                        systemNavigationBarColor: Colors.transparent,
+                        systemNavigationBarDividerColor: Colors.transparent,
+                      ),
+                      child: scaffold,
+                    )
+                  : scaffold,
             ),
           );
         },
@@ -72,7 +92,68 @@ class _BottomNavigationBarScreenState
     );
   }
 
-  Widget _buildBottomNavBar(BottomNavigationController controller) {
+  Widget _buildBottomNavBar(
+    BottomNavigationController controller, {
+    required bool fullVideoHome,
+  }) {
+    final navigationItems = SizedBox(
+      height: 70,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+        child: Row(
+          children: [
+            Expanded(
+              child: _navItem(
+                index: 0,
+                controller: controller,
+                iconSelected: Icons.home_rounded,
+                iconUnselected: Icons.home_outlined,
+                title: 'home'.tr,
+                fullVideoHome: fullVideoHome,
+                onTap: () => controller.updateIndex(0),
+              ),
+            ),
+            Expanded(child: _navCart(fullVideoHome: fullVideoHome)),
+            Expanded(
+              child: _navOrders(controller, fullVideoHome: fullVideoHome),
+            ),
+            Expanded(
+              child: _navNotifications(
+                controller,
+                fullVideoHome: fullVideoHome,
+              ),
+            ),
+            Expanded(
+              child: _navItem(
+                index: 3,
+                controller: controller,
+                iconSelected: Icons.person_rounded,
+                iconUnselected: Icons.person_outline_rounded,
+                title: 'account'.tr,
+                fullVideoHome: fullVideoHome,
+                onTap: () => controller.updateIndex(3),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+
+    if (fullVideoHome) {
+      return ClipRect(
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 14, sigmaY: 14),
+          child: DecoratedBox(
+            decoration: const BoxDecoration(
+              color: Color(0x660C2728),
+              border: Border(top: BorderSide(color: Color(0x26FFF9E1))),
+            ),
+            child: SafeArea(top: false, child: navigationItems),
+          ),
+        ),
+      );
+    }
+
     return SafeArea(
       top: false,
       child: Container(
@@ -80,10 +161,7 @@ class _BottomNavigationBarScreenState
         decoration: BoxDecoration(
           color: AppColors.whiteColor,
           borderRadius: BorderRadius.circular(26),
-          border: Border.all(
-            color: const Color(0xFFEDEFF2),
-            width: 1,
-          ),
+          border: Border.all(color: const Color(0xFFEDEFF2), width: 1),
           boxShadow: const [
             BoxShadow(
               color: Color(0x12000000),
@@ -92,39 +170,7 @@ class _BottomNavigationBarScreenState
             ),
           ],
         ),
-        child: SizedBox(
-          height: 70,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-            child: Row(
-              children: [
-                Expanded(
-                  child: _navItem(
-                    index: 0,
-                    controller: controller,
-                    iconSelected: Icons.home_rounded,
-                    iconUnselected: Icons.home_outlined,
-                    title: 'home'.tr,
-                    onTap: () => controller.updateIndex(0),
-                  ),
-                ),
-                Expanded(child: _navCart()),
-                Expanded(child: _navOrders(controller)),
-                Expanded(child: _navNotifications(controller)),
-                Expanded(
-                  child: _navItem(
-                    index: 3,
-                    controller: controller,
-                    iconSelected: Icons.person_rounded,
-                    iconUnselected: Icons.person_outline_rounded,
-                    title: 'account'.tr,
-                    onTap: () => controller.updateIndex(3),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
+        child: navigationItems,
       ),
     );
   }
@@ -136,24 +182,27 @@ class _BottomNavigationBarScreenState
     required IconData iconUnselected,
     required String title,
     required VoidCallback onTap,
+    required bool fullVideoHome,
   }) {
     final selected = controller.screenIndex == index;
 
     return _navButton(
       selected: selected,
+      fullVideoHome: fullVideoHome,
       title: title,
       onTap: onTap,
       icon: selected ? iconSelected : iconUnselected,
     );
   }
 
-  Widget _navCart() {
+  Widget _navCart({required bool fullVideoHome}) {
     final cartCount = HiveMethods.getToken() == null
         ? 0
         : (context.watch<CartController>().cart?.carts?.length ?? 0);
 
     return _navButton(
       selected: false,
+      fullVideoHome: fullVideoHome,
       title: context.languageCode == 'ar' ? 'السلة' : 'Cart',
       icon: Icons.shopping_cart_outlined,
       badgeCount: cartCount,
@@ -175,11 +224,15 @@ class _BottomNavigationBarScreenState
     );
   }
 
-  Widget _navOrders(BottomNavigationController controller) {
+  Widget _navOrders(
+    BottomNavigationController controller, {
+    required bool fullVideoHome,
+  }) {
     final selected = controller.screenIndex == 1;
 
     return _navButton(
       selected: selected,
+      fullVideoHome: fullVideoHome,
       title: 'orders'.tr,
       onTap: () {
         if (HiveMethods.getToken() == null) {
@@ -199,7 +252,10 @@ class _BottomNavigationBarScreenState
     );
   }
 
-  Widget _navNotifications(BottomNavigationController controller) {
+  Widget _navNotifications(
+    BottomNavigationController controller, {
+    required bool fullVideoHome,
+  }) {
     final selected = controller.screenIndex == 2;
     final hasNewNotifications = HiveMethods.getNotificationsCount() != null &&
         HiveMethods.getNotificationsCount() !=
@@ -207,6 +263,7 @@ class _BottomNavigationBarScreenState
 
     return _navButton(
       selected: selected,
+      fullVideoHome: fullVideoHome,
       title: 'notifications'.tr,
       onTap: () {
         if (HiveMethods.getToken() == null) {
@@ -237,17 +294,23 @@ class _BottomNavigationBarScreenState
     required String title,
     required VoidCallback onTap,
     required IconData icon,
+    required bool fullVideoHome,
     bool showBadge = false,
     int badgeCount = 0,
   }) {
-    final inactiveColor = const Color(0xFF8A8F98);
+    final inactiveColor =
+        fullVideoHome ? const Color(0xFFE5E8DA) : const Color(0xFF8A8F98);
+    final accentColor =
+        fullVideoHome ? const Color(0xFFFFAD5B) : AppColors.mainAppColor;
+    final badgeBorderColor =
+        fullVideoHome ? const Color(0xFF183D3C) : AppColors.whiteColor;
 
     return Material(
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(18),
-        splashColor: AppColors.mainAppColor.withValues(alpha: .07),
+        splashColor: accentColor.withValues(alpha: .07),
         highlightColor: Colors.transparent,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
@@ -264,13 +327,12 @@ class _BottomNavigationBarScreenState
                     height: 34,
                     decoration: BoxDecoration(
                       color: selected
-                          ? AppColors.mainAppColor.withValues(alpha: .11)
+                          ? accentColor.withValues(alpha: .11)
                           : Colors.transparent,
                       borderRadius: BorderRadius.circular(13),
                       border: selected
                           ? Border.all(
-                              color: AppColors.mainAppColor
-                                  .withValues(alpha: .10),
+                              color: accentColor.withValues(alpha: .10),
                             )
                           : null,
                     ),
@@ -282,8 +344,7 @@ class _BottomNavigationBarScreenState
                       child: Icon(
                         icon,
                         size: selected ? 24 : 23,
-                        color:
-                            selected ? AppColors.mainAppColor : inactiveColor,
+                        color: selected ? accentColor : inactiveColor,
                       ),
                     ),
                   ),
@@ -297,10 +358,10 @@ class _BottomNavigationBarScreenState
                         padding: const EdgeInsets.symmetric(horizontal: 4),
                         alignment: Alignment.center,
                         decoration: BoxDecoration(
-                          color: AppColors.mainAppColor,
+                          color: accentColor,
                           borderRadius: BorderRadius.circular(9),
                           border: Border.all(
-                            color: AppColors.whiteColor,
+                            color: badgeBorderColor,
                             width: 1.5,
                           ),
                           boxShadow: const [
@@ -313,8 +374,10 @@ class _BottomNavigationBarScreenState
                         ),
                         child: Text(
                           badgeCount > 99 ? '99+' : '$badgeCount',
-                          style: const TextStyle(
-                            color: Colors.white,
+                          style: TextStyle(
+                            color: fullVideoHome
+                                ? const Color(0xFF183D3C)
+                                : Colors.white,
                             fontSize: 8.5,
                             fontWeight: FontWeight.w800,
                             height: 1,
@@ -330,10 +393,10 @@ class _BottomNavigationBarScreenState
                         width: 9,
                         height: 9,
                         decoration: BoxDecoration(
-                          color: AppColors.mainAppColor,
+                          color: accentColor,
                           shape: BoxShape.circle,
                           border: Border.all(
-                            color: AppColors.whiteColor,
+                            color: badgeBorderColor,
                             width: 1.7,
                           ),
                         ),
@@ -348,9 +411,9 @@ class _BottomNavigationBarScreenState
                         ? AppTextStyle.text12RM()
                         : AppTextStyle.text12RG())
                     .copyWith(
-                  fontSize: 10.3,
+                  fontSize: fullVideoHome ? 11 : 10.3,
                   height: 1.05,
-                  color: selected ? AppColors.mainAppColor : inactiveColor,
+                  color: selected ? accentColor : inactiveColor,
                   fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
                 ),
                 child: Text(
