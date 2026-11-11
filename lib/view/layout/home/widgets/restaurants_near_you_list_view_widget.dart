@@ -10,7 +10,6 @@ import '../../../../helpers/theme/app_text_style.dart';
 import '../../../../helpers/translation/all_translation.dart';
 import '../../../../helpers/utils/restaurant_hours.dart';
 import '../../../custom_widgets/api_response_widget/api_response_widget.dart';
-import '../../../custom_widgets/custom_image/custom_network_image.dart';
 import '../../../custom_widgets/custom_loading/custom_shimmer.dart';
 import '../../restaurants/screen/restaurant_details_screen.dart';
 import '../controller/home_controller.dart';
@@ -170,12 +169,19 @@ class _NearbyBranchCard extends StatelessWidget {
                           color: orange,
                           size: 28,
                         )
-                      : CustomNetworkImage(
-                          imageUrl: logo,
+                      : Image.network(
+                          logo,
                           width: 44,
                           height: 44,
                           fit: BoxFit.contain,
-                          radius: 8,
+                          webHtmlElementStrategy: WebHtmlElementStrategy.prefer,
+                          semanticLabel: model.name,
+                          errorBuilder: (context, error, stackTrace) =>
+                              const Icon(
+                            Icons.storefront_outlined,
+                            color: orange,
+                            size: 28,
+                          ),
                         ),
                 ),
                 const SizedBox(width: 10),
