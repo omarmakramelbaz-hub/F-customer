@@ -35,7 +35,9 @@ import '../widgets/restaurants_near_you_list_view_widget.dart';
 import '../screen/draw_resturant_screen.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  const HomeScreen({super.key, this.primaryActionController});
+
+  final HomePrimaryActionController? primaryActionController;
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -44,7 +46,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   late final PusherController _pusherController;
   late final CartController _cartController;
-  final _primaryActionController = HomePrimaryActionController();
+  late final HomePrimaryActionController _primaryActionController;
   Timer? _primaryActionTimer;
   bool _homeVisible = false;
   bool _appForeground = true;
@@ -65,6 +67,8 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
+    _primaryActionController =
+        widget.primaryActionController ?? HomePrimaryActionController();
     WidgetsBinding.instance.addObserver(this);
     _pusherController = context.read<PusherController>();
     _cartController = context.read<CartController>();

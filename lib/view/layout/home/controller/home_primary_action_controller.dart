@@ -157,11 +157,18 @@ class HomePrimaryActionController extends ChangeNotifier {
     final rows = body is Map ? body['data'] : null;
     if (rows is! Iterable) return null;
     try {
-      // Parse the entire response before replacing known-good order state.
+      // The home action needs only these scalars. Legacy order resources may
+      // include unrelated monetary or nested fields with different types.
       final orders = rows
           .map((row) {
             if (row is! Map) throw const FormatException('Invalid order');
-            return OrdersModel.fromJson(Map<String, dynamic>.from(row));
+            return OrdersModel(
+              id: _integer(row['id']),
+              status: _label(row['status']),
+              orderNo: _label(row['order_no']),
+              resturantName: _label(row['resturant_name']),
+              createdAt: _label(row['created_at']),
+            );
           })
           .where(_isActiveOrder)
           .toList()
@@ -187,9 +194,10 @@ class HomePrimaryActionController extends ChangeNotifier {
     for (final row in rows) {
       if (row is! Map) return null;
       final quantity = _number(row['qty']);
-      final orderId = row['order_id'] == null ? 0 : _number(row['order_id']);
-      if (quantity == null || orderId == null) return null;
-      if (quantity > 0 && orderId == 0) hasItems = true;
+      if (quantity == null) return null;
+      // /user/cart/index already scopes records to is_order=false. An older
+      // order_id link is not evidence that an item has been submitted.
+      if (quantity > 0) hasItems = true;
     }
     return hasItems;
   }
@@ -198,6 +206,21 @@ class HomePrimaryActionController extends ChangeNotifier {
     final result = value is num ? value : num.tryParse(value?.toString() ?? '');
     return result != null && result.isFinite ? result : null;
   }
+
+  static int? _integer(Object? value) {
+    if (value is int) return value;
+    if (value is num) {
+      return value.isFinite && value == value.truncateToDouble()
+          ? value.toInt()
+          : null;
+    }
+    return value is String ? int.tryParse(value.trim()) : null;
+  }
+
+  static String? _label(Object? value) =>
+      value is String || value is num || value is bool
+          ? value.toString().trim()
+          : null;
 
   static bool _isActiveOrder(OrdersModel order) {
     if ((order.id ?? 0) <= 0) return false;

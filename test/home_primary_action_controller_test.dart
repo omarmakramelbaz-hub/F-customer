@@ -328,8 +328,7 @@ void main() {
     expect(controller.activeOrders, isEmpty);
   });
 
-  test('server cart includes only unsubmitted items with positive quantity',
-      () async {
+  test('server cart includes returned items with positive quantity', () async {
     var cart = _cartSuccess([
       {'qty': 2, 'order_id': 19},
       {'qty': 0, 'order_id': null},
@@ -341,6 +340,13 @@ void main() {
     );
     addTearDown(controller.dispose);
 
+    await controller.refresh(session: 'customer');
+    expect(controller.action, HomePrimaryAction.viewCart);
+
+    cart = _cartSuccess([
+      {'qty': 0, 'order_id': null},
+      {'qty': -1, 'order_id': 0},
+    ]);
     await controller.refresh(session: 'customer');
     expect(controller.action, HomePrimaryAction.startOrder);
 
@@ -511,13 +517,6 @@ void main() {
           ]
         }
       },
-      {
-        'data': {
-          'carts': [
-            {'qty': 1, 'order_id': 'invalid'}
-          ]
-        }
-      },
     ];
     for (final body in malformed) {
       cart = ApiResponse(state: ResponseState.complete, data: body);
@@ -551,5 +550,85 @@ void main() {
     expect(cartCalls, 1);
     expect(controller.action, HomePrimaryAction.startOrder);
     expect(controller.activeOrders, isEmpty);
+  });
+
+  test('server-filtered pending cart remains visible with legacy order links',
+      () async {
+    Object? orderId = 19;
+    final controller = _controller(
+      loadOrders: () async => _success([]),
+      loadCart: () async => _cartSuccess([
+        {'qty': 1, 'order_id': orderId}
+      ]),
+    );
+    addTearDown(controller.dispose);
+
+    for (final legacyLink in <Object?>[19, '19', 'legacy-link', null]) {
+      orderId = legacyLink;
+      await controller.refresh(session: 'customer');
+      expect(controller.action, HomePrimaryAction.viewCart);
+    }
+  });
+
+  test('unrelated legacy fields do not hide a valid active order', () async {
+    final controller = _controller(
+      loadOrders: () async => _success([
+        {
+          'id': '42',
+          'status': 'Shipped',
+          'order_no': 123456,
+          'resturant_name': 'فرع المحلة الكبرى',
+          'created_at': '2026-11-12T12:00:00Z',
+          'tax': '14.00',
+          'service_fees': '2.50',
+          'delegate_id': '12',
+          'user_address': 'legacy value',
+          'items': 'legacy value',
+          'resturant_areas': 'legacy value',
+        },
+        {
+          'id': 50,
+          'status': 'completed',
+          'items': {'legacy': true},
+          'tax': '8.00',
+        },
+      ]),
+    );
+    addTearDown(controller.dispose);
+
+    await controller.refresh(session: 'customer');
+
+    expect(controller.action, HomePrimaryAction.trackOrder);
+    expect(controller.activeOrders.single.id, 42);
+    expect(controller.activeOrders.single.orderNo, '123456');
+    expect(controller.activeOrders.single.resturantName, 'فرع المحلة الكبرى');
+  });
+
+  test('tracking IDs accept integer scalars and reject invalid targets',
+      () async {
+    final controller = _controller(
+      loadOrders: () async => _success([
+        for (final id in <Object?>[
+          0,
+          -1,
+          'not-an-id',
+          '1.5',
+          2.5,
+          true,
+          null,
+          {'id': 3},
+        ])
+          {'id': id, 'status': 'accepted'},
+        {'id': ' 21 ', 'status': 'accepted'},
+        {'id': 22, 'status': 'shipped'},
+        {'id': 23.0, 'status': 'pending'},
+      ]),
+    );
+    addTearDown(controller.dispose);
+
+    await controller.refresh(session: 'customer');
+
+    expect(controller.activeOrders.map((order) => order.id), [23, 22, 21]);
+    expect(controller.action, HomePrimaryAction.trackOrder);
   });
 }
