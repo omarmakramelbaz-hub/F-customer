@@ -32,8 +32,7 @@ class HomeFeatureCards extends StatelessWidget {
     }
 
     final dashboardImage = coupon?.data?.image?.trim() ?? '';
-    final loading =
-        dashboardImage.isEmpty &&
+    final loading = dashboardImage.isEmpty &&
         (controller.couponResponse.state == ResponseState.loading ||
             controller.couponResponse.state == ResponseState.sleep);
 

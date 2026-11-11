@@ -48,8 +48,7 @@ class _BottomNavigationBarScreenState extends State<BottomNavigationBarScreen> {
       create: (_) => BottomNavigationController(),
       child: Consumer<BottomNavigationController>(
         builder: (context, controller, _) {
-          final fullVideoHome =
-              controller.screenIndex == 0 &&
+          final fullVideoHome = controller.screenIndex == 0 &&
               context.watch<AuthController>().profile?.appMultiVendor == null;
           final scaffold = Scaffold(
             backgroundColor: fullVideoHome ? const Color(0xFF102B2E) : null,
@@ -258,8 +257,7 @@ class _BottomNavigationBarScreenState extends State<BottomNavigationBarScreen> {
     required bool fullVideoHome,
   }) {
     final selected = controller.screenIndex == 2;
-    final hasNewNotifications =
-        HiveMethods.getNotificationsCount() != null &&
+    final hasNewNotifications = HiveMethods.getNotificationsCount() != null &&
         HiveMethods.getNotificationsCount() !=
             context.read<AuthController>().profile?.notificaionsCount;
 
@@ -300,15 +298,12 @@ class _BottomNavigationBarScreenState extends State<BottomNavigationBarScreen> {
     bool showBadge = false,
     int badgeCount = 0,
   }) {
-    final inactiveColor = fullVideoHome
-        ? const Color(0xFFE5E8DA)
-        : const Color(0xFF8A8F98);
-    final accentColor = fullVideoHome
-        ? const Color(0xFFFFAD5B)
-        : AppColors.mainAppColor;
-    final badgeBorderColor = fullVideoHome
-        ? const Color(0xFF183D3C)
-        : AppColors.whiteColor;
+    final inactiveColor =
+        fullVideoHome ? const Color(0xFFE5E8DA) : const Color(0xFF8A8F98);
+    final accentColor =
+        fullVideoHome ? const Color(0xFFFFAD5B) : AppColors.mainAppColor;
+    final badgeBorderColor =
+        fullVideoHome ? const Color(0xFF183D3C) : AppColors.whiteColor;
 
     return Material(
       color: Colors.transparent,
@@ -412,18 +407,15 @@ class _BottomNavigationBarScreenState extends State<BottomNavigationBarScreen> {
               const SizedBox(height: 2),
               AnimatedDefaultTextStyle(
                 duration: const Duration(milliseconds: 180),
-                style:
-                    (selected
-                            ? AppTextStyle.text12RM()
-                            : AppTextStyle.text12RG())
-                        .copyWith(
-                          fontSize: fullVideoHome ? 11 : 10.3,
-                          height: 1.05,
-                          color: selected ? accentColor : inactiveColor,
-                          fontWeight: selected
-                              ? FontWeight.w700
-                              : FontWeight.w500,
-                        ),
+                style: (selected
+                        ? AppTextStyle.text12RM()
+                        : AppTextStyle.text12RG())
+                    .copyWith(
+                  fontSize: fullVideoHome ? 11 : 10.3,
+                  height: 1.05,
+                  color: selected ? accentColor : inactiveColor,
+                  fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
+                ),
                 child: Text(
                   title,
                   maxLines: 1,

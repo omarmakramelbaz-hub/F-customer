@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pusher_channels_flutter/pusher_channels_flutter.dart';
 
-import '../../../../helpers/extensions/extensions.dart';
 import '../../../../helpers/hive/hive_methods.dart';
 import '../../../../helpers/networking/api_helper.dart';
 import '../../../../helpers/pusher_service/pusher_controller.dart';
@@ -184,10 +183,8 @@ class _HomeScreenState extends State<HomeScreen> {
   void _showCitySelectionSheet({bool delayed = false}) {
     final authProvider = context.read<AuthController>();
     final userAddresses = authProvider.profile?.userAddresses ?? [];
-    final previousIds = userAddresses
-        .map((address) => address.id)
-        .whereType<int>()
-        .toSet();
+    final previousIds =
+        userAddresses.map((address) => address.id).whereType<int>().toSet();
 
     void openAddAddress() {
       if (!mounted) return;
@@ -373,7 +370,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         color: isSelected
                                             ? AppColors.mainAppColor
                                             : AppColors.mainAppColor
-                                                  .withOpacity(0.10),
+                                                .withOpacity(0.10),
                                         borderRadius: BorderRadius.circular(13),
                                       ),
                                       child: Icon(
@@ -396,12 +393,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                             overflow: TextOverflow.ellipsis,
                                             style: AppTextStyle.text16BS()
                                                 .copyWith(
-                                                  color:
-                                                      AppColors.darkTextColor,
-                                                  fontSize: 15,
-                                                  height: 1.35,
-                                                  fontWeight: FontWeight.w700,
-                                                ),
+                                              color: AppColors.darkTextColor,
+                                              fontSize: 15,
+                                              height: 1.35,
+                                              fontWeight: FontWeight.w700,
+                                            ),
                                           ),
                                           if (secondary.isNotEmpty) ...[
                                             const SizedBox(height: 4),
@@ -411,10 +407,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                               overflow: TextOverflow.ellipsis,
                                               style: AppTextStyle.text12BS()
                                                   .copyWith(
-                                                    color: AppColors.greyColor,
-                                                    fontSize: 12,
-                                                    fontWeight: FontWeight.w500,
-                                                  ),
+                                                color: AppColors.greyColor,
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.w500,
+                                              ),
                                             ),
                                           ],
                                         ],
@@ -591,13 +587,13 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> _refreshHome() async {
     await Future.wait([
       context.read<HomeController>().getRestaurantsNearYou(
-        lat: HiveMethods.getLat(),
-        lng: HiveMethods.getLan(),
-      ),
+            lat: HiveMethods.getLat(),
+            lng: HiveMethods.getLan(),
+          ),
       context.read<HomeController>().getCoupon(
-        lat: HiveMethods.getLat(),
-        lng: HiveMethods.getLan(),
-      ),
+            lat: HiveMethods.getLat(),
+            lng: HiveMethods.getLan(),
+          ),
       context.read<WalletController>().getWallet(),
     ]);
   }

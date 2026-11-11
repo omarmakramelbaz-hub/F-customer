@@ -67,9 +67,8 @@ void main() {
         expect(find.text('شوف المسابقة'), findsOneWidget);
         expect(tester.takeException(), isNull);
 
-        final normalHeight = tester
-            .getSize(find.byType(HomeFeatureCards))
-            .height;
+        final normalHeight =
+            tester.getSize(find.byType(HomeFeatureCards)).height;
         await _pumpCompetitionCard(tester, responseState: state, textScale: 2);
 
         expect(tester.takeException(), isNull);

@@ -40,9 +40,9 @@ class RestaurantsNearYouListViewWidget extends StatelessWidget {
     return ApiResponseWidget(
       apiResponse: context.read<HomeController>().restaurantsNearYouApiResponse,
       onReload: () => context.read<HomeController>().getRestaurantsNearYou(
-        lat: HiveMethods.getLat(),
-        lng: HiveMethods.getLan(),
-      ),
+            lat: HiveMethods.getLat(),
+            lng: HiveMethods.getLan(),
+          ),
       isEmpty: restaurantsNearYou.isEmpty,
       emptyWidget: const SizedBox.shrink(),
       loadingWidget: Padding(
@@ -117,8 +117,7 @@ class _NearbyBranchCard extends StatelessWidget {
   Widget build(BuildContext context) {
     const orange = Color(0xFFFF7A1A);
     final radius = BorderRadius.circular(20);
-    final canOpen =
-        (model.id ?? 0) > 0 &&
+    final canOpen = (model.id ?? 0) > 0 &&
         model.underContract != 'yes' &&
         model.status != 'busy';
     final logo = (model.logo ?? '').trim();
@@ -127,12 +126,12 @@ class _NearbyBranchCard extends StatelessWidget {
     final subtitle = model.underContract == 'yes'
         ? 'underContract'.tr
         : model.status == 'busy'
-        ? 'busy'.tr
-        : model.status == 'closed'
-        ? restaurantClosedLabel(context, model.openAt)
-        : address.isNotEmpty
-        ? address
-        : city;
+            ? 'busy'.tr
+            : model.status == 'closed'
+                ? restaurantClosedLabel(context, model.openAt)
+                : address.isNotEmpty
+                    ? address
+                    : city;
 
     return Semantics(
       button: true,
@@ -144,9 +143,9 @@ class _NearbyBranchCard extends StatelessWidget {
           borderRadius: radius,
           onTap: canOpen
               ? () => NamedNavigatorImpl.push(
-                  RestaurantDetailsScreen.routeName,
-                  arguments: RestaurantDetailsArgs(id: model.id!),
-                )
+                    RestaurantDetailsScreen.routeName,
+                    arguments: RestaurantDetailsArgs(id: model.id!),
+                  )
               : null,
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
@@ -216,9 +215,8 @@ class _NearbyBranchCard extends StatelessWidget {
                   height: 36,
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
-                    color: canOpen
-                        ? orange
-                        : Colors.white.withValues(alpha: .08),
+                    color:
+                        canOpen ? orange : Colors.white.withValues(alpha: .08),
                     borderRadius: BorderRadius.circular(11),
                   ),
                   child: Text(
@@ -249,8 +247,7 @@ class IsRestaurantBusyWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final unavailable =
-        model.status == 'closed' ||
+    final unavailable = model.status == 'closed' ||
         model.underContract == 'yes' ||
         model.status == 'busy';
     if (!unavailable) return const SizedBox.shrink();
@@ -263,8 +260,8 @@ class IsRestaurantBusyWidget extends StatelessWidget {
           model.underContract == 'yes'
               ? 'underContract'.tr
               : model.status == 'closed'
-              ? restaurantClosedLabel(context, model.openAt)
-              : 'busy'.tr,
+                  ? restaurantClosedLabel(context, model.openAt)
+                  : 'busy'.tr,
           style: AppTextStyle.text14MW(),
         ),
       ),

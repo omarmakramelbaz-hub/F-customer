@@ -57,11 +57,9 @@ class HomeHeader extends StatelessWidget implements PreferredSizeWidget {
             ? addressParts.join('، ')
             : (address?.address ?? savedLocation).trim();
         final balance = isGuest ? null : wallet.wallet?.balance;
-        final balanceLabel = balance == null
-            ? 'المحفظة'
-            : '${balance.toStringAsFixed(2)} ج.م';
-        final hasNewNotifications =
-            !isGuest &&
+        final balanceLabel =
+            balance == null ? 'المحفظة' : '${balance.toStringAsFixed(2)} ج.م';
+        final hasNewNotifications = !isGuest &&
             HiveMethods.getNotificationsCount() != null &&
             HiveMethods.getNotificationsCount() !=
                 auth.profile?.notificaionsCount;
