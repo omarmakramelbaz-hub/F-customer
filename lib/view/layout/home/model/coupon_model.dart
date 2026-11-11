@@ -1,8 +1,14 @@
+import 'draw_badge.dart';
+
 class CouponModel {
   String? flag;
   Data? data;
   String? winner;
   WinnerData? winnerData;
+  /// Every draw running now (by order total and by chosen products).
+  List<Data> draws = [];
+  /// The draws ended in the last 30 days and their winning codes.
+  List<DrawWinner> recentWinners = [];
 
   CouponModel({this.flag, this.data, this.winner, this.winnerData});
 
@@ -11,7 +17,16 @@ class CouponModel {
     data = json['data'] != null ? Data.fromJson(json['data']) : null;
     winner = json['winner'];
     winnerData = json['winner_data'] != null ? WinnerData.fromJson(json['winner_data']) : null;
+    if (json['draws'] is List) {
+      draws = (json['draws'] as List).whereType<Map>().map((v) => Data.fromJson(Map<String, dynamic>.from(v))).toList();
+    }
+    if (json['recent_winners'] is List) {
+      recentWinners = (json['recent_winners'] as List).map(DrawWinner.fromJson).whereType<DrawWinner>().toList();
+    }
   }
+
+  /// The running draws by chosen products (their items carry the badge in every branch).
+  List<Data> get productDraws => draws.where((d) => d.isByProducts).toList();
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
@@ -40,6 +55,15 @@ class Data {
   String? createdAt;
   int? eligibleOrdersCount;
   num? eligibleOrdersTotal;
+  /// «order_total» (an order of at least [price]) or «product» (each piece of [products] bought from any branch).
+  String policy = 'order_total';
+  List<DrawProduct> products = [];
+  String? badgeLabel;
+  /// The customer's entry codes in this draw, and the winning code once drawn.
+  List<String> myCodes = [];
+  String? winnerCode;
+
+  bool get isByProducts => policy == 'product';
 
   Data({
     this.id,
@@ -80,6 +104,14 @@ class Data {
     createdAt = json['created_at'];
     eligibleOrdersCount = int.tryParse(json['eligible_orders_count']?.toString() ?? '') ?? 0;
     eligibleOrdersTotal = num.tryParse(json['eligible_orders_total']?.toString() ?? '') ?? 0;
+    policy = json['policy']?.toString() ?? 'order_total';
+    if (json['products'] is List) {
+      products = (json['products'] as List).whereType<Map>().map((v) => DrawProduct.fromJson(v)).toList();
+    }
+    badgeLabel = json['badge_label']?.toString();
+    if (json['my_codes'] is List) myCodes = (json['my_codes'] as List).map((v) => v.toString()).toList();
+    final winner = json['winner_code']?.toString() ?? '';
+    winnerCode = winner.isEmpty ? null : winner;
   }
 
   Map<String, dynamic> toJson() {
@@ -248,4 +280,12 @@ class WinnerData {
     data['completed_orders_count'] = completedOrdersCount;
     return data;
   }
+}
+
+/// A product whose purchase enters a draw by products.
+class DrawProduct {
+  final int? id;
+  final String name;
+  const DrawProduct({this.id, required this.name});
+  factory DrawProduct.fromJson(Map json) => DrawProduct(id: int.tryParse(json['id']?.toString() ?? ''), name: json['name']?.toString() ?? '');
 }

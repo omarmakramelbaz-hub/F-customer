@@ -12,6 +12,7 @@ import '../../cart/controller/cart_controller.dart';
 import '../../cart/screen/cart_screen.dart';
 import '../controller/restaurants_controller.dart';
 import '../widgets/custom_button_bottom_navigation.dart';
+import '../../home/widgets/draw_badge_chip.dart';
 
 class ProductDetailsDetailsArgs {
   final int id;
@@ -251,6 +252,10 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
             product?.productName ?? '',
             style: AppTextStyle.text20BS(),
           ),
+          if (product?.draw != null) ...[
+            const SizedBox(height: 8),
+            DrawBadgeChip(badge: product!.draw!),
+          ],
           if ((product?.productDescription ?? '').toString().trim().isNotEmpty) ...[
             const SizedBox(height: 8),
             Text(
