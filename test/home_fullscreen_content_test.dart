@@ -1,4 +1,5 @@
 import 'package:faskhaninja/view/layout/home/widgets/home_fullscreen_content.dart';
+import 'package:faskhaninja/view/layout/home/controller/home_primary_action_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -14,6 +15,8 @@ Future<void> _pumpHome(
   VoidCallback? onCompetition,
   VoidCallback? onChangeAddress,
   VoidCallback? onCourier,
+  HomePrimaryAction primaryAction = HomePrimaryAction.startOrder,
+  bool primaryActionLoading = false,
 }) async {
   await tester.binding.setSurfaceSize(const Size(320, 568));
   addTearDown(() => tester.binding.setSurfaceSize(null));
@@ -35,7 +38,9 @@ Future<void> _pumpHome(
                 child: HomeFullscreenContent(
                   minHeight: constraints.maxHeight,
                   bottomInset: bottomInset,
-                  onStartOrder: onStartOrder ?? () {},
+                  onPrimaryAction: onStartOrder ?? () {},
+                  primaryAction: primaryAction,
+                  primaryActionLoading: primaryActionLoading,
                   onCompetition: onCompetition ?? () {},
                   onChangeAddress: onChangeAddress ?? () {},
                   header: const SizedBox(
@@ -77,10 +82,44 @@ Future<void> _pumpHome(
       ),
     ),
   );
-  await tester.pumpAndSettle();
+  if (primaryActionLoading) {
+    await tester.pump();
+  } else {
+    await tester.pumpAndSettle();
+  }
 }
 
 void main() {
+  for (final entry in {
+    HomePrimaryAction.startOrder: 'ابدأ طلبك',
+    HomePrimaryAction.viewCart: 'الاطّلاع على السلة',
+    HomePrimaryAction.trackOrder: 'تتبّع الطلب',
+  }.entries) {
+    testWidgets('primary action ${entry.key} is readable and tappable', (
+      tester,
+    ) async {
+      var taps = 0;
+      await _pumpHome(tester,
+          textScale: 1.5, primaryAction: entry.key, onStartOrder: () => taps++);
+      final button = find.widgetWithText(ElevatedButton, entry.value);
+      await tester.ensureVisible(button);
+      await tester.tap(button);
+      expect(taps, 1);
+      expect(tester.takeException(), isNull);
+    });
+  }
+
+  testWidgets('initial lookup prevents an incorrect primary action', (
+    tester,
+  ) async {
+    var taps = 0;
+    await _pumpHome(tester,
+        primaryActionLoading: true, onStartOrder: () => taps++);
+    final button = find.byKey(const ValueKey('home-start-order'));
+    expect(tester.widget<ElevatedButton>(button).onPressed, isNull);
+    expect(taps, 0);
+  });
+
   for (final textScale in [1.0, 1.5]) {
     testWidgets(
       'narrow home scrolls without overflow at text scale $textScale',

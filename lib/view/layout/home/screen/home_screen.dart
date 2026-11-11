@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 
@@ -15,9 +16,14 @@ import '../../../../helpers/translation/all_translation.dart';
 import '../../address/screen/add_address_screen.dart';
 import '../../auth/controller/auth_controller.dart';
 import '../../auth/model/profile_model.dart';
+import '../../cart/controller/cart_controller.dart';
+import '../../cart/screen/cart_screen.dart';
+import '../../orders/model/orders_model.dart';
+import '../../orders/screen/tracking_your_order_screen.dart';
 import '../../restaurants/screen/restaurant_details_screen.dart';
 import '../../wallet/controller/wallet_controller.dart';
 import '../controller/home_controller.dart';
+import '../controller/home_primary_action_controller.dart';
 import '../model/previous_order_home_model.dart';
 import '../model/restaurants_near_you_home_model.dart';
 import '../widgets/go_drive_card_widget.dart';
@@ -35,8 +41,13 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   late final PusherController _pusherController;
+  late final CartController _cartController;
+  final _primaryActionController = HomePrimaryActionController();
+  Timer? _primaryActionTimer;
+  bool _homeVisible = false;
+  bool _appForeground = true;
   final _branchesKey = GlobalKey();
 
   bool get _hasDeliveryLocation {
@@ -54,7 +65,14 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _pusherController = context.read<PusherController>();
+    _cartController = context.read<CartController>();
+    _cartController.addListener(_onCartStateChanged);
+    _primaryActionTimer = Timer.periodic(
+      const Duration(seconds: 30),
+      (_) => unawaited(_refreshPrimaryAction()),
+    );
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await _ensureProfileLoaded();
@@ -74,6 +92,7 @@ class _HomeScreenState extends State<HomeScreen> {
             lng: HiveMethods.getLan(),
           ),
         context.read<WalletController>().getWallet(),
+        _refreshPrimaryAction(),
       ]);
       if (!mounted) return;
       await _checkSelectedCity();
@@ -83,6 +102,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _registerPusherListeners() {
+    _pusherController.addEventListener('user.updated', _onOrderUpdated);
     _pusherController.addEventListener(
       'coupon.wheel.updated',
       _onCouponWheelUpdated,
@@ -94,6 +114,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _unregisterPusherListeners() {
+    _pusherController.removeEventListener('user.updated', _onOrderUpdated);
     _pusherController.removeEventListener(
       'resturant.updated',
       _onResturantUpdated,
@@ -144,8 +165,50 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void dispose() {
+    _primaryActionTimer?.cancel();
+    WidgetsBinding.instance.removeObserver(this);
+    _cartController.removeListener(_onCartStateChanged);
+    _primaryActionController.dispose();
     _unregisterPusherListeners();
     super.dispose();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final visible =
+        TickerMode.of(context) && (ModalRoute.of(context)?.isCurrent ?? true);
+    final becameVisible = visible && !_homeVisible;
+    _homeVisible = visible;
+    if (becameVisible) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) unawaited(_refreshPrimaryAction());
+      });
+    }
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    _appForeground = state == AppLifecycleState.resumed;
+    if (_appForeground) unawaited(_refreshPrimaryAction());
+  }
+
+  void _onOrderUpdated(PusherEvent event) {
+    unawaited(_refreshPrimaryAction());
+  }
+
+  void _onCartStateChanged() {
+    // The global cart can retain another account's old response. Only use its
+    // notifications as a signal; the action loads its own session-scoped data.
+    if (_cartController.cartResponse.state != ResponseState.loading) {
+      unawaited(_refreshPrimaryAction());
+    }
+  }
+
+  Future<void> _refreshPrimaryAction() async {
+    if (!mounted || !_homeVisible || !_appForeground) return;
+    final session = HiveMethods.getToken();
+    await _primaryActionController.refresh(session: session);
   }
 
   Future<void> _checkSelectedCity() async {
@@ -595,10 +658,70 @@ class _HomeScreenState extends State<HomeScreen> {
             lng: HiveMethods.getLan(),
           ),
       context.read<WalletController>().getWallet(),
+      _refreshPrimaryAction(),
     ]);
   }
 
-  void _startOrder(HomeController controller) {
+  Future<void> _onPrimaryAction(HomeController controller) async {
+    final action = HiveMethods.getToken() == null
+        ? HomePrimaryAction.startOrder
+        : _primaryActionController.action;
+    switch (action) {
+      case HomePrimaryAction.trackOrder:
+        final orders = _primaryActionController.activeOrders;
+        if (orders.isEmpty) return;
+        final order = orders.length == 1
+            ? orders.single
+            : await _chooseOrderToTrack(orders);
+        if (order == null || !mounted) return;
+        await NamedNavigatorImpl.push(
+          TrackingYourOrderScreen.routeName,
+          arguments: TrackingYourOrderArgs(id: order.id!),
+        );
+      case HomePrimaryAction.viewCart:
+        await NamedNavigatorImpl.push(CartScreen.routeName);
+      case HomePrimaryAction.startOrder:
+        await _startOrder(controller);
+    }
+    if (mounted) await _refreshPrimaryAction();
+  }
+
+  Future<OrdersModel?> _chooseOrderToTrack(List<OrdersModel> orders) {
+    return showModalBottomSheet<OrdersModel>(
+      context: context,
+      isScrollControlled: true,
+      showDragHandle: true,
+      builder: (sheetContext) => SafeArea(
+        child: Directionality(
+          textDirection: TextDirection.rtl,
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              maxHeight: MediaQuery.sizeOf(sheetContext).height * .7,
+            ),
+            child: ListView(
+              shrinkWrap: true,
+              padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+              children: [
+                Text('اختار الطلب اللي تحب تتابعه',
+                    style: AppTextStyle.text18BS()),
+                const SizedBox(height: 12),
+                for (final order in orders)
+                  ListTile(
+                    leading: const Icon(Icons.delivery_dining_rounded),
+                    title: Text('طلب رقم ${order.orderNo ?? order.id}'),
+                    subtitle: Text(order.resturantName ?? ''),
+                    trailing: const Icon(Icons.chevron_left_rounded),
+                    onTap: () => Navigator.pop(sheetContext, order),
+                  ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _startOrder(HomeController controller) async {
     if (!_hasDeliveryLocation) {
       _showCitySelectionSheet();
       return;
@@ -612,7 +735,7 @@ class _HomeScreenState extends State<HomeScreen> {
         )
         .toList();
     if (available.length == 1) {
-      NamedNavigatorImpl.push(
+      await NamedNavigatorImpl.push(
         RestaurantDetailsScreen.routeName,
         arguments: RestaurantDetailsArgs(id: available.single.id!),
       );
@@ -710,54 +833,62 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<HomeController>(
-      builder: (context, controller, _) {
-        final hasSelectedLocation = _hasDeliveryLocation;
-        return Scaffold(
-          backgroundColor: const Color(0xFF092225),
-          body: Stack(
-            fit: StackFit.expand,
-            children: [
-              const HomeVideoBackground(),
-              SafeArea(
-                bottom: false,
-                child: LayoutBuilder(
-                  builder: (context, constraints) => RefreshIndicator(
-                    color: const Color(0xFFFF8A35),
-                    onRefresh: _refreshHome,
-                    child: SingleChildScrollView(
-                      physics: const AlwaysScrollableScrollPhysics(
-                        parent: ClampingScrollPhysics(),
-                      ),
-                      child: HomeFullscreenContent(
-                        minHeight: constraints.maxHeight,
-                        bottomInset: MediaQuery.paddingOf(context).bottom,
-                        hasLocation: hasSelectedLocation,
-                        branchesKey: _branchesKey,
-                        header: HomeHeader(
-                          controller: controller,
-                          onLocationTap: () => _showCitySelectionSheet(),
+    return ListenableBuilder(
+      listenable: _primaryActionController,
+      builder: (context, _) => Consumer<HomeController>(
+        builder: (context, controller, _) {
+          final hasSelectedLocation = _hasDeliveryLocation;
+          return Scaffold(
+            backgroundColor: const Color(0xFF092225),
+            body: Stack(
+              fit: StackFit.expand,
+              children: [
+                const HomeVideoBackground(),
+                SafeArea(
+                  bottom: false,
+                  child: LayoutBuilder(
+                    builder: (context, constraints) => RefreshIndicator(
+                      color: const Color(0xFFFF8A35),
+                      onRefresh: _refreshHome,
+                      child: SingleChildScrollView(
+                        physics: const AlwaysScrollableScrollPhysics(
+                          parent: ClampingScrollPhysics(),
                         ),
-                        competition: HomeFeatureCards(
-                          controller: controller,
-                          padding: EdgeInsets.zero,
+                        child: HomeFullscreenContent(
+                          minHeight: constraints.maxHeight,
+                          bottomInset: MediaQuery.paddingOf(context).bottom,
+                          hasLocation: hasSelectedLocation,
+                          branchesKey: _branchesKey,
+                          header: HomeHeader(
+                            controller: controller,
+                            onLocationTap: () => _showCitySelectionSheet(),
+                          ),
+                          competition: HomeFeatureCards(
+                            controller: controller,
+                            padding: EdgeInsets.zero,
+                          ),
+                          branches: _buildNearbyBranches(controller),
+                          courier: GoDriveCardWidget(controller: controller),
+                          primaryAction: HiveMethods.getToken() == null
+                              ? HomePrimaryAction.startOrder
+                              : _primaryActionController.action,
+                          primaryActionLoading:
+                              _primaryActionController.isInitialLoading,
+                          onPrimaryAction: () => _onPrimaryAction(controller),
+                          onCompetition: () => NamedNavigatorImpl.push(
+                            DrawRestaurantScreen.routeName,
+                          ),
+                          onChangeAddress: () => _showCitySelectionSheet(),
                         ),
-                        branches: _buildNearbyBranches(controller),
-                        courier: GoDriveCardWidget(controller: controller),
-                        onStartOrder: () => _startOrder(controller),
-                        onCompetition: () => NamedNavigatorImpl.push(
-                          DrawRestaurantScreen.routeName,
-                        ),
-                        onChangeAddress: () => _showCitySelectionSheet(),
                       ),
                     ),
                   ),
                 ),
-              ),
-            ],
-          ),
-        );
-      },
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 }

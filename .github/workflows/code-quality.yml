@@ -34,6 +34,7 @@ jobs:
           lib/view/layout/map/utils/places_autocomplete_bridge_web.dart
           lib/view/layout/bottom_navigation/bottom_navigation_bar_screen.dart
           lib/view/layout/home/screen/home_screen.dart
+          lib/view/layout/home/controller/home_primary_action_controller.dart
           lib/view/layout/home/widgets/home_header.dart
           lib/view/layout/home/widgets/home_feature_cards.dart
           lib/view/layout/home/widgets/home_fullscreen_content.dart
@@ -62,6 +63,7 @@ jobs:
           lib/view/layout/map/utils/places_autocomplete_bridge_web.dart
           lib/view/layout/bottom_navigation/bottom_navigation_bar_screen.dart
           lib/view/layout/home/screen/home_screen.dart
+          lib/view/layout/home/controller/home_primary_action_controller.dart
           lib/view/layout/home/widgets/home_header.dart
           lib/view/layout/home/widgets/home_feature_cards.dart
           lib/view/layout/home/widgets/home_fullscreen_content.dart
