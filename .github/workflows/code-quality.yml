@@ -32,6 +32,14 @@ jobs:
           lib/helpers/utils/location_service.dart
           lib/helpers/utils/address_lookup_service.dart
           lib/view/layout/map/utils/places_autocomplete_bridge_web.dart
+          lib/view/layout/bottom_navigation/bottom_navigation_bar_screen.dart
+          lib/view/layout/home/screen/home_screen.dart
+          lib/view/layout/home/widgets/home_header.dart
+          lib/view/layout/home/widgets/home_feature_cards.dart
+          lib/view/layout/home/widgets/home_fullscreen_content.dart
+          lib/view/layout/home/widgets/home_video_background.dart
+          lib/view/layout/home/widgets/go_drive_card_widget.dart
+          lib/view/layout/home/widgets/restaurants_near_you_list_view_widget.dart
           test
           tool/check_places_web_callbacks.dart
       - name: Analyze maintained code
@@ -52,6 +60,14 @@ jobs:
           lib/view/layout/auth/controller/auth_controller.dart
           lib/view/layout/chat/controller/admin_chat_controller.dart
           lib/view/layout/map/utils/places_autocomplete_bridge_web.dart
+          lib/view/layout/bottom_navigation/bottom_navigation_bar_screen.dart
+          lib/view/layout/home/screen/home_screen.dart
+          lib/view/layout/home/widgets/home_header.dart
+          lib/view/layout/home/widgets/home_feature_cards.dart
+          lib/view/layout/home/widgets/home_fullscreen_content.dart
+          lib/view/layout/home/widgets/home_video_background.dart
+          lib/view/layout/home/widgets/go_drive_card_widget.dart
+          lib/view/layout/home/widgets/restaurants_near_you_list_view_widget.dart
           test
           tool/check_places_web_callbacks.dart
       - name: Verify JavaScript Places callbacks
