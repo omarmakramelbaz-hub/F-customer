@@ -6,7 +6,11 @@ class DrawBadge {
   final num? prizeAmount;
   final String? endDate;
 
-  const DrawBadge({this.couponWheelId, required this.label, this.prizeAmount, this.endDate});
+  const DrawBadge(
+      {this.couponWheelId,
+      required this.label,
+      this.prizeAmount,
+      this.endDate});
 
   static DrawBadge? fromJson(dynamic json) {
     if (json is! Map) return null;
@@ -36,7 +40,12 @@ class DrawWinner {
   final String? endDate;
   final String code;
 
-  const DrawWinner({this.id, required this.name, this.prizeAmount, this.endDate, required this.code});
+  const DrawWinner(
+      {this.id,
+      required this.name,
+      this.prizeAmount,
+      this.endDate,
+      required this.code});
 
   static DrawWinner? fromJson(dynamic json) {
     if (json is! Map) return null;
