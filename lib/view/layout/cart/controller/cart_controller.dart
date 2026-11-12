@@ -173,7 +173,6 @@ class CartController extends ChangeNotifier {
     Utils.loadingOff();
     if (response.state == ResponseState.complete) {
       setNotes(null);
-      log(response.data.toString());
       // CommonMethods.showToast(message: response.data['message']);
 
       if (response.data['data'] == 1) {

@@ -14,6 +14,7 @@ import '../../../custom_widgets/custom_payment_web_view/custom_payment_web_view.
 import '../../address/controller/address_controller.dart';
 import '../controller/cart_controller.dart';
 import '../screen/order_otp_screen.dart';
+import '../../orders/screen/tracking_your_order_screen.dart';
 import '../screen/your_order_successfully_completed_screen.dart';
 
 class ExecuteOrderButton extends StatelessWidget {
@@ -119,13 +120,20 @@ class ExecuteOrderButton extends StatelessWidget {
           }
 
           log(selectedDateZone.toString());
-          if (cartController.isSwitchedscheduleDate == true && selectedDate == null && selectedTime == null) {
+          if (cartController.isSwitchedscheduleDate == true &&
+              selectedDate == null &&
+              selectedTime == null) {
             CommonMethods.showError(message: 'chooseReDeliveryOrder'.tr);
-          } else if (cartController.isSwitchedscheduleDate == true && selectedDate != null && selectedTime == null) {
+          } else if (cartController.isSwitchedscheduleDate == true &&
+              selectedDate != null &&
+              selectedTime == null) {
             CommonMethods.showError(message: 'chooseReDeliveryOrder'.tr);
-          } else if (cartController.isSwitchedscheduleDate == true && selectedDate == null && selectedTime != null) {
+          } else if (cartController.isSwitchedscheduleDate == true &&
+              selectedDate == null &&
+              selectedTime != null) {
             CommonMethods.showError(message: 'chooseReDeliveryOrder'.tr);
-          } else if (cartController.cart?.resturant?.zoneType != null && selectedDateZone == null) {
+          } else if (cartController.cart?.resturant?.zoneType != null &&
+              selectedDateZone == null) {
             CommonMethods.showError(message: 'doYouWantToScheduleYourOrder'.tr);
           } else if (cartController.cart?.resturant?.resturantAreas?.any(
                 (e) =>
@@ -154,10 +162,12 @@ class ExecuteOrderButton extends StatelessWidget {
                           : '',
                   onSuccess: (orderId) {
                     cartController.setIsSwitchedscheduleDate(false);
-                    if (cartController.selectedPayment == 'cash' || cartController.selectedPayment == 'wallet') {
+                    if (cartController.selectedPayment == 'cash' ||
+                        cartController.selectedPayment == 'wallet') {
                       NamedNavigatorImpl.push(
                         YourOrderSuccessfullyCompletedScreen.routeName,
-                        arguments: YourOrderSuccessfullyCompletedArgs(id: orderId),
+                        arguments:
+                            YourOrderSuccessfullyCompletedArgs(id: orderId),
                       );
 
                       context.read<CartController>().getCart();
@@ -169,15 +179,20 @@ class ExecuteOrderButton extends StatelessWidget {
                         CustomPaymentWebViewScreen.routeName,
                         arguments: PaymentArgs(
                           url: link,
+                          orderId: orderId,
                           onFailed: () {
-                            CommonMethods.showError(message: 'paymentFailed'.tr);
+                            CommonMethods.showError(
+                                message: 'paymentFailed'.tr);
                           },
                           onSuccess: () {
+                            if (!context.mounted) return;
+                            cartController.setIsSwitchedscheduleDate(false);
                             NamedNavigatorImpl.push(
-                              YourOrderSuccessfullyCompletedScreen.routeName,
-                              arguments: YourOrderSuccessfullyCompletedArgs(id: orderId),
+                              TrackingYourOrderScreen.routeName,
+                              clean: true,
+                              arguments: TrackingYourOrderArgs(id: orderId),
                             );
-                            context.read<CartController>().getCart();
+                            cartController.getCart();
                           },
                         ),
                       );
