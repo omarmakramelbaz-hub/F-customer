@@ -4,6 +4,8 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+import '../../../../helpers/forced_update/forced_update.dart';
 import 'package:pusher_channels_flutter/pusher_channels_flutter.dart';
 
 import '../../../../helpers/hive/hive_methods.dart';
@@ -79,6 +81,8 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     );
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
+      // An app older than the dashboard allows shows the update message first.
+      unawaited(ForcedUpdate.check(context));
       await _ensureProfileLoaded();
       if (!mounted) return;
       final homeController = context.read<HomeController>();
