@@ -29,7 +29,12 @@ class InPreparationWidget extends StatelessWidget {
         color: AppColors.whiteColor,
         borderRadius: BorderRadius.circular(24),
         border: Border.all(color: AppColors.greyColor.withValues(alpha: .12)),
-        boxShadow: [BoxShadow(color: AppColors.greyColor.withValues(alpha: .12), blurRadius: 18, offset: const Offset(0, 6))],
+        boxShadow: [
+          BoxShadow(
+              color: AppColors.greyColor.withValues(alpha: .12),
+              blurRadius: 18,
+              offset: const Offset(0, 6))
+        ],
       ),
       child: InkWell(
         borderRadius: BorderRadius.circular(24),
@@ -38,44 +43,83 @@ class InPreparationWidget extends StatelessWidget {
           padding: const EdgeInsets.all(14),
           child: Column(children: [
             Row(children: [
-              Expanded(child: Row(children: [
-                Icon(Icons.receipt_long_rounded, size: 18, color: AppColors.mainAppColor),
+              Expanded(
+                  child: Row(children: [
+                Icon(Icons.receipt_long_rounded,
+                    size: 18, color: AppColors.mainAppColor),
                 7.sbW,
                 Text('requestCode'.tr, style: AppTextStyle.text13RG()),
                 5.sbW,
-                Flexible(child: Text(orders.orderNo ?? '', overflow: TextOverflow.ellipsis, style: AppTextStyle.text13BS())),
+                Flexible(
+                    child: Text(orders.orderNo ?? '',
+                        overflow: TextOverflow.ellipsis,
+                        style: AppTextStyle.text13BS())),
               ])),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 7),
-                decoration: BoxDecoration(color: color.withValues(alpha: .10), borderRadius: BorderRadius.circular(14)),
-                child: Text(getStatusTitle(status, orders.scheduleDate, orders.delegateFromOut), style: AppTextStyle.text12BS().copyWith(color: color)),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 11, vertical: 7),
+                decoration: BoxDecoration(
+                    color: color.withValues(alpha: .10),
+                    borderRadius: BorderRadius.circular(14)),
+                child: Text(
+                    getStatusTitle(
+                        status, orders.scheduleDate, orders.delegateFromOut),
+                    style: AppTextStyle.text12BS().copyWith(color: color)),
               ),
             ]),
             12.sbH,
             Row(children: [
               ClipRRect(
                 borderRadius: BorderRadius.circular(16),
-                child: CustomNetworkImage(radius: 16, imageUrl: orders.resturantLogo ?? '', width: 78, height: 78, fit: BoxFit.cover),
+                child: CustomNetworkImage(
+                    radius: 16,
+                    imageUrl: orders.resturantLogo ?? '',
+                    width: 78,
+                    height: 78,
+                    fit: BoxFit.cover),
               ),
               12.sbW,
-              Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Text(orders.resturantName ?? '', maxLines: 1, overflow: TextOverflow.ellipsis, style: AppTextStyle.text16BS()),
-                7.sbH,
-                Row(children: [
-                  Icon(Icons.calendar_today_rounded, size: 14, color: AppColors.greyColor),
-                  5.sbW,
-                  Flexible(child: Text(DateMethods.formatToDate(orders.scheduleDate ?? orders.createdAt ?? ''), overflow: TextOverflow.ellipsis, style: AppTextStyle.text12RG())),
-                ]),
-                7.sbH,
-                Text('pound'.tr.replaceAll('{}', '${orders.grandTotal ?? 0}'), style: AppTextStyle.text16BS().copyWith(color: AppColors.mainAppColor)),
-              ])),
-              Icon(Icons.chevron_left_rounded, color: AppColors.greyColor, size: 24),
+              Expanded(
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                    Text(orders.resturantName ?? '',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: AppTextStyle.text16BS()),
+                    7.sbH,
+                    Row(children: [
+                      Icon(Icons.calendar_today_rounded,
+                          size: 14, color: AppColors.greyColor),
+                      5.sbW,
+                      Flexible(
+                          child: Text(
+                              DateMethods.formatToDate(orders.scheduleDate ??
+                                  orders.createdAt ??
+                                  ''),
+                              overflow: TextOverflow.ellipsis,
+                              style: AppTextStyle.text12RG())),
+                    ]),
+                    7.sbH,
+                    Text(
+                        'pound'
+                            .tr
+                            .replaceAll('{}', '${orders.grandTotal ?? 0}'),
+                        style: AppTextStyle.text16BS()
+                            .copyWith(color: AppColors.mainAppColor)),
+                  ])),
+              Icon(Icons.chevron_left_rounded,
+                  color: AppColors.greyColor, size: 24),
             ]),
             14.sbH,
             _Progress(status: status),
             13.sbH,
             Row(children: [
-              Expanded(child: Text(_statusMessage(status), maxLines: 1, overflow: TextOverflow.ellipsis, style: AppTextStyle.text12RG())),
+              Expanded(
+                  child: Text(_statusMessage(status),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: AppTextStyle.text12RG())),
               _action(context),
             ]),
           ]),
@@ -87,23 +131,47 @@ class InPreparationWidget extends StatelessWidget {
   Widget _action(BuildContext context) {
     return MultiStateConditionalBuilder(
       conditions: [
-        ConditionBuilder(when: orders.status == 'shipped', builder: (_) => _ActionButton(text: 'trackingYourOrder'.tr, icon: Icons.location_searching_rounded, onTap: () => _openTracking(context))),
-        ConditionBuilder(when: orders.status == 'completed', builder: (_) => _ActionButton(text: 'requestAgain'.tr, icon: Icons.replay_rounded, onTap: () => NamedNavigatorImpl.push(RequestAgainScreen.routeName, arguments: RequestAgainArgs(id: orders.id ?? 0)))),
-        ConditionBuilder(when: orders.status == 'pending' || (orders.status == 'another_delegate' && orders.paymentType == 'cash'), builder: (_) => _ActionButton(text: 'cancelOrder'.tr, icon: Icons.close_rounded, onTap: () => CommonMethods.showChooseDialog(context, message: 'didYouWantToCancelThisOrder'.tr, onPressed: () => context.read<OrdersController>().cancelOrder(orderId: orders.id!, onSuccess: () => NamedNavigatorImpl.pop())))),
+        ConditionBuilder(
+            when: orders.status == 'shipped',
+            builder: (_) => _ActionButton(
+                text: 'trackingYourOrder'.tr,
+                icon: Icons.location_searching_rounded,
+                onTap: () => _openTracking(context))),
+        ConditionBuilder(
+            when: orders.status == 'completed',
+            builder: (_) => _ActionButton(
+                text: 'requestAgain'.tr,
+                icon: Icons.replay_rounded,
+                onTap: () => NamedNavigatorImpl.push(
+                    RequestAgainScreen.routeName,
+                    arguments: RequestAgainArgs(id: orders.id ?? 0)))),
+        ConditionBuilder(
+            when: orders.status == 'pending' ||
+                (orders.status == 'another_delegate' &&
+                    orders.paymentType == 'cash'),
+            builder: (_) => _ActionButton(
+                text: 'cancelOrder'.tr,
+                icon: Icons.close_rounded,
+                onTap: () => CommonMethods.showChooseDialog(context,
+                    message: 'didYouWantToCancelThisOrder'.tr,
+                    onPressed: () => context
+                        .read<OrdersController>()
+                        .cancelOrder(
+                            orderId: orders.id!,
+                            onSuccess: () => NamedNavigatorImpl.pop())))),
       ],
       fallback: (_) => const SizedBox.shrink(),
     );
   }
 
   void _openOrder(BuildContext context) {
-    if (orders.status != 'completed' && orders.status != 'cancelled' && orders.status != 'declined') {
-      _openTracking(context);
-    } else if (orders.status == 'completed') {
-      NamedNavigatorImpl.push(RequestAgainScreen.routeName, arguments: RequestAgainArgs(id: orders.id ?? 0));
-    }
+    if ((orders.id ?? 0) <= 0) return;
+    _openTracking(context);
   }
 
-  void _openTracking(BuildContext context) => NamedNavigatorImpl.push(TrackingYourOrderScreen.routeName, arguments: TrackingYourOrderArgs(id: orders.id ?? 0));
+  void _openTracking(BuildContext context) =>
+      NamedNavigatorImpl.push(TrackingYourOrderScreen.routeName,
+          arguments: TrackingYourOrderArgs(id: orders.id ?? 0));
 
   Color _statusColor(String? status) {
     if (status == 'completed') return Colors.green;
@@ -113,24 +181,36 @@ class InPreparationWidget extends StatelessWidget {
 
   String _statusMessage(String? status) {
     if (status == 'completed') return 'yourOrderHasBeenDelivered'.tr;
-    if (status == 'shipped') return 'theRepresentativeHasReceivedTheOrderAndIsNowHeadingToYourDestination'.tr;
+    if (status == 'shipped') {
+      return 'theRepresentativeHasReceivedTheOrderAndIsNowHeadingToYourDestination'
+          .tr;
+    }
     if (status == 'cancelled') return 'orderCanceled'.tr;
     if (status == 'declined') return 'orderDeclinedFromRestaurant'.tr;
     return 'yourOrderHasBeenReceivedAndIsBeingPreparedPleaseWaitALittle'.tr;
   }
 
-  String getStatusTitle(String? status, String? scheduleDate, String? delegateFromOut) {
+  String getStatusTitle(
+      String? status, String? scheduleDate, String? delegateFromOut) {
     switch (status) {
-      case 'completed': return 'delivered'.tr;
-      case 'cancelled': return 'canceled'.tr;
-      case 'declined': return 'rejectOrder'.tr;
+      case 'completed':
+        return 'delivered'.tr;
+      case 'cancelled':
+        return 'canceled'.tr;
+      case 'declined':
+        return 'rejectOrder'.tr;
       case 'pending':
-      case 'another_delegate': return 'pending'.tr;
-      case 'accepted': return 'inPreparation'.tr;
+      case 'another_delegate':
+        return 'pending'.tr;
+      case 'accepted':
+        return 'inPreparation'.tr;
       case 'shipped':
-      case 'new_order': return 'delegateInRoute'.tr;
+      case 'new_order':
+        return 'delegateInRoute'.tr;
       default:
-        if (scheduleDate != null && status != 'completed') return 'scheduledOrder'.tr;
+        if (scheduleDate != null && status != 'completed') {
+          return 'scheduledOrder'.tr;
+        }
         if (delegateFromOut == 'in_resturant') return 'delivered'.tr;
         return '';
     }
@@ -151,15 +231,44 @@ class _Progress extends StatelessWidget {
       _ => 0,
     };
     final failed = status == 'cancelled' || status == 'declined';
-    final labels = ['accepted'.tr, 'prepareTheOrder'.tr, 'inTheWay'.tr, 'delivered'.tr];
-    return Row(children: List.generate(7, (i) {
-      if (i.isOdd) return Expanded(child: Container(height: 3, color: (!failed && i ~/ 2 < step) ? AppColors.mainAppColor : AppColors.greyColor.withValues(alpha: .15)));
+    final labels = [
+      'accepted'.tr,
+      'prepareTheOrder'.tr,
+      'inTheWay'.tr,
+      'delivered'.tr
+    ];
+    return Row(
+        children: List.generate(7, (i) {
+      if (i.isOdd) {
+        return Expanded(
+            child: Container(
+                height: 3,
+                color: (!failed && i ~/ 2 < step)
+                    ? AppColors.mainAppColor
+                    : AppColors.greyColor.withValues(alpha: .15)));
+      }
       final n = i ~/ 2;
       final active = !failed && n <= step;
       return Column(children: [
-        Container(width: 22, height: 22, decoration: BoxDecoration(color: active ? AppColors.mainAppColor : AppColors.greyColor.withValues(alpha: .10), shape: BoxShape.circle), child: active ? const Icon(Icons.check, size: 14, color: Colors.white) : null),
+        Container(
+            width: 22,
+            height: 22,
+            decoration: BoxDecoration(
+                color: active
+                    ? AppColors.mainAppColor
+                    : AppColors.greyColor.withValues(alpha: .10),
+                shape: BoxShape.circle),
+            child: active
+                ? const Icon(Icons.check, size: 14, color: Colors.white)
+                : null),
         const SizedBox(height: 4),
-        SizedBox(width: 48, child: Text(labels[n], maxLines: 1, overflow: TextOverflow.ellipsis, textAlign: TextAlign.center, style: AppTextStyle.text9RG())),
+        SizedBox(
+            width: 48,
+            child: Text(labels[n],
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.center,
+                style: AppTextStyle.text9RG())),
       ]);
     }));
   }
@@ -169,20 +278,25 @@ class _ActionButton extends StatelessWidget {
   final String text;
   final IconData icon;
   final VoidCallback onTap;
-  const _ActionButton({required this.text, required this.icon, required this.onTap});
+  const _ActionButton(
+      {required this.text, required this.icon, required this.onTap});
 
   @override
   Widget build(BuildContext context) => InkWell(
-    onTap: onTap,
-    borderRadius: BorderRadius.circular(14),
-    child: Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-      decoration: BoxDecoration(color: AppColors.mainAppColor.withValues(alpha: .08), borderRadius: BorderRadius.circular(14)),
-      child: Row(mainAxisSize: MainAxisSize.min, children: [
-        Icon(icon, size: 15, color: AppColors.mainAppColor),
-        const SizedBox(width: 5),
-        Text(text, style: AppTextStyle.text11BS().copyWith(color: AppColors.mainAppColor)),
-      ]),
-    ),
-  );
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(14),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+          decoration: BoxDecoration(
+              color: AppColors.mainAppColor.withValues(alpha: .08),
+              borderRadius: BorderRadius.circular(14)),
+          child: Row(mainAxisSize: MainAxisSize.min, children: [
+            Icon(icon, size: 15, color: AppColors.mainAppColor),
+            const SizedBox(width: 5),
+            Text(text,
+                style: AppTextStyle.text11BS()
+                    .copyWith(color: AppColors.mainAppColor)),
+          ]),
+        ),
+      );
 }

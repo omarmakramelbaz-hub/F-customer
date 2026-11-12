@@ -45,6 +45,7 @@ jobs:
           lib/view/layout/orders/controller/orders_controller.dart
           lib/view/layout/orders/widgets/live_order_tracking_hero.dart
           lib/view/layout/orders/widgets/live_order_tracking_content.dart
+          lib/view/layout/orders/widgets/in_preparation_widget.dart
           test
           tool/check_places_web_callbacks.dart
       - name: Analyze maintained code
@@ -78,6 +79,7 @@ jobs:
           lib/view/layout/orders/controller/orders_controller.dart
           lib/view/layout/orders/widgets/live_order_tracking_hero.dart
           lib/view/layout/orders/widgets/live_order_tracking_content.dart
+          lib/view/layout/orders/widgets/in_preparation_widget.dart
           test
           tool/check_places_web_callbacks.dart
       - name: Verify JavaScript Places callbacks
