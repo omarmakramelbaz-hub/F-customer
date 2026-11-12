@@ -88,7 +88,7 @@ class _ChargeWalletBottomSheetState extends State<ChargeWalletBottomSheet> {
 
   @override
   void dispose() {
-    widget.walletController.cancelCheckoutCreation();
+    widget.walletController.cancelCheckoutCreation(notify: false);
     super.dispose();
   }
 

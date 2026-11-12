@@ -48,7 +48,7 @@ class WalletController extends ChangeNotifier {
   }
 
   void initialWallet() {
-    cancelCheckoutCreation();
+    cancelCheckoutCreation(notify: false);
     _walletResponse = ApiResponse(state: ResponseState.sleep, data: null);
     _wallet = null;
     notifyListeners();
@@ -211,7 +211,7 @@ class WalletController extends ChangeNotifier {
     );
   }
 
-  void cancelCheckoutCreation() {
+  void cancelCheckoutCreation({bool notify = true}) {
     if (_disposed) return;
     final shouldNotify = _isCreatingCheckout || _checkoutError != null;
     ++_checkoutGeneration;
@@ -219,7 +219,7 @@ class WalletController extends ChangeNotifier {
     _checkoutCancellation = null;
     _isCreatingCheckout = false;
     _checkoutError = null;
-    if (shouldNotify) notifyListeners();
+    if (shouldNotify && notify) notifyListeners();
   }
 
   @override

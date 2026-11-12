@@ -213,7 +213,9 @@ void main() {
     final wallet = await openSheet(tester, service, destinations);
     await tester.tap(find.byKey(const ValueKey('wallet-checkout-submit')));
     await tester.pump();
-    await HiveMethods.updateToken('synthetic-account-b');
+    await tester.runAsync(
+      () => HiveMethods.updateToken('synthetic-account-b'),
+    );
     service.response.complete(_ready());
     await tester.pumpAndSettle();
     expect(wallet.isCreatingCheckout, isFalse);
