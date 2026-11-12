@@ -69,3 +69,22 @@ or network writes.
 | `pending` | Preparing |
 | `shipped` | On the Way |
 | `completed` | Delivered |
+
+## Embedded checkout
+
+Card and Vodafone Cash checkout stay in the embedded Paymob screen. Native bank
+verification windows share the same in-app checkout; web builds include the
+InAppWebView bridge and keep the hosted form in an iframe. No card data or
+checkout URLs are logged by the payment screen.
+
+For restaurant purchases the app reads the authenticated order every three
+seconds while checkout is visible. Legacy online orders start with a null status;
+the deployed backend's RestaurantOrderPayment activates them only after verifying
+the gateway transaction. Explicit payment-status fields, when provided, take
+precedence. Closing checkout or losing connectivity never implies success.
+After confirmation, checkout is removed before tracking opens for that order,
+so a repeated page event cannot pop tracking or submit another order.
+
+The payment changes do not alter settlement, wallet balances, webhook verification
+or the staff-controlled order lifecycle. Unit and widget tests use synthetic
+checkout pages and responses and do not charge a live payment method.

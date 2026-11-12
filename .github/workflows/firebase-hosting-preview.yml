@@ -46,8 +46,11 @@ jobs:
 
           maps_script = '<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBDfirv6d7BiO-9YnsU5zCHEn9iM9iNtuM&libraries=places&language=ar&region=EG&v=weekly"></script>'
           google_signin_meta = '<meta name="google-signin-client_id" content="284797821306-sgmrmkr2ibd1nan66svmn9d3oq76vtj1.apps.googleusercontent.com">'
+          payment_webview_script = '<script type="application/javascript" src="/assets/packages/flutter_inappwebview_web/assets/web/web_support.js" defer></script>'
 
           additions = []
+          if 'flutter_inappwebview_web/assets/web/web_support.js' not in html:
+              additions.append(payment_webview_script)
           if 'maps.googleapis.com/maps/api/js' not in html:
               additions.append(maps_script)
           if 'google-signin-client_id' not in html:
@@ -63,6 +66,16 @@ jobs:
           flutter build web --release --no-pub \
             --dart-define=GOOGLE_WEB_CLIENT_ID=284797821306-sgmrmkr2ibd1nan66svmn9d3oq76vtj1.apps.googleusercontent.com \
             --dart-define=FACEBOOK_APP_ID=997704678612295
+
+      - name: Verify embedded payment support
+        run: |
+          python3 - <<'PYWEB'
+          from pathlib import Path
+          bridge = Path('build/web/assets/packages/flutter_inappwebview_web/assets/web/web_support.js')
+          assert bridge.is_file(), 'Embedded payment bridge is missing'
+          assert 'window.flutter_inappwebview' in bridge.read_text(), 'Invalid payment bridge'
+          assert 'flutter_inappwebview_web/assets/web/web_support.js' in Path('build/web/index.html').read_text(), 'Payment bridge was not included'
+          PYWEB
 
       - name: Add Meta policy pages
         run: |

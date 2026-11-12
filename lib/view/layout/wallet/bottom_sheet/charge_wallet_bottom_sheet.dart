@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -26,7 +24,8 @@ class ChargeWalletBottomSheet extends StatefulWidget {
   final MyAccountController myAccountController;
 
   @override
-  State<ChargeWalletBottomSheet> createState() => _ChargeWalletBottomSheetState();
+  State<ChargeWalletBottomSheet> createState() =>
+      _ChargeWalletBottomSheetState();
 }
 
 class _ChargeWalletBottomSheetState extends State<ChargeWalletBottomSheet> {
@@ -46,7 +45,6 @@ class _ChargeWalletBottomSheetState extends State<ChargeWalletBottomSheet> {
     walletController.chargingWallet(
       amount: walletController.chargeAmountEc.text,
       onSuccess: (link) {
-        log(link);
         NamedNavigatorImpl.push(
           CustomPaymentWebViewScreen.routeName,
           arguments: PaymentArgs(
@@ -184,14 +182,16 @@ class _ChargeWalletBottomSheetState extends State<ChargeWalletBottomSheet> {
                               const SizedBox(height: 6),
                               TextFormField(
                                 controller: walletController.chargeAmountEc,
-                                focusNode: walletController.chargeAmountFocusNode,
+                                focusNode:
+                                    walletController.chargeAmountFocusNode,
                                 keyboardType: TextInputType.number,
                                 textDirection: TextDirection.ltr,
                                 inputFormatters: [
                                   FilteringTextInputFormatter.digitsOnly,
                                 ],
-                                onFieldSubmitted: (_) =>
-                                    walletController.chargeAmountFocusNode.unfocus(),
+                                onFieldSubmitted: (_) => walletController
+                                    .chargeAmountFocusNode
+                                    .unfocus(),
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
                                     return 'enterAmount'.tr;
@@ -263,7 +263,9 @@ class _ChargeWalletBottomSheetState extends State<ChargeWalletBottomSheet> {
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
                               Text(
-                                isArabic ? 'اختر وسيلة الدفع' : 'Payment method',
+                                isArabic
+                                    ? 'اختر وسيلة الدفع'
+                                    : 'Payment method',
                                 style: AppTextStyle.text12BS(),
                               ),
                               const SizedBox(height: 6),
@@ -328,7 +330,8 @@ class _ChargeWalletBottomSheetState extends State<ChargeWalletBottomSheet> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                const Icon(Icons.lock_outline_rounded, size: 17),
+                                const Icon(Icons.lock_outline_rounded,
+                                    size: 17),
                                 const SizedBox(width: 6),
                                 Text(
                                   'payNow'.tr,

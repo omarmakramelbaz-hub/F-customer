@@ -1,152 +1,262 @@
-import 'dart:developer';
+import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 
-import '../../../helpers/routes/app_routers_import.dart';
-import '../../../helpers/translation/all_translation.dart';
-import '../../../helpers/utils/common_methods.dart';
-import '../custom_app_bar/custom_app_bar.dart';
+import '../../../helpers/networking/urls.dart';
+import '../../../helpers/payment/order_payment_confirmation.dart';
+import '../../../helpers/payment/payment_navigation_policy.dart';
+import 'embedded_payment_browser.dart';
 
 class PaymentArgs {
   final String url;
+  final int? orderId;
   final VoidCallback onSuccess;
   final VoidCallback onFailed;
-  PaymentArgs({required this.url, required this.onSuccess, required this.onFailed});
+
+  PaymentArgs({
+    required this.url,
+    required this.onSuccess,
+    required this.onFailed,
+    this.orderId,
+  });
 }
 
 class CustomPaymentWebViewScreen extends StatefulWidget {
-  const CustomPaymentWebViewScreen({super.key, required this.args});
+  const CustomPaymentWebViewScreen({
+    super.key,
+    required this.args,
+    this.browserBuilder,
+    this.confirmationReader,
+  });
+
   static const routeName = 'CustomPaymentWebViewScreen';
   final PaymentArgs args;
+  final PaymentBrowserBuilder? browserBuilder;
+  final PaymentConfirmationReader? confirmationReader;
 
   @override
-  State<CustomPaymentWebViewScreen> createState() => _CustomPaymentWebViewScreenState();
+  State<CustomPaymentWebViewScreen> createState() =>
+      _CustomPaymentWebViewScreenState();
 }
 
-class _CustomPaymentWebViewScreenState extends State<CustomPaymentWebViewScreen> {
-  final GlobalKey webViewKey = GlobalKey();
-  late final InAppWebViewController _controller;
+class _CustomPaymentWebViewScreenState extends State<CustomPaymentWebViewScreen>
+    with WidgetsBindingObserver {
+  late final PaymentNavigationPolicy _policy;
+  Uri? _checkout;
+  PaymentConfirmationMonitor? _monitor;
+  double _progress = 0;
+  bool _loadError = false;
+  bool _awaitingConfirmation = false;
+  bool _finished = false;
+  bool _resumed = true;
+  bool? _pendingCompletion;
+  int _loadAttempt = 0;
 
-  double progress = 0;
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    _policy = PaymentNavigationPolicy(Uri.parse(Urls.baseUrl));
+    final uri = Uri.tryParse(widget.args.url);
+    if (uri != null &&
+        _policy.isCheckoutUrl(uri) &&
+        (widget.args.orderId == null || widget.args.orderId! > 0)) {
+      _checkout = uri;
+      if (widget.args.orderId != null) {
+        _monitor = PaymentConfirmationMonitor(
+          orderId: widget.args.orderId!,
+          read: widget.confirmationReader ?? OrderPaymentConfirmation().read,
+        )..addListener(_confirmationChanged);
+      }
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _syncMonitor();
+    final pending = _pendingCompletion;
+    if (pending != null && (ModalRoute.of(context)?.isCurrent ?? true)) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => _finish(pending));
+    }
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    _resumed = state == AppLifecycleState.resumed;
+    _syncMonitor();
+  }
+
+  void _syncMonitor() {
+    if (_resumed && !_finished && (ModalRoute.of(context)?.isCurrent ?? true)) {
+      _monitor?.resume();
+    } else {
+      _monitor?.pause();
+    }
+  }
+
+  void _confirmationChanged() {
+    switch (_monitor?.result) {
+      case PaymentConfirmation.confirmed:
+        _finish(true);
+      case PaymentConfirmation.failed:
+        _finish(false);
+      default:
+        break;
+    }
+  }
+
+  void _finish(bool success) {
+    if (!mounted || _finished) return;
+    if (!(ModalRoute.of(context)?.isCurrent ?? true)) {
+      _pendingCompletion = success;
+      return;
+    }
+    _finished = true;
+    _pendingCompletion = null;
+    _monitor?.pause();
+    final callback = success ? widget.args.onSuccess : widget.args.onFailed;
+    // Remove this route before the caller opens tracking or closes a wallet sheet.
+    Navigator.of(context).pop(success);
+    scheduleMicrotask(callback);
+  }
+
+  Future<bool> _navigate(Uri uri, bool mainFrame) async {
+    if (!mounted || _finished) return false;
+    if (!mainFrame) return _policy.canNavigate(uri);
+    switch (_policy.result(uri)) {
+      case PaymentReturn.success:
+        if (_monitor == null) {
+          _finish(true);
+        } else {
+          setState(() => _awaitingConfirmation = true);
+          unawaited(_monitor!.checkNow());
+        }
+        return false;
+      case PaymentReturn.failure:
+        if (_monitor?.result == PaymentConfirmation.confirmed) {
+          _finish(true);
+        } else {
+          _finish(false);
+        }
+        return false;
+      case null:
+        return _policy.canNavigate(uri);
+    }
+  }
+
+  void _reload() {
+    setState(() {
+      _loadAttempt++;
+      _progress = 0;
+      _loadError = false;
+    });
+    unawaited(_monitor?.checkNow());
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _monitor?.removeListener(_confirmationChanged);
+    _monitor?.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final options = InAppWebViewGroupOptions(
-      crossPlatform: InAppWebViewOptions(
-        javaScriptEnabled: true,
-        useShouldOverrideUrlLoading: true,
-        mediaPlaybackRequiresUserGesture: false,
-        clearCache: false,
-      ),
-      android: AndroidInAppWebViewOptions(useHybridComposition: true),
-      ios: IOSInAppWebViewOptions(allowsInlineMediaPlayback: true),
-    );
-
+    final isArabic = Localizations.localeOf(context).languageCode == 'ar';
+    final checkout = _checkout;
+    final events = checkout == null
+        ? null
+        : PaymentBrowserEvents(
+            url: checkout,
+            navigate: _navigate,
+            progress: (value) {
+              if (mounted && !_finished) {
+                setState(() => _progress = value.clamp(0, 1));
+              }
+            },
+            error: () {
+              if (mounted && !_finished) setState(() => _loadError = true);
+            },
+          );
     return Scaffold(
-      appBar: CustomAppBar(
+      appBar: AppBar(
+        title: Text(isArabic ? 'الدفع داخل التطبيق' : 'In-app payment'),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => NamedNavigatorImpl.pop(),
+          key: const ValueKey('close-payment'),
+          tooltip: isArabic ? 'إغلاق صفحة الدفع' : 'Close payment',
+          icon: const Icon(Icons.close),
+          onPressed: () => Navigator.of(context).maybePop(),
         ),
+        actions: const [
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16),
+            child: Icon(Icons.lock_outline, color: Color(0xFFFD7201)),
+          ),
+        ],
       ),
       body: SafeArea(
-        child: Stack(
+        child: Column(
           children: [
-            InAppWebView(
-              key: webViewKey,
-              initialUrlRequest: URLRequest(url: WebUri(widget.args.url)),
-              initialOptions: options,
-              onWebViewCreated: (controller) {
-                _controller = controller;
-                // JS message handler similar to JavaScriptChannel 'Toaster'
-                try {
-                  _controller.addJavaScriptHandler(
-                    handlerName: 'Toaster',
-                    callback: (args) {
-                      final message = args.isNotEmpty ? args.first?.toString() ?? '' : '';
-                      if (message.isNotEmpty) {
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
-                      }
-                      return null;
-                    },
-                  );
-                } catch (_) {}
-              },
-              onProgressChanged: (controller, p) {
-                setState(() => progress = p / 100);
-              },
-              onLoadStart: (controller, uri) => log('Page started loading: ${uri?.toString() ?? ''}'),
-              onLoadStop: (controller, uri) => log('Page finished loading: ${uri?.toString() ?? ''}'),
-              shouldOverrideUrlLoading: (controller, navigationAction) async {
-                final uri = navigationAction.request.url;
-                final url = uri?.toString() ?? '';
-                try {
-                  final policy = await _pageRedirect(context, url);
-                  return policy == NavigationActionPolicy.CANCEL
-                      ? NavigationActionPolicy.CANCEL
-                      : NavigationActionPolicy.ALLOW;
-                } catch (e) {
-                  log('Navigation error: $e');
-                  return NavigationActionPolicy.ALLOW;
-                }
-              },
-              onLoadError: (controller, uri, code, message) {
-                log('Error occurred on page: $code - $message');
-              },
-              onConsoleMessage: (controller, consoleMessage) {
-                log('Console: ${consoleMessage.message}');
-              },
+            if (_progress < 1 && !_loadError && checkout != null)
+              LinearProgressIndicator(value: _progress == 0 ? null : _progress),
+            if (_awaitingConfirmation)
+              Padding(
+                padding: const EdgeInsets.all(12),
+                child: Text(isArabic
+                    ? 'جارٍ تأكيد الدفع من السيرفر...'
+                    : 'Confirming payment with the server...'),
+              ),
+            Expanded(
+              child: events == null || _loadError
+                  ? Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(24),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(Icons.wifi_off_rounded, size: 40),
+                            const SizedBox(height: 12),
+                            Text(
+                              isArabic
+                                  ? 'تعذّر تحميل صفحة الدفع'
+                                  : 'Could not load the payment page',
+                              textAlign: TextAlign.center,
+                            ),
+                            if (events != null) ...[
+                              const SizedBox(height: 16),
+                              FilledButton(
+                                key: const ValueKey('retry-payment'),
+                                onPressed: _reload,
+                                child:
+                                    Text(isArabic ? 'إعادة المحاولة' : 'Retry'),
+                              ),
+                            ],
+                          ],
+                        ),
+                      ),
+                    )
+                  : KeyedSubtree(
+                      key: ValueKey(_loadAttempt),
+                      child: widget.browserBuilder?.call(context, events) ??
+                          EmbeddedPaymentBrowser(events: events),
+                    ),
             ),
-            if (progress < 1.0)
-              Positioned(top: 0, right: 0, left: 0, child: LinearProgressIndicator(value: progress))
-            else
-              Container(),
+            if (widget.args.orderId != null)
+              Padding(
+                padding: const EdgeInsets.all(12),
+                child: Text(
+                  isArabic
+                      ? 'بعد تأكيد الدفع سيتم فتح تتبع طلبك تلقائيًا'
+                      : 'Order tracking opens automatically after payment is confirmed',
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+              ),
           ],
         ),
       ),
     );
-  }
-
-  // Future<NavigationDecision> _pageRedirect(
-  //     BuildContext context, String url) async {
-  //       log(url);
-  //   //bool isSuccess = url.contains('pay-thanks');
-  //   bool isSuccess = url.contains('success=true');
-  //   bool isFailed=url.contains('success=flase');
-  //  // bool isFailed = url.contains('cancelled-form');
-  //   if ( isSuccess) {
-  //     Navigator.pop(context, isSuccess);
-  //     CommonMethods.showToast(message: 'paymentSuccessful'.tr,seconds: 5);
-  //     widget.args.onSuccess.call();
-  //     return NavigationDecision.prevent;
-  //  }
-  //    else if (isFailed) {
-  //     Navigator.pop(context, isSuccess);
-  //     CommonMethods.showError(message: 'Payment Failed');
-  //     return NavigationDecision.prevent;
-  //   }
-  //   else {
-  //      Navigator.pop(context, isSuccess);
-  //     CommonMethods.showError(message: 'Payment Failed',seconds:5 );
-  //     return NavigationDecision.navigate;
-  //   }
-  // }
-  Future<NavigationActionPolicy> _pageRedirect(BuildContext context, String url) async {
-    bool isSuccess = url.contains('pay-thanks');
-    bool isFailed = url.contains('pay-false');
-
-    if (isSuccess) {
-      widget.args.onSuccess.call();
-      CommonMethods.showToast(message: 'paymentSuccess'.tr);
-      WidgetsBinding.instance.addPostFrameCallback((_) => Navigator.pop(context));
-      return NavigationActionPolicy.CANCEL;
-    } else if (isFailed) {
-      widget.args.onFailed.call();
-      CommonMethods.showError(message: 'paymentFailed'.tr);
-      WidgetsBinding.instance.addPostFrameCallback((_) => Navigator.pop(context));
-      return NavigationActionPolicy.CANCEL;
-    }
-
-    return NavigationActionPolicy.ALLOW;
   }
 }
