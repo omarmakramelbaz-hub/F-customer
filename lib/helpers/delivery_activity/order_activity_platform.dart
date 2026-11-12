@@ -101,7 +101,10 @@ class NativeOrderActivityPlatform implements OrderActivityPlatform {
       });
     } else if (_isAndroid) {
       final id = 'order_$orderId';
-      if (!immediate) await _android.updateActivity(id, data);
+      if (!immediate) {
+        await _android.updateActivity(id, data);
+        await Future<void>.delayed(const Duration(seconds: 2));
+      }
       await _android.endActivity(id);
     }
   }
