@@ -54,6 +54,9 @@ jobs:
           lib/view/custom_widgets/custom_payment_web_view/embedded_payment_browser.dart
           lib/view/layout/cart/widgets/execute_order_button.dart
           lib/view/layout/wallet/bottom_sheet/charge_wallet_bottom_sheet.dart
+          lib/view/layout/wallet/controller/wallet_controller.dart
+          lib/view/layout/wallet/model/wallet_checkout.dart
+          lib/view/layout/wallet/model/wallet_checkout_service.dart
           test
           tool/check_places_web_callbacks.dart
       - name: Analyze maintained code
@@ -97,6 +100,9 @@ jobs:
           lib/view/custom_widgets/custom_payment_web_view/embedded_payment_browser.dart
           lib/view/layout/cart/widgets/execute_order_button.dart
           lib/view/layout/wallet/bottom_sheet/charge_wallet_bottom_sheet.dart
+          lib/view/layout/wallet/controller/wallet_controller.dart
+          lib/view/layout/wallet/model/wallet_checkout.dart
+          lib/view/layout/wallet/model/wallet_checkout_service.dart
           test
           tool/check_places_web_callbacks.dart
       - name: Verify JavaScript Places callbacks

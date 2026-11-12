@@ -4,13 +4,37 @@ import 'package:flutter/material.dart';
 import '../../../../helpers/hive/hive_methods.dart';
 import '../../../../helpers/networking/api_helper.dart';
 import '../../../../helpers/networking/urls.dart';
+import '../../../../helpers/payment/payment_navigation_policy.dart';
 import '../../../../helpers/utils/common_methods.dart';
-import '../../../../helpers/utils/utils.dart';
+import '../model/wallet_checkout.dart';
+import '../model/wallet_checkout_service.dart';
 import '../model/wallet_model.dart';
 import '../model/wallet_transfer.dart';
 import '../../../../helpers/translation/all_translation.dart';
 
 class WalletController extends ChangeNotifier {
+  WalletController({
+    WalletCheckoutService? checkoutService,
+    String? Function()? readCheckoutSession,
+    this.checkoutTimeout = const Duration(seconds: 35),
+  }) : _checkoutService = checkoutService ?? const WalletCheckoutService(),
+       _readCheckoutSession = readCheckoutSession ?? _defaultCheckoutSession;
+
+  final WalletCheckoutService _checkoutService;
+  final String? Function() _readCheckoutSession;
+  final Duration checkoutTimeout;
+  bool _disposed = false;
+  bool _isCreatingCheckout = false;
+  int _checkoutGeneration = 0;
+  CancelToken? _checkoutCancellation;
+  WalletCheckoutError? _checkoutError;
+
+  bool get isCreatingCheckout => _isCreatingCheckout;
+  WalletCheckoutError? get checkoutError => _checkoutError;
+
+  static String? _defaultCheckoutSession() =>
+      HiveMethods.isVisitor() ? null : HiveMethods.getToken();
+
   final chargeWalletFormKey = GlobalKey<FormState>();
   final chargeAmountEc = TextEditingController();
   final chargeAmountFocusNode = FocusNode();
@@ -24,6 +48,7 @@ class WalletController extends ChangeNotifier {
   }
 
   void initialWallet() {
+    cancelCheckoutCreation();
     _walletResponse = ApiResponse(state: ResponseState.sleep, data: null);
     _wallet = null;
     notifyListeners();
@@ -63,34 +88,147 @@ class WalletController extends ChangeNotifier {
   String? _selectedPayment;
   String? get selectedPayment => _selectedPayment;
   void setSelectedPayment(String value) {
+    if (_isCreatingCheckout) return;
     _selectedPayment = value;
+    _checkoutError = null;
     notifyListeners();
   }
 
   //=============>  charging wallet  <================
-  Future<void> chargingWallet({
-    required dynamic amount,
-    required Function(String link) onSuccess,
-  }) async {
-    Utils.loading();
-    FormData body = FormData.fromMap({
-      'amount': amount,
-      'payment_method': _selectedPayment,
-    });
-    final response = await ApiHelper.instance.post(
-      Urls.chargingWallet,
-      body: body,
-    );
-    Utils.loadingOff();
-    if (response.state == ResponseState.complete) {
-      // CommonMethods.showToast(message: response.data['message']);
-      onSuccess.call(response.data['data']['link']);
-    } else {
-      CommonMethods.showError(
-        message: response.data['message'],
-        apiResponse: response,
+  Future<WalletCheckout?> chargingWallet({required dynamic amount}) async {
+    if (_disposed || _isCreatingCheckout) return null;
+    final session = _readCheckoutSession();
+    if (session == null || session.isEmpty) {
+      _checkoutError = const WalletCheckoutError(
+        type: WalletCheckoutErrorType.signInRequired,
+      );
+      notifyListeners();
+      return null;
+    }
+    final paymentMethod = _selectedPayment;
+    if (paymentMethod != 'online' && paymentMethod != 'v_cash') {
+      _checkoutError = const WalletCheckoutError(
+        type: WalletCheckoutErrorType.rejected,
+      );
+      notifyListeners();
+      return null;
+    }
+
+    final generation = ++_checkoutGeneration;
+    final cancellation = CancelToken();
+    _checkoutCancellation = cancellation;
+    _isCreatingCheckout = true;
+    _checkoutError = null;
+    notifyListeners();
+    bool isCurrent() =>
+        !_disposed &&
+        generation == _checkoutGeneration &&
+        !cancellation.isCancelled &&
+        _readCheckoutSession() == session;
+
+    try {
+      final response = await _checkoutService.create(
+        amount: amount,
+        paymentMethod: paymentMethod,
+        cancelToken: cancellation,
+        timeout: checkoutTimeout,
+        sessionToken: session,
+        canSendRequest: isCurrent,
+      );
+      // A timeout cancels the transport too, but remains a visible error for
+      // this attempt. User cancellation increments the generation instead.
+      if (_disposed ||
+          generation != _checkoutGeneration ||
+          _readCheckoutSession() != session) {
+        return null;
+      }
+      if (response.failure == ApiFailureKind.cancelled) return null;
+      if (response.state != ResponseState.complete) {
+        _checkoutError = _errorForResponse(response);
+        return null;
+      }
+      try {
+        return WalletCheckout.fromResponse(
+          response.data,
+          policy: PaymentNavigationPolicy(Uri.parse(Urls.baseUrl)),
+        );
+      } on FormatException {
+        _checkoutError = WalletCheckoutError(
+          type: WalletCheckoutErrorType.invalidResponse,
+          message: WalletCheckoutError.safeMessage(response.data),
+          outcomeUncertain: true,
+        );
+        return null;
+      }
+    } catch (_) {
+      if (isCurrent()) {
+        _checkoutError = const WalletCheckoutError(
+          type: WalletCheckoutErrorType.unavailable,
+          outcomeUncertain: true,
+        );
+      }
+      return null;
+    } finally {
+      if (!_disposed && generation == _checkoutGeneration) {
+        _checkoutCancellation = null;
+        _isCreatingCheckout = false;
+        notifyListeners();
+      }
+    }
+  }
+
+  WalletCheckoutError _errorForResponse(ApiResponse response) {
+    if (response.failure == ApiFailureKind.timeout) {
+      return const WalletCheckoutError(
+        type: WalletCheckoutErrorType.timedOut,
+        outcomeUncertain: true,
       );
     }
+    if (response.failure == ApiFailureKind.network) {
+      return const WalletCheckoutError(
+        type: WalletCheckoutErrorType.unavailable,
+        outcomeUncertain: true,
+      );
+    }
+    if (response.state == ResponseState.offline) {
+      return const WalletCheckoutError(type: WalletCheckoutErrorType.offline);
+    }
+    if (response.state == ResponseState.unauthorized) {
+      return const WalletCheckoutError(
+        type: WalletCheckoutErrorType.signInRequired,
+      );
+    }
+    if (const [400, 403, 422].contains(response.statusCode)) {
+      return WalletCheckoutError(
+        type: WalletCheckoutErrorType.rejected,
+        message: WalletCheckoutError.safeMessage(response.data),
+      );
+    }
+    return const WalletCheckoutError(
+      type: WalletCheckoutErrorType.unavailable,
+      outcomeUncertain: true,
+    );
+  }
+
+  void cancelCheckoutCreation() {
+    if (_disposed) return;
+    final shouldNotify = _isCreatingCheckout || _checkoutError != null;
+    ++_checkoutGeneration;
+    _checkoutCancellation?.cancel('wallet sheet closed');
+    _checkoutCancellation = null;
+    _isCreatingCheckout = false;
+    _checkoutError = null;
+    if (shouldNotify) notifyListeners();
+  }
+
+  @override
+  void dispose() {
+    _disposed = true;
+    ++_checkoutGeneration;
+    _checkoutCancellation?.cancel('wallet controller disposed');
+    chargeAmountEc.dispose();
+    chargeAmountFocusNode.dispose();
+    super.dispose();
   }
 
   Future<WalletTransferPreview?> checkMonyTransfer({

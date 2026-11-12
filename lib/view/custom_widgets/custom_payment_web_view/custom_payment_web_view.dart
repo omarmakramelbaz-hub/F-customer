@@ -181,8 +181,34 @@ class _CustomPaymentWebViewScreenState extends State<CustomPaymentWebViewScreen>
             },
           );
     return Scaffold(
+      backgroundColor: const Color(0xFF092225),
       appBar: AppBar(
-        title: Text(isArabic ? 'الدفع داخل التطبيق' : 'In-app payment'),
+        backgroundColor: const Color(0xFF092225),
+        foregroundColor: const Color(0xFFFFF4E2),
+        surfaceTintColor: Colors.transparent,
+        centerTitle: true,
+        title: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Image.asset(
+              'assets/images/home_brand_logo.webp',
+              width: 36,
+              height: 36,
+              excludeFromSemantics: true,
+            ),
+            const SizedBox(width: 8),
+            Flexible(
+              child: Text(
+                isArabic ? 'إتمام الدفع' : 'Complete payment',
+                style: const TextStyle(
+                  fontFamily: 'Tajawal',
+                  fontSize: 18,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ),
+          ],
+        ),
         leading: IconButton(
           key: const ValueKey('close-payment'),
           tooltip: isArabic ? 'إغلاق صفحة الدفع' : 'Close payment',
@@ -192,69 +218,103 @@ class _CustomPaymentWebViewScreenState extends State<CustomPaymentWebViewScreen>
         actions: const [
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 16),
-            child: Icon(Icons.lock_outline, color: Color(0xFFFD7201)),
+            child: Icon(Icons.lock_outline, color: Color(0xFFFF8A35)),
           ),
         ],
       ),
-      body: SafeArea(
-        child: Column(
-          children: [
-            if (_progress < 1 && !_loadError && checkout != null)
-              LinearProgressIndicator(value: _progress == 0 ? null : _progress),
-            if (_awaitingConfirmation)
-              Padding(
-                padding: const EdgeInsets.all(12),
-                child: Text(isArabic
-                    ? 'جارٍ تأكيد الدفع من السيرفر...'
-                    : 'Confirming payment with the server...'),
-              ),
-            Expanded(
-              child: events == null || _loadError
-                  ? Center(
-                      child: Padding(
-                        padding: const EdgeInsets.all(24),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const Icon(Icons.wifi_off_rounded, size: 40),
-                            const SizedBox(height: 12),
-                            Text(
-                              isArabic
-                                  ? 'تعذّر تحميل صفحة الدفع'
-                                  : 'Could not load the payment page',
-                              textAlign: TextAlign.center,
-                            ),
-                            if (events != null) ...[
-                              const SizedBox(height: 16),
-                              FilledButton(
-                                key: const ValueKey('retry-payment'),
-                                onPressed: _reload,
-                                child:
-                                    Text(isArabic ? 'إعادة المحاولة' : 'Retry'),
+      body: DecoratedBox(
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/images/home_hero_poster.jpg'),
+            fit: BoxFit.cover,
+            opacity: .12,
+          ),
+        ),
+        child: SafeArea(
+          child: Column(
+            children: [
+              if (_progress < 1 && !_loadError && checkout != null)
+                LinearProgressIndicator(
+                  value: _progress == 0 ? null : _progress,
+                  color: const Color(0xFFFF8A35),
+                  backgroundColor: const Color(0xFF173B43),
+                ),
+              if (_awaitingConfirmation)
+                Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: Text(
+                    isArabic
+                        ? 'جارٍ تأكيد الدفع...'
+                        : 'Confirming your payment...',
+                    style: const TextStyle(color: Color(0xFFFFF4E2)),
+                  ),
+                ),
+              Expanded(
+                child: events == null || _loadError
+                    ? Center(
+                        child: Padding(
+                          padding: const EdgeInsets.all(24),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Icon(
+                                Icons.wifi_off_rounded,
+                                size: 40,
+                                color: Color(0xFFFF8A35),
                               ),
+                              const SizedBox(height: 12),
+                              Text(
+                                isArabic
+                                    ? 'تعذّر تحميل صفحة الدفع'
+                                    : 'Could not load the payment page',
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(
+                                  color: Color(0xFFFFF4E2),
+                                ),
+                              ),
+                              if (events != null) ...[
+                                const SizedBox(height: 16),
+                                FilledButton(
+                                  key: const ValueKey('retry-payment'),
+                                  onPressed: _reload,
+                                  style: FilledButton.styleFrom(
+                                    backgroundColor: const Color(0xFFFF8A35),
+                                    foregroundColor: const Color(0xFF092225),
+                                  ),
+                                  child: Text(
+                                    isArabic ? 'إعادة المحاولة' : 'Retry',
+                                  ),
+                                ),
+                              ],
                             ],
-                          ],
+                          ),
+                        ),
+                      )
+                    : Padding(
+                        padding: const EdgeInsets.fromLTRB(12, 8, 12, 0),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(18),
+                          child: KeyedSubtree(
+                            key: ValueKey(_loadAttempt),
+                            child:
+                                widget.browserBuilder?.call(context, events) ??
+                                EmbeddedPaymentBrowser(events: events),
+                          ),
                         ),
                       ),
-                    )
-                  : KeyedSubtree(
-                      key: ValueKey(_loadAttempt),
-                      child: widget.browserBuilder?.call(context, events) ??
-                          EmbeddedPaymentBrowser(events: events),
-                    ),
-            ),
-            if (widget.args.orderId != null)
-              Padding(
-                padding: const EdgeInsets.all(12),
-                child: Text(
-                  isArabic
-                      ? 'بعد تأكيد الدفع سيتم فتح تتبع طلبك تلقائيًا'
-                      : 'Order tracking opens automatically after payment is confirmed',
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.bodySmall,
-                ),
               ),
-          ],
+              if (widget.args.orderId != null)
+                Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: Text(
+                    isArabic ? 'بعد تأكيد الدفع سيتم فتح تتبع طلبك تلقائيًا' : 'Order tracking opens automatically after payment is confirmed',
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.bodySmall
+                        ?.copyWith(color: const Color(0xFFFFF4E2)),
+                  ),
+                ),
+            ],
+          ),
         ),
       ),
     );
