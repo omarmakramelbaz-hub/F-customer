@@ -1,3 +1,4 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -23,9 +24,11 @@ class DeliveryAgentWidget extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
-          color: AppColors.whiteColor,
+          color: FasakhanstaBrand.surface,
           borderRadius: BorderRadius.circular(24),
-          border: Border.all(color: AppColors.mainAppColor.withValues(alpha: .12)),
+          border: Border.all(
+            color: AppColors.mainAppColor.withValues(alpha: .12),
+          ),
           boxShadow: [
             BoxShadow(
               color: AppColors.greyColor.withValues(alpha: .14),
@@ -57,18 +60,31 @@ class DeliveryAgentWidget extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('deliveryAgent'.tr, style: AppTextStyle.text14RS().copyWith(color: AppColors.mainAppColor)),
+                  Text(
+                    'deliveryAgent'.tr,
+                    style: AppTextStyle.text14RS().copyWith(
+                      color: AppColors.mainAppColor,
+                    ),
+                  ),
                   4.sbH,
-                  Text(orders?.delegateName ?? '', style: AppTextStyle.text18BS()),
+                  Text(
+                    orders?.delegateName ?? '',
+                    style: AppTextStyle.text18BS(),
+                  ),
                   5.sbH,
                   if ((orders?.delegateMobile ?? '').isNotEmpty)
-                    Text(orders!.delegateMobile!, style: AppTextStyle.text13RG()),
+                    Text(
+                      orders!.delegateMobile!,
+                      style: AppTextStyle.text13RG(),
+                    ),
                 ],
               ),
             ),
             _ActionButton(
               icon: AppImages.callIcon,
-              onTap: () => UrlLauncherMethods.makePhoneCall(orders?.delegateMobile ?? ''),
+              onTap: () => UrlLauncherMethods.makePhoneCall(
+                orders?.delegateMobile ?? '',
+              ),
             ),
             8.sbW,
             _ActionButton(
@@ -118,7 +134,10 @@ class _ActionButton extends StatelessWidget {
               icon,
               width: 20,
               height: 20,
-              colorFilter: ColorFilter.mode(AppColors.mainAppColor, BlendMode.srcIn),
+              colorFilter: ColorFilter.mode(
+                AppColors.mainAppColor,
+                BlendMode.srcIn,
+              ),
             ),
           ),
         ),

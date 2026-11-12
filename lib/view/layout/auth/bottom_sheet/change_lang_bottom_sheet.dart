@@ -1,3 +1,4 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../helpers/extensions/extensions.dart';
@@ -9,17 +10,16 @@ class ChangeLangBottomSheet extends StatefulWidget {
   const ChangeLangBottomSheet({super.key});
 
   @override
-  State<ChangeLangBottomSheet> createState() =>
-      _ChangeLangBottomSheetState();
+  State<ChangeLangBottomSheet> createState() => _ChangeLangBottomSheetState();
 }
 
 class _ChangeLangBottomSheetState extends State<ChangeLangBottomSheet> {
   bool _isChangingLanguage = false;
 
-  static const _text = Color(0xFF17191E);
-  static const _muted = Color(0xFF7D838D);
-  static const _border = Color(0xFFE8EAED);
-  static const _surface = Color(0xFFF8F9FB);
+  static const _text = FasakhanstaBrand.text;
+  static const _muted = FasakhanstaBrand.muted;
+  static const _border = FasakhanstaBrand.border;
+  static const _surface = FasakhanstaBrand.surfaceRaised;
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +30,7 @@ class _ChangeLangBottomSheetState extends State<ChangeLangBottomSheet> {
       top: false,
       child: Container(
         decoration: const BoxDecoration(
-          color: Colors.white,
+          color: FasakhanstaBrand.surface,
           borderRadius: BorderRadius.only(
             topLeft: Radius.circular(30),
             topRight: Radius.circular(30),
@@ -52,7 +52,7 @@ class _ChangeLangBottomSheetState extends State<ChangeLangBottomSheet> {
                 width: 42,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: const Color(0xFFD9DCE1),
+                  color: FasakhanstaBrand.surfaceRaised,
                   borderRadius: BorderRadius.circular(99),
                 ),
               ),
@@ -117,9 +117,7 @@ class _ChangeLangBottomSheetState extends State<ChangeLangBottomSheet> {
           color: _surface,
           borderRadius: BorderRadius.circular(14),
           child: InkWell(
-            onTap: _isChangingLanguage
-                ? null
-                : () => Navigator.pop(context),
+            onTap: _isChangingLanguage ? null : () => Navigator.pop(context),
             borderRadius: BorderRadius.circular(14),
             child: Container(
               width: 42,
@@ -128,11 +126,7 @@ class _ChangeLangBottomSheetState extends State<ChangeLangBottomSheet> {
                 borderRadius: BorderRadius.circular(14),
                 border: Border.all(color: _border),
               ),
-              child: Icon(
-                Icons.close_rounded,
-                color: _text,
-                size: 22,
-              ),
+              child: Icon(Icons.close_rounded, color: _text, size: 22),
             ),
           ),
         ),
@@ -173,9 +167,9 @@ class _LanguageCard extends StatelessWidget {
     required this.onTap,
   });
 
-  static const _text = Color(0xFF17191E);
-  static const _muted = Color(0xFF858B94);
-  static const _border = Color(0xFFE8EAED);
+  static const _text = FasakhanstaBrand.text;
+  static const _muted = FasakhanstaBrand.muted;
+  static const _border = FasakhanstaBrand.border;
 
   @override
   Widget build(BuildContext context) {
@@ -198,12 +192,10 @@ class _LanguageCard extends StatelessWidget {
             decoration: BoxDecoration(
               color: selected
                   ? accent.withValues(alpha: .065)
-                  : Colors.white,
+                  : FasakhanstaBrand.surface,
               borderRadius: radius,
               border: Border.all(
-                color: selected
-                    ? accent.withValues(alpha: .55)
-                    : _border,
+                color: selected ? accent.withValues(alpha: .55) : _border,
                 width: selected ? 1.4 : 1,
               ),
               boxShadow: selected
@@ -233,20 +225,17 @@ class _LanguageCard extends StatelessWidget {
                         ? LinearGradient(
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
-                            colors: [
-                              accent,
-                              const Color(0xFFFF8A24),
-                            ],
+                            colors: [accent, FasakhanstaBrand.orange],
                           )
                         : null,
-                    color: selected ? null : const Color(0xFFF4F5F7),
+                    color: selected ? null : FasakhanstaBrand.surfaceRaised,
                     borderRadius: BorderRadius.circular(15),
                   ),
                   alignment: Alignment.center,
                   child: Text(
                     code,
                     style: AppTextStyle.text14BS().copyWith(
-                      color: selected ? Colors.white : _text,
+                      color: selected ? FasakhanstaBrand.text : _text,
                       fontWeight: FontWeight.w900,
                       letterSpacing: .4,
                     ),
@@ -267,9 +256,7 @@ class _LanguageCard extends StatelessWidget {
                       const SizedBox(height: 2),
                       Text(
                         subtitle,
-                        style: AppTextStyle.text11RG().copyWith(
-                          color: _muted,
-                        ),
+                        style: AppTextStyle.text11RG().copyWith(color: _muted),
                       ),
                     ],
                   ),
@@ -283,16 +270,14 @@ class _LanguageCard extends StatelessWidget {
                     color: selected ? accent : Colors.transparent,
                     shape: BoxShape.circle,
                     border: Border.all(
-                      color: selected
-                          ? accent
-                          : const Color(0xFFCDD1D6),
+                      color: selected ? accent : FasakhanstaBrand.border,
                       width: 1.4,
                     ),
                   ),
                   child: selected
                       ? const Icon(
                           Icons.check_rounded,
-                          color: Colors.white,
+                          color: FasakhanstaBrand.text,
                           size: 17,
                         )
                       : null,

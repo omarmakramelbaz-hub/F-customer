@@ -1,3 +1,4 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -30,10 +31,10 @@ class _ContactUsScreenState extends State<ContactUsScreen>
   final _emailEc = TextEditingController();
   final _messages = TextEditingController();
 
-  static const _pageBackground = Color(0xFFF7F8FA);
-  static const _text = Color(0xFF171A1F);
-  static const _muted = Color(0xFF858B94);
-  static const _border = Color(0xFFE7EAEE);
+  static const _pageBackground = Colors.transparent;
+  static const _text = FasakhanstaBrand.text;
+  static const _muted = FasakhanstaBrand.muted;
+  static const _border = FasakhanstaBrand.border;
 
   @override
   void dispose() {
@@ -76,8 +77,9 @@ class _ContactUsScreenState extends State<ContactUsScreen>
                           child: ConstrainedBox(
                             constraints: const BoxConstraints(maxWidth: 620),
                             child: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 16),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                              ),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.stretch,
                                 children: [
@@ -88,9 +90,8 @@ class _ContactUsScreenState extends State<ContactUsScreen>
                                     mobile:
                                         myAccountController.setting?.mobile ??
                                             '',
-                                    email:
-                                        myAccountController.setting?.email ??
-                                            '',
+                                    email: myAccountController.setting?.email ??
+                                        '',
                                     adminId: myAccountController
                                             .setting?.adminId
                                             .toString() ??
@@ -127,10 +128,13 @@ class _ContactUsScreenState extends State<ContactUsScreen>
         gradient: const LinearGradient(
           begin: Alignment.topRight,
           end: Alignment.bottomLeft,
-          colors: [Color(0xFFFFF8F1), Color(0xFFFFF1E4)],
+          colors: [
+            FasakhanstaBrand.surfaceRaised,
+            FasakhanstaBrand.surfaceRaised,
+          ],
         ),
         borderRadius: BorderRadius.circular(22),
-        border: Border.all(color: const Color(0xFFFFDFC2)),
+        border: Border.all(color: FasakhanstaBrand.border),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -139,7 +143,7 @@ class _ContactUsScreenState extends State<ContactUsScreen>
             width: 52,
             height: 52,
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: FasakhanstaBrand.surface,
               borderRadius: BorderRadius.circular(16),
               boxShadow: const [
                 BoxShadow(
@@ -192,7 +196,7 @@ class _ContactUsScreenState extends State<ContactUsScreen>
     return Container(
       padding: const EdgeInsets.fromLTRB(16, 17, 16, 18),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: FasakhanstaBrand.surface,
         borderRadius: BorderRadius.circular(24),
         border: Border.all(color: _border),
         boxShadow: const [
@@ -212,7 +216,7 @@ class _ContactUsScreenState extends State<ContactUsScreen>
                 width: 42,
                 height: 42,
                 decoration: BoxDecoration(
-                  color: const Color(0xFFFFF3E7),
+                  color: FasakhanstaBrand.surfaceRaised,
                   borderRadius: BorderRadius.circular(13),
                 ),
                 child: Icon(

@@ -47,8 +47,13 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
           return Scaffold(
             appBar: CustomAppBar(
               height: 130,
-              appBarColor: AppColors.whiteColor,
-              title: const CustomImage(path: AppImages.appLogo, type: ImageType.asset, height: 60, radius: 12),
+              appBarColor: Colors.transparent,
+              title: const CustomImage(
+                path: AppImages.appLogo,
+                type: ImageType.asset,
+                height: 60,
+                radius: 12,
+              ),
               leading: Center(
                 child: TextButton(
                   onPressed: () {
@@ -66,7 +71,9 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
               child: PageView(
                 controller: _controller,
                 children: [
-                  ...List.generate(onBoardingController.splashes.length, (index) {
+                  ...List.generate(onBoardingController.splashes.length, (
+                    index,
+                  ) {
                     return FOnBoardingTab(
                       index: index,
                       controller: _controller,

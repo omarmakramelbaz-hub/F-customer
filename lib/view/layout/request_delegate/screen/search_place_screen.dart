@@ -1,3 +1,5 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
+
 import 'dart:async';
 import 'dart:developer';
 
@@ -52,10 +54,10 @@ class _SearchPlaceScreenState extends State<SearchPlaceScreen> {
   String? _routeSignature;
   bool _routeLoading = false;
 
-  static const _text = Color(0xFF171A1F);
-  static const _muted = Color(0xFF8D939C);
-  static const _border = Color(0xFFE8EBEF);
-  static const _softOrange = Color(0xFFFFF4E8);
+  static const _text = FasakhanstaBrand.text;
+  static const _muted = FasakhanstaBrand.muted;
+  static const _border = FasakhanstaBrand.border;
+  static const _softOrange = FasakhanstaBrand.orangeTint;
 
   bool _isArabic(BuildContext context) => context.languageCode == 'ar';
 
@@ -69,8 +71,10 @@ class _SearchPlaceScreenState extends State<SearchPlaceScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    requestDelegateController =
-        Provider.of<RequestDelegateController>(context, listen: false);
+    requestDelegateController = Provider.of<RequestDelegateController>(
+      context,
+      listen: false,
+    );
 
     if (requestDelegateController.fromController.text.isEmpty &&
         requestDelegateController.fromAddress.isNotEmpty) {
@@ -208,7 +212,7 @@ class _SearchPlaceScreenState extends State<SearchPlaceScreen> {
           textDirection:
               _isArabic(context) ? TextDirection.rtl : TextDirection.ltr,
           child: Scaffold(
-            backgroundColor: const Color(0xFFFAFAFA),
+            backgroundColor: Colors.transparent,
             resizeToAvoidBottomInset: true,
             body: SafeArea(
               child: Column(
@@ -243,8 +247,7 @@ class _SearchPlaceScreenState extends State<SearchPlaceScreen> {
                             isFrom: false,
                           ),
                           if (isToFieldFocused &&
-                              (toPlaces.isNotEmpty ||
-                                  isToPredictionsLoading))
+                              (toPlaces.isNotEmpty || isToPredictionsLoading))
                             _predictions(
                               context,
                               controller,
@@ -270,7 +273,7 @@ class _SearchPlaceScreenState extends State<SearchPlaceScreen> {
             bottomNavigationBar: SafeArea(
               top: false,
               child: Container(
-                color: Colors.white,
+                color: FasakhanstaBrand.surface,
                 padding: const EdgeInsets.fromLTRB(16, 10, 16, 14),
                 child: SizedBox(
                   height: 56,
@@ -279,7 +282,7 @@ class _SearchPlaceScreenState extends State<SearchPlaceScreen> {
                     style: ElevatedButton.styleFrom(
                       elevation: 0,
                       backgroundColor: AppColors.mainAppColor,
-                      foregroundColor: Colors.white,
+                      foregroundColor: FasakhanstaBrand.onOrange,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(18),
                       ),
@@ -305,7 +308,7 @@ class _SearchPlaceScreenState extends State<SearchPlaceScreen> {
 
   Widget _header(BuildContext context) {
     return Container(
-      color: Colors.white,
+      color: FasakhanstaBrand.surface,
       padding: const EdgeInsets.fromLTRB(14, 8, 14, 10),
       child: Row(
         children: [
@@ -408,7 +411,7 @@ class _SearchPlaceScreenState extends State<SearchPlaceScreen> {
                   width: 9,
                   height: 9,
                   decoration: const BoxDecoration(
-                    color: Color(0xFF25C862),
+                    color: FasakhanstaBrand.successTint,
                     shape: BoxShape.circle,
                   ),
                 ),
@@ -447,7 +450,7 @@ class _SearchPlaceScreenState extends State<SearchPlaceScreen> {
                   fontWeight: FontWeight.w400,
                 ),
                 filled: true,
-                fillColor: const Color(0xFFF8F9FA),
+                fillColor: FasakhanstaBrand.field,
                 suffixIcon: textController.text.isEmpty
                     ? null
                     : IconButton(
@@ -458,12 +461,14 @@ class _SearchPlaceScreenState extends State<SearchPlaceScreen> {
                         },
                         icon: const Icon(
                           Icons.close_rounded,
-                          color: Color(0xFFADB2BA),
+                          color: FasakhanstaBrand.muted,
                           size: 18,
                         ),
                       ),
-                contentPadding:
-                    const EdgeInsets.symmetric(horizontal: 13, vertical: 12),
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 13,
+                  vertical: 12,
+                ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(14),
                   borderSide: const BorderSide(color: _border),
@@ -504,14 +509,14 @@ class _SearchPlaceScreenState extends State<SearchPlaceScreen> {
                 FocusManager.instance.primaryFocus?.unfocus();
                 final result = await NamedNavigatorImpl.push(
                   SelectLocationFromMapScreen.routeName,
-                  arguments:
-                      SelectLocationFromMapScreenArgs(isFromAddress: isFrom),
+                  arguments: SelectLocationFromMapScreenArgs(
+                    isFromAddress: isFrom,
+                  ),
                 );
                 if (!mounted) return;
 
-                final selectedPoint = isFrom
-                    ? controller.fromLatLng
-                    : controller.toLatLng;
+                final selectedPoint =
+                    isFrom ? controller.fromLatLng : controller.toLatLng;
                 if (selectedPoint == null) return;
 
                 if (isFrom) {
@@ -531,8 +536,10 @@ class _SearchPlaceScreenState extends State<SearchPlaceScreen> {
                 log('Map selection synced for route preview: $result');
               },
               child: Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 9),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 9,
+                ),
                 decoration: BoxDecoration(
                   color: _softOrange,
                   borderRadius: BorderRadius.circular(12),
@@ -614,11 +621,7 @@ class _SearchPlaceScreenState extends State<SearchPlaceScreen> {
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    onTap: () => _selectPrediction(
-                      controller,
-                      place,
-                      isFrom,
-                    ),
+                    onTap: () => _selectPrediction(controller, place, isFrom),
                   );
                 },
               ),
@@ -715,7 +718,7 @@ class _SearchPlaceScreenState extends State<SearchPlaceScreen> {
       height: 190,
       clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: FasakhanstaBrand.surface,
         borderRadius: BorderRadius.circular(18),
         border: Border.all(color: _border),
         boxShadow: const [
@@ -775,7 +778,7 @@ class _SearchPlaceScreenState extends State<SearchPlaceScreen> {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 7),
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(.94),
+                color: FasakhanstaBrand.surface.withOpacity(.94),
                 borderRadius: BorderRadius.circular(12),
                 boxShadow: const [
                   BoxShadow(
@@ -817,7 +820,7 @@ class _SearchPlaceScreenState extends State<SearchPlaceScreen> {
                 height: 28,
                 padding: const EdgeInsets.all(6),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(.94),
+                  color: FasakhanstaBrand.surface.withOpacity(.94),
                   shape: BoxShape.circle,
                 ),
                 child: CircularProgressIndicator(
@@ -961,7 +964,7 @@ class _SearchPlaceScreenState extends State<SearchPlaceScreen> {
               ),
               const Icon(
                 Icons.chevron_left_rounded,
-                color: Color(0xFFADB2BA),
+                color: FasakhanstaBrand.muted,
               ),
             ],
           ),
@@ -991,7 +994,7 @@ class _SearchPlaceScreenState extends State<SearchPlaceScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           behavior: SnackBarBehavior.floating,
-          backgroundColor: const Color(0xFFFFF4E8),
+          backgroundColor: FasakhanstaBrand.surfaceRaised,
           elevation: 2,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(14),
@@ -1000,10 +1003,7 @@ class _SearchPlaceScreenState extends State<SearchPlaceScreen> {
             _isArabic(context)
                 ? 'هذا العنوان لا يحتوي على موقع محدد. عدّله وأضف الموقع أولًا.'
                 : 'This saved address has no location. Edit it and add a map location first.',
-            style: const TextStyle(
-              color: _text,
-              fontWeight: FontWeight.w700,
-            ),
+            style: const TextStyle(color: _text, fontWeight: FontWeight.w700),
           ),
         ),
       );
@@ -1079,7 +1079,7 @@ class _SearchPlaceScreenState extends State<SearchPlaceScreen> {
                       ? 'نستخدم موقعك فقط لتحسين تجربة التوصيل ووصول طلبك بدقة.'
                       : 'Your location is used only to improve delivery accuracy.',
                   style: const TextStyle(
-                    color: Color(0xFF6F747C),
+                    color: FasakhanstaBrand.muted,
                     fontSize: 11,
                     height: 1.45,
                   ),
@@ -1092,12 +1092,9 @@ class _SearchPlaceScreenState extends State<SearchPlaceScreen> {
     );
   }
 
-  Widget _roundIcon({
-    required IconData icon,
-    required VoidCallback onTap,
-  }) {
+  Widget _roundIcon({required IconData icon, required VoidCallback onTap}) {
     return Material(
-      color: Colors.white,
+      color: FasakhanstaBrand.surface,
       shape: const CircleBorder(),
       elevation: 2,
       shadowColor: const Color(0x22000000),
@@ -1115,7 +1112,7 @@ class _SearchPlaceScreenState extends State<SearchPlaceScreen> {
 
   BoxDecoration _cardDecoration() {
     return BoxDecoration(
-      color: Colors.white,
+      color: FasakhanstaBrand.surface,
       borderRadius: BorderRadius.circular(18),
       border: Border.all(color: _border),
       boxShadow: const [

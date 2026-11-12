@@ -57,7 +57,7 @@ class CustomFormField extends StatefulWidget {
     this.readOnly = false,
     this.prefixIcon,
     this.suffixIcon,
-    this.radius = 25,
+    this.radius = 14,
     this.fillColor,
     this.focusColor,
     this.unFocusColor,
@@ -96,19 +96,31 @@ class _CustomFormFieldState extends State<CustomFormField> {
           Row(
             children: [
               if (widget.title != null) ...{
-                Expanded(child: Text(widget.title!, style: widget.titleStyle ?? AppTextStyle.formTitleStyle)),
+                Expanded(
+                  child: Text(
+                    widget.title!,
+                    style: widget.titleStyle ?? AppTextStyle.formTitleStyle,
+                  ),
+                ),
               },
               if (widget.otherSideTitle != null) ...{
-                Text(widget.otherSideTitle!, style: widget.titleStyle ?? AppTextStyle.formTitleStyle),
+                Text(
+                  widget.otherSideTitle!,
+                  style: widget.titleStyle ?? AppTextStyle.formTitleStyle,
+                ),
               },
             ],
           ),
-          if (widget.title != null || widget.otherSideTitle != null) ...{10.sbH},
+          if (widget.title != null || widget.otherSideTitle != null) ...{
+            10.sbH,
+          },
           Directionality(
-            textDirection: widget.textDirection ?? (context.isRtl ? TextDirection.rtl : TextDirection.ltr),
+            textDirection: widget.textDirection ??
+                (context.isRtl ? TextDirection.rtl : TextDirection.ltr),
             child: TextFormField(
               onFieldSubmitted: widget.onFieldSubmitted,
-              onTapOutside: (event) => FocusManager.instance.primaryFocus?.unfocus(),
+              onTapOutside: (event) =>
+                  FocusManager.instance.primaryFocus?.unfocus(),
               controller: widget.controller,
               onChanged: widget.onChanged,
               validator: widget.validator,
@@ -117,7 +129,8 @@ class _CustomFormFieldState extends State<CustomFormField> {
               keyboardType: widget.keyboardType,
               obscureText: widget.isPassword ? _obscureText : false,
               style: widget.textStyle ?? AppTextStyle.textFormStyle,
-              autovalidateMode: widget.autovalidateMode ?? AutovalidateMode.onUserInteraction,
+              autovalidateMode:
+                  widget.autovalidateMode ?? AutovalidateMode.onUserInteraction,
               maxLines: widget.maxLines,
               minLines: widget.minLines,
               cursorColor: widget.focusColor ?? AppColors.mainAppColor,
@@ -132,40 +145,55 @@ class _CustomFormFieldState extends State<CustomFormField> {
                         ? Colors.transparent
                         : AppColors.textFormFillColor),
                 filled: true,
-                border: _border(color: widget.unFocusColor ?? AppColors.textFormBorderColor),
-                disabledBorder: _border(color: widget.unFocusColor ?? AppColors.textFormBorderColor),
-                focusedBorder: _border(color: widget.unFocusColor ?? AppColors.mainAppColor),
-                enabledBorder: _border(color: widget.unFocusColor ?? AppColors.textFormBorderColor),
-                contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                prefixIcon: widget.country != null && context.languageCode == 'en'
+                border: _border(
+                  color: widget.unFocusColor ?? AppColors.textFormBorderColor,
+                ),
+                disabledBorder: _border(
+                  color: widget.unFocusColor ?? AppColors.textFormBorderColor,
+                ),
+                focusedBorder: _border(
+                  color: widget.focusColor ?? AppColors.mainAppColor,
+                ),
+                enabledBorder: _border(
+                  color: widget.unFocusColor ?? AppColors.textFormBorderColor,
+                ),
+                contentPadding: const EdgeInsets.symmetric(
+                  vertical: 10,
+                  horizontal: 10,
+                ),
+                prefixIcon:
+                    widget.country != null && context.languageCode == 'en'
+                        ? Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              widget.prefixIcon ?? const SizedBox(),
+                              TextButton(
+                                onPressed: null,
+                                // onPressed:
+                                //     widget.onCountrySelect != null ? _select : null,
+                                child: Text(
+                                  '${widget.country?.flagEmoji} +${widget.country?.phoneCode}',
+                                  style: widget.textStyle ??
+                                      AppTextStyle.textFormStyle,
+                                  textDirection: TextDirection.ltr,
+                                ),
+                              ),
+                            ],
+                          )
+                        : widget.prefixIcon,
+                suffixIcon: widget.country != null &&
+                        context.languageCode == 'ar'
                     ? Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          widget.prefixIcon ?? const SizedBox(),
                           TextButton(
                             onPressed: null,
                             // onPressed:
                             //     widget.onCountrySelect != null ? _select : null,
                             child: Text(
                               '${widget.country?.flagEmoji} +${widget.country?.phoneCode}',
-                              style: widget.textStyle ?? AppTextStyle.textFormStyle,
-                              textDirection: TextDirection.ltr,
-                            ),
-                          ),
-                        ],
-                      )
-                    : widget.prefixIcon,
-                suffixIcon: widget.country != null && context.languageCode == 'ar'
-                    ? Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          TextButton(
-                            onPressed: null,
-                            // onPressed:
-                            //     widget.onCountrySelect != null ? _select : null,
-                            child: Text(
-                              '${widget.country?.flagEmoji} +${widget.country?.phoneCode}',
-                              style: widget.textStyle ?? AppTextStyle.textFormStyle,
+                              style: widget.textStyle ??
+                                  AppTextStyle.textFormStyle,
                               textDirection: TextDirection.ltr,
                             ),
                           ),
@@ -180,9 +208,12 @@ class _CustomFormFieldState extends State<CustomFormField> {
                               });
                             },
                             child: Icon(
-                              _obscureText ? Icons.visibility_off_rounded : Icons.visibility_rounded,
+                              _obscureText
+                                  ? Icons.visibility_off_rounded
+                                  : Icons.visibility_rounded,
                               size: 20,
-                              color: widget.passwordColor ?? AppColors.hintColor,
+                              color:
+                                  widget.passwordColor ?? AppColors.hintColor,
                             ),
                           )
                         : widget.suffixIcon,
@@ -213,12 +244,12 @@ class _CustomFormFieldState extends State<CustomFormField> {
     }
   }
 
-// void _select() {
-//   CountryCodeMethods.pickCountry(
-//     onSelect: (v) {
-//       widget.onCountrySelect?.call(v);
-//     },
-//     context: context,
-//   );
-// }
+  // void _select() {
+  //   CountryCodeMethods.pickCountry(
+  //     onSelect: (v) {
+  //       widget.onCountrySelect?.call(v);
+  //     },
+  //     context: context,
+  //   );
+  // }
 }

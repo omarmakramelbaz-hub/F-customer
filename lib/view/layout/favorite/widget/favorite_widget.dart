@@ -1,3 +1,4 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
@@ -39,7 +40,11 @@ class FavoriteWidget extends StatelessWidget {
             10.sbH,
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 35),
-              child: Text(favoriteModel?.name ?? '', style: AppTextStyle.text16RS(), maxLines: 1),
+              child: Text(
+                favoriteModel?.name ?? '',
+                style: AppTextStyle.text16RS(),
+                maxLines: 1,
+              ),
             ),
             const SizedBox(height: 3),
             Padding(
@@ -49,7 +54,12 @@ class FavoriteWidget extends StatelessWidget {
                 children: [
                   SvgPicture.asset(AppImages.timeIcon),
                   const SizedBox(width: 10),
-                  Expanded(child: Text(favoriteModel?.deliveryTime ?? '', style: AppTextStyle.text14RS())),
+                  Expanded(
+                    child: Text(
+                      favoriteModel?.deliveryTime ?? '',
+                      style: AppTextStyle.text14RS(),
+                    ),
+                  ),
                   const SizedBox(width: 10),
                 ],
               ),
@@ -61,12 +71,19 @@ class FavoriteWidget extends StatelessWidget {
           left: 20,
           child: InkWell(
             onTap: () {
-              context.read<FavoriteController>().addOrRemoveToWishlist(id: favoriteModel?.id ?? 0, onSuccess: () {});
+              context.read<FavoriteController>().addOrRemoveToWishlist(
+                    id: favoriteModel?.id ?? 0,
+                    onSuccess: () {},
+                  );
             },
             child: CircleAvatar(
               radius: 18,
-              backgroundColor: AppColors.whiteColor,
-              child: Icon(Icons.favorite_rounded, color: AppColors.redColor, size: 20),
+              backgroundColor: FasakhanstaBrand.surface,
+              child: Icon(
+                Icons.favorite_rounded,
+                color: AppColors.redColor,
+                size: 20,
+              ),
             ),
           ),
         ),

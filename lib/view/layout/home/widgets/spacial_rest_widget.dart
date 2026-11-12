@@ -1,3 +1,4 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -20,7 +21,10 @@ import '../model/restaurants_near_you_home_model.dart';
 class SpacialRestaurantsListViewWidget extends StatelessWidget {
   final List<RestaurantsNearYouHomeModel> spacialRest;
 
-  const SpacialRestaurantsListViewWidget({super.key, required this.spacialRest});
+  const SpacialRestaurantsListViewWidget({
+    super.key,
+    required this.spacialRest,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -57,13 +61,17 @@ class SpacialRestaurantsListViewWidget extends StatelessWidget {
                     ? null
                     : () => NamedNavigatorImpl.push(
                           RestaurantDetailsScreen.routeName,
-                          arguments: RestaurantDetailsArgs(id: restaurant.id ?? 0),
+                          arguments: RestaurantDetailsArgs(
+                            id: restaurant.id ?? 0,
+                          ),
                         ),
                 child: Container(
                   decoration: BoxDecoration(
-                    color: AppColors.whiteColor,
+                    color: FasakhanstaBrand.surface,
                     borderRadius: BorderRadius.circular(18),
-                    border: Border.all(color: AppColors.borderColor.withValues(alpha: .65)),
+                    border: Border.all(
+                      color: AppColors.borderColor.withValues(alpha: .65),
+                    ),
                     boxShadow: [
                       BoxShadow(
                         color: AppColors.blackColor.withValues(alpha: .06),
@@ -90,7 +98,10 @@ class SpacialRestaurantsListViewWidget extends StatelessWidget {
                               top: 8,
                               right: 8,
                               child: Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 4),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 7,
+                                  vertical: 4,
+                                ),
                                 decoration: BoxDecoration(
                                   color: AppColors.mainAppColor,
                                   borderRadius: BorderRadius.circular(20),
@@ -106,8 +117,10 @@ class SpacialRestaurantsListViewWidget extends StatelessWidget {
                                     3.sbW,
                                     Text(
                                       'freeDelivery'.tr,
-                                      style: AppTextStyle.text12BW().copyWith(
-                                        color: AppColors.whiteColor,
+                                      style: AppTextStyle.text12BW(
+                                        color: FasakhanstaBrand.onOrange,
+                                      ).copyWith(
+                                        color: FasakhanstaBrand.onOrange,
                                       ),
                                     ),
                                   ],
@@ -117,13 +130,17 @@ class SpacialRestaurantsListViewWidget extends StatelessWidget {
                           if (unavailable || restaurant.status == 'closed')
                             Positioned.fill(
                               child: Container(
-                                color: AppColors.blackColor.withValues(alpha: .48),
+                                color: FasakhanstaBrand.surfaceRaised
+                                    .withValues(alpha: .48),
                                 alignment: Alignment.center,
                                 child: Text(
                                   restaurant.underContract == 'yes'
                                       ? 'underContract'.tr
                                       : restaurant.status == 'closed'
-                                          ? restaurantClosedLabel(context, restaurant.openAt)
+                                          ? restaurantClosedLabel(
+                                              context,
+                                              restaurant.openAt,
+                                            )
                                           : 'busy'.tr,
                                   style: AppTextStyle.text14MW(),
                                 ),
@@ -145,10 +162,15 @@ class SpacialRestaurantsListViewWidget extends StatelessWidget {
                             5.sbH,
                             Row(
                               children: [
-                                Icon(Icons.star_rounded, size: 16, color: AppColors.mainAppColor),
+                                Icon(
+                                  Icons.star_rounded,
+                                  size: 16,
+                                  color: AppColors.mainAppColor,
+                                ),
                                 3.sbW,
                                 Text(
-                                  restaurant.avgRate?.toStringAsFixed(1) ?? '0.0',
+                                  restaurant.avgRate?.toStringAsFixed(1) ??
+                                      '0.0',
                                   style: AppTextStyle.text12MS(),
                                 ),
                                 const Spacer(),

@@ -1,3 +1,5 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
+
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:math' as math;
@@ -47,7 +49,10 @@ class _RestaurantsScreenState extends State<RestaurantsScreen> {
   void initState() {
     super.initState();
     _pusherController = context.read<PusherController>();
-    _pusherController.addEventListener('resturant.updated', _handleResturantUpdated);
+    _pusherController.addEventListener(
+      'resturant.updated',
+      _handleResturantUpdated,
+    );
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final auth = context.read<AuthController>();
@@ -100,7 +105,10 @@ class _RestaurantsScreenState extends State<RestaurantsScreen> {
 
   @override
   void dispose() {
-    _pusherController.removeEventListener('resturant.updated', _handleResturantUpdated);
+    _pusherController.removeEventListener(
+      'resturant.updated',
+      _handleResturantUpdated,
+    );
     _searchController.dispose();
     super.dispose();
   }
@@ -115,10 +123,10 @@ class _RestaurantsScreenState extends State<RestaurantsScreen> {
   }
 
   String _addressLabel(UserAddresses? address) {
-    final parts = <String?>[
-      address?.streetName,
-      address?.cityName,
-    ].where((value) => value != null && value!.trim().isNotEmpty).cast<String>().toList();
+    final parts = <String?>[address?.streetName, address?.cityName]
+        .where((value) => value != null && value!.trim().isNotEmpty)
+        .cast<String>()
+        .toList();
 
     if (parts.isNotEmpty) return parts.join(' - ');
     final saved = HiveMethods.getCity()?.trim() ?? '';
@@ -148,10 +156,12 @@ class _RestaurantsScreenState extends State<RestaurantsScreen> {
         return Directionality(
           textDirection: TextDirection.rtl,
           child: Container(
-            constraints: BoxConstraints(maxHeight: MediaQuery.sizeOf(context).height * .72),
+            constraints: BoxConstraints(
+              maxHeight: MediaQuery.sizeOf(context).height * .72,
+            ),
             padding: const EdgeInsets.fromLTRB(18, 12, 18, 22),
             decoration: const BoxDecoration(
-              color: Colors.white,
+              color: FasakhanstaBrand.surface,
               borderRadius: BorderRadius.vertical(top: Radius.circular(26)),
             ),
             child: Column(
@@ -163,7 +173,7 @@ class _RestaurantsScreenState extends State<RestaurantsScreen> {
                     width: 46,
                     height: 4,
                     decoration: BoxDecoration(
-                      color: const Color(0xFFDADADA),
+                      color: FasakhanstaBrand.surfaceRaised,
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
@@ -175,20 +185,33 @@ class _RestaurantsScreenState extends State<RestaurantsScreen> {
                   child: ListView.separated(
                     shrinkWrap: true,
                     itemCount: addresses.length,
-                    separatorBuilder: (_, __) => const Divider(height: 1, color: Color(0xFFF0F0F0)),
+                    separatorBuilder: (_, __) => const Divider(
+                      height: 1,
+                      color: FasakhanstaBrand.border,
+                    ),
                     itemBuilder: (context, index) {
                       final address = addresses[index];
-                      final selected = address.id == (auth.selectedAddressId ?? HiveMethods.getSelectedCity());
+                      final selected = address.id ==
+                          (auth.selectedAddressId ??
+                              HiveMethods.getSelectedCity());
                       return ListTile(
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 4,
+                          vertical: 4,
+                        ),
                         leading: Container(
                           width: 42,
                           height: 42,
                           decoration: BoxDecoration(
-                            color: AppColors.mainAppColor.withValues(alpha: .10),
+                            color: AppColors.mainAppColor.withValues(
+                              alpha: .10,
+                            ),
                             borderRadius: BorderRadius.circular(13),
                           ),
-                          child: Icon(Icons.location_on_rounded, color: AppColors.mainAppColor),
+                          child: Icon(
+                            Icons.location_on_rounded,
+                            color: AppColors.mainAppColor,
+                          ),
                         ),
                         title: Text(
                           [address.streetName, address.cityName]
@@ -197,7 +220,10 @@ class _RestaurantsScreenState extends State<RestaurantsScreen> {
                           style: AppTextStyle.text14BS(),
                         ),
                         trailing: selected
-                            ? const Icon(Icons.check_circle_rounded, color: Color(0xFF0A857A))
+                            ? const Icon(
+                                Icons.check_circle_rounded,
+                                color: FasakhanstaBrand.success,
+                              )
                             : const Icon(Icons.chevron_left_rounded),
                         onTap: () {
                           Navigator.pop(sheetContext);
@@ -213,12 +239,22 @@ class _RestaurantsScreenState extends State<RestaurantsScreen> {
                     Navigator.pop(sheetContext);
                     _openAddAddress(previousIds);
                   },
-                  icon: Icon(Icons.add_location_alt_outlined, color: AppColors.mainAppColor),
-                  label: Text('إضافة عنوان جديد', style: AppTextStyle.text14BS(color: AppColors.mainAppColor)),
+                  icon: Icon(
+                    Icons.add_location_alt_outlined,
+                    color: AppColors.mainAppColor,
+                  ),
+                  label: Text(
+                    'إضافة عنوان جديد',
+                    style: AppTextStyle.text14BS(color: AppColors.mainAppColor),
+                  ),
                   style: OutlinedButton.styleFrom(
                     minimumSize: const Size.fromHeight(48),
-                    side: BorderSide(color: AppColors.mainAppColor.withValues(alpha: .35)),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                    side: BorderSide(
+                      color: AppColors.mainAppColor.withValues(alpha: .35),
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
                   ),
                 ),
               ],
@@ -282,7 +318,10 @@ class _RestaurantsScreenState extends State<RestaurantsScreen> {
     if (_selectedFilter == 'الأعلى تقييماً') {
       result.sort((a, b) => (b.avgRate ?? 0).compareTo(a.avgRate ?? 0));
     } else if (_selectedFilter == 'الأسرع توصيلاً') {
-      result.sort((a, b) => _deliveryMinutes(a.deliveryTime).compareTo(_deliveryMinutes(b.deliveryTime)));
+      result.sort(
+        (a, b) => _deliveryMinutes(a.deliveryTime)
+            .compareTo(_deliveryMinutes(b.deliveryTime)),
+      );
     } else if (_selectedFilter == 'الأقرب') {
       result.sort((a, b) {
         final aDistance = _distanceKm(a.lat, a.lng) ?? double.infinity;
@@ -307,13 +346,17 @@ class _RestaurantsScreenState extends State<RestaurantsScreen> {
     final userLng = HiveMethods.getLan();
     final lat2 = double.tryParse(restaurantLat ?? '');
     final lng2 = double.tryParse(restaurantLng ?? '');
-    if (userLat == null || userLng == null || lat2 == null || lng2 == null) return null;
+    if (userLat == null || userLng == null || lat2 == null || lng2 == null)
+      return null;
 
     const earthRadius = 6371.0;
     final dLat = _toRadians(lat2 - userLat);
     final dLng = _toRadians(lng2 - userLng);
     final a = math.sin(dLat / 2) * math.sin(dLat / 2) +
-        math.cos(_toRadians(userLat)) * math.cos(_toRadians(lat2)) * math.sin(dLng / 2) * math.sin(dLng / 2);
+        math.cos(_toRadians(userLat)) *
+            math.cos(_toRadians(lat2)) *
+            math.sin(dLng / 2) *
+            math.sin(dLng / 2);
     final c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a));
     return earthRadius * c;
   }
@@ -334,12 +377,15 @@ class _RestaurantsScreenState extends State<RestaurantsScreen> {
     final restaurantsController = context.watch<RestaurantsController>();
     final homeController = context.watch<HomeController>();
     final selectedAddress = _selectedAddress(auth);
-    final allRestaurants = _visibleAllRestaurants(restaurantsController.restaurant);
+    final allRestaurants = _visibleAllRestaurants(
+      restaurantsController.restaurant,
+    );
     final nearbyRestaurants = homeController.restaurantsNearYou;
-    final nearbyIds = nearbyRestaurants.map((e) => e.id).whereType<int>().toSet();
+    final nearbyIds =
+        nearbyRestaurants.map((e) => e.id).whereType<int>().toSet();
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF9FAFB),
+      backgroundColor: Colors.transparent,
       body: SafeArea(
         child: Directionality(
           textDirection: TextDirection.rtl,
@@ -359,7 +405,9 @@ class _RestaurantsScreenState extends State<RestaurantsScreen> {
                         Text(
                           'اطلب من أقرب مطعم أو تصفح كل المطاعم',
                           textAlign: TextAlign.center,
-                          style: AppTextStyle.text13RG(color: const Color(0xFF777777)),
+                          style: AppTextStyle.text13RG(
+                            color: FasakhanstaBrand.muted,
+                          ),
                         ),
                         const SizedBox(height: 16),
                         _LocationCard(
@@ -379,7 +427,8 @@ class _RestaurantsScreenState extends State<RestaurantsScreen> {
                           _EmptySection(
                             icon: Icons.delivery_dining_rounded,
                             title: 'لا توجد مطاعم توصل إلى موقعك حالياً',
-                            subtitle: 'جرّب تغيير عنوان التوصيل أو تصفح كل المطاعم بالأسفل',
+                            subtitle:
+                                'جرّب تغيير عنوان التوصيل أو تصفح كل المطاعم بالأسفل',
                           )
                         else
                           SizedBox(
@@ -388,12 +437,16 @@ class _RestaurantsScreenState extends State<RestaurantsScreen> {
                               scrollDirection: Axis.horizontal,
                               padding: EdgeInsets.zero,
                               itemCount: nearbyRestaurants.length,
-                              separatorBuilder: (_, __) => const SizedBox(width: 12),
+                              separatorBuilder: (_, __) =>
+                                  const SizedBox(width: 12),
                               itemBuilder: (context, index) {
                                 final restaurant = nearbyRestaurants[index];
                                 return _NearbyRestaurantCard(
                                   restaurant: restaurant,
-                                  distance: _distanceKm(restaurant.lat, restaurant.lng),
+                                  distance: _distanceKm(
+                                    restaurant.lat,
+                                    restaurant.lng,
+                                  ),
                                   onTap: () => _openRestaurant(
                                     restaurant.id,
                                     restaurant.status,
@@ -421,18 +474,30 @@ class _RestaurantsScreenState extends State<RestaurantsScreen> {
                                 textInputAction: TextInputAction.search,
                                 decoration: InputDecoration(
                                   hintText: 'ابحث عن مطعم',
-                                  hintStyle: AppTextStyle.text13RG(color: const Color(0xFFAAAAAA)),
-                                  prefixIcon: const Icon(Icons.search_rounded, color: Color(0xFF111111)),
+                                  hintStyle: AppTextStyle.text13RG(
+                                    color: FasakhanstaBrand.muted,
+                                  ),
+                                  prefixIcon: const Icon(
+                                    Icons.search_rounded,
+                                    color: FasakhanstaBrand.text,
+                                  ),
                                   filled: true,
-                                  fillColor: Colors.white,
-                                  contentPadding: const EdgeInsets.symmetric(vertical: 14),
+                                  fillColor: FasakhanstaBrand.field,
+                                  contentPadding: const EdgeInsets.symmetric(
+                                    vertical: 14,
+                                  ),
                                   enabledBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(16),
-                                    borderSide: const BorderSide(color: Color(0xFFE7E7E7)),
+                                    borderSide: const BorderSide(
+                                      color: FasakhanstaBrand.border,
+                                    ),
                                   ),
                                   focusedBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(16),
-                                    borderSide: BorderSide(color: AppColors.mainAppColor, width: 1.3),
+                                    borderSide: BorderSide(
+                                      color: AppColors.mainAppColor,
+                                      width: 1.3,
+                                    ),
                                   ),
                                 ),
                               ),
@@ -443,20 +508,34 @@ class _RestaurantsScreenState extends State<RestaurantsScreen> {
                               onTap: _showFilterSheet,
                               child: Container(
                                 height: 50,
-                                padding: const EdgeInsets.symmetric(horizontal: 14),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 14,
+                                ),
                                 decoration: BoxDecoration(
-                                  color: Colors.white,
+                                  color: FasakhanstaBrand.surface,
                                   borderRadius: BorderRadius.circular(15),
-                                  border: Border.all(color: const Color(0xFFE7E7E7)),
+                                  border: Border.all(
+                                    color: FasakhanstaBrand.border,
+                                  ),
                                   boxShadow: const [
-                                    BoxShadow(color: Color(0x0D000000), blurRadius: 8, offset: Offset(0, 3)),
+                                    BoxShadow(
+                                      color: Color(0x0D000000),
+                                      blurRadius: 8,
+                                      offset: Offset(0, 3),
+                                    ),
                                   ],
                                 ),
                                 child: const Row(
                                   children: [
                                     Icon(Icons.tune_rounded, size: 19),
                                     SizedBox(width: 5),
-                                    Text('فلتر', style: TextStyle(fontWeight: FontWeight.w700, fontSize: 12)),
+                                    Text(
+                                      'فلتر',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w700,
+                                        fontSize: 12,
+                                      ),
+                                    ),
                                   ],
                                 ),
                               ),
@@ -474,17 +553,26 @@ class _RestaurantsScreenState extends State<RestaurantsScreen> {
                                 child: ChoiceChip(
                                   label: Text(filter),
                                   selected: selected,
-                                  onSelected: (_) => setState(() => _selectedFilter = filter),
+                                  onSelected: (_) =>
+                                      setState(() => _selectedFilter = filter),
                                   showCheckmark: false,
                                   side: BorderSide(
-                                    color: selected ? AppColors.mainAppColor.withValues(alpha: .25) : const Color(0xFFE9E9E9),
+                                    color: selected
+                                        ? AppColors.mainAppColor.withValues(
+                                            alpha: .25,
+                                          )
+                                        : FasakhanstaBrand.border,
                                   ),
-                                  selectedColor: const Color(0xFFFFF0E4),
-                                  backgroundColor: Colors.white,
+                                  selectedColor: FasakhanstaBrand.text,
+                                  backgroundColor: FasakhanstaBrand.surface,
                                   labelStyle: AppTextStyle.text12BS(
-                                    color: selected ? AppColors.mainAppColor : const Color(0xFF6B6B6B),
+                                    color: selected
+                                        ? AppColors.mainAppColor
+                                        : FasakhanstaBrand.muted,
                                   ),
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(18),
+                                  ),
                                 ),
                               );
                             }).toList(),
@@ -504,13 +592,18 @@ class _RestaurantsScreenState extends State<RestaurantsScreen> {
                             shrinkWrap: true,
                             physics: const NeverScrollableScrollPhysics(),
                             itemCount: allRestaurants.length,
-                            separatorBuilder: (_, __) => const SizedBox(height: 11),
+                            separatorBuilder: (_, __) =>
+                                const SizedBox(height: 11),
                             itemBuilder: (context, index) {
                               final restaurant = allRestaurants[index];
                               return _AllRestaurantCard(
                                 restaurant: restaurant,
-                                distance: _distanceKm(restaurant.lat, restaurant.lng),
-                                deliversHere: restaurant.id != null && nearbyIds.contains(restaurant.id),
+                                distance: _distanceKm(
+                                  restaurant.lat,
+                                  restaurant.lng,
+                                ),
+                                deliversHere: restaurant.id != null &&
+                                    nearbyIds.contains(restaurant.id),
                                 onTap: () => _openRestaurant(
                                   restaurant.id,
                                   restaurant.status,
@@ -540,7 +633,7 @@ class _RestaurantsScreenState extends State<RestaurantsScreen> {
         child: Container(
           padding: const EdgeInsets.fromLTRB(18, 12, 18, 24),
           decoration: const BoxDecoration(
-            color: Colors.white,
+            color: FasakhanstaBrand.surface,
             borderRadius: BorderRadius.vertical(top: Radius.circular(26)),
           ),
           child: Column(
@@ -551,7 +644,10 @@ class _RestaurantsScreenState extends State<RestaurantsScreen> {
                 child: Container(
                   width: 46,
                   height: 4,
-                  decoration: BoxDecoration(color: const Color(0xFFDADADA), borderRadius: BorderRadius.circular(10)),
+                  decoration: BoxDecoration(
+                    color: FasakhanstaBrand.surfaceRaised,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
                 ),
               ),
               const SizedBox(height: 18),
@@ -624,9 +720,9 @@ class _LocationCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: const Color(0xFFFFF9F4),
+        color: FasakhanstaBrand.surfaceRaised,
         borderRadius: BorderRadius.circular(19),
-        border: Border.all(color: const Color(0xFFFFDFC3)),
+        border: Border.all(color: FasakhanstaBrand.border),
       ),
       child: Row(
         children: [
@@ -637,14 +733,21 @@ class _LocationCard extends StatelessWidget {
               color: AppColors.mainAppColor,
               borderRadius: BorderRadius.circular(15),
             ),
-            child: const Icon(Icons.location_on_rounded, color: Colors.white, size: 27),
+            child: const Icon(
+              Icons.location_on_rounded,
+              color: FasakhanstaBrand.onOrange,
+              size: 27,
+            ),
           ),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('عنوان التوصيل الحالي', style: AppTextStyle.text12RG(color: const Color(0xFF777777))),
+                Text(
+                  'عنوان التوصيل الحالي',
+                  style: AppTextStyle.text12RG(color: FasakhanstaBrand.muted),
+                ),
                 const SizedBox(height: 4),
                 Text(
                   address,
@@ -661,10 +764,15 @@ class _LocationCard extends StatelessWidget {
             style: OutlinedButton.styleFrom(
               side: BorderSide(color: AppColors.mainAppColor),
               foregroundColor: AppColors.mainAppColor,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(13)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(13),
+              ),
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
             ),
-            child: const Text('تغيير العنوان', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700)),
+            child: const Text(
+              'تغيير العنوان',
+              style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700),
+            ),
           ),
         ],
       ),
@@ -694,7 +802,10 @@ class _SectionHeader extends StatelessWidget {
         Container(
           width: 44,
           height: 44,
-          decoration: BoxDecoration(color: accent.withValues(alpha: .10), shape: BoxShape.circle),
+          decoration: BoxDecoration(
+            color: accent.withValues(alpha: .10),
+            shape: BoxShape.circle,
+          ),
           child: Icon(icon, color: accent, size: 24),
         ),
         const SizedBox(width: 10),
@@ -704,13 +815,19 @@ class _SectionHeader extends StatelessWidget {
             children: [
               Text(title, style: AppTextStyle.text20BS()),
               const SizedBox(height: 2),
-              Text(subtitle, style: AppTextStyle.text12RG(color: const Color(0xFF808080))),
+              Text(
+                subtitle,
+                style: AppTextStyle.text12RG(color: FasakhanstaBrand.muted),
+              ),
             ],
           ),
         ),
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
-          decoration: BoxDecoration(color: accent.withValues(alpha: .08), borderRadius: BorderRadius.circular(12)),
+          decoration: BoxDecoration(
+            color: accent.withValues(alpha: .08),
+            borderRadius: BorderRadius.circular(12),
+          ),
           child: Text('$count', style: AppTextStyle.text12BS(color: accent)),
         ),
       ],
@@ -732,22 +849,30 @@ class _NearbyRestaurantCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final width = math.min(MediaQuery.sizeOf(context).width * .72, 278.0);
-    final image = (restaurant.bgImage ?? '').trim().isNotEmpty ? restaurant.bgImage! : (restaurant.logo ?? '');
+    final image = (restaurant.bgImage ?? '').trim().isNotEmpty
+        ? restaurant.bgImage!
+        : (restaurant.logo ?? '');
 
     return SizedBox(
       width: width,
       child: Material(
-        color: Colors.white,
+        color: FasakhanstaBrand.surface,
         borderRadius: BorderRadius.circular(20),
         child: InkWell(
           onTap: onTap,
           borderRadius: BorderRadius.circular(20),
           child: Container(
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: FasakhanstaBrand.surface,
               borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: const Color(0xFFF0F0F0)),
-              boxShadow: const [BoxShadow(color: Color(0x12000000), blurRadius: 14, offset: Offset(0, 5))],
+              border: Border.all(color: FasakhanstaBrand.border),
+              boxShadow: const [
+                BoxShadow(
+                  color: Color(0x12000000),
+                  blurRadius: 14,
+                  offset: Offset(0, 5),
+                ),
+              ],
             ),
             clipBehavior: Clip.antiAlias,
             child: Column(
@@ -758,7 +883,13 @@ class _NearbyRestaurantCard extends StatelessWidget {
                   child: Stack(
                     fit: StackFit.expand,
                     children: [
-                      CustomNetworkImage(imageUrl: image, height: 118, width: width, radius: 0, fit: BoxFit.cover),
+                      CustomNetworkImage(
+                        imageUrl: image,
+                        height: 118,
+                        width: width,
+                        radius: 0,
+                        fit: BoxFit.cover,
+                      ),
                       const DecoratedBox(
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
@@ -772,17 +903,31 @@ class _NearbyRestaurantCard extends StatelessWidget {
                         top: 9,
                         right: 9,
                         child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 5,
+                          ),
                           decoration: BoxDecoration(
-                            color: const Color(0xFF0A857A),
+                            color: FasakhanstaBrand.successTint,
                             borderRadius: BorderRadius.circular(11),
                           ),
                           child: const Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Icon(Icons.check_circle_rounded, color: Colors.white, size: 13),
+                              Icon(
+                                Icons.check_circle_rounded,
+                                color: FasakhanstaBrand.text,
+                                size: 13,
+                              ),
                               SizedBox(width: 4),
-                              Text('يوصل إليك', style: TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.w700)),
+                              Text(
+                                'يوصل إليك',
+                                style: TextStyle(
+                                  color: FasakhanstaBrand.text,
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
                             ],
                           ),
                         ),
@@ -793,7 +938,10 @@ class _NearbyRestaurantCard extends StatelessWidget {
                           bottom: 9,
                           child: Container(
                             constraints: const BoxConstraints(maxWidth: 190),
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 5,
+                            ),
                             decoration: BoxDecoration(
                               color: const Color(0xCC4B4B4B),
                               borderRadius: BorderRadius.circular(11),
@@ -804,7 +952,7 @@ class _NearbyRestaurantCard extends StatelessWidget {
                               overflow: TextOverflow.ellipsis,
                               textAlign: TextAlign.center,
                               style: const TextStyle(
-                                color: Colors.white,
+                                color: FasakhanstaBrand.text,
                                 fontSize: 10,
                                 fontWeight: FontWeight.w700,
                               ),
@@ -828,19 +976,44 @@ class _NearbyRestaurantCard extends StatelessWidget {
                       const SizedBox(height: 3),
                       Row(
                         children: [
-                          const Icon(Icons.star_rounded, color: Color(0xFFFF7A00), size: 17),
+                          const Icon(
+                            Icons.star_rounded,
+                            color: FasakhanstaBrand.orange,
+                            size: 17,
+                          ),
                           const SizedBox(width: 3),
-                          Text(_rate(restaurant.avgRate), style: AppTextStyle.text12BS()),
+                          Text(
+                            _rate(restaurant.avgRate),
+                            style: AppTextStyle.text12BS(),
+                          ),
                         ],
                       ),
                       const SizedBox(height: 9),
-                      const Divider(height: 1, color: Color(0xFFF0F0F0)),
+                      const Divider(height: 1, color: FasakhanstaBrand.border),
                       const SizedBox(height: 8),
                       Row(
                         children: [
-                          Expanded(child: _MiniMetric(icon: Icons.location_on_outlined, value: _distance(distance), label: 'المسافة')),
-                          Expanded(child: _MiniMetric(icon: Icons.delivery_dining_rounded, value: _money(restaurant.serviceFees), label: 'التوصيل')),
-                          Expanded(child: _MiniMetric(icon: Icons.schedule_rounded, value: _delivery(restaurant.deliveryTime), label: 'الوقت')),
+                          Expanded(
+                            child: _MiniMetric(
+                              icon: Icons.location_on_outlined,
+                              value: _distance(distance),
+                              label: 'المسافة',
+                            ),
+                          ),
+                          Expanded(
+                            child: _MiniMetric(
+                              icon: Icons.delivery_dining_rounded,
+                              value: _money(restaurant.serviceFees),
+                              label: 'التوصيل',
+                            ),
+                          ),
+                          Expanded(
+                            child: _MiniMetric(
+                              icon: Icons.schedule_rounded,
+                              value: _delivery(restaurant.deliveryTime),
+                              label: 'الوقت',
+                            ),
+                          ),
                         ],
                       ),
                     ],
@@ -870,13 +1043,15 @@ class _AllRestaurantCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final image = (restaurant.logo ?? '').trim().isNotEmpty ? restaurant.logo! : (restaurant.bgImage ?? '');
+    final image = (restaurant.logo ?? '').trim().isNotEmpty
+        ? restaurant.logo!
+        : (restaurant.bgImage ?? '');
     final address = (restaurant.address ?? '').trim().isNotEmpty
         ? restaurant.address!
         : (restaurant.cityName ?? restaurant.cityname ?? '');
 
     return Material(
-      color: Colors.white,
+      color: FasakhanstaBrand.surface,
       borderRadius: BorderRadius.circular(19),
       child: InkWell(
         onTap: onTap,
@@ -884,10 +1059,16 @@ class _AllRestaurantCard extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.all(11),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: FasakhanstaBrand.surface,
             borderRadius: BorderRadius.circular(19),
-            border: Border.all(color: const Color(0xFFF0F0F0)),
-            boxShadow: const [BoxShadow(color: Color(0x0D000000), blurRadius: 12, offset: Offset(0, 4))],
+            border: Border.all(color: FasakhanstaBrand.border),
+            boxShadow: const [
+              BoxShadow(
+                color: Color(0x0D000000),
+                blurRadius: 12,
+                offset: Offset(0, 4),
+              ),
+            ],
           ),
           child: Column(
             children: [
@@ -896,7 +1077,13 @@ class _AllRestaurantCard extends StatelessWidget {
                 children: [
                   ClipRRect(
                     borderRadius: BorderRadius.circular(15),
-                    child: CustomNetworkImage(imageUrl: image, height: 78, width: 84, radius: 0, fit: BoxFit.cover),
+                    child: CustomNetworkImage(
+                      imageUrl: image,
+                      height: 78,
+                      width: 84,
+                      radius: 0,
+                      fit: BoxFit.cover,
+                    ),
                   ),
                   const SizedBox(width: 11),
                   Expanded(
@@ -915,12 +1102,22 @@ class _AllRestaurantCard extends StatelessWidget {
                             ),
                             if (deliversHere)
                               Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 4),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 7,
+                                  vertical: 4,
+                                ),
                                 decoration: BoxDecoration(
-                                  color: const Color(0xFFE8F7F4),
+                                  color: FasakhanstaBrand.surfaceRaised,
                                   borderRadius: BorderRadius.circular(10),
                                 ),
-                                child: const Text('يوصل إليك', style: TextStyle(color: Color(0xFF0A857A), fontSize: 9, fontWeight: FontWeight.w700)),
+                                child: const Text(
+                                  'يوصل إليك',
+                                  style: TextStyle(
+                                    color: FasakhanstaBrand.success,
+                                    fontSize: 9,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
                               ),
                           ],
                         ),
@@ -931,21 +1128,27 @@ class _AllRestaurantCard extends StatelessWidget {
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: AppTextStyle.text11BS(
-                              color: const Color(0xFFB45120),
+                              color: FasakhanstaBrand.orange,
                             ),
                           ),
                         ],
                         const SizedBox(height: 6),
                         Row(
                           children: [
-                            const Icon(Icons.location_on_outlined, size: 14, color: Color(0xFF8A8A8A)),
+                            const Icon(
+                              Icons.location_on_outlined,
+                              size: 14,
+                              color: FasakhanstaBrand.muted,
+                            ),
                             const SizedBox(width: 3),
                             Expanded(
                               child: Text(
                                 address,
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
-                                style: AppTextStyle.text11RG(color: const Color(0xFF7E7E7E)),
+                                style: AppTextStyle.text11RG(
+                                  color: FasakhanstaBrand.muted,
+                                ),
                               ),
                             ),
                           ],
@@ -953,14 +1156,30 @@ class _AllRestaurantCard extends StatelessWidget {
                         const SizedBox(height: 8),
                         Row(
                           children: [
-                            const Icon(Icons.star_rounded, size: 17, color: Color(0xFFFF7A00)),
+                            const Icon(
+                              Icons.star_rounded,
+                              size: 17,
+                              color: FasakhanstaBrand.orange,
+                            ),
                             const SizedBox(width: 3),
-                            Text(_rate(restaurant.avgRate), style: AppTextStyle.text12BS()),
+                            Text(
+                              _rate(restaurant.avgRate),
+                              style: AppTextStyle.text12BS(),
+                            ),
                             if (distance != null) ...[
                               const SizedBox(width: 12),
-                              const Icon(Icons.near_me_outlined, size: 14, color: Color(0xFF0A857A)),
+                              const Icon(
+                                Icons.near_me_outlined,
+                                size: 14,
+                                color: FasakhanstaBrand.success,
+                              ),
                               const SizedBox(width: 3),
-                              Text(_distance(distance), style: AppTextStyle.text11BS(color: const Color(0xFF0A857A))),
+                              Text(
+                                _distance(distance),
+                                style: AppTextStyle.text11BS(
+                                  color: FasakhanstaBrand.success,
+                                ),
+                              ),
                             ],
                           ],
                         ),
@@ -968,19 +1187,41 @@ class _AllRestaurantCard extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(width: 5),
-                  Icon(Icons.chevron_left_rounded, color: AppColors.mainAppColor, size: 23),
+                  Icon(
+                    Icons.chevron_left_rounded,
+                    color: AppColors.mainAppColor,
+                    size: 23,
+                  ),
                 ],
               ),
               const SizedBox(height: 10),
-              const Divider(height: 1, color: Color(0xFFF1F1F1)),
+              const Divider(height: 1, color: FasakhanstaBrand.border),
               const SizedBox(height: 9),
               Row(
                 children: [
-                  Expanded(child: _MiniMetric(icon: Icons.schedule_rounded, value: _delivery(restaurant.deliveryTime), label: 'وقت التوصيل')),
+                  Expanded(
+                    child: _MiniMetric(
+                      icon: Icons.schedule_rounded,
+                      value: _delivery(restaurant.deliveryTime),
+                      label: 'وقت التوصيل',
+                    ),
+                  ),
                   _verticalDivider(),
-                  Expanded(child: _MiniMetric(icon: Icons.delivery_dining_rounded, value: _money(restaurant.serviceFees), label: 'رسوم التوصيل')),
+                  Expanded(
+                    child: _MiniMetric(
+                      icon: Icons.delivery_dining_rounded,
+                      value: _money(restaurant.serviceFees),
+                      label: 'رسوم التوصيل',
+                    ),
+                  ),
                   _verticalDivider(),
-                  Expanded(child: _MiniMetric(icon: Icons.shopping_bag_outlined, value: _money(restaurant.minOrderPrice), label: 'الحد الأدنى')),
+                  Expanded(
+                    child: _MiniMetric(
+                      icon: Icons.shopping_bag_outlined,
+                      value: _money(restaurant.minOrderPrice),
+                      label: 'الحد الأدنى',
+                    ),
+                  ),
                 ],
               ),
             ],
@@ -990,11 +1231,16 @@ class _AllRestaurantCard extends StatelessWidget {
     );
   }
 
-  Widget _verticalDivider() => Container(width: 1, height: 37, color: const Color(0xFFEDEDED));
+  Widget _verticalDivider() =>
+      Container(width: 1, height: 37, color: FasakhanstaBrand.surfaceRaised);
 }
 
 class _MiniMetric extends StatelessWidget {
-  const _MiniMetric({required this.icon, required this.value, required this.label});
+  const _MiniMetric({
+    required this.icon,
+    required this.value,
+    required this.label,
+  });
   final IconData icon;
   final String value;
   final String label;
@@ -1003,18 +1249,32 @@ class _MiniMetric extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Icon(icon, size: 18, color: const Color(0xFF0A857A)),
+        Icon(icon, size: 18, color: FasakhanstaBrand.success),
         const SizedBox(height: 3),
-        Text(value, maxLines: 1, overflow: TextOverflow.ellipsis, style: AppTextStyle.text11BS()),
+        Text(
+          value,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: AppTextStyle.text11BS(),
+        ),
         const SizedBox(height: 1),
-        Text(label, maxLines: 1, overflow: TextOverflow.ellipsis, style: AppTextStyle.text9RG(color: const Color(0xFF888888))),
+        Text(
+          label,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: AppTextStyle.text9RG(color: FasakhanstaBrand.muted),
+        ),
       ],
     );
   }
 }
 
 class _EmptySection extends StatelessWidget {
-  const _EmptySection({required this.icon, required this.title, required this.subtitle});
+  const _EmptySection({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+  });
   final IconData icon;
   final String title;
   final String subtitle;
@@ -1024,17 +1284,25 @@ class _EmptySection extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 24),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: FasakhanstaBrand.surface,
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: const Color(0xFFF0F0F0)),
+        border: Border.all(color: FasakhanstaBrand.border),
       ),
       child: Column(
         children: [
           Icon(icon, size: 34, color: AppColors.mainAppColor),
           const SizedBox(height: 9),
-          Text(title, textAlign: TextAlign.center, style: AppTextStyle.text14BS()),
+          Text(
+            title,
+            textAlign: TextAlign.center,
+            style: AppTextStyle.text14BS(),
+          ),
           const SizedBox(height: 4),
-          Text(subtitle, textAlign: TextAlign.center, style: AppTextStyle.text11RG(color: const Color(0xFF888888))),
+          Text(
+            subtitle,
+            textAlign: TextAlign.center,
+            style: AppTextStyle.text11RG(color: FasakhanstaBrand.muted),
+          ),
         ],
       ),
     );

@@ -1,3 +1,4 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -27,12 +28,17 @@ class DeleteAccountBtn extends StatelessWidget {
             Utils.showAppDialog(
               Dialog(
                 elevation: 5,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(25),
+                ),
                 child: Builder(
                   builder: (context) {
                     final controller = Provider.of<AuthController>(context);
                     return Container(
-                      decoration: BoxDecoration(color: AppColors.whiteColor, borderRadius: BorderRadius.circular(25)),
+                      decoration: BoxDecoration(
+                        color: FasakhanstaBrand.surface,
+                        borderRadius: BorderRadius.circular(25),
+                      ),
                       height: 200,
                       child: Center(
                         child: Padding(

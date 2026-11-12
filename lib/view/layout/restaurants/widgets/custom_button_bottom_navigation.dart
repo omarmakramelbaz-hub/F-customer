@@ -1,3 +1,4 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -34,17 +35,20 @@ class CustomButtonBottomNavigation extends StatefulWidget {
   });
 
   @override
-  State<CustomButtonBottomNavigation> createState() => _CustomButtonBottomNavigationState();
+  State<CustomButtonBottomNavigation> createState() =>
+      _CustomButtonBottomNavigationState();
 }
 
-class _CustomButtonBottomNavigationState extends State<CustomButtonBottomNavigation> {
+class _CustomButtonBottomNavigationState
+    extends State<CustomButtonBottomNavigation> {
   bool addToCartSelected = false;
   int count = 1;
 
   int get _baseTotal => int.tryParse(widget.total ?? '0') ?? 0;
 
   int _displayPrice(CartController controller) {
-    final currentTotal = int.tryParse(controller.totalCountAddTCart ?? '') ?? (_baseTotal * count);
+    final currentTotal = int.tryParse(controller.totalCountAddTCart ?? '') ??
+        (_baseTotal * count);
     final divider = widget.qty <= 0 ? 1 : widget.qty;
     return (currentTotal / divider).round();
   }
@@ -58,13 +62,17 @@ class _CustomButtonBottomNavigationState extends State<CustomButtonBottomNavigat
       child: Container(
         padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
         decoration: const BoxDecoration(
-          color: Colors.white,
+          color: FasakhanstaBrand.surface,
           borderRadius: BorderRadius.only(
             topLeft: Radius.circular(24),
             topRight: Radius.circular(24),
           ),
           boxShadow: [
-            BoxShadow(color: Color(0x18000000), blurRadius: 22, offset: Offset(0, -6)),
+            BoxShadow(
+              color: Color(0x18000000),
+              blurRadius: 22,
+              offset: Offset(0, -6),
+            ),
           ],
         ),
         child: Row(
@@ -80,7 +88,9 @@ class _CustomButtonBottomNavigationState extends State<CustomButtonBottomNavigat
                       '${_displayPrice(cartController)} ج',
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: AppTextStyle.text20BS(color: AppColors.mainAppColor),
+                      style: AppTextStyle.text20BS(
+                        color: AppColors.mainAppColor,
+                      ),
                     ),
                     const SizedBox(height: 2),
                     Text('السعر الإجمالي', style: AppTextStyle.text11RG()),
@@ -98,8 +108,10 @@ class _CustomButtonBottomNavigationState extends State<CustomButtonBottomNavigat
                   style: ElevatedButton.styleFrom(
                     elevation: 0,
                     backgroundColor: AppColors.mainAppColor,
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+                    foregroundColor: FasakhanstaBrand.onOrange,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(18),
+                    ),
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -111,7 +123,9 @@ class _CustomButtonBottomNavigationState extends State<CustomButtonBottomNavigat
                           'addToCart'.tr,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: AppTextStyle.text16BW(),
+                          style: AppTextStyle.text16BW(
+                            color: FasakhanstaBrand.onOrange,
+                          ),
                         ),
                       ),
                     ],
@@ -130,9 +144,9 @@ class _CustomButtonBottomNavigationState extends State<CustomButtonBottomNavigat
       height: 52,
       padding: const EdgeInsets.symmetric(horizontal: 8),
       decoration: BoxDecoration(
-        color: const Color(0xFFF7F7F7),
+        color: FasakhanstaBrand.surfaceRaised,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFE8E8E8)),
+        border: Border.all(color: FasakhanstaBrand.border),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -183,13 +197,19 @@ class _CustomButtonBottomNavigationState extends State<CustomButtonBottomNavigat
 
   int? _currentRestaurantId(BuildContext context) {
     try {
-      return context.read<RestaurantsController>().productsDetailsRestaurant?.resturantId;
+      return context
+          .read<RestaurantsController>()
+          .productsDetailsRestaurant
+          ?.resturantId;
     } catch (_) {
       return null;
     }
   }
 
-  bool _cartContainsAnotherRestaurant(CartController controller, int restaurantId) {
+  bool _cartContainsAnotherRestaurant(
+    CartController controller,
+    int restaurantId,
+  ) {
     final restaurantIds = <int>{};
     final cart = controller.cart;
 
@@ -240,7 +260,10 @@ class _CustomButtonBottomNavigationState extends State<CustomButtonBottomNavigat
     );
   }
 
-  Future<void> _handleAddTap(BuildContext context, CartController cartController) async {
+  Future<void> _handleAddTap(
+    BuildContext context,
+    CartController cartController,
+  ) async {
     if (HiveMethods.getToken() == null) {
       CommonMethods.showChooseDialog(
         context,
@@ -283,10 +306,7 @@ class _CustomButtonBottomNavigationState extends State<CustomButtonBottomNavigat
         widget.onSuccessAddItems?.call();
         cartController.getCart();
       },
-      anotherCart: () => _showDifferentRestaurantError(
-        context,
-        cartController,
-      ),
+      anotherCart: () => _showDifferentRestaurantError(context, cartController),
     );
   }
 }

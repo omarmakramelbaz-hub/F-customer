@@ -1,3 +1,4 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -41,8 +42,11 @@ class _MenuBottomSheetWidgetState extends State<MenuBottomSheetWidget> {
     return Container(
       height: context.height * 0.8,
       decoration: BoxDecoration(
-        color: AppColors.whiteColor,
-        borderRadius: const BorderRadius.only(topLeft: Radius.circular(36), topRight: Radius.circular(36)),
+        color: FasakhanstaBrand.surface,
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(36),
+          topRight: Radius.circular(36),
+        ),
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 33, vertical: 20),
@@ -56,10 +60,12 @@ class _MenuBottomSheetWidgetState extends State<MenuBottomSheetWidget> {
                   onTap: () => Navigator.pop(context),
                   child: Card(
                     elevation: 10,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
                     child: CircleAvatar(
                       radius: 20,
-                      backgroundColor: AppColors.whiteColor,
+                      backgroundColor: FasakhanstaBrand.surface,
                       child: SvgPicture.asset(AppImages.closeIcon),
                     ),
                   ),
@@ -93,13 +99,21 @@ class _MenuBottomSheetWidgetState extends State<MenuBottomSheetWidget> {
                                   topLeft: Radius.circular(7),
                                   bottomLeft: Radius.circular(7),
                                 ),
-                                color: _currentIndex == index ? AppColors.mainAppColor : Colors.transparent,
+                                color: _currentIndex == index
+                                    ? AppColors.mainAppColor
+                                    : Colors.transparent,
                               ),
                             ),
                             const SizedBox(width: 10),
-                            Text('previousOrders'.tr, style: AppTextStyle.text16BS()),
+                            Text(
+                              'previousOrders'.tr,
+                              style: AppTextStyle.text16BS(),
+                            ),
                             const Spacer(),
-                            Text(widget.previousOrders.length.toString(), style: AppTextStyle.text16BG()),
+                            Text(
+                              widget.previousOrders.length.toString(),
+                              style: AppTextStyle.text16BG(),
+                            ),
                           ],
                         ),
                       ),
@@ -126,14 +140,22 @@ class _MenuBottomSheetWidgetState extends State<MenuBottomSheetWidget> {
                                   topLeft: Radius.circular(7),
                                   bottomLeft: Radius.circular(7),
                                 ),
-                                color: _currentIndex == index ? AppColors.mainAppColor : Colors.transparent,
+                                color: _currentIndex == index
+                                    ? AppColors.mainAppColor
+                                    : Colors.transparent,
                               ),
                             ),
                             const SizedBox(width: 10),
-                            Text(widget.products[productIndex].categoryName ?? '', style: AppTextStyle.text16BS()),
+                            Text(
+                              widget.products[productIndex].categoryName ?? '',
+                              style: AppTextStyle.text16BS(),
+                            ),
                             const Spacer(),
                             Text(
-                              widget.products[productIndex].resturantItems?.length.toString() ?? '',
+                              widget.products[productIndex].resturantItems
+                                      ?.length
+                                      .toString() ??
+                                  '',
                               style: AppTextStyle.text16BG(),
                             ),
                           ],
@@ -142,7 +164,8 @@ class _MenuBottomSheetWidgetState extends State<MenuBottomSheetWidget> {
                     );
                   }
                 },
-                separatorBuilder: (context, index) => const Divider(thickness: 1),
+                separatorBuilder: (context, index) =>
+                    const Divider(thickness: 1),
                 itemCount: widget.products.length + 1,
               ),
             ),

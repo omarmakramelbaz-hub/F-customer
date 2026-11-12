@@ -1,3 +1,5 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
+
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -192,7 +194,7 @@ class _CustomPaymentWebViewScreenState extends State<CustomPaymentWebViewScreen>
         actions: const [
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 16),
-            child: Icon(Icons.lock_outline, color: Color(0xFFFD7201)),
+            child: Icon(Icons.lock_outline, color: FasakhanstaBrand.orange),
           ),
         ],
       ),
@@ -204,9 +206,11 @@ class _CustomPaymentWebViewScreenState extends State<CustomPaymentWebViewScreen>
             if (_awaitingConfirmation)
               Padding(
                 padding: const EdgeInsets.all(12),
-                child: Text(isArabic
-                    ? 'جارٍ تأكيد الدفع من السيرفر...'
-                    : 'Confirming payment with the server...'),
+                child: Text(
+                  isArabic
+                      ? 'جارٍ تأكيد الدفع من السيرفر...'
+                      : 'Confirming payment with the server...',
+                ),
               ),
             Expanded(
               child: events == null || _loadError
@@ -229,8 +233,9 @@ class _CustomPaymentWebViewScreenState extends State<CustomPaymentWebViewScreen>
                               FilledButton(
                                 key: const ValueKey('retry-payment'),
                                 onPressed: _reload,
-                                child:
-                                    Text(isArabic ? 'إعادة المحاولة' : 'Retry'),
+                                child: Text(
+                                  isArabic ? 'إعادة المحاولة' : 'Retry',
+                                ),
                               ),
                             ],
                           ],

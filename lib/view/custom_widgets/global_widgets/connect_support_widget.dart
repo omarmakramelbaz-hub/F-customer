@@ -1,3 +1,4 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -36,31 +37,43 @@ class ConnectSupportWidget extends StatelessWidget {
                     path: AppImages.supportIcon,
                     type: ImageType.svg,
                     height: 32,
-                    color: isDark == true ? AppColors.whiteColor : AppColors.mainAppColor,
+                    color: isDark == true
+                        ? FasakhanstaBrand.text
+                        : AppColors.mainAppColor,
                   ),
                   const SizedBox(width: 15),
                   Expanded(
                     child: Text(
                       'contactSupport'.tr,
                       style: isDark == true
-                          ? AppTextStyle.text14BS().copyWith(color: AppColors.whiteColor)
+                          ? AppTextStyle.text14BS().copyWith(
+                              color: FasakhanstaBrand.text,
+                            )
                           : AppTextStyle.text14BS(),
                     ),
                   ),
                   GestureDetector(
                     onTap: () {
-                      UrlLauncherMethods.makePhoneCall(settingController.setting?.mobile ?? '');
+                      UrlLauncherMethods.makePhoneCall(
+                        settingController.setting?.mobile ?? '',
+                      );
                     },
                     child: Card(
                       elevation: 10,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
                       child: CircleAvatar(
                         radius: 20,
-                        backgroundColor: isDark == true ? AppColors.whiteColor : AppColors.mainAppColor,
+                        backgroundColor: isDark == true
+                            ? FasakhanstaBrand.surface
+                            : AppColors.mainAppColor,
                         child: CustomImage(
                           path: AppImages.callIcon,
                           type: ImageType.svg,
-                          color: isDark == true ? AppColors.blackColor : AppColors.whiteColor,
+                          color: isDark == true
+                              ? FasakhanstaBrand.text
+                              : FasakhanstaBrand.text,
                         ),
                       ),
                     ),
@@ -71,23 +84,36 @@ class ConnectSupportWidget extends StatelessWidget {
                       NamedNavigatorImpl.push(
                         AdminChatScreen.routeName,
                         arguments: AdminChatScreenArgs(
-                          receiverId: settingController.setting?.adminId.toString() ?? '1',
-                          senderId: context.read<AuthController>().profile!.id!.toString(),
+                          receiverId:
+                              settingController.setting?.adminId.toString() ??
+                                  '1',
+                          senderId: context
+                              .read<AuthController>()
+                              .profile!
+                              .id!
+                              .toString(),
                           adminId: settingController.setting?.adminId ?? 1,
-                          adminDeviceToken: settingController.setting?.adminDeviceToken ?? '',
+                          adminDeviceToken:
+                              settingController.setting?.adminDeviceToken ?? '',
                         ),
                       );
                     },
                     child: Card(
                       elevation: 10,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
                       child: CircleAvatar(
                         radius: 20,
-                        backgroundColor: isDark == true ? AppColors.whiteColor : AppColors.mainAppColor,
+                        backgroundColor: isDark == true
+                            ? FasakhanstaBrand.surface
+                            : AppColors.mainAppColor,
                         child: CustomImage(
                           path: AppImages.chatIcon,
                           type: ImageType.svg,
-                          color: isDark == true ? AppColors.blackColor : AppColors.whiteColor,
+                          color: isDark == true
+                              ? FasakhanstaBrand.text
+                              : FasakhanstaBrand.text,
                         ),
                       ),
                     ),

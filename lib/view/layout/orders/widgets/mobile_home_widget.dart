@@ -1,3 +1,5 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
+
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
@@ -66,7 +68,10 @@ class _MobileHomeWidgetState extends State<MobileHomeWidget> {
               shimmerColor: AppColors.greyColor,
             ),
             child: Container(
-              decoration: BoxDecoration(borderRadius: BorderRadius.circular(15), color: AppColors.blackColor),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(15),
+                color: FasakhanstaBrand.surfaceRaised,
+              ),
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
@@ -74,7 +79,9 @@ class _MobileHomeWidgetState extends State<MobileHomeWidget> {
                     Row(
                       children: [
                         CustomNetworkImage(
-                          imageUrl: lastOrderController.lastOrders?.resturantLogo ?? '',
+                          imageUrl:
+                              lastOrderController.lastOrders?.resturantLogo ??
+                                  '',
                           width: 50,
                           height: 50,
                           radius: 10,
@@ -82,7 +89,9 @@ class _MobileHomeWidgetState extends State<MobileHomeWidget> {
                         const SizedBox(width: 10),
                         Text(
                           lastOrderController.lastOrders?.resturantName ?? '',
-                          style: AppTextStyle.text18BS().copyWith(color: AppColors.whiteColor),
+                          style: AppTextStyle.text18BS().copyWith(
+                            color: FasakhanstaBrand.text,
+                          ),
                         ),
                         const Expanded(child: SizedBox()),
                         Container(
@@ -91,10 +100,18 @@ class _MobileHomeWidgetState extends State<MobileHomeWidget> {
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 5,
+                            ),
                             child: Text(
-                              lastOrderController.lastOrders?.status.toString().tr ?? '',
-                              style: AppTextStyle.text14BS().copyWith(color: AppColors.whiteColor),
+                              lastOrderController.lastOrders?.status
+                                      .toString()
+                                      .tr ??
+                                  '',
+                              style: AppTextStyle.text14BS().copyWith(
+                                color: FasakhanstaBrand.onOrange,
+                              ),
                             ),
                           ),
                         ),
@@ -107,8 +124,14 @@ class _MobileHomeWidgetState extends State<MobileHomeWidget> {
                         Column(
                           children: [
                             Text(
-                              'orderNumber'.translate(args: [lastOrderController.lastOrders?.orderNo ?? '']),
-                              style: AppTextStyle.text14BS().copyWith(color: AppColors.whiteColor),
+                              'orderNumber'.translate(
+                                args: [
+                                  lastOrderController.lastOrders?.orderNo ?? '',
+                                ],
+                              ),
+                              style: AppTextStyle.text14BS().copyWith(
+                                color: FasakhanstaBrand.text,
+                              ),
                             ),
                             10.sbH,
                             Text(
@@ -126,16 +149,24 @@ class _MobileHomeWidgetState extends State<MobileHomeWidget> {
                           child: CircularPercentIndicator(
                             radius: 35.0,
                             lineWidth: 5.0,
-                            percent: lastOrderController.lastOrders?.status == OrderStatusEnum.pending.value
+                            percent: lastOrderController.lastOrders?.status ==
+                                    OrderStatusEnum.pending.value
                                 ? 0.25
-                                : lastOrderController.lastOrders?.status == OrderStatusEnum.accepted.value
+                                : lastOrderController.lastOrders?.status ==
+                                        OrderStatusEnum.accepted.value
                                     ? 0.5
-                                    : lastOrderController.lastOrders?.status == OrderStatusEnum.shipped.value
+                                    : lastOrderController.lastOrders?.status ==
+                                            OrderStatusEnum.shipped.value
                                         ? 0.75
-                                        : lastOrderController.lastOrders?.status == OrderStatusEnum.completed.value
+                                        : lastOrderController
+                                                    .lastOrders?.status ==
+                                                OrderStatusEnum.completed.value
                                             ? 1
                                             : 0,
-                            center: Padding(padding: const EdgeInsets.all(8.0), child: Image.asset(AppImages.house)),
+                            center: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Image.asset(AppImages.house),
+                            ),
                             progressColor: AppColors.mainAppColor,
                           ),
                         ),

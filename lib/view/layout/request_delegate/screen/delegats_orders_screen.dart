@@ -1,3 +1,5 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
+
 import 'dart:convert';
 import 'dart:developer';
 
@@ -31,10 +33,19 @@ class _DelegateOrdersScreenState extends State<DelegateOrdersScreen> {
     super.initState();
     _pusherController = context.read<PusherController>();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<RequestDelegateController>(context, listen: false).initialDelegateOrders();
-      Provider.of<RequestDelegateController>(context, listen: false).getDelegateOrders();
+      Provider.of<RequestDelegateController>(
+        context,
+        listen: false,
+      ).initialDelegateOrders();
+      Provider.of<RequestDelegateController>(
+        context,
+        listen: false,
+      ).getDelegateOrders();
     });
-    _pusherController.addEventListener('shipping.updated', _handleShippingUpdated);
+    _pusherController.addEventListener(
+      'shipping.updated',
+      _handleShippingUpdated,
+    );
   }
 
   void _handleShippingUpdated(PusherEvent event) {
@@ -48,12 +59,18 @@ class _DelegateOrdersScreenState extends State<DelegateOrdersScreen> {
         log('*************************************************************');
         log(jsonData.toString());
         if (status != null && status != 'pending') {
-          CommonMethods.showToast(message: '${'thereIsANewOrderWithStatus'.tr} $orderNo');
+          CommonMethods.showToast(
+            message: '${'thereIsANewOrderWithStatus'.tr} $orderNo',
+          );
         }
       }
       if (mounted) {
-        final orderModel = RequestDelegateOrderModel.fromJson(orderData as Map<String, dynamic>);
-        context.read<RequestDelegateController>().updateShippingOrder(orderModel);
+        final orderModel = RequestDelegateOrderModel.fromJson(
+          orderData as Map<String, dynamic>,
+        );
+        context.read<RequestDelegateController>().updateShippingOrder(
+              orderModel,
+            );
       }
     } catch (e, stackTrace) {
       log('Error handling Pusher event: $e');
@@ -79,7 +96,7 @@ class _DelegateOrdersScreenState extends State<DelegateOrdersScreen> {
                   child: Container(
                     width: double.infinity,
                     decoration: BoxDecoration(
-                      color: AppColors.whiteColor,
+                      color: FasakhanstaBrand.surface,
                       borderRadius: const BorderRadius.only(
                         topLeft: Radius.circular(34),
                         topRight: Radius.circular(34),
@@ -100,18 +117,24 @@ class _DelegateOrdersScreenState extends State<DelegateOrdersScreen> {
                         child: SingleChildScrollView(
                           physics: const AlwaysScrollableScrollPhysics(),
                           child: ApiResponseWidget(
-                            apiResponse: requestDelegateController.delegateOrdersApiResponse,
-                            onReload: () => requestDelegateController.getDelegateOrders(),
-                            isEmpty: requestDelegateController.delegateOrders.isEmpty,
+                            apiResponse: requestDelegateController
+                                .delegateOrdersApiResponse,
+                            onReload: () =>
+                                requestDelegateController.getDelegateOrders(),
+                            isEmpty: requestDelegateController
+                                .delegateOrders.isEmpty,
                             child: Column(
                               children: [
                                 // const SizedBox(
                                 //   height: 25,
                                 // ),
                                 ...List.generate(
-                                  requestDelegateController.delegateOrders.length,
+                                  requestDelegateController
+                                      .delegateOrders.length,
                                   (index) => DelegateOrderWidget(
-                                    requestDelegateOrderModel: requestDelegateController.delegateOrders[index],
+                                    requestDelegateOrderModel:
+                                        requestDelegateController
+                                            .delegateOrders[index],
                                   ),
                                 ),
                                 const SizedBox(height: 50),

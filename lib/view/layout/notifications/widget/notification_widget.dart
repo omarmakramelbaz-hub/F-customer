@@ -1,3 +1,4 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../helpers/routes/app_routers_import.dart';
@@ -34,9 +35,9 @@ class NotificationWidget extends StatelessWidget {
         onTap: () => _handleTap(type),
         child: Container(
           decoration: BoxDecoration(
-            color: AppColors.whiteColor,
+            color: FasakhanstaBrand.surface,
             borderRadius: BorderRadius.circular(24),
-            border: Border.all(color: const Color(0xFFECEFF2)),
+            border: Border.all(color: FasakhanstaBrand.border),
             boxShadow: const [
               BoxShadow(
                 color: Color(0x0C000000),
@@ -56,7 +57,9 @@ class NotificationWidget extends StatelessWidget {
                   width: 4,
                   decoration: BoxDecoration(
                     color: visual.accent,
-                    borderRadius: const BorderRadius.horizontal(right: Radius.circular(8)),
+                    borderRadius: const BorderRadius.horizontal(
+                      right: Radius.circular(8),
+                    ),
                   ),
                 ),
               ),
@@ -87,7 +90,7 @@ class NotificationWidget extends StatelessWidget {
                                   overflow: TextOverflow.ellipsis,
                                   textAlign: TextAlign.right,
                                   style: AppTextStyle.text16BS().copyWith(
-                                    color: const Color(0xFF151515),
+                                    color: FasakhanstaBrand.text,
                                     height: 1.25,
                                   ),
                                 ),
@@ -101,7 +104,9 @@ class NotificationWidget extends StatelessWidget {
                                   shape: BoxShape.circle,
                                   boxShadow: [
                                     BoxShadow(
-                                      color: visual.accent.withValues(alpha: .22),
+                                      color: visual.accent.withValues(
+                                        alpha: .22,
+                                      ),
                                       blurRadius: 6,
                                     ),
                                   ],
@@ -116,7 +121,7 @@ class NotificationWidget extends StatelessWidget {
                             overflow: TextOverflow.ellipsis,
                             textAlign: TextAlign.right,
                             style: AppTextStyle.text13RM().copyWith(
-                              color: const Color(0xFF666B70),
+                              color: FasakhanstaBrand.muted,
                               height: 1.5,
                             ),
                           ),
@@ -125,7 +130,10 @@ class NotificationWidget extends StatelessWidget {
                             textDirection: TextDirection.rtl,
                             children: [
                               Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 10,
+                                  vertical: 6,
+                                ),
                                 decoration: BoxDecoration(
                                   color: visual.softBackground,
                                   borderRadius: BorderRadius.circular(13),
@@ -133,7 +141,11 @@ class NotificationWidget extends StatelessWidget {
                                 child: Row(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    Icon(visual.icon, size: 15, color: visual.accent),
+                                    Icon(
+                                      visual.icon,
+                                      size: 15,
+                                      color: visual.accent,
+                                    ),
                                     const SizedBox(width: 5),
                                     Text(
                                       visual.label,
@@ -149,13 +161,16 @@ class NotificationWidget extends StatelessWidget {
                               const Icon(
                                 Icons.access_time_rounded,
                                 size: 15,
-                                color: Color(0xFFA2A5A9),
+                                color: FasakhanstaBrand.muted,
                               ),
                               const SizedBox(width: 5),
                               Text(
-                                DateMethods.timeAgo(notification.createdAt ?? '', context),
+                                DateMethods.timeAgo(
+                                  notification.createdAt ?? '',
+                                  context,
+                                ),
                                 style: AppTextStyle.text12RM().copyWith(
-                                  color: const Color(0xFF969A9F),
+                                  color: FasakhanstaBrand.muted,
                                 ),
                               ),
                             ],
@@ -250,7 +265,7 @@ class _NotificationAvatar extends StatelessWidget {
       padding: const EdgeInsets.all(3),
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: Colors.white,
+        color: FasakhanstaBrand.surface,
         border: Border.all(color: visual.accent.withValues(alpha: .34)),
         boxShadow: const [
           BoxShadow(

@@ -1,3 +1,4 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../helpers/theme/app_colors.dart';
@@ -23,7 +24,7 @@ class ButtonNavCartWidget extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.fromLTRB(14, 10, 14, 12),
         decoration: BoxDecoration(
-          color: AppColors.whiteColor,
+          color: FasakhanstaBrand.surface,
           borderRadius: const BorderRadius.vertical(top: Radius.circular(22)),
           boxShadow: [
             BoxShadow(
@@ -43,7 +44,7 @@ class ButtonNavCartWidget extends StatelessWidget {
                   onPressed: onPressedExecuteTheOrder,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.mainAppColor,
-                    foregroundColor: AppColors.whiteColor,
+                    foregroundColor: FasakhanstaBrand.onOrange,
                     elevation: 0,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16),
@@ -54,7 +55,9 @@ class ButtonNavCartWidget extends StatelessWidget {
                     children: [
                       Text(
                         'continueToPayment'.tr,
-                        style: AppTextStyle.text16BW(),
+                        style: AppTextStyle.text16BW(
+                          color: FasakhanstaBrand.onOrange,
+                        ),
                       ),
                       const SizedBox(width: 8),
                       const Icon(Icons.arrow_back_ios_new_rounded, size: 18),
@@ -68,7 +71,7 @@ class ButtonNavCartWidget extends StatelessWidget {
               height: 56,
               padding: const EdgeInsets.symmetric(horizontal: 16),
               decoration: BoxDecoration(
-                color: AppColors.whiteColor,
+                color: FasakhanstaBrand.surface,
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(
                   color: AppColors.mainAppColor.withValues(alpha: 0.45),

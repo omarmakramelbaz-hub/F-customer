@@ -1,3 +1,4 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
 import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
@@ -42,7 +43,11 @@ class FOnBoardingTab extends StatelessWidget {
         15.sbH,
         Stack(
           children: [
-            Image.asset(AppImages.shapeOnBoardingImage, width: context.width, fit: BoxFit.fill),
+            Image.asset(
+              AppImages.shapeOnBoardingImage,
+              width: context.width,
+              fit: BoxFit.fill,
+            ),
             Positioned(
               right: 0,
               left: 0,
@@ -53,12 +58,22 @@ class FOnBoardingTab extends StatelessWidget {
                   radius: 40,
                   onPressed: () {
                     if (index < length - 1) {
-                      controller.nextPage(duration: const Duration(milliseconds: 500), curve: Curves.linear);
+                      controller.nextPage(
+                        duration: const Duration(milliseconds: 500),
+                        curve: Curves.linear,
+                      );
                     } else if (index == length - 1) {
-                      NamedNavigatorImpl.push(clean: true, RegisterScreen.routeName);
+                      NamedNavigatorImpl.push(
+                        clean: true,
+                        RegisterScreen.routeName,
+                      );
                     }
                   },
-                  child: Icon(Icons.arrow_forward_rounded, size: 40, color: AppColors.whiteColor),
+                  child: Icon(
+                    Icons.arrow_forward_rounded,
+                    size: 40,
+                    color: FasakhanstaBrand.onOrange,
+                  ),
                 ),
               ),
             ),
@@ -69,7 +84,11 @@ class FOnBoardingTab extends StatelessWidget {
               child: Column(
                 children: [
                   15.sbH,
-                  Text(splashModel.title ?? '', style: AppTextStyle.text20MW(), textAlign: TextAlign.center),
+                  Text(
+                    splashModel.title ?? '',
+                    style: AppTextStyle.text20MW(),
+                    textAlign: TextAlign.center,
+                  ),
                   10.sbH,
                 ],
               ),

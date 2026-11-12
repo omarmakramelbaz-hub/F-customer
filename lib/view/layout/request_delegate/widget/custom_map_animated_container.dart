@@ -1,3 +1,4 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
@@ -18,10 +19,10 @@ class CustomMapAnimatedContainer extends StatelessWidget {
 
   final double? containerHeight;
 
-  static const _textColor = Color(0xFF171A1F);
-  static const _mutedColor = Color(0xFF888E97);
-  static const _borderColor = Color(0xFFE8EBEF);
-  static const _softOrange = Color(0xFFFFF6EC);
+  static const _textColor = FasakhanstaBrand.text;
+  static const _mutedColor = FasakhanstaBrand.muted;
+  static const _borderColor = FasakhanstaBrand.border;
+  static const _softOrange = FasakhanstaBrand.orangeTint;
 
   bool _isArabic(BuildContext context) => context.languageCode == 'ar';
 
@@ -43,7 +44,7 @@ class CustomMapAnimatedContainer extends StatelessWidget {
           height: targetHeight,
           clipBehavior: Clip.antiAlias,
           decoration: const BoxDecoration(
-            color: Colors.white,
+            color: FasakhanstaBrand.surface,
             borderRadius: BorderRadius.only(
               topLeft: Radius.circular(32),
               topRight: Radius.circular(32),
@@ -129,7 +130,7 @@ class CustomMapAnimatedContainer extends StatelessWidget {
       width: 44,
       height: compact ? 4 : 5,
       decoration: BoxDecoration(
-        color: const Color(0xFFD7DADF),
+        color: FasakhanstaBrand.surfaceRaised,
         borderRadius: BorderRadius.circular(20),
       ),
     );
@@ -144,7 +145,9 @@ class CustomMapAnimatedContainer extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                _isArabic(context) ? 'توصيل سريع وآمن' : 'Fast & secure delivery',
+                _isArabic(context)
+                    ? 'توصيل سريع وآمن'
+                    : 'Fast & secure delivery',
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
@@ -225,7 +228,7 @@ class CustomMapAnimatedContainer extends StatelessWidget {
       highlight: hasPickup && hasDestination,
       trailing: Icon(
         Icons.chevron_left_rounded,
-        color: const Color(0xFFB3B7BD),
+        color: FasakhanstaBrand.muted,
         size: compact ? 20 : 22,
       ),
       onTap: () => _openSearchPlace(controller),
@@ -246,14 +249,17 @@ class CustomMapAnimatedContainer extends StatelessWidget {
     return _actionCard(
       context: context,
       icon: Icons.inventory_2_outlined,
-      title: _isArabic(context) ? 'الغرض المطلوب توصيله' : 'Item to be delivered',
+      title:
+          _isArabic(context) ? 'الغرض المطلوب توصيله' : 'Item to be delivered',
       subtitle: value.isNotEmpty
           ? value
-          : (_isArabic(context) ? 'اضغط واكتب وصف الغرض' : 'Tap to describe the item'),
+          : (_isArabic(context)
+              ? 'اضغط واكتب وصف الغرض'
+              : 'Tap to describe the item'),
       highlight: value.isNotEmpty,
       trailing: Icon(
         Icons.edit_outlined,
-        color: const Color(0xFFB3B7BD),
+        color: FasakhanstaBrand.muted,
         size: compact ? 18 : 20,
       ),
       onTap: () => _openPackageEditor(context, controller),
@@ -280,14 +286,13 @@ class CustomMapAnimatedContainer extends StatelessWidget {
     return _actionCard(
       context: context,
       icon: Icons.payments_outlined,
-      title: _isArabic(context)
-          ? 'عاوز تدفع كام'
-          : 'How much do you want to pay?',
+      title:
+          _isArabic(context) ? 'عاوز تدفع كام' : 'How much do you want to pay?',
       subtitle: fareValue,
       highlight: hasFare,
       trailing: Icon(
         Icons.chevron_left_rounded,
-        color: const Color(0xFFB3B7BD),
+        color: FasakhanstaBrand.muted,
         size: compact ? 20 : 22,
       ),
       onTap: () => _openFareSheet(context, controller),
@@ -307,9 +312,8 @@ class CustomMapAnimatedContainer extends StatelessWidget {
     final payment = switch (controller.selectedPayment) {
       'wallet' => _isArabic(context) ? 'المحفظة' : 'Wallet',
       'online' => _isArabic(context) ? 'بطاقة بنكية' : 'Bank card',
-      'v_cash' => _isArabic(context)
-          ? 'محفظة إلكترونية / إنستا باي'
-          : 'Digital wallet',
+      'v_cash' =>
+        _isArabic(context) ? 'محفظة إلكترونية / إنستا باي' : 'Digital wallet',
       'cash' => _isArabic(context) ? 'نقدًا' : 'Cash',
       _ => _isArabic(context) ? 'اختر طريقة الدفع' : 'Choose payment method',
     };
@@ -321,7 +325,7 @@ class CustomMapAnimatedContainer extends StatelessWidget {
       subtitle: payment,
       trailing: Icon(
         Icons.chevron_left_rounded,
-        color: const Color(0xFFB3B7BD),
+        color: FasakhanstaBrand.muted,
         size: compact ? 20 : 22,
       ),
       onTap: () => _openPaymentSheet(context, controller),
@@ -414,11 +418,7 @@ class CustomMapAnimatedContainer extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(
-          icon,
-          color: const Color(0xFF858A92),
-          size: compact ? 17 : 19,
-        ),
+        Icon(icon, color: FasakhanstaBrand.muted, size: compact ? 17 : 19),
         const SizedBox(height: 2),
         Text(
           label,
@@ -451,7 +451,7 @@ class CustomMapAnimatedContainer extends StatelessWidget {
     return Container(
       width: 1,
       height: compact ? 37 : 41,
-      color: const Color(0xFFE5E7EA),
+      color: FasakhanstaBrand.surfaceRaised,
     );
   }
 
@@ -519,9 +519,8 @@ class CustomMapAnimatedContainer extends StatelessWidget {
                                 ? AppColors.mainAppColor
                                 : _mutedColor,
                             fontSize: compact ? 10 : 10.8,
-                            fontWeight: highlight
-                                ? FontWeight.w600
-                                : FontWeight.w400,
+                            fontWeight:
+                                highlight ? FontWeight.w600 : FontWeight.w400,
                           ),
                         ),
                       ],
@@ -540,12 +539,11 @@ class CustomMapAnimatedContainer extends StatelessWidget {
 
   BoxDecoration _cardDecoration({bool highlight = false}) {
     return BoxDecoration(
-      color: Colors.white,
+      color: FasakhanstaBrand.surface,
       borderRadius: BorderRadius.circular(15),
       border: Border.all(
-        color: highlight
-            ? AppColors.mainAppColor.withOpacity(.72)
-            : _borderColor,
+        color:
+            highlight ? AppColors.mainAppColor.withOpacity(.72) : _borderColor,
         width: highlight ? 1.1 : 1,
       ),
       boxShadow: const [
@@ -575,8 +573,9 @@ class CustomMapAnimatedContainer extends StatelessWidget {
     BuildContext context,
     RequestDelegateController controller,
   ) async {
-    final textController =
-        TextEditingController(text: controller.descriptionEC.text);
+    final textController = TextEditingController(
+      text: controller.descriptionEC.text,
+    );
 
     await showModalBottomSheet<void>(
       context: context,
@@ -591,7 +590,7 @@ class CustomMapAnimatedContainer extends StatelessWidget {
           child: Container(
             padding: const EdgeInsets.fromLTRB(20, 14, 20, 22),
             decoration: const BoxDecoration(
-              color: Colors.white,
+              color: FasakhanstaBrand.surface,
               borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(30),
                 topRight: Radius.circular(30),
@@ -608,9 +607,7 @@ class CustomMapAnimatedContainer extends StatelessWidget {
                     Center(child: _dragHandle(false)),
                     const SizedBox(height: 18),
                     Text(
-                      isAr
-                          ? 'الغرض المطلوب توصيله'
-                          : 'Item to be delivered',
+                      isAr ? 'الغرض المطلوب توصيله' : 'Item to be delivered',
                       style: const TextStyle(
                         color: _textColor,
                         fontSize: 20,
@@ -622,10 +619,7 @@ class CustomMapAnimatedContainer extends StatelessWidget {
                       isAr
                           ? 'اكتب وصفًا واضحًا للغرض أو أي تفاصيل مهمة'
                           : 'Add a clear description and important details',
-                      style: const TextStyle(
-                        color: _mutedColor,
-                        fontSize: 12,
-                      ),
+                      style: const TextStyle(color: _mutedColor, fontSize: 12),
                     ),
                     const SizedBox(height: 16),
                     TextField(
@@ -635,25 +629,20 @@ class CustomMapAnimatedContainer extends StatelessWidget {
                       maxLines: 5,
                       keyboardType: TextInputType.multiline,
                       textInputAction: TextInputAction.newline,
-                      style: const TextStyle(
-                        color: _textColor,
-                        fontSize: 15,
-                      ),
+                      style: const TextStyle(color: _textColor, fontSize: 15),
                       decoration: InputDecoration(
                         hintText: isAr
                             ? 'مثال: كرتونة مستندات صغيرة'
                             : 'Example: small document box',
                         hintStyle: const TextStyle(
-                          color: Color(0xFFB0B4BB),
+                          color: FasakhanstaBrand.muted,
                         ),
                         filled: true,
-                        fillColor: const Color(0xFFF8F9FA),
+                        fillColor: FasakhanstaBrand.field,
                         contentPadding: const EdgeInsets.all(16),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(16),
-                          borderSide: const BorderSide(
-                            color: _borderColor,
-                          ),
+                          borderSide: const BorderSide(color: _borderColor),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(16),
@@ -676,7 +665,7 @@ class CustomMapAnimatedContainer extends StatelessWidget {
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.mainAppColor,
-                          foregroundColor: Colors.white,
+                          foregroundColor: FasakhanstaBrand.onOrange,
                           elevation: 0,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(16),
@@ -713,9 +702,7 @@ class CustomMapAnimatedContainer extends StatelessWidget {
       backgroundColor: Colors.transparent,
       builder: (_) => ChangeNotifierProvider.value(
         value: controller,
-        child: PaymentRDBottomSheet(
-          requestDelegateController: controller,
-        ),
+        child: PaymentRDBottomSheet(requestDelegateController: controller),
       ),
     );
   }

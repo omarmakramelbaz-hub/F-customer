@@ -1,3 +1,4 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../helpers/theme/app_colors.dart';
@@ -7,7 +8,12 @@ import '../../map/model/place_details_model/place_details_model.dart';
 import '../../map/utils/map_services.dart';
 
 class CustomListView extends StatelessWidget {
-  const CustomListView({super.key, required this.places, required this.mapServices, required this.onPlaceSelect});
+  const CustomListView({
+    super.key,
+    required this.places,
+    required this.mapServices,
+    required this.onPlaceSelect,
+  });
 
   final List<PlaceModel> places;
   final void Function(PlaceDetailsModel) onPlaceSelect;
@@ -21,11 +27,16 @@ class CustomListView extends StatelessWidget {
         itemBuilder: (context, index) {
           return ListTile(
             onTap: () async {
-              var placeDetails = await mapServices.getPlaceDetails(placeId: places[index].placeId!);
+              var placeDetails = await mapServices.getPlaceDetails(
+                placeId: places[index].placeId!,
+              );
               onPlaceSelect(placeDetails);
             },
-            title: Text(places[index].description!, style: AppTextStyle.text16BW()),
-            leading: Icon(Icons.location_on, color: AppColors.whiteColor),
+            title: Text(
+              places[index].description!,
+              style: AppTextStyle.text16BW(),
+            ),
+            leading: Icon(Icons.location_on, color: FasakhanstaBrand.text),
             // trailing: IconButton(
             //   onPressed: () async {
             //     // var placeDetails = await mapServices.getPlaceDetails(

@@ -1,3 +1,4 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
 import 'package:country_picker/country_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -81,7 +82,7 @@ class _SocialAuthPhoneScreenState extends State<SocialAuthPhoneScreen>
     final isRtl = context.isRtl;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF7F8FA),
+      backgroundColor: Colors.transparent,
       body: SafeArea(
         child: Form(
           key: _formKey,
@@ -126,9 +127,9 @@ class _SocialAuthPhoneScreenState extends State<SocialAuthPhoneScreen>
                       width: double.infinity,
                       padding: const EdgeInsets.all(17),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFFFF4EA),
+                        color: FasakhanstaBrand.surfaceRaised,
                         borderRadius: BorderRadius.circular(24),
-                        border: Border.all(color: const Color(0xFFFFD4B0)),
+                        border: Border.all(color: FasakhanstaBrand.border),
                         boxShadow: const [
                           BoxShadow(
                             color: Color(0x0D000000),
@@ -146,7 +147,7 @@ class _SocialAuthPhoneScreenState extends State<SocialAuthPhoneScreen>
                               width: 56,
                               height: 56,
                               decoration: BoxDecoration(
-                                color: Colors.white,
+                                color: FasakhanstaBrand.surface,
                                 borderRadius: BorderRadius.circular(17),
                                 boxShadow: const [
                                   BoxShadow(
@@ -172,7 +173,7 @@ class _SocialAuthPhoneScreenState extends State<SocialAuthPhoneScreen>
                                         ? 'خطوة أخيرة لإكمال حسابك'
                                         : 'One last step to complete your account',
                                     style: const TextStyle(
-                                      color: Color(0xFF202328),
+                                      color: FasakhanstaBrand.text,
                                       fontSize: 19,
                                       fontWeight: FontWeight.w800,
                                       height: 1.25,
@@ -184,7 +185,7 @@ class _SocialAuthPhoneScreenState extends State<SocialAuthPhoneScreen>
                                         ? 'أضف رقم الجوال لنكمل إعداد حسابك ونحافظ على أمان بياناتك.'
                                         : 'Add your mobile number to finish setting up your account securely.',
                                     style: const TextStyle(
-                                      color: Color(0xFF8A8F96),
+                                      color: FasakhanstaBrand.muted,
                                       fontSize: 12.5,
                                       fontWeight: FontWeight.w500,
                                       height: 1.45,
@@ -202,9 +203,9 @@ class _SocialAuthPhoneScreenState extends State<SocialAuthPhoneScreen>
                       width: double.infinity,
                       padding: const EdgeInsets.fromLTRB(17, 19, 17, 18),
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: FasakhanstaBrand.surface,
                         borderRadius: BorderRadius.circular(24),
-                        border: Border.all(color: const Color(0xFFE8EBEF)),
+                        border: Border.all(color: FasakhanstaBrand.border),
                         boxShadow: const [
                           BoxShadow(
                             color: Color(0x0B000000),
@@ -225,7 +226,7 @@ class _SocialAuthPhoneScreenState extends State<SocialAuthPhoneScreen>
                                   width: 38,
                                   height: 38,
                                   decoration: BoxDecoration(
-                                    color: const Color(0xFFFFF1E5),
+                                    color: FasakhanstaBrand.surfaceRaised,
                                     borderRadius: BorderRadius.circular(12),
                                   ),
                                   child: Icon(
@@ -237,12 +238,13 @@ class _SocialAuthPhoneScreenState extends State<SocialAuthPhoneScreen>
                                 const SizedBox(width: 10),
                                 Expanded(
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         'mobileNumber'.tr,
                                         style: const TextStyle(
-                                          color: Color(0xFF24272C),
+                                          color: FasakhanstaBrand.text,
                                           fontSize: 16,
                                           fontWeight: FontWeight.w800,
                                         ),
@@ -253,7 +255,7 @@ class _SocialAuthPhoneScreenState extends State<SocialAuthPhoneScreen>
                                             ? 'اكتب رقمك الأساسي للتواصل وتأكيد الحساب'
                                             : 'Enter your main number for contact and account verification',
                                         style: const TextStyle(
-                                          color: Color(0xFF969BA2),
+                                          color: FasakhanstaBrand.muted,
                                           fontSize: 11.5,
                                           fontWeight: FontWeight.w500,
                                         ),
@@ -275,17 +277,17 @@ class _SocialAuthPhoneScreenState extends State<SocialAuthPhoneScreen>
                                 : 'Example: 01012345678',
                             country: _country,
                             radius: 17,
-                            fillColor: const Color(0xFFFBFBFC),
-                            unFocusColor: const Color(0xFFE0E3E7),
+                            fillColor: FasakhanstaBrand.field,
+                            unFocusColor: FasakhanstaBrand.border,
                             focusColor: AppColors.mainAppColor,
                             textDirection: TextDirection.ltr,
                             textStyle: const TextStyle(
-                              color: Color(0xFF26292E),
+                              color: FasakhanstaBrand.text,
                               fontSize: 15,
                               fontWeight: FontWeight.w600,
                             ),
                             hintStyle: const TextStyle(
-                              color: Color(0xFFB0B4B9),
+                              color: FasakhanstaBrand.muted,
                               fontSize: 13,
                               fontWeight: FontWeight.w500,
                             ),
@@ -298,10 +300,10 @@ class _SocialAuthPhoneScreenState extends State<SocialAuthPhoneScreen>
                               vertical: 10,
                             ),
                             decoration: BoxDecoration(
-                              color: const Color(0xFFF8FAF9),
+                              color: FasakhanstaBrand.surfaceRaised,
                               borderRadius: BorderRadius.circular(14),
                               border: Border.all(
-                                color: const Color(0xFFE7ECE9),
+                                color: FasakhanstaBrand.border,
                               ),
                             ),
                             child: Directionality(
@@ -311,7 +313,7 @@ class _SocialAuthPhoneScreenState extends State<SocialAuthPhoneScreen>
                                 children: [
                                   const Icon(
                                     Icons.shield_outlined,
-                                    color: Color(0xFF6F8377),
+                                    color: FasakhanstaBrand.muted,
                                     size: 18,
                                   ),
                                   const SizedBox(width: 8),
@@ -321,7 +323,7 @@ class _SocialAuthPhoneScreenState extends State<SocialAuthPhoneScreen>
                                           ? 'رقمك يُستخدم لتأكيد الحساب والتواصل بخصوص الطلبات فقط.'
                                           : 'Your number is used only for account verification and order communication.',
                                       style: const TextStyle(
-                                        color: Color(0xFF7E8782),
+                                        color: FasakhanstaBrand.muted,
                                         fontSize: 11.5,
                                         fontWeight: FontWeight.w500,
                                         height: 1.4,
@@ -340,7 +342,7 @@ class _SocialAuthPhoneScreenState extends State<SocialAuthPhoneScreen>
                             hasShadow: true,
                             text: 'continue'.tr,
                             style: const TextStyle(
-                              color: Colors.white,
+                              color: FasakhanstaBrand.onOrange,
                               fontSize: 16,
                               fontWeight: FontWeight.w800,
                             ),
@@ -348,14 +350,16 @@ class _SocialAuthPhoneScreenState extends State<SocialAuthPhoneScreen>
                               width: 30,
                               height: 30,
                               decoration: BoxDecoration(
-                                color: Colors.white.withValues(alpha: 0.18),
+                                color: FasakhanstaBrand.surface.withValues(
+                                  alpha: 0.18,
+                                ),
                                 shape: BoxShape.circle,
                               ),
                               child: Icon(
                                 isRtl
                                     ? Icons.arrow_back_rounded
                                     : Icons.arrow_forward_rounded,
-                                color: Colors.white,
+                                color: FasakhanstaBrand.text,
                                 size: 19,
                               ),
                             ),
@@ -383,7 +387,7 @@ class _RoundActionButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: Colors.white,
+      color: FasakhanstaBrand.surface,
       borderRadius: BorderRadius.circular(14),
       child: InkWell(
         onTap: onTap,
@@ -393,7 +397,7 @@ class _RoundActionButton extends StatelessWidget {
           height: 46,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(14),
-            border: Border.all(color: const Color(0xFFFFD3AE)),
+            border: Border.all(color: FasakhanstaBrand.border),
           ),
           child: Icon(icon, color: AppColors.mainAppColor, size: 21),
         ),

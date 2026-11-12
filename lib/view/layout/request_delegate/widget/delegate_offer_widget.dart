@@ -1,3 +1,4 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -38,7 +39,10 @@ class _DelegateOfferWidgetState extends State<DelegateOfferWidget> {
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
-        requestDelegateController = Provider.of<RequestDelegateController>(context, listen: false);
+        requestDelegateController = Provider.of<RequestDelegateController>(
+          context,
+          listen: false,
+        );
       }
     });
     super.initState();
@@ -52,7 +56,9 @@ class _DelegateOfferWidgetState extends State<DelegateOfferWidget> {
           padding: const EdgeInsets.symmetric(vertical: 10),
           child: Card(
             color: AppColors.lightDarkColor,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
             child: Padding(
               padding: const EdgeInsets.all(10.0),
               child: Column(
@@ -64,7 +70,9 @@ class _DelegateOfferWidgetState extends State<DelegateOfferWidget> {
                         path: widget.acceptedDelegateModel?.photoProfile != null
                             ? widget.acceptedDelegateModel?.photoProfile ?? ''
                             : AppImages.delegateRDIcon,
-                        type: widget.acceptedDelegateModel?.photoProfile != null ? ImageType.network : ImageType.svg,
+                        type: widget.acceptedDelegateModel?.photoProfile != null
+                            ? ImageType.network
+                            : ImageType.svg,
                         height: 45,
                         width: 45,
                         radius: 25,
@@ -75,7 +83,9 @@ class _DelegateOfferWidgetState extends State<DelegateOfferWidget> {
                       // ),
                       Text(
                         widget.acceptedDelegateModel?.name ?? '',
-                        style: AppTextStyle.text18RS().copyWith(color: AppColors.whiteColor),
+                        style: AppTextStyle.text18RS().copyWith(
+                          color: FasakhanstaBrand.text,
+                        ),
                       ),
 
                       // const SizedBox(
@@ -101,7 +111,9 @@ class _DelegateOfferWidgetState extends State<DelegateOfferWidget> {
                               '{}',
                               '${widget.acceptedDelegateModel?.completedOrdersCount ?? ""}',
                             ),
-                        style: AppTextStyle.text14RS().copyWith(color: AppColors.whiteColor),
+                        style: AppTextStyle.text14RS().copyWith(
+                          color: FasakhanstaBrand.text,
+                        ),
                       ),
                       Column(
                         children: [
@@ -109,15 +121,21 @@ class _DelegateOfferWidgetState extends State<DelegateOfferWidget> {
                             requestDelegateController
                                 .calculateExpectedDeliveryTime(
                                   averageSpeedKmPerHour: 30,
-                                  toDLat: widget.acceptedDelegateModel?.lat ?? '',
-                                  toDLng: widget.acceptedDelegateModel?.lng ?? '',
+                                  toDLat:
+                                      widget.acceptedDelegateModel?.lat ?? '',
+                                  toDLng:
+                                      widget.acceptedDelegateModel?.lng ?? '',
                                 )
                                 .toStringAsFixed(2),
-                            style: AppTextStyle.text14RS().copyWith(color: AppColors.whiteColor),
+                            style: AppTextStyle.text14RS().copyWith(
+                              color: FasakhanstaBrand.text,
+                            ),
                           ),
                           Text(
                             "${requestDelegateController.calculateDistanceInMeters(toDLat: widget.acceptedDelegateModel?.lat ?? "", toDLng: widget.acceptedDelegateModel?.lng ?? "").toStringAsFixed(2)} m",
-                            style: AppTextStyle.text14RS().copyWith(color: AppColors.whiteColor),
+                            style: AppTextStyle.text14RS().copyWith(
+                              color: FasakhanstaBrand.text,
+                            ),
                           ),
                         ],
                       ),
@@ -132,7 +150,9 @@ class _DelegateOfferWidgetState extends State<DelegateOfferWidget> {
                               '{}',
                               '${widget.acceptedDelegateModel?.offerPrice ?? widget.order?.actualPrice ?? requestDelegateController.actualPrice}',
                             ),
-                        style: AppTextStyle.text18RS().copyWith(color: AppColors.whiteColor),
+                        style: AppTextStyle.text18RS().copyWith(
+                          color: FasakhanstaBrand.text,
+                        ),
                       ),
                     ],
                   ),
@@ -142,9 +162,12 @@ class _DelegateOfferWidgetState extends State<DelegateOfferWidget> {
                       Expanded(
                         child: CustomButton(
                           height: 40,
-                          text: context.languageCode == 'ar' ? 'قبول العرض' : 'Accept offer',
+                          text: context.languageCode == 'ar'
+                              ? 'قبول العرض'
+                              : 'Accept offer',
                           onPressed: () {
-                            requestDelegateController.acceptedOrDeclinedDelegate(
+                            requestDelegateController
+                                .acceptedOrDeclinedDelegate(
                               orderId: requestDelegateController.orderId!,
                               delegateId: widget.acceptedDelegateModel!.id!,
                               status: 'accepted',
@@ -169,12 +192,17 @@ class _DelegateOfferWidgetState extends State<DelegateOfferWidget> {
                             begin: Alignment.topCenter,
                             end: Alignment.bottomCenter,
                             colors: [
-                              AppColors.blackColor.withValues(alpha: 0.5),
-                              AppColors.blackColor.withValues(alpha: 0.5),
+                              FasakhanstaBrand.surfaceRaised.withValues(
+                                alpha: 0.5,
+                              ),
+                              FasakhanstaBrand.surfaceRaised.withValues(
+                                alpha: 0.5,
+                              ),
                             ],
                           ),
                           onPressed: () {
-                            requestDelegateController.acceptedOrDeclinedDelegate(
+                            requestDelegateController
+                                .acceptedOrDeclinedDelegate(
                               orderId: requestDelegateController.orderId!,
                               delegateId: widget.acceptedDelegateModel!.id!,
                               status: 'declined',

@@ -1,3 +1,5 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
+
 import 'dart:async';
 import 'dart:developer';
 
@@ -29,7 +31,13 @@ class LocationState {
   final bool isLoading;
   final String? error;
 
-  const LocationState({this.latitude, this.longitude, this.placemarks, this.isLoading = false, this.error});
+  const LocationState({
+    this.latitude,
+    this.longitude,
+    this.placemarks,
+    this.isLoading = false,
+    this.error,
+  });
 
   LocationState copyWith({
     double? latitude,
@@ -60,9 +68,19 @@ class SearchState {
   final bool isLoading;
   final String? error;
 
-  const SearchState({this.results = const [], this.isVisible = false, this.isLoading = false, this.error});
+  const SearchState({
+    this.results = const [],
+    this.isVisible = false,
+    this.isLoading = false,
+    this.error,
+  });
 
-  SearchState copyWith({List<PlaceModel>? results, bool? isVisible, bool? isLoading, String? error}) {
+  SearchState copyWith({
+    List<PlaceModel>? results,
+    bool? isVisible,
+    bool? isLoading,
+    String? error,
+  }) {
     return SearchState(
       results: results ?? this.results,
       isVisible: isVisible ?? this.isVisible,
@@ -74,8 +92,10 @@ class SearchState {
   SearchState hide() => copyWith(isVisible: false, results: []);
   SearchState show() => copyWith(isVisible: true);
   SearchState loading() => copyWith(isLoading: true, error: null);
-  SearchState withResults(List<PlaceModel> results) => copyWith(results: results, isLoading: false, isVisible: true);
-  SearchState withError(String error) => copyWith(error: error, isLoading: false);
+  SearchState withResults(List<PlaceModel> results) =>
+      copyWith(results: results, isLoading: false, isVisible: true);
+  SearchState withError(String error) =>
+      copyWith(error: error, isLoading: false);
 }
 
 /// Arguments for the map screen, including a callback for when the user navigates back.
@@ -161,8 +181,14 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
     _searchFocusNode.addListener(_onSearchFocusChanged);
 
     _locationService.listenToLocation((locationData) {
-      if (!_isManualSelection && locationData.latitude != null && locationData.longitude != null) {
-        _updateLocationState(locationData.latitude!, locationData.longitude!, shouldUpdatePlacemarks: true);
+      if (!_isManualSelection &&
+          locationData.latitude != null &&
+          locationData.longitude != null) {
+        _updateLocationState(
+          locationData.latitude!,
+          locationData.longitude!,
+          shouldUpdatePlacemarks: true,
+        );
       }
     });
   }
@@ -184,17 +210,28 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
     try {
       final location = await _locationService.getCurrentLocation();
       if (location?.latitude != null && location?.longitude != null) {
-        await _updateLocationState(location!.latitude!, location.longitude!, shouldUpdatePlacemarks: true);
+        await _updateLocationState(
+          location!.latitude!,
+          location.longitude!,
+          shouldUpdatePlacemarks: true,
+        );
       }
     } catch (e) {
       setState(() {
-        _locationState = _locationState.copyWith(isLoading: false, error: 'Failed to get current location: $e');
+        _locationState = _locationState.copyWith(
+          isLoading: false,
+          error: 'Failed to get current location: $e',
+        );
       });
       log('Failed to get location: $e');
     }
   }
 
-  Future<void> _updateLocationState(double lat, double lng, {bool shouldUpdatePlacemarks = false}) async {
+  Future<void> _updateLocationState(
+    double lat,
+    double lng, {
+    bool shouldUpdatePlacemarks = false,
+  }) async {
     if (!mounted) return;
     List<Placemark>? placemarks;
 
@@ -219,7 +256,9 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
 
     // Update map camera
     if (_mapController != null) {
-      await _mapController!.animateCamera(CameraUpdate.newLatLng(LatLng(lat, lng)));
+      await _mapController!.animateCamera(
+        CameraUpdate.newLatLng(LatLng(lat, lng)),
+      );
     }
   }
 
@@ -256,7 +295,10 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
 
     try {
       _sessionToken ??= const Uuid().v4();
-      final results = await _placesService.getPredictions(input: query, sesstionToken: _sessionToken!);
+      final results = await _placesService.getPredictions(
+        input: query,
+        sesstionToken: _sessionToken!,
+      );
 
       if (mounted) {
         setState(() {
@@ -291,7 +333,9 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
       // 4. Add a minimal delay to ensure UI settles
       await Future.delayed(const Duration(milliseconds: 30));
 
-      final details = await _placesService.getPlaceDetails(placeId: place.placeId!);
+      final details = await _placesService.getPlaceDetails(
+        placeId: place.placeId!,
+      );
 
       final lat = details.geometry?.location?.lat;
       final lng = details.geometry?.location?.lng;
@@ -304,7 +348,9 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
       await _updateLocationState(lat, lng);
 
       if (_mapController != null) {
-        await _mapController!.animateCamera(CameraUpdate.newLatLngZoom(LatLng(lat, lng), _defaultZoom));
+        await _mapController!.animateCamera(
+          CameraUpdate.newLatLngZoom(LatLng(lat, lng), _defaultZoom),
+        );
       }
 
       widget.args.safeOnBack(lat, lng);
@@ -378,7 +424,9 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
         resizeToAvoidBottomInset: false,
         extendBody: true,
         floatingActionButton: _buildLocationButton(),
-        body: _locationState.isLoading ? const Center(child: CustomDotsLoading()) : _buildMapContent(),
+        body: _locationState.isLoading
+            ? const Center(child: CustomDotsLoading())
+            : _buildMapContent(),
         bottomNavigationBar: _buildConfirmButton(),
       ),
     );
@@ -409,7 +457,10 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
         mapType: MapType.normal,
         onCameraIdle: _onCameraIdle,
         onMapCreated: _onMapCreated,
-        initialCameraPosition: CameraPosition(target: _locationState.latLng, zoom: _initialZoom),
+        initialCameraPosition: CameraPosition(
+          target: _locationState.latLng,
+          zoom: _initialZoom,
+        ),
       ),
     );
   }
@@ -417,13 +468,20 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
   Set<Marker> _buildMarkers() {
     if (!_locationState.hasValidCoordinates) return {};
 
-    return {Marker(markerId: const MarkerId('currentLocation'), position: _locationState.latLng)};
+    return {
+      Marker(
+        markerId: const MarkerId('currentLocation'),
+        position: _locationState.latLng,
+      ),
+    };
   }
 
   void _onMapCreated(GoogleMapController controller) {
     _mapController = controller;
     if (_locationState.hasValidCoordinates) {
-      _mapController!.animateCamera(CameraUpdate.newLatLng(_locationState.latLng));
+      _mapController!.animateCamera(
+        CameraUpdate.newLatLng(_locationState.latLng),
+      );
     }
   }
 
@@ -431,7 +489,12 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 18),
-        child: Column(children: [_buildSearchField(), if (_searchState.isVisible) _buildSearchResultsList()]),
+        child: Column(
+          children: [
+            _buildSearchField(),
+            if (_searchState.isVisible) _buildSearchResultsList(),
+          ],
+        ),
       ),
     );
   }
@@ -465,7 +528,10 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
         margin: const EdgeInsets.only(top: 10),
         decoration: _searchContainerDecoration(),
         child: Center(
-          child: Text(_searchState.error!, style: TextStyle(color: Colors.red[600])),
+          child: Text(
+            _searchState.error!,
+            style: TextStyle(color: Colors.red[600]),
+          ),
         ),
       );
     }
@@ -475,7 +541,10 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
     }
 
     return ConstrainedBox(
-      constraints: BoxConstraints(maxHeight: context.height * 0.4, minHeight: 50),
+      constraints: BoxConstraints(
+        maxHeight: context.height * 0.4,
+        minHeight: 50,
+      ),
       child: Container(
         margin: const EdgeInsets.only(top: 10),
         decoration: _searchContainerDecoration(),
@@ -492,9 +561,11 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
 
   BoxDecoration _searchContainerDecoration() {
     return BoxDecoration(
-      color: Colors.white,
+      color: FasakhanstaBrand.surface,
       borderRadius: BorderRadius.circular(8),
-      boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 4, offset: Offset(0, 4))],
+      boxShadow: const [
+        BoxShadow(color: Colors.black12, blurRadius: 4, offset: Offset(0, 4)),
+      ],
     );
   }
 
@@ -515,7 +586,10 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
       child: CustomButton(
         text: 'confirm'.tr,
         onPressed: () {
-          widget.args.safeOnBack(_locationState.latitude!, _locationState.longitude!);
+          widget.args.safeOnBack(
+            _locationState.latitude!,
+            _locationState.longitude!,
+          );
           Navigator.pop(context);
         },
       ),

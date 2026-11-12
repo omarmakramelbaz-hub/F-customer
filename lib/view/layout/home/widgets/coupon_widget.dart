@@ -1,3 +1,4 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../helpers/extensions/extensions.dart';
@@ -24,13 +25,19 @@ class CouponWidget extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.all(8),
           margin: const EdgeInsets.all(8),
-          decoration: BoxDecoration(color: AppColors.mainAppColor, borderRadius: BorderRadius.circular(16)),
+          decoration: BoxDecoration(
+            color: AppColors.mainAppColor,
+            borderRadius: BorderRadius.circular(16),
+          ),
           width: double.infinity,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               10.sbH,
-              Text('coupontext'.tr, style: AppTextStyle.text16BW()),
+              Text(
+                'coupontext'.tr,
+                style: AppTextStyle.text16BW(color: FasakhanstaBrand.onOrange),
+              ),
               10.sbH,
               Stack(
                 alignment: Alignment.bottomLeft,
@@ -44,14 +51,19 @@ class CouponWidget extends StatelessWidget {
                     fit: BoxFit.fitWidth,
                   ),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 6,
+                    ),
                     decoration: BoxDecoration(
-                      color: Colors.black.withOpacity(0.5),
+                      color: FasakhanstaBrand.surfaceRaised.withOpacity(0.5),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
                       'raffleRestaurantsShare'.tr,
-                      style: AppTextStyle.text14BS(color: Colors.white),
+                      style: AppTextStyle.text14BS(
+                        color: FasakhanstaBrand.text,
+                      ),
                     ),
                   ),
                 ],

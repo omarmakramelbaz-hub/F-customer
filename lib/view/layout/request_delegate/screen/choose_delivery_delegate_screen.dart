@@ -1,3 +1,5 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
+
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -19,10 +21,12 @@ class ChooseDeliveryDelegateScreen extends StatefulWidget {
   const ChooseDeliveryDelegateScreen({super.key});
 
   @override
-  State<ChooseDeliveryDelegateScreen> createState() => _ChooseDeliveryDelegateScreenState();
+  State<ChooseDeliveryDelegateScreen> createState() =>
+      _ChooseDeliveryDelegateScreenState();
 }
 
-class _ChooseDeliveryDelegateScreenState extends State<ChooseDeliveryDelegateScreen> {
+class _ChooseDeliveryDelegateScreenState
+    extends State<ChooseDeliveryDelegateScreen> {
   late Timer _pollingTimer;
   late Timer _navigationTimer;
   List<Delegates>? acceptedDelegates;
@@ -31,11 +35,15 @@ class _ChooseDeliveryDelegateScreenState extends State<ChooseDeliveryDelegateScr
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final requestDelegateController = Provider.of<RequestDelegateController>(context, listen: false);
+      final requestDelegateController = Provider.of<RequestDelegateController>(
+        context,
+        listen: false,
+      );
       requestDelegateController.initialAcceptedDelegate();
       requestDelegateController.getAcceptedDelegate().then((value) {
         setState(() {
-          acceptedDelegates = requestDelegateController.acceptedDelegate?.delegates ?? [];
+          acceptedDelegates =
+              requestDelegateController.acceptedDelegate?.delegates ?? [];
         });
       });
 
@@ -45,7 +53,10 @@ class _ChooseDeliveryDelegateScreenState extends State<ChooseDeliveryDelegateScr
         requestDelegateController.cancelOrder(
           orderId: requestDelegateController.orderId!,
           onSuccess: () {
-            NamedNavigatorImpl.push(clean: true, BottomNavigationBarScreen.routeName);
+            NamedNavigatorImpl.push(
+              clean: true,
+              BottomNavigationBarScreen.routeName,
+            );
           },
         );
       });
@@ -58,7 +69,8 @@ class _ChooseDeliveryDelegateScreenState extends State<ChooseDeliveryDelegateScr
         final newDelegates = controller.acceptedDelegate?.delegates;
         if (newDelegates != null && newDelegates.isNotEmpty) {
           final newDelegateIds = newDelegates.map((e) => e.id).toSet();
-          final existingDelegateIds = acceptedDelegates?.map((e) => e.id).toSet() ?? {};
+          final existingDelegateIds =
+              acceptedDelegates?.map((e) => e.id).toSet() ?? {};
 
           if (!newDelegateIds.containsAll(existingDelegateIds)) {
             setState(() {
@@ -88,7 +100,7 @@ class _ChooseDeliveryDelegateScreenState extends State<ChooseDeliveryDelegateScr
         }
       },
       child: Scaffold(
-        backgroundColor: AppColors.blackColor,
+        backgroundColor: Colors.transparent,
         extendBody: true,
         body: SingleChildScrollView(
           child: Padding(
@@ -102,7 +114,9 @@ class _ChooseDeliveryDelegateScreenState extends State<ChooseDeliveryDelegateScr
                     Center(
                       child: Text(
                         'finalProposalsFromDrivers'.tr,
-                        style: AppTextStyle.text18BS().copyWith(color: AppColors.whiteColor),
+                        style: AppTextStyle.text18BS().copyWith(
+                          color: FasakhanstaBrand.text,
+                        ),
                         textAlign: TextAlign.center,
                       ),
                     ),
@@ -111,7 +125,9 @@ class _ChooseDeliveryDelegateScreenState extends State<ChooseDeliveryDelegateScr
                       children: [
                         ...List.generate(
                           acceptedDelegates?.length ?? 0,
-                          (index) => DelegateOfferWidget(acceptedDelegateModel: acceptedDelegates?[index]),
+                          (index) => DelegateOfferWidget(
+                            acceptedDelegateModel: acceptedDelegates?[index],
+                          ),
                         ),
                       ],
                     ),
@@ -133,7 +149,10 @@ class _ChooseDeliveryDelegateScreenState extends State<ChooseDeliveryDelegateScr
                     onSuccess: () {
                       _pollingTimer.cancel();
                       _navigationTimer.cancel();
-                      NamedNavigatorImpl.push(clean: true, BottomNavigationBarScreen.routeName);
+                      NamedNavigatorImpl.push(
+                        clean: true,
+                        BottomNavigationBarScreen.routeName,
+                      );
                     },
                   );
                 },

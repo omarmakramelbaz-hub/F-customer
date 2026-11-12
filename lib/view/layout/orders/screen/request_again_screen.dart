@@ -1,3 +1,4 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
@@ -39,12 +40,14 @@ class RequestAgainScreen extends StatelessWidget {
         ..getDetailsOrders(id: args.id),
       child: Consumer<OrdersController>(
         builder: (context, ordersController, _) {
-          final visibleItems =
-              ordersController.detailsOrders?.items?.where((item) => item.restaurantProduct?.status != 'hide').toList();
-          final inVisibleItems =
-              ordersController.detailsOrders?.items?.where((item) => item.restaurantProduct?.status == 'hide').toList();
+          final visibleItems = ordersController.detailsOrders?.items
+              ?.where((item) => item.restaurantProduct?.status != 'hide')
+              .toList();
+          final inVisibleItems = ordersController.detailsOrders?.items
+              ?.where((item) => item.restaurantProduct?.status == 'hide')
+              .toList();
           return Container(
-            color: AppColors.whiteColor,
+            color: FasakhanstaBrand.surface,
             child: ApiResponseWidget(
               apiResponse: ordersController.detailsOrdersApiResponse,
               onReload: () => ordersController.getDetailsOrders(id: args.id),
@@ -59,12 +62,16 @@ class RequestAgainScreen extends StatelessWidget {
                         title: 'requestAgain'.tr,
                         actions: HiveMethods.getToken() != null
                             ? Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 16),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                ),
                                 child: CircleAvatar(
                                   radius: 20,
                                   backgroundColor: AppColors.mainAppColor,
                                   child: InkWell(
-                                    onTap: () => NamedNavigatorImpl.push(CartScreen.routeName),
+                                    onTap: () => NamedNavigatorImpl.push(
+                                      CartScreen.routeName,
+                                    ),
                                     child: Stack(
                                       clipBehavior: Clip.none,
                                       children: [
@@ -74,13 +81,21 @@ class RequestAgainScreen extends StatelessWidget {
                                           right: -2,
                                           child: CircleAvatar(
                                             radius: 8,
-                                            backgroundColor: AppColors.darkMainAppColor,
+                                            backgroundColor:
+                                                AppColors.darkMainAppColor,
                                             child: Text(
-                                              context.watch<CartController>().cart?.carts?.length.toString() ?? '0',
-                                              style: AppTextStyle.text16BW().copyWith(
+                                              context
+                                                      .watch<CartController>()
+                                                      .cart
+                                                      ?.carts
+                                                      ?.length
+                                                      .toString() ??
+                                                  '0',
+                                              style: AppTextStyle.text16BW()
+                                                  .copyWith(
                                                 height: 1.4,
                                                 fontSize: 14,
-                                                color: AppColors.whiteColor,
+                                                color: FasakhanstaBrand.text,
                                               ),
                                             ),
                                           ),
@@ -97,14 +112,16 @@ class RequestAgainScreen extends StatelessWidget {
                         child: Container(
                           width: double.infinity,
                           decoration: BoxDecoration(
-                            color: AppColors.whiteColor,
+                            color: FasakhanstaBrand.surface,
                             borderRadius: const BorderRadius.only(
                               topRight: Radius.circular(36),
                               topLeft: Radius.circular(36),
                             ),
                             boxShadow: [
                               BoxShadow(
-                                color: AppColors.greyColor.withValues(alpha: .2),
+                                color: AppColors.greyColor.withValues(
+                                  alpha: .2,
+                                ),
                                 blurRadius: 10,
                                 offset: const Offset(0, -3),
                               ),
@@ -118,9 +135,11 @@ class RequestAgainScreen extends StatelessWidget {
                                 Center(
                                   child: CircleAvatar(
                                     radius: 60,
-                                    backgroundColor: AppColors.whiteColor,
+                                    backgroundColor: FasakhanstaBrand.surface,
                                     child: CustomNetworkImage(
-                                      imageUrl: ordersController.detailsOrders?.resturantLogo ?? '',
+                                      imageUrl: ordersController
+                                              .detailsOrders?.resturantLogo ??
+                                          '',
                                       radius: 60,
                                     ),
                                   ),
@@ -128,7 +147,9 @@ class RequestAgainScreen extends StatelessWidget {
                                 15.sbH,
                                 Center(
                                   child: Text(
-                                    ordersController.detailsOrders?.resturantName ?? '',
+                                    ordersController
+                                            .detailsOrders?.resturantName ??
+                                        '',
                                     style: AppTextStyle.text18BS(),
                                   ),
                                 ),
@@ -136,19 +157,36 @@ class RequestAgainScreen extends StatelessWidget {
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Text('requestCode'.tr, style: AppTextStyle.text14RS()),
+                                    Text(
+                                      'requestCode'.tr,
+                                      style: AppTextStyle.text14RS(),
+                                    ),
                                     const SizedBox(width: 5),
                                     Text(':', style: AppTextStyle.text18RS()),
                                     const SizedBox(width: 5),
-                                    Text(ordersController.detailsOrders?.orderNo ?? '', style: AppTextStyle.text14RS()),
+                                    Text(
+                                      ordersController.detailsOrders?.orderNo ??
+                                          '',
+                                      style: AppTextStyle.text14RS(),
+                                    ),
                                   ],
                                 ),
                                 15.sbH,
-                                ...List.generate(visibleItems?.length ?? 0, (index) {
-                                  return ReorderInCartWidget(item: visibleItems?[index], index: index);
+                                ...List.generate(visibleItems?.length ?? 0, (
+                                  index,
+                                ) {
+                                  return ReorderInCartWidget(
+                                    item: visibleItems?[index],
+                                    index: index,
+                                  );
                                 }),
-                                ...List.generate(inVisibleItems?.length ?? 0, (index) {
-                                  return ReorderInCartWidget(item: inVisibleItems?[index], index: index);
+                                ...List.generate(inVisibleItems?.length ?? 0, (
+                                  index,
+                                ) {
+                                  return ReorderInCartWidget(
+                                    item: inVisibleItems?[index],
+                                    index: index,
+                                  );
                                 }),
                               ],
                             ),
@@ -160,17 +198,26 @@ class RequestAgainScreen extends StatelessWidget {
                 ),
                 bottomNavigationBar: visibleItems?.isNotEmpty == true
                     ? Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 21, vertical: 16),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 21,
+                          vertical: 16,
+                        ),
                         child: CustomButton(
                           onPressed: () {
-                            if (ordersController.detailsOrders?.resturantStatus != 'opened') {
-                              CommonMethods.showToast(message: 'restaurantClosedOrBusy'.tr);
+                            if (ordersController
+                                    .detailsOrders?.resturantStatus !=
+                                'opened') {
+                              CommonMethods.showToast(
+                                message: 'restaurantClosedOrBusy'.tr,
+                              );
                             } else {
                               ordersController.addReorderToCart(
                                 productId: ordersController.productId,
-                                productFeatureId: ordersController.productFeatureId,
+                                productFeatureId:
+                                    ordersController.productFeatureId,
                                 productClean: ordersController.productClean,
-                                productQuantity: ordersController.productQuantity,
+                                productQuantity:
+                                    ordersController.productQuantity,
                               );
                             }
                           },

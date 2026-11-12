@@ -1,3 +1,5 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
+
 import 'dart:convert';
 import 'dart:developer';
 
@@ -45,24 +47,26 @@ class _YourOrderSuccessfullyCompletedScreenState
       _handleFinishedUpdate,
     );
 
-    final liveActivitiesController =
-        Provider.of<DeliveryProvider>(context, listen: false);
-    final ordersController =
-        Provider.of<OrdersController>(context, listen: false);
-
-    Future.delayed(
-      Duration.zero,
-      () async {
-        await ordersController
-            .getDetailsOrders(id: widget.args.id)
-            .whenComplete(() {
-          liveActivitiesController.init(widget.args.id).whenComplete(() {
-            liveActivitiesController
-                .startDelivery(ordersController.detailsOrders?.status);
-          });
-        });
-      },
+    final liveActivitiesController = Provider.of<DeliveryProvider>(
+      context,
+      listen: false,
     );
+    final ordersController = Provider.of<OrdersController>(
+      context,
+      listen: false,
+    );
+
+    Future.delayed(Duration.zero, () async {
+      await ordersController.getDetailsOrders(id: widget.args.id).whenComplete(
+        () {
+          liveActivitiesController.init(widget.args.id).whenComplete(() {
+            liveActivitiesController.startDelivery(
+              ordersController.detailsOrders?.status,
+            );
+          });
+        },
+      );
+    });
   }
 
   void _handleFinishedUpdate(PusherEvent event) {
@@ -94,10 +98,7 @@ class _YourOrderSuccessfullyCompletedScreenState
   }
 
   void _goHome() {
-    NamedNavigatorImpl.push(
-      clean: true,
-      BottomNavigationBarScreen.routeName,
-    );
+    NamedNavigatorImpl.push(clean: true, BottomNavigationBarScreen.routeName);
   }
 
   void _trackOrder() {
@@ -120,11 +121,11 @@ class _YourOrderSuccessfullyCompletedScreenState
     final theme = Theme.of(context);
     final primary = theme.colorScheme.primary;
     const success = Color(0xFF1FA76F);
-    const textDark = Color(0xFF17212B);
-    const muted = Color(0xFF8A9199);
+    const textDark = FasakhanstaBrand.text;
+    const muted = FasakhanstaBrand.muted;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F9FB),
+      backgroundColor: Colors.transparent,
       appBar: CustomAppBar(
         actions: const [],
         height: 82,
@@ -154,7 +155,7 @@ class _YourOrderSuccessfullyCompletedScreenState
                   ),
                   child: const Icon(
                     Icons.check_rounded,
-                    color: Colors.white,
+                    color: FasakhanstaBrand.text,
                     size: 40,
                   ),
                 ),
@@ -171,12 +172,14 @@ class _YourOrderSuccessfullyCompletedScreenState
               ),
               const SizedBox(height: 12),
               Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 15,
+                  vertical: 8,
+                ),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: FasakhanstaBrand.surface,
                   borderRadius: BorderRadius.circular(30),
-                  border: Border.all(color: const Color(0xFFE7E9EC)),
+                  border: Border.all(color: FasakhanstaBrand.border),
                 ),
                 child: Text(
                   'طلب رقم  #${widget.args.id}',
@@ -194,7 +197,7 @@ class _YourOrderSuccessfullyCompletedScreenState
                   vertical: 14,
                 ),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: FasakhanstaBrand.surface,
                   borderRadius: BorderRadius.circular(26),
                   boxShadow: [
                     BoxShadow(
@@ -220,9 +223,7 @@ class _YourOrderSuccessfullyCompletedScreenState
                       decoration: BoxDecoration(
                         color: primary.withOpacity(.055),
                         borderRadius: BorderRadius.circular(18),
-                        border: Border.all(
-                          color: primary.withOpacity(.16),
-                        ),
+                        border: Border.all(color: primary.withOpacity(.16)),
                       ),
                       child: Row(
                         children: [
@@ -235,7 +236,7 @@ class _YourOrderSuccessfullyCompletedScreenState
                             ),
                             child: const Icon(
                               Icons.restaurant_menu_rounded,
-                              color: Colors.white,
+                              color: FasakhanstaBrand.text,
                             ),
                           ),
                           const SizedBox(width: 12),
@@ -285,7 +286,7 @@ class _YourOrderSuccessfullyCompletedScreenState
                   ),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: primary,
-                    foregroundColor: Colors.white,
+                    foregroundColor: FasakhanstaBrand.onOrange,
                     elevation: 0,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(18),
@@ -309,8 +310,8 @@ class _YourOrderSuccessfullyCompletedScreenState
                   ),
                   style: OutlinedButton.styleFrom(
                     foregroundColor: textDark,
-                    side: const BorderSide(color: Color(0xFFE2E5E9)),
-                    backgroundColor: Colors.white,
+                    side: const BorderSide(color: FasakhanstaBrand.border),
+                    backgroundColor: FasakhanstaBrand.surface,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(18),
                     ),
@@ -324,7 +325,7 @@ class _YourOrderSuccessfullyCompletedScreenState
                   icon: const Icon(Icons.close_rounded, size: 20),
                   label: Text('cancelOrder'.tr),
                   style: TextButton.styleFrom(
-                    foregroundColor: const Color(0xFFD84A4A),
+                    foregroundColor: FasakhanstaBrand.danger,
                     textStyle: const TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w700,
@@ -416,13 +417,13 @@ class _ProgressItem extends StatelessWidget {
           width: 38,
           height: 38,
           decoration: BoxDecoration(
-            color: active ? color : const Color(0xFFF1F3F5),
+            color: active ? color : FasakhanstaBrand.surfaceRaised,
             shape: BoxShape.circle,
           ),
           child: Icon(
             icon,
             size: 20,
-            color: active ? Colors.white : const Color(0xFFADB3BA),
+            color: active ? FasakhanstaBrand.text : FasakhanstaBrand.muted,
           ),
         ),
         const SizedBox(height: 7),
@@ -432,7 +433,7 @@ class _ProgressItem extends StatelessWidget {
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
           style: theme.textTheme.labelSmall?.copyWith(
-            color: active ? color : const Color(0xFF9299A1),
+            color: active ? color : FasakhanstaBrand.muted,
             fontWeight: active ? FontWeight.w800 : FontWeight.w600,
           ),
         ),

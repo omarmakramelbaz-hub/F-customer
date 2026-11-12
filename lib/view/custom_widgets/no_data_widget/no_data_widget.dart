@@ -1,3 +1,4 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -44,7 +45,11 @@ class NoDataWidget extends StatelessWidget {
                     alignment: AlignmentDirectional.centerStart,
                     child: Text(
                       message ?? 'There is no data'.tr,
-                      style: const TextStyle(color: Colors.black, fontSize: 14, fontWeight: FontWeight.w500),
+                      style: const TextStyle(
+                        color: FasakhanstaBrand.onOrange,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      ),
                       textAlign: TextAlign.justify,
                     ),
                   ),
@@ -67,7 +72,10 @@ class NoDataWidget extends StatelessWidget {
             children: [
               SvgPicture.asset(
                 AppImages.emptyFolderIcon,
-                colorFilter: const ColorFilter.mode(Colors.black, BlendMode.srcIn),
+                colorFilter: const ColorFilter.mode(
+                  Colors.black,
+                  BlendMode.srcIn,
+                ),
                 width: 100,
                 height: 100,
                 fit: BoxFit.contain,
@@ -75,7 +83,11 @@ class NoDataWidget extends StatelessWidget {
               10.sbH,
               Text(
                 message ?? 'There is no data'.tr,
-                style: const TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w500),
+                style: const TextStyle(
+                  color: FasakhanstaBrand.onOrange,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                ),
                 textAlign: TextAlign.center,
               ),
             ],

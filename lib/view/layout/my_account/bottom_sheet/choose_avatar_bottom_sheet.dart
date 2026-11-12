@@ -1,3 +1,4 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
@@ -18,8 +19,11 @@ class ChooseAvatarBottomSheet extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
       decoration: BoxDecoration(
-        color: AppColors.whiteColor,
-        borderRadius: const BorderRadius.only(topLeft: Radius.circular(36), topRight: Radius.circular(36)),
+        color: FasakhanstaBrand.surface,
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(36),
+          topRight: Radius.circular(36),
+        ),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -33,10 +37,12 @@ class ChooseAvatarBottomSheet extends StatelessWidget {
                 onTap: () => Navigator.pop(context),
                 child: Card(
                   elevation: 10,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
                   child: CircleAvatar(
                     radius: 20,
-                    backgroundColor: AppColors.whiteColor,
+                    backgroundColor: FasakhanstaBrand.surface,
                     child: SvgPicture.asset(AppImages.cancelIcon),
                   ),
                 ),

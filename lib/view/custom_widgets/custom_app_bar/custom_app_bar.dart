@@ -44,7 +44,7 @@ class CustomAppBar extends PreferredSize {
           preferredSize: Size.fromHeight(height),
           child: AppBar(
             elevation: elevation,
-            backgroundColor: appBarColor ?? AppColors.whiteColor,
+            backgroundColor: appBarColor ?? Colors.transparent,
             toolbarHeight: height,
             automaticallyImplyLeading: automaticallyImplyLeading,
             shadowColor: shadowColor,
@@ -55,10 +55,18 @@ class CustomAppBar extends PreferredSize {
                 [
                   if (showLang == true)
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 5),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 25,
+                        vertical: 5,
+                      ),
                       child: GestureDetector(
-                        onTap: () => Utils.showAppBottomSheet(const ChangeLangBottomSheet()),
-                        child: SvgPicture.asset(AppImages.langIcon, color: AppColors.mainAppColor),
+                        onTap: () => Utils.showAppBottomSheet(
+                          const ChangeLangBottomSheet(),
+                        ),
+                        child: SvgPicture.asset(
+                          AppImages.langIcon,
+                          color: AppColors.mainAppColor,
+                        ),
                       ),
                     ),
                 ],

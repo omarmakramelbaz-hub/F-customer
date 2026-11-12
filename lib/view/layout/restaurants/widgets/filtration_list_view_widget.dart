@@ -1,3 +1,4 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
@@ -12,7 +13,8 @@ class FiltrationListViewWidget extends StatefulWidget {
   final VoidCallback? onSuccess;
   const FiltrationListViewWidget({super.key, this.onSuccess});
   @override
-  State<FiltrationListViewWidget> createState() => _FiltrationListViewWidgetState();
+  State<FiltrationListViewWidget> createState() =>
+      _FiltrationListViewWidgetState();
 }
 
 class _FiltrationListViewWidgetState extends State<FiltrationListViewWidget> {
@@ -41,7 +43,9 @@ class _FiltrationListViewWidgetState extends State<FiltrationListViewWidget> {
                 }
               });
               if (_currentIndex == 0) {
-                restaurantsController.getRestaurants(favorableRestaurants: 'yes');
+                restaurantsController.getRestaurants(
+                  favorableRestaurants: 'yes',
+                );
               } else if (_currentIndex == 1) {
                 restaurantsController.getRestaurants(mostReviewed: 1);
               } else if (_currentIndex == 2) {
@@ -55,21 +59,28 @@ class _FiltrationListViewWidgetState extends State<FiltrationListViewWidget> {
                 Container(
                   padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
-                    color: _currentIndex == index ? AppColors.yellowColor : Colors.transparent,
+                    color: _currentIndex == index
+                        ? AppColors.yellowColor
+                        : Colors.transparent,
                     borderRadius: BorderRadius.circular(18),
-                    border: Border.all(color: const Color(0xffF1F1F1)),
+                    border: Border.all(color: FasakhanstaBrand.border),
                   ),
                   child: Row(
                     children: [
                       Text(
                         filtration[index],
-                        style: _currentIndex == index ? AppTextStyle.text16BW() : AppTextStyle.text16MG(),
+                        style: _currentIndex == index
+                            ? AppTextStyle.text16BW()
+                            : AppTextStyle.text16MG(),
                       ),
                       Padding(
                         padding: const EdgeInsets.only(right: 10),
                         child: SvgPicture.asset(
                           AppImages.closeIcon,
-                          colorFilter: ColorFilter.mode(AppColors.whiteColor, BlendMode.srcIn),
+                          colorFilter: ColorFilter.mode(
+                            AppColors.whiteColor,
+                            BlendMode.srcIn,
+                          ),
                         ),
                       ),
                     ],

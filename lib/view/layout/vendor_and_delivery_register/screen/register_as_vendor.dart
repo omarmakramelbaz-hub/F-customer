@@ -1,3 +1,5 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
+
 import 'dart:io';
 
 import 'package:country_picker/country_picker.dart';
@@ -102,24 +104,24 @@ class _RegisterAsVendorScreenState extends State<RegisterAsVendorScreen>
       canPop: true,
       onPopInvoked: (_) {},
       child: Scaffold(
-        backgroundColor: const Color(0xFFF8F9FB),
+        backgroundColor: Colors.transparent,
         appBar: CustomAppBar(
           height: 66,
           centerTitle: true,
-          appBarColor: Colors.white,
+          appBarColor: Colors.transparent,
           elevation: .5,
           shadowColor: Colors.black12,
           title: Text(
             'startAsMerchant'.tr,
             style: AppTextStyle.text20BS().copyWith(
-              color: const Color(0xFF17191E),
+              color: FasakhanstaBrand.text,
               fontWeight: FontWeight.w800,
             ),
           ),
           leading: Padding(
             padding: const EdgeInsets.all(9),
             child: Material(
-              color: const Color(0xFFF8F9FB),
+              color: FasakhanstaBrand.surfaceRaised,
               borderRadius: BorderRadius.circular(15),
               child: InkWell(
                 borderRadius: BorderRadius.circular(15),
@@ -129,7 +131,7 @@ class _RegisterAsVendorScreenState extends State<RegisterAsVendorScreen>
                       ? Icons.arrow_back_ios_new_rounded
                       : Icons.arrow_forward_ios_rounded,
                   size: 19,
-                  color: const Color(0xFF202228),
+                  color: FasakhanstaBrand.text,
                 ),
               ),
             ),
@@ -150,7 +152,11 @@ class _RegisterAsVendorScreenState extends State<RegisterAsVendorScreen>
                     const SizedBox(height: 16),
                     _SectionCard(
                       icon: Icons.storefront_outlined,
-                      title: _copy(context, 'بيانات النشاط', 'Business details'),
+                      title: _copy(
+                        context,
+                        'بيانات النشاط',
+                        'Business details',
+                      ),
                       subtitle: _copy(
                         context,
                         'اكتب بيانات النشاط والمالك كما هي في المستندات الرسمية',
@@ -164,7 +170,8 @@ class _RegisterAsVendorScreenState extends State<RegisterAsVendorScreen>
                             title: 'merchantName'.tr,
                             validator: validateName,
                             onFieldSubmitted: (_) {
-                              FocusScope.of(context).requestFocus(_ownerNameFocus);
+                              FocusScope.of(context)
+                                  .requestFocus(_ownerNameFocus);
                             },
                           ),
                           const SizedBox(height: 18),
@@ -174,7 +181,8 @@ class _RegisterAsVendorScreenState extends State<RegisterAsVendorScreen>
                             title: 'ownerName'.tr,
                             validator: validateName,
                             onFieldSubmitted: (_) {
-                              FocusScope.of(context).requestFocus(_branchesCountFocus);
+                              FocusScope.of(context)
+                                  .requestFocus(_branchesCountFocus);
                             },
                           ),
                           const SizedBox(height: 18),
@@ -185,7 +193,8 @@ class _RegisterAsVendorScreenState extends State<RegisterAsVendorScreen>
                             validator: validateEmptyField,
                             keyboardType: TextInputType.number,
                             onFieldSubmitted: (_) {
-                              FocusScope.of(context).requestFocus(_nationalIdFocus);
+                              FocusScope.of(context)
+                                  .requestFocus(_nationalIdFocus);
                             },
                           ),
                         ],
@@ -194,7 +203,11 @@ class _RegisterAsVendorScreenState extends State<RegisterAsVendorScreen>
                     const SizedBox(height: 16),
                     _SectionCard(
                       icon: Icons.badge_outlined,
-                      title: _copy(context, 'المستندات الرسمية', 'Official documents'),
+                      title: _copy(
+                        context,
+                        'المستندات الرسمية',
+                        'Official documents',
+                      ),
                       subtitle: _copy(
                         context,
                         'أدخل أرقام المستندات وارفع صور واضحة وكاملة للمراجعة',
@@ -240,7 +253,8 @@ class _RegisterAsVendorScreenState extends State<RegisterAsVendorScreen>
                             validator: validateEmptyField,
                             keyboardType: TextInputType.number,
                             onFieldSubmitted: (_) {
-                              FocusScope.of(context).requestFocus(_phoneNumberOneFocus);
+                              FocusScope.of(context)
+                                  .requestFocus(_phoneNumberOneFocus);
                             },
                           ),
                           const SizedBox(height: 22),
@@ -256,7 +270,8 @@ class _RegisterAsVendorScreenState extends State<RegisterAsVendorScreen>
                                     'Clear ID image',
                                   ),
                                   image: _idImage,
-                                  onSuccess: (v) => setState(() => _idImage = v),
+                                  onSuccess: (v) =>
+                                      setState(() => _idImage = v),
                                 ),
                               ),
                               const SizedBox(width: 12),
@@ -269,7 +284,8 @@ class _RegisterAsVendorScreenState extends State<RegisterAsVendorScreen>
                                     'Tax card image',
                                   ),
                                   image: _taxImage,
-                                  onSuccess: (v) => setState(() => _taxImage = v),
+                                  onSuccess: (v) =>
+                                      setState(() => _taxImage = v),
                                 ),
                               ),
                             ],
@@ -283,8 +299,9 @@ class _RegisterAsVendorScreenState extends State<RegisterAsVendorScreen>
                               'Clear commercial registration image',
                             ),
                             image: _commercialRegistrationImage,
-                            onSuccess: (v) =>
-                                setState(() => _commercialRegistrationImage = v),
+                            onSuccess: (v) => setState(
+                              () => _commercialRegistrationImage = v,
+                            ),
                             maxWidth: 260,
                           ),
                         ],
@@ -306,30 +323,35 @@ class _RegisterAsVendorScreenState extends State<RegisterAsVendorScreen>
                       child: Column(
                         children: [
                           CustomFormField(
-                            validator: (v) => validatePhone(v, country: _country),
+                            validator: (v) =>
+                                validatePhone(v, country: _country),
                             controller: _phoneNumberOneEc,
                             focusNode: _phoneNumberOneFocus,
                             title: 'firstPhoneNumber'.tr,
                             keyboardType: TextInputType.phone,
                             country: _country,
                             onFieldSubmitted: (_) {
-                              FocusScope.of(context).requestFocus(_phoneNumberTwoFocus);
+                              FocusScope.of(context)
+                                  .requestFocus(_phoneNumberTwoFocus);
                             },
                           ),
                           const SizedBox(height: 18),
                           CustomFormField(
                             controller: _phoneNumberTwoEc,
                             focusNode: _phoneNumberTwoFocus,
-                            title: '${'secondPhoneNumber'.tr} ${_copy(context, '(اختياري)', '(optional)')}',
+                            title:
+                                '${'secondPhoneNumber'.tr} ${_copy(context, '(اختياري)', '(optional)')}',
                             keyboardType: TextInputType.phone,
                             country: _country,
                             onFieldSubmitted: (_) {
-                              FocusScope.of(context).requestFocus(_vodafoneCashFocus);
+                              FocusScope.of(context)
+                                  .requestFocus(_vodafoneCashFocus);
                             },
                           ),
                           const SizedBox(height: 18),
                           CustomFormField(
-                            validator: (v) => validateVCash(v, country: _country),
+                            validator: (v) =>
+                                validateVCash(v, country: _country),
                             controller: _vodafoneCashNumber,
                             focusNode: _vodafoneCashFocus,
                             title: 'vodafonCashNumber'.tr,
@@ -355,11 +377,14 @@ class _RegisterAsVendorScreenState extends State<RegisterAsVendorScreen>
                     ),
                     const SizedBox(height: 18),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 14,
+                        vertical: 12,
+                      ),
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: FasakhanstaBrand.surface,
                         borderRadius: BorderRadius.circular(16),
-                        border: Border.all(color: const Color(0xFFE9EAED)),
+                        border: Border.all(color: FasakhanstaBrand.border),
                       ),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -378,7 +403,7 @@ class _RegisterAsVendorScreenState extends State<RegisterAsVendorScreen>
                                 'Your details and documents will only be used to review your application and contact you.',
                               ),
                               style: AppTextStyle.text12RG().copyWith(
-                                color: const Color(0xFF737780),
+                                color: FasakhanstaBrand.muted,
                                 height: 1.5,
                               ),
                             ),
@@ -419,17 +444,20 @@ class _RegisterAsVendorScreenState extends State<RegisterAsVendorScreen>
                                     vendorTaxNo: _taxIdEc.text,
                                     vendorMobile: _phoneNumberOneEc.text,
                                     vendorEmail: _emailEc.text,
-                                    vendorVodafoneCash: _vodafoneCashNumber.text,
+                                    vendorVodafoneCash:
+                                        _vodafoneCashNumber.text,
                                     onConfirm: () {
                                       providerContext
                                           .read<VendorAndDeliveryController>()
                                           .vendorRegister(
                                             fullName: _merchantNameEc.text,
                                             ownerName: _ownerNameEc.text,
-                                            branchesNo:
-                                                int.tryParse(_branchesCountEc.text)!,
-                                            nationalId:
-                                                int.tryParse(_nationalIdEc.text)!,
+                                            branchesNo: int.tryParse(
+                                              _branchesCountEc.text,
+                                            )!,
+                                            nationalId: int.tryParse(
+                                              _nationalIdEc.text,
+                                            )!,
                                             commercialRegistrationNo:
                                                 _commercialRegistrationEc.text,
                                             nationalIdImage: _idImage!,
@@ -445,7 +473,8 @@ class _RegisterAsVendorScreenState extends State<RegisterAsVendorScreen>
                                             onSuccess: () {
                                               NamedNavigatorImpl.push(
                                                 clean: true,
-                                                BottomNavigationBarScreen.routeName,
+                                                BottomNavigationBarScreen
+                                                    .routeName,
                                               );
                                             },
                                           );
@@ -476,7 +505,10 @@ class _RegisterAsVendorScreenState extends State<RegisterAsVendorScreen>
         gradient: const LinearGradient(
           begin: Alignment.topRight,
           end: Alignment.bottomLeft,
-          colors: [Color(0xFFFFF1E5), Color(0xFFFFFBF7)],
+          colors: [
+            FasakhanstaBrand.surfaceRaised,
+            FasakhanstaBrand.surfaceRaised,
+          ],
         ),
         borderRadius: BorderRadius.circular(24),
         border: Border.all(
@@ -492,7 +524,7 @@ class _RegisterAsVendorScreenState extends State<RegisterAsVendorScreen>
                 height: 64,
                 padding: const EdgeInsets.all(6),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: FasakhanstaBrand.surface,
                   borderRadius: BorderRadius.circular(18),
                   boxShadow: const [
                     BoxShadow(
@@ -520,7 +552,7 @@ class _RegisterAsVendorScreenState extends State<RegisterAsVendorScreen>
                         'Start your journey as a merchant',
                       ),
                       style: AppTextStyle.text16BS().copyWith(
-                        color: const Color(0xFF1E2025),
+                        color: FasakhanstaBrand.text,
                         fontWeight: FontWeight.w800,
                       ),
                     ),
@@ -532,7 +564,7 @@ class _RegisterAsVendorScreenState extends State<RegisterAsVendorScreen>
                         'Complete your business details and documents, then review the contract and submit your application.',
                       ),
                       style: AppTextStyle.text12RG().copyWith(
-                        color: const Color(0xFF777B84),
+                        color: FasakhanstaBrand.muted,
                         height: 1.45,
                       ),
                     ),
@@ -558,9 +590,10 @@ class _RegisterAsVendorScreenState extends State<RegisterAsVendorScreen>
                   child: LinearProgressIndicator(
                     value: .5,
                     minHeight: 7,
-                    backgroundColor: Colors.white,
-                    valueColor:
-                        AlwaysStoppedAnimation<Color>(AppColors.mainAppColor),
+                    backgroundColor: FasakhanstaBrand.surface,
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                      AppColors.mainAppColor,
+                    ),
                   ),
                 ),
               ),
@@ -590,9 +623,9 @@ class _SectionCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: FasakhanstaBrand.surface,
         borderRadius: BorderRadius.circular(22),
-        border: Border.all(color: const Color(0xFFE9EAED)),
+        border: Border.all(color: FasakhanstaBrand.border),
         boxShadow: const [
           BoxShadow(
             color: Color(0x08000000),
@@ -611,14 +644,10 @@ class _SectionCard extends StatelessWidget {
                 width: 42,
                 height: 42,
                 decoration: BoxDecoration(
-                  color: const Color(0xFFFFF3E8),
+                  color: FasakhanstaBrand.surfaceRaised,
                   borderRadius: BorderRadius.circular(14),
                 ),
-                child: Icon(
-                  icon,
-                  size: 22,
-                  color: AppColors.mainAppColor,
-                ),
+                child: Icon(icon, size: 22, color: AppColors.mainAppColor),
               ),
               const SizedBox(width: 11),
               Expanded(
@@ -628,7 +657,7 @@ class _SectionCard extends StatelessWidget {
                     Text(
                       title,
                       style: AppTextStyle.text16BS().copyWith(
-                        color: const Color(0xFF1C1E23),
+                        color: FasakhanstaBrand.text,
                         fontWeight: FontWeight.w800,
                       ),
                     ),
@@ -636,7 +665,7 @@ class _SectionCard extends StatelessWidget {
                     Text(
                       subtitle,
                       style: AppTextStyle.text12RG().copyWith(
-                        color: const Color(0xFF858992),
+                        color: FasakhanstaBrand.muted,
                         height: 1.45,
                       ),
                     ),
@@ -664,7 +693,7 @@ class _InfoStrip extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 11),
       decoration: BoxDecoration(
-        color: const Color(0xFFFFF7F0),
+        color: FasakhanstaBrand.surfaceRaised,
         borderRadius: BorderRadius.circular(14),
         border: Border.all(
           color: AppColors.mainAppColor.withValues(alpha: .13),
@@ -682,7 +711,7 @@ class _InfoStrip extends StatelessWidget {
             child: Text(
               text,
               style: AppTextStyle.text12RG().copyWith(
-                color: const Color(0xFF6E5A4B),
+                color: FasakhanstaBrand.muted,
                 height: 1.4,
               ),
             ),
@@ -718,7 +747,7 @@ class _DocumentUpload extends StatelessWidget {
           overflow: TextOverflow.ellipsis,
           textAlign: TextAlign.center,
           style: AppTextStyle.text13MS().copyWith(
-            color: const Color(0xFF303238),
+            color: FasakhanstaBrand.text,
             fontWeight: FontWeight.w700,
           ),
         ),
@@ -734,8 +763,8 @@ class _DocumentUpload extends StatelessWidget {
           textAlign: TextAlign.center,
           style: AppTextStyle.text11RG().copyWith(
             color: image == null
-                ? const Color(0xFF979AA1)
-                : const Color(0xFF22A45D),
+                ? FasakhanstaBrand.muted
+                : FasakhanstaBrand.success,
             fontWeight: image == null ? FontWeight.w400 : FontWeight.w700,
           ),
         ),
@@ -745,10 +774,7 @@ class _DocumentUpload extends StatelessWidget {
           children: [
             FittedBox(
               fit: BoxFit.scaleDown,
-              child: CustomImageContainer(
-                image: image,
-                onSuccess: onSuccess,
-              ),
+              child: CustomImageContainer(image: image, onSuccess: onSuccess),
             ),
             if (image != null)
               Positioned(
@@ -758,12 +784,12 @@ class _DocumentUpload extends StatelessWidget {
                   width: 28,
                   height: 28,
                   decoration: const BoxDecoration(
-                    color: Color(0xFF22A45D),
+                    color: FasakhanstaBrand.successTint,
                     shape: BoxShape.circle,
                   ),
                   child: const Icon(
                     Icons.check_rounded,
-                    color: Colors.white,
+                    color: FasakhanstaBrand.text,
                     size: 18,
                   ),
                 ),

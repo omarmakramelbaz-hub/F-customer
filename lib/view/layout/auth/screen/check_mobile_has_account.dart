@@ -1,3 +1,4 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
 import 'package:country_picker/country_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -33,9 +34,9 @@ class _CheckMobileHasAccountState extends State<CheckMobileHasAccount>
   final _mobileEC = TextEditingController();
   Country? _country;
 
-  static const _text = Color(0xFF171A1F);
-  static const _muted = Color(0xFF858B94);
-  static const _border = Color(0xFFE7EAEE);
+  static const _text = FasakhanstaBrand.text;
+  static const _muted = FasakhanstaBrand.muted;
+  static const _border = FasakhanstaBrand.border;
 
   @override
   void initState() {
@@ -54,7 +55,7 @@ class _CheckMobileHasAccountState extends State<CheckMobileHasAccount>
     return Form(
       key: _formKey,
       child: Scaffold(
-        backgroundColor: const Color(0xFFF7F8FA),
+        backgroundColor: Colors.transparent,
         appBar: CustomAppBar(
           centerTitle: false,
           height: 70,
@@ -64,7 +65,7 @@ class _CheckMobileHasAccountState extends State<CheckMobileHasAccount>
             height: 52,
             radius: 12,
           ),
-          appBarColor: Colors.white,
+          appBarColor: Colors.transparent,
         ),
         body: SafeArea(
           top: false,
@@ -97,10 +98,13 @@ class _CheckMobileHasAccountState extends State<CheckMobileHasAccount>
         gradient: const LinearGradient(
           begin: Alignment.topRight,
           end: Alignment.bottomLeft,
-          colors: [Color(0xFFFFF8F1), Color(0xFFFFF1E4)],
+          colors: [
+            FasakhanstaBrand.surfaceRaised,
+            FasakhanstaBrand.surfaceRaised,
+          ],
         ),
         borderRadius: BorderRadius.circular(22),
-        border: Border.all(color: const Color(0xFFFFDFC2)),
+        border: Border.all(color: FasakhanstaBrand.border),
       ),
       child: Row(
         children: [
@@ -108,7 +112,7 @@ class _CheckMobileHasAccountState extends State<CheckMobileHasAccount>
             width: 52,
             height: 52,
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: FasakhanstaBrand.surface,
               borderRadius: BorderRadius.circular(16),
               boxShadow: const [
                 BoxShadow(
@@ -159,7 +163,7 @@ class _CheckMobileHasAccountState extends State<CheckMobileHasAccount>
     return Container(
       padding: const EdgeInsets.fromLTRB(16, 18, 16, 18),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: FasakhanstaBrand.surface,
         borderRadius: BorderRadius.circular(24),
         border: Border.all(color: _border),
         boxShadow: const [
@@ -185,10 +189,7 @@ class _CheckMobileHasAccountState extends State<CheckMobileHasAccount>
             context.languageCode == 'ar'
                 ? 'هنراجع الرقم أولًا ثم نرسل كود الاستعادة على البريد المرتبط بالحساب.'
                 : 'We will verify the number first, then send a recovery code to the email linked to your account.',
-            style: AppTextStyle.text11RG().copyWith(
-              color: _muted,
-              height: 1.4,
-            ),
+            style: AppTextStyle.text11RG().copyWith(color: _muted, height: 1.4),
           ),
           const SizedBox(height: 18),
           CustomFormField(
@@ -202,7 +203,7 @@ class _CheckMobileHasAccountState extends State<CheckMobileHasAccount>
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: const Color(0xFFF8F9FB),
+              color: FasakhanstaBrand.surfaceRaised,
               borderRadius: BorderRadius.circular(14),
               border: Border.all(color: _border),
             ),
@@ -221,7 +222,7 @@ class _CheckMobileHasAccountState extends State<CheckMobileHasAccount>
                         ? 'لأمان حسابك، كود الاستعادة يتم إرساله فقط لبيانات الحساب المسجلة.'
                         : 'For your security, the recovery code is sent only to the contact details already registered on your account.',
                     style: AppTextStyle.text11RG().copyWith(
-                      color: const Color(0xFF656B74),
+                      color: FasakhanstaBrand.muted,
                       height: 1.4,
                     ),
                   ),
@@ -234,7 +235,7 @@ class _CheckMobileHasAccountState extends State<CheckMobileHasAccount>
             onPressed: _submit,
             radius: 18,
             text: 'send'.tr,
-            style: AppTextStyle.text18BW(),
+            style: AppTextStyle.text18BW(color: FasakhanstaBrand.onOrange),
           ),
         ],
       ),

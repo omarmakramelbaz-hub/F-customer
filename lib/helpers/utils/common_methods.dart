@@ -1,3 +1,5 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
+
 import 'dart:async';
 
 import 'package:bot_toast/bot_toast.dart';
@@ -20,7 +22,7 @@ class CommonMethods {
             ? Text(
                 title,
                 style: const TextStyle(
-                  color: Colors.black,
+                  color: FasakhanstaBrand.text,
                   fontSize: 16,
                   fontWeight: FontWeight.w700,
                 ),
@@ -29,7 +31,7 @@ class CommonMethods {
         content: Text(
           message,
           style: const TextStyle(
-            color: Colors.black,
+            color: FasakhanstaBrand.text,
             fontSize: 15,
             fontWeight: FontWeight.w500,
           ),
@@ -39,7 +41,7 @@ class CommonMethods {
             child: Text(
               'ok'.tr,
               style: const TextStyle(
-                color: Colors.red,
+                color: FasakhanstaBrand.danger,
                 fontSize: 16,
                 fontWeight: FontWeight.w700,
               ),
@@ -64,7 +66,7 @@ class CommonMethods {
             ? Text(
                 title,
                 style: const TextStyle(
-                  color: Colors.black,
+                  color: FasakhanstaBrand.text,
                   fontSize: 16,
                   fontWeight: FontWeight.w700,
                 ),
@@ -73,7 +75,7 @@ class CommonMethods {
         content: Text(
           message,
           style: const TextStyle(
-            color: Colors.black,
+            color: FasakhanstaBrand.text,
             fontSize: 15,
             fontWeight: FontWeight.w500,
           ),
@@ -233,10 +235,7 @@ class CommonMethods {
     );
   }
 
-  static void showCartSuccess({
-    required String message,
-    int seconds = 3,
-  }) {
+  static void showCartSuccess({required String message, int seconds = 3}) {
     final isArabic = _isArabic();
 
     _showBrandedToast(
@@ -282,7 +281,9 @@ class CommonMethods {
       type: isOffline ? ToastType.offline : ToastType.error,
       title: title ??
           (isOffline
-              ? (isArabic ? 'لا يوجد اتصال بالإنترنت' : 'No internet connection')
+              ? (isArabic
+                  ? 'لا يوجد اتصال بالإنترنت'
+                  : 'No internet connection')
               : (isArabic ? 'تعذر إتمام العملية' : 'Something went wrong')),
       message: message,
       icon: icon,
