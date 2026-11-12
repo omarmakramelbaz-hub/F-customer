@@ -6,6 +6,7 @@ on:
     paths:
       - '.github/workflows/customer-ios-store-release.yml'
       - '.github/scripts/customer_store_release.py'
+      - '.github/scripts/verify_customer_ios_archive.py'
 
 permissions:
   contents: read
@@ -185,39 +186,18 @@ jobs:
 
       - name: Verify archived app and extension versions
         run: |
-          set -euo pipefail
-          python3 <<'PYTHON'
-          import os
-          import plistlib
-          import subprocess
-          from pathlib import Path
+          python3 .github/scripts/verify_customer_ios_archive.py \
+            --archive "$RUNNER_TEMP/Fasakhansta.xcarchive" \
+            --version "$BUILD_NAME" --build "$BUILD_NUMBER"
 
-          app = Path(os.environ['RUNNER_TEMP']) / 'Fasakhansta.xcarchive/Products/Applications/Runner.app'
-          extensions = list((app / 'PlugIns').glob('*.appex'))
-          if not extensions:
-              raise SystemExit('Archived Live Activity extension is missing')
-          expected = (os.environ['BUILD_NAME'], os.environ['BUILD_NUMBER'])
-          for bundle in [app, *extensions]:
-              with (bundle / 'Info.plist').open('rb') as file:
-                  info = plistlib.load(file)
-              actual = (info.get('CFBundleShortVersionString'), info.get('CFBundleVersion'))
-              if actual != expected:
-                  raise SystemExit(f'{bundle.name} version mismatch: {actual!r} != {expected!r}')
-              entitlements = plistlib.loads(subprocess.check_output(
-                  ['codesign', '--display', '--entitlements', '-', str(bundle)],
-                  stderr=subprocess.DEVNULL,
-              ))
-              identifier = info.get('CFBundleIdentifier')
-              if entitlements.get('get-task-allow', False):
-                  raise SystemExit('Archived app has development signing')
-              if entitlements.get('application-identifier') != '4769DGYGT3.' + identifier:
-                  raise SystemExit('Archived app signing identity mismatch')
-              if identifier == 'com.faskhaninja.clients' and entitlements.get('aps-environment') != 'production':
-                  raise SystemExit('Archived app must use production push')
-              if 'group.faskhaninja.liveactivities' not in entitlements.get('com.apple.security.application-groups', []):
-                  raise SystemExit('Archived app group is missing')
-              print(f'{bundle.name}: version {actual[0]}, build {actual[1]}, production signing verified')
-          PYTHON
+      - name: Preserve sanitized archive verification receipt
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Archive-Verification-2.0.9-113-${{ github.sha }}
+          path: ${{ runner.temp }}/customer-ios-archive-verification.json
+          if-no-files-found: ignore
+          retention-days: 14
 
       - name: Export signed IPA
         run: |
