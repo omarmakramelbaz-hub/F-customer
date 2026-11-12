@@ -1,4 +1,4 @@
-name: Dashboard iOS store upload
+name: GO ERP iOS store upload
 
 on:
   push:
@@ -16,9 +16,9 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  DASHBOARD_REVISION: 9c4411cdb63ad1b0452c2a1c538a2efc173d3440
+  DASHBOARD_REVISION: 726c5f1fc969772c0fcb95294c4724078ed3092b
   BUILD_NAME: 1.0.13
-  BUILD_NUMBER: '15'
+  BUILD_NUMBER: '16'
 
 jobs:
   build-and-upload-dashboard:
@@ -33,7 +33,7 @@ jobs:
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           repository: omarmakramelbaz-hub/F-admin
-          ref: 9c4411cdb63ad1b0452c2a1c538a2efc173d3440
+          ref: 726c5f1fc969772c0fcb95294c4724078ed3092b
           path: dashboard
           persist-credentials: false
       - name: Set up Python
@@ -61,7 +61,7 @@ jobs:
           python - <<'PY'
           from pathlib import Path
           source = Path('pubspec.yaml').read_text()
-          assert '\nversion: 1.0.13+15\n' in '\n' + source
+          assert '\nversion: 1.0.13+16\n' in '\n' + source
           project = Path('ios/Runner.xcodeproj/project.pbxproj').read_text()
           assert 'PRODUCT_BUNDLE_IDENTIFIER = com.smartvision.fasakhninga.dashboard;' in project
           PY
@@ -125,7 +125,7 @@ jobs:
       - name: Preserve the signed dashboard archive for this release
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
-          name: Fasakhansta-Dashboard-iOS-1.0.13-build15
+          name: GO-ERP-iOS-1.0.13-build16
           path: dashboard/build/ios/ipa/*.ipa
           if-no-files-found: error
           retention-days: 14

@@ -13,7 +13,7 @@ from apple_signing import BUNDLE, TEAM, required, validated_profile
 
 
 def validate_info(info):
-    expected = {"CFBundleIdentifier": BUNDLE, "CFBundleShortVersionString": "1.0.13", "CFBundleVersion": "15"}
+    expected = {"CFBundleIdentifier": BUNDLE, "CFBundleShortVersionString": "1.0.13", "CFBundleVersion": "16", "CFBundleDisplayName": "GO ERP", "CFBundleName": "GO ERP"}
     if any(info.get(key) != value for key, value in expected.items()):
         raise RuntimeError("Exported IPA identity or version does not match the dashboard release")
     if not info.get("UIStatusBarHidden") or not info.get("UIViewControllerBasedStatusBarAppearance"):
@@ -60,7 +60,7 @@ def verify():
     validated_profile(plistlib.loads(profile), certificate.fingerprint(hashes.SHA256()))
     with open(required("GITHUB_ENV"), "a", encoding="utf-8") as output:
         output.write("IPA_PATH=" + str(ipa) + "\n")
-    print("Verified signed dashboard IPA: " + BUNDLE + "; version 1.0.13 (15); existing Apple team; SDK 26+.")
+    print("Verified signed GO ERP IPA: " + BUNDLE + "; version 1.0.13 (16); existing Apple team; SDK 26+.")
     print("IPA SHA-256: " + hashlib.sha256(ipa.read_bytes()).hexdigest())
 
 

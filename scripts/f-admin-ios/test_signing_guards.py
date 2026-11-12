@@ -96,10 +96,10 @@ class SigningIdentityGuards(TestCase):
 
     def test_export_rejects_other_application_version_and_sdk(self):
         info = {"CFBundleIdentifier": signing.BUNDLE, "CFBundleShortVersionString": "1.0.13",
-                "CFBundleVersion": "15", "UIStatusBarHidden": True,
+                "CFBundleVersion": "16", "CFBundleDisplayName": "GO ERP", "CFBundleName": "GO ERP", "UIStatusBarHidden": True,
                 "UIViewControllerBasedStatusBarAppearance": True, "DTSDKName": "iphoneos26.1"}
         validate_info(info)
-        for key, value in [("CFBundleIdentifier", "other.app"), ("CFBundleVersion", "5"),
+        for key, value in [("CFBundleIdentifier", "other.app"), ("CFBundleVersion", "5"), ("CFBundleDisplayName", "Old dashboard name"),
                            ("DTSDKName", "iphoneos18.0"), ("UIStatusBarHidden", False)]:
             bad = dict(info, **{key: value})
             with self.assertRaises(RuntimeError):
