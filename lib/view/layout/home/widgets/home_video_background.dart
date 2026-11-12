@@ -6,7 +6,9 @@ import 'package:video_player/video_player.dart';
 /// The website's six-second food film, bundled for reliable mobile/web playback.
 /// The foreground owns safe areas; this layer deliberately reaches every edge.
 class HomeVideoBackground extends StatefulWidget {
-  const HomeVideoBackground({super.key});
+  const HomeVideoBackground({super.key, this.respectReducedMotion = false});
+
+  final bool respectReducedMotion;
 
   static const videoAsset = 'assets/splash_video/home_hero.mp4';
   static const posterAsset = 'assets/images/home_hero_poster.jpg';
@@ -57,8 +59,10 @@ class _HomeVideoBackgroundState extends State<HomeVideoBackground>
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _visible =
-        TickerMode.of(context) && (ModalRoute.of(context)?.isCurrent ?? true);
+    _visible = TickerMode.of(context) &&
+        (ModalRoute.of(context)?.isCurrent ?? true) &&
+        !(widget.respectReducedMotion &&
+            MediaQuery.disableAnimationsOf(context));
     _syncPlayback();
   }
 

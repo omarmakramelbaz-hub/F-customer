@@ -12,6 +12,17 @@ import '../../cart/screen/cart_screen.dart';
 import '../model/orders_model.dart';
 
 class OrdersController extends ChangeNotifier {
+  OrdersController({Future<ApiResponse> Function(int id)? detailsLoader})
+      : _detailsLoader = detailsLoader ?? _loadOrderDetails;
+
+  final Future<ApiResponse> Function(int id) _detailsLoader;
+  bool _disposed = false;
+  int _detailsGeneration = 0;
+  int? _detailsOrderId;
+
+  static Future<ApiResponse> _loadOrderDetails(int id) =>
+      ApiHelper.instance.get('${Urls.detailsOrders}/$id');
+
   // void updateOrder(OrdersModel updatedOrder) {
   //   // Find the index of the order with the matching ID
   //   final index = _orders.indexWhere((order) => order.id == updatedOrder.id);
@@ -28,7 +39,8 @@ class OrdersController extends ChangeNotifier {
   //   notifyListeners();
   // }
 
-  ApiResponse _ordersApiResponse = ApiResponse(state: ResponseState.sleep, data: null);
+  ApiResponse _ordersApiResponse =
+      ApiResponse(state: ResponseState.sleep, data: null);
   ApiResponse get ordersApiResponse => _ordersApiResponse;
 
   void initialOrders() {
@@ -52,12 +64,21 @@ class OrdersController extends ChangeNotifier {
   }
 
   //===========> details Orders <==========
-  ApiResponse _detailsOrdersApiResponse = ApiResponse(state: ResponseState.sleep, data: null);
+  ApiResponse _detailsOrdersApiResponse =
+      ApiResponse(state: ResponseState.sleep, data: null);
   ApiResponse get detailsOrdersApiResponse => _detailsOrdersApiResponse;
 
   void initialDetailsOrders() {
-    _detailsOrdersApiResponse = ApiResponse(state: ResponseState.sleep, data: null);
+    if (_disposed) return;
+    _detailsGeneration++;
+    _detailsOrderId = null;
+    _detailsOrdersApiResponse =
+        ApiResponse(state: ResponseState.sleep, data: null);
     _detailsOrders = null;
+    productId = [];
+    productFeatureId = [];
+    productClean = [];
+    productQuantity = [];
     notifyListeners();
   }
 
@@ -65,16 +86,76 @@ class OrdersController extends ChangeNotifier {
   OrdersModel? get detailsOrders => _detailsOrders;
 
   Future<void> getDetailsOrders({required int id}) async {
-    _detailsOrdersApiResponse = ApiResponse(state: ResponseState.loading, data: null);
+    if (_disposed) return;
+    final generation = ++_detailsGeneration;
+    if (_detailsOrderId != id) {
+      _detailsOrderId = id;
+      _detailsOrders = null;
+      productId = [];
+      productFeatureId = [];
+      productClean = [];
+      productQuantity = [];
+    }
+    _detailsOrdersApiResponse =
+        ApiResponse(state: ResponseState.loading, data: null);
     notifyListeners();
-    _detailsOrdersApiResponse = await ApiHelper.instance.get('${Urls.detailsOrders}/$id');
-    notifyListeners();
-    if (_detailsOrdersApiResponse.state == ResponseState.complete) {
-      _detailsOrders = OrdersModel.fromJson(_detailsOrdersApiResponse.data['data']);
-      notifyListeners();
-      prepareReorderData();
+
+    var nextResponse = _detailsError();
+    try {
+      if (!_isCurrentDetailsRequest(generation)) return;
+      if (id <= 0) throw const FormatException('Invalid order ID');
+      final response = await _detailsLoader(id);
+      if (!_isCurrentDetailsRequest(generation)) return;
+      if (response.state == ResponseState.complete) {
+        final body = response.data;
+        final data = body is Map ? body['data'] : null;
+        if (data is! Map) throw const FormatException('Invalid order details');
+        final order = OrdersModel.fromJson(Map<String, dynamic>.from(data));
+        if (order.id != id) throw const FormatException('Mismatched order ID');
+
+        // Prepare every derived value before committing the refreshed order.
+        // A malformed refresh must leave the last confirmed order untouched.
+        final visibleItems = (order.items ?? const <Items>[])
+            .where((item) =>
+                item.restaurantProduct != null &&
+                item.restaurantProduct!.status != 'hide')
+            .toList();
+        final ids =
+            visibleItems.map((item) => item.restaurantProduct?.id).toList();
+        final features =
+            visibleItems.map((item) => item.productFeature).toList();
+        final preparations =
+            visibleItems.map((item) => item.productClean).toList();
+        final quantities = visibleItems.map((item) => item.qty).toList();
+
+        _detailsOrders = order;
+        productId = ids;
+        productFeatureId = features;
+        productClean = preparations;
+        productQuantity = quantities;
+        nextResponse = response;
+      } else if (response.state != ResponseState.loading &&
+          response.state != ResponseState.sleep &&
+          response.state != ResponseState.pagination) {
+        nextResponse = response;
+      }
+    } catch (_) {
+      nextResponse = _detailsError();
+    } finally {
+      if (_isCurrentDetailsRequest(generation)) {
+        _detailsOrdersApiResponse = nextResponse;
+        notifyListeners();
+      }
     }
   }
+
+  bool _isCurrentDetailsRequest(int generation) =>
+      !_disposed && generation == _detailsGeneration;
+
+  static ApiResponse _detailsError() => ApiResponse(
+        state: ResponseState.error,
+        data: {'message': 'تعذّر تحديث تفاصيل الطلب، حاول مرة أخرى'},
+      );
 
   List<int?> productId = [];
   List<int?> productFeatureId = [];
@@ -84,7 +165,9 @@ class OrdersController extends ChangeNotifier {
     if (_detailsOrders != null && _detailsOrders!.items != null) {
       // Filter out items with restaurantProduct status "hide"
       final validItems = _detailsOrders!.items!
-          .where((item) => item.restaurantProduct != null && item.restaurantProduct!.status != 'hide')
+          .where((item) =>
+              item.restaurantProduct != null &&
+              item.restaurantProduct!.status != 'hide')
           .toList();
 
       // Map data only for valid items
@@ -108,7 +191,8 @@ class OrdersController extends ChangeNotifier {
   //   }
   // }
 
-  void updateProductDetails({required int index, int? quantity, int? featureId, String? clean}) {
+  void updateProductDetails(
+      {required int index, int? quantity, int? featureId, String? clean}) {
     if (index < productQuantity.length) {
       productQuantity[index] = quantity;
       productFeatureId[index] = featureId;
@@ -126,10 +210,13 @@ class OrdersController extends ChangeNotifier {
   }) async {
     FormData body = FormData();
     for (int i = 0; i < productId.length; i++) {
-      body.fields.add(MapEntry('resturant_product_id[$i]', productId[i]?.toString() ?? ''));
-      body.fields.add(MapEntry('product_feature[$i]', productFeatureId[i]?.toString() ?? ''));
+      body.fields.add(
+          MapEntry('resturant_product_id[$i]', productId[i]?.toString() ?? ''));
+      body.fields.add(MapEntry(
+          'product_feature[$i]', productFeatureId[i]?.toString() ?? ''));
       body.fields.add(MapEntry('product_clean[$i]', productClean[i] ?? ''));
-      body.fields.add(MapEntry('qty[$i]', productQuantity[i]?.toString() ?? ''));
+      body.fields
+          .add(MapEntry('qty[$i]', productQuantity[i]?.toString() ?? ''));
     }
     Utils.loading();
     final response = await ApiHelper.instance.post(Urls.reOrder, body: body);
@@ -138,7 +225,8 @@ class OrdersController extends ChangeNotifier {
       CommonMethods.showToast(message: response.data['message']);
       NamedNavigatorImpl.push(CartScreen.routeName);
     } else {
-      CommonMethods.showError(message: response.data['message'], apiResponse: response);
+      CommonMethods.showError(
+          message: response.data['message'], apiResponse: response);
     }
   }
 
@@ -150,14 +238,17 @@ class OrdersController extends ChangeNotifier {
     required VoidCallback onSuccess,
   }) async {
     Utils.loading();
-    FormData body = FormData.fromMap({'order_id': orderId, 'resturant_id': restaurantId, 'rate': rate});
-    final response = await ApiHelper.instance.post(Urls.reviewOrders, body: body);
+    FormData body = FormData.fromMap(
+        {'order_id': orderId, 'resturant_id': restaurantId, 'rate': rate});
+    final response =
+        await ApiHelper.instance.post(Urls.reviewOrders, body: body);
     Utils.loadingOff();
     if (response.state == ResponseState.complete) {
       CommonMethods.showToast(message: response.data['message']);
       onSuccess.call();
     } else {
-      CommonMethods.showError(message: response.data['message'], apiResponse: response);
+      CommonMethods.showError(
+          message: response.data['message'], apiResponse: response);
     }
   }
 
@@ -168,12 +259,14 @@ class OrdersController extends ChangeNotifier {
   }) async {
     Utils.loading();
 
-    final response = await ApiHelper.instance.post('${Urls.cancelOrder}/$orderId');
+    final response =
+        await ApiHelper.instance.post('${Urls.cancelOrder}/$orderId');
 
     if (response.state == ResponseState.complete) {
       Utils.loadingOff();
       CommonMethods.showToast(message: response.data['message']);
-      Provider.of<DeliveryProvider>(NamedNavigatorImpl.context, listen: false).stopDelivery();
+      Provider.of<DeliveryProvider>(NamedNavigatorImpl.context, listen: false)
+          .stopDelivery();
       onSuccess.call();
       await getOrders();
       return;
@@ -182,7 +275,8 @@ class OrdersController extends ChangeNotifier {
     // The legacy backend used to update the order first and could then fail
     // while sending an e-mail / broadcast. Verify the persisted state before
     // showing an error so the customer never sees a false cancellation error.
-    final verifyResponse = await ApiHelper.instance.get('${Urls.detailsOrders}/$orderId');
+    final verifyResponse =
+        await ApiHelper.instance.get('${Urls.detailsOrders}/$orderId');
     String? verifiedStatus;
     if (verifyResponse.state == ResponseState.complete) {
       final dynamic verifyData = verifyResponse.data['data'];
@@ -195,31 +289,47 @@ class OrdersController extends ChangeNotifier {
 
     if (verifiedStatus == 'cancelled') {
       CommonMethods.showToast(message: 'تم إلغاء الطلب بنجاح');
-      Provider.of<DeliveryProvider>(NamedNavigatorImpl.context, listen: false).stopDelivery();
+      Provider.of<DeliveryProvider>(NamedNavigatorImpl.context, listen: false)
+          .stopDelivery();
       onSuccess.call();
       await getOrders();
       return;
     }
 
-    CommonMethods.showError(message: response.data['message'], apiResponse: response);
+    CommonMethods.showError(
+        message: response.data['message'], apiResponse: response);
   }
 
   //===========> commission order <==========
-  Future<void> commissionOrder({required int orderId, required int commission, required VoidCallback onSuccess}) async {
-    FormData body = FormData.fromMap({'order_id': orderId, 'commission': commission});
+  Future<void> commissionOrder(
+      {required int orderId,
+      required int commission,
+      required VoidCallback onSuccess}) async {
+    FormData body =
+        FormData.fromMap({'order_id': orderId, 'commission': commission});
     Utils.loading();
-    final response = await ApiHelper.instance.post(Urls.commissionOrder, body: body);
+    final response =
+        await ApiHelper.instance.post(Urls.commissionOrder, body: body);
     Utils.loadingOff();
     if (response.state == ResponseState.complete) {
       CommonMethods.showToast(message: response.data['message']);
       onSuccess.call();
     } else {
-      CommonMethods.showError(message: response.data['message'], apiResponse: response);
+      CommonMethods.showError(
+          message: response.data['message'], apiResponse: response);
     }
   }
 
   void increaseQuantity({required int index}) {
     _detailsOrders!.items![index].qty = _detailsOrders!.items![index].qty! + 1;
     notifyListeners();
+  }
+
+  @override
+  void dispose() {
+    if (_disposed) return;
+    _disposed = true;
+    _detailsGeneration++;
+    super.dispose();
   }
 }

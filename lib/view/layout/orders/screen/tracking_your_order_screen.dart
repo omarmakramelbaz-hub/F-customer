@@ -1,490 +1,418 @@
-import 'dart:developer';
+import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:pusher_channels_flutter/pusher_channels_flutter.dart';
 
-import '../../../../helpers/extensions/extensions.dart';
-import '../../../../helpers/images/app_images.dart';
+import '../../../../helpers/networking/api_helper.dart';
+import '../../../../helpers/networking/urls.dart';
 import '../../../../helpers/pusher_service/pusher_controller.dart';
 import '../../../../helpers/routes/app_routers_import.dart';
-import '../../../../helpers/theme/app_colors.dart';
-import '../../../../helpers/theme/app_text_style.dart';
-import '../../../../helpers/translation/all_translation.dart';
+import '../../../../helpers/utils/url_launcher_methods.dart';
 import '../../../../helpers/utils/utils.dart';
-import '../../../custom_widgets/api_response_widget/api_response_widget.dart';
-import '../../../custom_widgets/buttons/custom_button.dart';
-import '../../../custom_widgets/custom_app_bar/custom_app_bar.dart';
-import '../../../custom_widgets/custom_image/custom_image.dart';
-import '../../../custom_widgets/custom_image/custom_network_image.dart';
-import '../../../custom_widgets/global_widgets/connect_support_widget.dart';
 import '../../auth/controller/auth_controller.dart';
-import '../../my_account/controller/my_account_controller.dart';
+import '../../chat/screen/admin_chat_screen.dart';
+import '../../chat/screen/chat_screen.dart';
+import '../../home/widgets/home_video_background.dart';
+import '../../my_account/model/setting_model.dart';
 import '../bottom_sheet/cancel_order_bottom_sheet.dart';
 import '../bottom_sheet/pay_tips_bottom_sheet.dart';
 import '../controller/orders_controller.dart';
 import '../model/orders_model.dart';
-import '../widgets/delivery_agent_widget.dart';
-import '../widgets/delivery_restaurant_widget.dart';
-import '../widgets/order_item_widget.dart';
-import '../widgets/tracking_your_order_widget.dart';
+import '../widgets/live_order_tracking_content.dart';
 import 'service_rating_screen.dart';
 
 class TrackingYourOrderArgs {
   final int id;
-
   TrackingYourOrderArgs({required this.id});
 }
 
 class TrackingYourOrderScreen extends StatefulWidget {
+  const TrackingYourOrderScreen(
+      {super.key, required this.args, this.settingsLoader});
   final TrackingYourOrderArgs args;
+  final Future<ApiResponse> Function()? settingsLoader;
   static const routeName = 'TrackingYourOrderScreen';
 
-  const TrackingYourOrderScreen({super.key, required this.args});
-
   @override
-  State<TrackingYourOrderScreen> createState() => _TrackingYourOrderScreenState();
+  State<TrackingYourOrderScreen> createState() =>
+      _TrackingYourOrderScreenState();
 }
 
-class _TrackingYourOrderScreenState extends State<TrackingYourOrderScreen> {
-  late PusherController _pusherController;
+class _TrackingYourOrderScreenState extends State<TrackingYourOrderScreen>
+    with WidgetsBindingObserver {
+  late final OrdersController _orders;
+  late final PusherController _pusher;
+  Timer? _poll;
+  Future<void>? _refreshFuture;
+  Future<void>? _settingsFuture;
+  SettingModel? _settings;
+  bool _visible = false;
+  bool _foreground = true;
+  bool _requestFailed = false;
+
+  String _status(OrdersModel? order) => (order?.status ?? '')
+      .trim()
+      .toLowerCase()
+      .replaceAll(RegExp(r'[\s-]+'), '_');
+
+  bool _isFinished(OrdersModel? order) => const {
+        'completed',
+        'delivered',
+        'cancelled',
+        'canceled',
+        'declined',
+        'rejected',
+        'ended',
+        'failed',
+        'payment_failed',
+      }.contains(_status(order));
 
   @override
-  initState() {
+  void initState() {
     super.initState();
-    _pusherController = context.read<PusherController>();
-    final controller = Provider.of<OrdersController>(context, listen: false);
-    final accountController = Provider.of<MyAccountController>(context, listen: false);
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      // if (controller.detailsOrders?.status != 'completed' &&
-      //     controller.detailsOrders?.status != 'cancelled' &&
-      //     controller.detailsOrders?.status != 'declined') {
-      //   final liveActivitiesController = Provider.of<DeliveryProvider>(context, listen: false);
-      //   liveActivitiesController.init(widget.args.id).whenComplete(() {
-      //     liveActivitiesController.startDelivery(controller.detailsOrders?.status);
-      //   });
-      // }
-
-      controller.initialDetailsOrders();
-      controller.getDetailsOrders(id: widget.args.id);
-      accountController.initialSetting();
-      accountController.getSetting();
+    WidgetsBinding.instance.addObserver(this);
+    _orders = context.read<OrdersController>();
+    _pusher = context.read<PusherController>();
+    _pusher.addEventListener('user.updated', _onOrderUpdated);
+    _poll = Timer.periodic(const Duration(seconds: 30), (_) {
+      if (!_isFinished(_orders.detailsOrders)) unawaited(_refresh());
     });
-    _pusherController.addEventListener('user.updated', _handleOrderUpdated);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      _orders.initialDetailsOrders();
+      unawaited(_refresh(force: true));
+      unawaited(_loadSettings());
+    });
   }
 
-  void _handleOrderUpdated(PusherEvent event) {
-    try {
-      Provider.of<OrdersController>(context, listen: false).getDetailsOrders(id: widget.args.id);
-
-      if (mounted) {}
-    } catch (e, stackTrace) {
-      log('Error handling Pusher event: $e');
-      log('Stack trace: $stackTrace');
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final visible =
+        TickerMode.of(context) && (ModalRoute.of(context)?.isCurrent ?? true);
+    final returned = visible && !_visible;
+    _visible = visible;
+    if (returned) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) unawaited(_refresh());
+      });
     }
   }
 
   @override
-  dispose() {
-    _pusherController.removeEventListener('user.updated', _handleOrderUpdated);
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    _foreground = state == AppLifecycleState.resumed;
+    if (_foreground) unawaited(_refresh());
+  }
+
+  void _onOrderUpdated(PusherEvent event) {
+    if (!mounted) return;
+    try {
+      final data = jsonDecode(event.data);
+      final target = data is Map ? data['order_id'] : null;
+      final id = target is Map ? target['id'] : target;
+      final parsed = int.tryParse(id?.toString() ?? '');
+      if (parsed != null && parsed != widget.args.id) return;
+    } catch (_) {
+      // Older events omit the ID; only this authenticated order is reloaded.
+    }
+    unawaited(_refresh());
+  }
+
+  Future<void> _refresh({bool force = false}) {
+    if (!mounted || (!force && (!_visible || !_foreground))) {
+      return Future<void>.value();
+    }
+    final pending = _refreshFuture;
+    if (pending != null) return pending;
+    final completion = Completer<void>();
+    _refreshFuture = completion.future;
+    unawaited(_runRefresh(completion));
+    return completion.future;
+  }
+
+  Future<void> _runRefresh(Completer<void> completion) async {
+    try {
+      if (mounted && _requestFailed) setState(() => _requestFailed = false);
+      await _orders.getDetailsOrders(id: widget.args.id);
+    } catch (_) {
+      if (mounted) setState(() => _requestFailed = true);
+    } finally {
+      _refreshFuture = null;
+      completion.complete();
+    }
+  }
+
+  Future<void> _loadSettings() {
+    final pending = _settingsFuture;
+    if (pending != null) return pending;
+    final completion = Completer<void>();
+    _settingsFuture = completion.future;
+    unawaited(_runSettings(completion));
+    return completion.future;
+  }
+
+  Future<void> _runSettings(Completer<void> completion) async {
+    try {
+      final response = await (widget.settingsLoader?.call() ??
+          ApiHelper.instance.get(Urls.setting));
+      if (!mounted || response.state != ResponseState.complete) return;
+      final data = response.data is Map ? response.data['data'] : null;
+      if (data is Map) {
+        final setting = SettingModel.fromJson(Map<String, dynamic>.from(data));
+        setState(() => _settings = setting);
+      }
+    } catch (_) {
+      // Missing support settings never replace an otherwise valid order.
+    } finally {
+      _settingsFuture = null;
+      completion.complete();
+    }
+  }
+
+  Future<void> _manualRefresh() async {
+    await Future.wait([_refresh(force: true), _loadSettings()]);
+  }
+
+  @override
+  void dispose() {
+    _poll?.cancel();
+    _pusher.removeEventListener('user.updated', _onOrderUpdated);
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
+  }
+
+  void _call(String phone) {
+    unawaited(UrlLauncherMethods.makePhoneCall(phone).catchError((Object _) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('تعذّر فتح الاتصال على هذا الجهاز')),
+        );
+      }
+    }));
+  }
+
+  void _openDelegateChat(OrdersModel order) {
+    NamedNavigatorImpl.push(ChatScreen.routeName,
+        arguments: ChatScreenArgs(
+          orderId: 'DC${order.id}',
+          accountType: 'user',
+          isVendor: false,
+          receiverDeviceToken: order.delegateFcmId ?? '',
+          receiverName: order.delegateName ?? '',
+          senderDeviceToken: order.userFcmId ?? '',
+          senderName: order.userName ?? '',
+          vendorDeviceToken: order.resturantVendorDeviceToken ?? '',
+        ));
+  }
+
+  void _openSupportChat(int userId) {
+    final setting = _settings;
+    if (setting == null || (setting.adminId ?? 0) <= 0) return;
+    NamedNavigatorImpl.push(AdminChatScreen.routeName,
+        arguments: AdminChatScreenArgs(
+          senderId: '$userId',
+          receiverId: '${setting.adminId}',
+          adminId: setting.adminId!,
+          adminDeviceToken: setting.adminDeviceToken ?? '',
+        ));
+  }
+
+  void _cancel(OrdersModel order) {
+    Utils.showAppBottomSheet(CancelOrderBottomSheet(
+      orderId: order.id!,
+      onPressed: () {
+        NamedNavigatorImpl.pop();
+        _orders.cancelOrder(
+            orderId: order.id!,
+            onSuccess: () {
+              // Keep the receipt alive while cancellation refreshes its order list.
+              if (mounted) unawaited(_refresh(force: true));
+            });
+      },
+    ));
+  }
+
+  void _rate(OrdersModel order) {
+    NamedNavigatorImpl.push(
+      ServiceRatingScreen.routeName,
+      arguments: ServiceRatingArgs(
+          detailsOrder: order,
+          onRatingChanged: () {
+            if (mounted) unawaited(_refresh(force: true));
+          }),
+    );
+  }
+
+  void _tip(OrdersModel order) {
+    Utils.showAppBottomSheet(
+        PayTipsBottomSheet(
+            orderId: order.id!,
+            onSuccess: () {
+              if (mounted) unawaited(_refresh(force: true));
+            }),
+        isScrollControlled: true);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CustomAppBar(
-        height: 90,
-        radius: 60,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios, color: AppColors.blackColor),
-          onPressed: () => NamedNavigatorImpl.pop(),
-        ),
-        title: Text('trackingYourOrder'.tr, style: AppTextStyle.text20BS()),
-        actions: const [],
-      ),
-      body: Consumer2<OrdersController, MyAccountController>(
-        builder: (context, ordersController, settingController, _) {
-          DateTime createdAtPlus6Hours = DateTime.now();
-
-          final orders = ordersController.detailsOrders;
-          final status = orders?.status ?? '';
-          final delegateFromOut = orders?.delegateFromOut;
-          bool isDeclined = status == 'declined';
-          bool isPending = status == 'pending';
-          bool isNewOrder = status == 'new_order';
-          bool isCompleted = status == 'completed';
-          bool isCancelled = status == 'cancelled';
-
-          if (orders?.updatedAt != null) {
-            DateTime createdAtDateTime = DateTime.parse(orders?.updatedAt.toString() ?? '').toLocal();
-            createdAtPlus6Hours = createdAtDateTime.add(const Duration(hours: 6));
-          }
-          return ApiResponseWidget(
-            apiResponse: ordersController.detailsOrdersApiResponse,
-            onReload: () => ordersController.getDetailsOrders(id: widget.args.id),
-            isEmpty: ordersController.detailsOrders == null,
-            child: RefreshIndicator(
-              onRefresh: () async {
-                ordersController.getDetailsOrders(id: widget.args.id);
-              },
-              child: SingleChildScrollView(
-                physics: const ClampingScrollPhysics(),
-                child: Stack(
-                  clipBehavior: Clip.none,
-                  children: [
-                    Column(
-                      children: [
-                        const SizedBox(height: 100),
-                        Container(
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                            color: AppColors.whiteColor,
-                            borderRadius: const BorderRadius.only(
-                              topRight: Radius.circular(36),
-                              topLeft: Radius.circular(36),
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: AppColors.greyColor.withValues(alpha: .2),
-                                blurRadius: 10,
-                                offset: const Offset(0, -3),
-                              ),
-                            ],
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const SizedBox(height: 90),
-                              Center(child: Text(orders?.resturantName ?? '', style: AppTextStyle.text18BS())),
-                              10.sbH,
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text('requestCode'.tr, style: AppTextStyle.text14RS()),
-                                  const SizedBox(width: 5),
-                                  Text(':', style: AppTextStyle.text16RS()),
-                                  const SizedBox(width: 6),
-                                  Text(orders?.orderNo ?? ''),
-                                ],
-                              ),
-                              10.sbH,
-                              Divider(color: AppColors.greyColor.withValues(alpha: .1), thickness: 5),
-                              15.sbH,
-                              Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                                child: Text(
-                                  _getString(orders),
-                                  style: AppTextStyle.text18BS(),
-                                ),
-                              ),
-                              15.sbH,
-                              if (!isCancelled || !isDeclined)
-                                TrackingYourOrderWidget(orderDate: orders?.updatedAt ?? '', status: status),
-                              if ((!isCompleted &&
-                                      status != 'show' &&
-                                      delegateFromOut == 'out_resturant' &&
-                                      delegateFromOut == 'shipped') ||
-                                  isPending)
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      Utils.showAppBottomSheet(
-                                        CancelOrderBottomSheet(
-                                          orderId: orders?.id ?? 0,
-                                          onPressed: () {
-                                            NamedNavigatorImpl.pop();
-                                            context.read<OrdersController>().cancelOrder(
-                                                  orderId: orders?.id ?? 0,
-                                                  onSuccess: () => NamedNavigatorImpl.pop(),
-                                                );
-                                          },
-                                        ),
-                                      );
-                                    },
-                                    child: Row(
-                                      children: [
-                                        Text('doYouWant'.tr, style: AppTextStyle.text16RS()),
-                                        const SizedBox(width: 5),
-                                        Text('cancelYourOrder'.tr, style: AppTextStyle.text16RM()),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              5.sbH,
-                              Divider(color: AppColors.greyColor.withValues(alpha: .1), thickness: 2),
-                              ...List.generate(
-                                orders?.items?.length ?? 0,
-                                (index) => OrderItemWidget(
-                                  paymentType: orders?.paymentType ?? '',
-                                  orderItem: orders?.items?[index],
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 21),
-                                child: Column(
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Text('subtotal'.tr, style: AppTextStyle.text16RG()),
-                                        const Spacer(),
-                                        Text(
-                                          'pound'.tr.replaceAll(
-                                                '{}',
-                                                '${orders?.updatedTotalItemPrice ?? orders?.totalItemPrice}',
-                                              ),
-                                          style: AppTextStyle.text16RG(),
-                                        ),
-                                      ],
-                                    ),
-                                    const SizedBox(height: 24),
-                                    Row(
-                                      children: [
-                                        Text('deliveryCharges'.tr, style: AppTextStyle.text16RG()),
-                                        const Spacer(),
-                                        Text(
-                                          'pound'.tr.replaceAll(
-                                                '{}',
-                                                '${orders?.deliveryPrice.toString()}',
-                                              ),
-                                          style: AppTextStyle.text16RG(),
-                                        ),
-                                      ],
-                                    ),
-                                    const SizedBox(height: 24),
-                                    Row(
-                                      children: [
-                                        Text('serviceFees'.tr, style: AppTextStyle.text16RG()),
-                                        const Spacer(),
-                                        Text(
-                                          'pound'.tr.replaceAll('{}', '${orders?.serviceFees}'),
-                                          style: AppTextStyle.text16RG(),
-                                        ),
-                                      ],
-                                    ),
-                                    const SizedBox(height: 16),
-                                    Row(
-                                      children: [
-                                        Text('addedValuePrice'.tr, style: AppTextStyle.text16RG()),
-                                        const Spacer(),
-                                        Text(
-                                          'pound'.tr.replaceAll('{}', '${orders?.tax}'),
-                                          style: AppTextStyle.text16RG(),
-                                        ),
-                                      ],
-                                    ),
-                                    const SizedBox(height: 16),
-                                    Row(
-                                      children: [
-                                        Text('total'.tr, style: AppTextStyle.text16MS()),
-                                        const Spacer(),
-                                        Text(
-                                          'pound'.tr.replaceAll('{}', '${orders?.grandTotal}'),
-                                          style: AppTextStyle.text16MS(),
-                                        ),
-                                      ],
-                                    ),
-                                    Divider(color: AppColors.greyColor.withValues(alpha: .1), thickness: 2),
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      children: [
-                                        Padding(
-                                          padding: const EdgeInsets.symmetric(vertical: 16),
-                                          child: Text(
-                                            'paymentMethod'.tr,
-                                            style: AppTextStyle.text16BS(),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    Row(
-                                      children: [
-                                        Container(
-                                          height: 24,
-                                          width: 5,
-                                          decoration: BoxDecoration(
-                                            color: AppColors.mainAppColor,
-                                            borderRadius: BorderRadius.horizontal(
-                                              left: context.languageCode == 'ar'
-                                                  ? const Radius.circular(5)
-                                                  : const Radius.circular(0),
-                                              right: context.languageCode == 'ar'
-                                                  ? const Radius.circular(0)
-                                                  : const Radius.circular(5),
-                                            ),
-                                          ),
-                                        ),
-                                        const SizedBox(width: 10),
-                                        CustomImage(
-                                          height: 18,
-                                          path: _getImagePath(orders?.paymentType),
-                                          type: ImageType.svg,
-                                          color: AppColors.mainAppColor,
-                                        ),
-                                        const SizedBox(width: 10),
-                                        Text(_getText(orders?.paymentType), style: AppTextStyle.text16BM()),
-                                      ],
-                                    ),
-                                    30.sbH,
-                                  ],
-                                ),
-                              ),
-                              Divider(color: AppColors.greyColor.withValues(alpha: .1), thickness: 2),
-                            ],
-                          ),
-                        ),
-                        30.sbH,
-                        (() {
-                          if (delegateFromOut == 'out_resturant' &&
-                              orders?.delegateId != null &&
-                              DateTime.now().isBefore(createdAtPlus6Hours)) {
-                            if (isNewOrder) {
-                              return DeliveryRestaurantWidget(orders: ordersController.detailsOrders);
-                            } else {
-                              return DeliveryAgentWidget(orders: ordersController.detailsOrders);
-                            }
-                          } else {
-                            if (delegateFromOut == 'in_resturant' && orders?.resturantId != null) {
-                              if (DateTime.now().isBefore(createdAtPlus6Hours)) {
-                                return DeliveryRestaurantWidget(orders: ordersController.detailsOrders);
-                              } else {
-                                return const SizedBox();
-                              }
-                            } else {
-                              return const SizedBox();
-                            }
-                          }
-                        }()),
-                        (() {
-                          if (isCompleted &&
-                              orders?.hasRatedBefore != 1 &&
-                              (!isCompleted || DateTime.now().isBefore(createdAtPlus6Hours))) {
-                            return Column(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                                  child: CustomButton(
-                                    onPressed: () {
-                                      NamedNavigatorImpl.push(
-                                        ServiceRatingScreen.routeName,
-                                        arguments: ServiceRatingArgs(
-                                          detailsOrder: ordersController.detailsOrders,
-                                          onRatingChanged: () {
-                                            ordersController.getDetailsOrders(id: widget.args.id);
-                                          },
-                                        ),
-                                      );
-                                    },
-                                    text: 'serviceEvaluation'.tr,
-                                  ),
-                                ),
-                              ],
-                            );
-                          } else {
-                            return const SizedBox();
-                          }
-                        }()),
-                        if (Provider.of<AuthController>(context, listen: false).profile?.balance != 0 &&
-                            delegateFromOut == 'out_resturant' &&
-                            orders?.hasCommissionedBefore != 1 &&
-                            isCompleted &&
-                            DateTime.now().isBefore(createdAtPlus6Hours)) ...[
-                          Center(
-                            child: TextButton(
-                              onPressed: () {
-                                Utils.showAppBottomSheet(
-                                  enableDrag: true,
-                                  isScrollControlled: true,
-                                  PayTipsBottomSheet(
-                                    orderId: orders?.id ?? 0,
-                                    onSuccess: () => ordersController.getDetailsOrders(id: widget.args.id),
-                                  ),
-                                );
-                              },
-                              child: Text(
-                                'payATipsToTheRepresentative'.tr,
-                                style: AppTextStyle.text16BS(),
-                              ),
-                            ),
-                          ),
-                        ],
-                        if (!isCompleted || DateTime.now().isBefore(createdAtPlus6Hours)) ...[
-                          if (isCancelled) const SizedBox() else const ConnectSupportWidget(),
-                        ],
-                      ],
-                    ),
-                    Positioned(
-                      right: context.width * 0.3,
-                      left: context.width * 0.3,
-                      top: 14,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(120),
-                          border: Border.all(color: AppColors.lightDarkColor.withValues(alpha: 0.5)),
-                        ),
-                        child: CustomNetworkImage(
-                          radius: 80,
-                          height: 170,
-                          fit: BoxFit.cover,
-                          imageUrl: orders?.resturantLogo ?? '',
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+    final profile = context.watch<AuthController>().profile;
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle.light
+          .copyWith(statusBarColor: Colors.transparent),
+      child: Scaffold(
+        backgroundColor: const Color(0xFF092225),
+        body: Stack(fit: StackFit.expand, children: [
+          const HomeVideoBackground(respectReducedMotion: true),
+          const ColoredBox(color: Color(0x78092225)),
+          Consumer<OrdersController>(builder: (context, controller, _) {
+            final candidate = controller.detailsOrders;
+            final order = candidate?.id == widget.args.id ? candidate : null;
+            final response = controller.detailsOrdersApiResponse;
+            if (order == null) {
+              return _TrackingPlaceholder(
+                loading: !_requestFailed &&
+                    (response.state == ResponseState.loading ||
+                        response.state == ResponseState.sleep),
+                onBack: NamedNavigatorImpl.pop,
+                onRetry: () => unawaited(_manualRefresh()),
+              );
+            }
+            final status = _status(order);
+            final completed = const {'completed', 'delivered'}.contains(status);
+            final cancelled = const {'cancelled', 'canceled'}.contains(status);
+            final declined = const {'declined', 'rejected'}.contains(status);
+            final updated = DateTime.tryParse(order.updatedAt ?? '');
+            final withinWindow = updated != null &&
+                DateTime.now().isBefore(updated.add(const Duration(hours: 6)));
+            final contactWindow =
+                updated == null ? !_isFinished(order) : withinWindow;
+            final external = order.delegateFromOut == 'out_resturant';
+            final hasDelegate = (order.delegateId ?? 0) > 0;
+            final showDelegate = !cancelled &&
+                !declined &&
+                contactWindow &&
+                external &&
+                hasDelegate &&
+                status != 'new_order';
+            final showBranchDelegate = !cancelled &&
+                !declined &&
+                contactWindow &&
+                ((external && hasDelegate && status == 'new_order') ||
+                    (order.delegateFromOut == 'in_resturant' &&
+                        (order.resturantId ?? 0) > 0));
+            final support = !cancelled && (!completed || withinWindow);
+            final balance = profile?.balance;
+            final canTip = completed &&
+                withinWindow &&
+                external &&
+                order.hasCommissionedBefore != 1 &&
+                balance != null &&
+                balance > 0;
+            final delegatePhone = (order.delegateMobile ?? '').trim();
+            final branchPhone = (order.resturantPhone ?? '').trim();
+            final supportPhone = (_settings?.mobile ?? '').trim();
+            return RefreshIndicator(
+              color: const Color(0xFFFF8A35),
+              backgroundColor: const Color(0xFF14373A),
+              onRefresh: _manualRefresh,
+              child: LiveOrderTrackingContent(
+                order: order,
+                onBack: NamedNavigatorImpl.pop,
+                onRefresh: () => unawaited(_manualRefresh()),
+                refreshing:
+                    !_requestFailed && response.state == ResponseState.loading,
+                refreshFailed: _requestFailed ||
+                    const {
+                      ResponseState.error,
+                      ResponseState.offline,
+                      ResponseState.unauthorized
+                    }.contains(response.state),
+                showDelegate: showDelegate,
+                showRestaurantDelegate: showBranchDelegate,
+                showSupport: support && _settings != null,
+                onCancel: status == 'pending' ? () => _cancel(order) : null,
+                onRate: completed && withinWindow && order.hasRatedBefore != 1
+                    ? () => _rate(order)
+                    : null,
+                onTip: canTip ? () => _tip(order) : null,
+                onDelegateCall: showDelegate && delegatePhone.isNotEmpty
+                    ? () => _call(delegatePhone)
+                    : null,
+                onDelegateChat:
+                    showDelegate ? () => _openDelegateChat(order) : null,
+                onRestaurantCall:
+                    branchPhone.isNotEmpty ? () => _call(branchPhone) : null,
+                onSupportCall:
+                    supportPhone.isNotEmpty ? () => _call(supportPhone) : null,
+                onSupportChat:
+                    (profile?.id ?? 0) > 0 && (_settings?.adminId ?? 0) > 0
+                        ? () => _openSupportChat(profile!.id!)
+                        : null,
               ),
-            ),
-          );
-        },
+            );
+          }),
+        ]),
       ),
     );
   }
+}
 
-  String _getString(OrdersModel? orders) {
-    if (orders?.status == 'shipped') {
-      return 'theRepresentativeHasReceivedTheOrderAndIsNowHeadingToYourDestination'.tr;
-    } else if (orders?.status == 'declined') {
-      return 'orderDeclinedFromRestaurant'.tr;
-    } else if (orders?.status == 'cancelled') {
-      return 'orderCanceled'.tr;
-    } else {
-      if (orders?.status == 'completed' || orders?.delegateFromOut == 'in_resturant') {
-        return 'yourOrderHasBeenDelivered'.tr;
-      } else {
-        return 'yourOrderHasBeenReceivedAndIsBeingPreparedPleaseWaitALittle'.tr;
-      }
-    }
-  }
+class _TrackingPlaceholder extends StatelessWidget {
+  const _TrackingPlaceholder(
+      {required this.loading, required this.onBack, required this.onRetry});
+  final bool loading;
+  final VoidCallback onBack;
+  final VoidCallback onRetry;
 
-  String _getImagePath(String? paymentType) {
-    switch (paymentType) {
-      case 'cash':
-        return AppImages.cashIcon;
-      case 'online':
-        return AppImages.visaIcon;
-      case 'v_cash':
-        return AppImages.vfCash;
-      case 'wallet':
-        return AppImages.payWalletIcon;
-      default:
-        return '';
-    }
-  }
-
-  String _getText(String? paymentType) {
-    switch (paymentType) {
-      case 'cash':
-        return 'cash'.tr;
-      case 'online':
-        return 'visa'.tr;
-      case 'v_cash':
-        return 'vfCash'.tr;
-      case 'wallet':
-        return 'appWallet'.tr;
-      default:
-        return '';
-    }
-  }
+  @override
+  Widget build(BuildContext context) => SafeArea(
+        child: Directionality(
+            textDirection: TextDirection.rtl,
+            child: Column(children: [
+              Align(
+                  alignment: AlignmentDirectional.centerStart,
+                  child: IconButton(
+                    tooltip: 'رجوع',
+                    onPressed: onBack,
+                    icon: const Icon(Icons.arrow_forward_rounded,
+                        color: Colors.white),
+                  )),
+              Expanded(
+                  child: Center(
+                      child: Padding(
+                          padding: const EdgeInsets.all(24),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              if (loading)
+                                const CircularProgressIndicator(
+                                    color: Color(0xFFFFA258))
+                              else
+                                const Icon(Icons.wifi_off_rounded,
+                                    color: Color(0xFFFFA258), size: 40),
+                              const SizedBox(height: 16),
+                              Text(
+                                  loading
+                                      ? 'بنحمّل تفاصيل طلبك'
+                                      : 'تعذّر تحميل الطلب',
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 19,
+                                      fontWeight: FontWeight.w700)),
+                              if (!loading)
+                                Padding(
+                                    padding: const EdgeInsets.only(top: 14),
+                                    child: FilledButton(
+                                      onPressed: onRetry,
+                                      child: const Text('إعادة المحاولة'),
+                                    )),
+                            ],
+                          )))),
+            ])),
+      );
 }
