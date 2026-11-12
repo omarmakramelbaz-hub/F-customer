@@ -408,6 +408,9 @@ class _ChargeWalletBottomSheetState extends State<ChargeWalletBottomSheet> {
                               elevation: 0,
                               backgroundColor: AppColors.mainAppColor,
                               foregroundColor: FasakhanstaBrand.onOrange,
+                              disabledBackgroundColor: FasakhanstaBrand.orange,
+                              disabledForegroundColor:
+                                  FasakhanstaBrand.onOrange,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(14),
                               ),
@@ -421,6 +424,7 @@ class _ChargeWalletBottomSheetState extends State<ChargeWalletBottomSheet> {
                                     height: 17,
                                     child: CircularProgressIndicator(
                                       strokeWidth: 2,
+                                      color: FasakhanstaBrand.onOrange,
                                     ),
                                   )
                                 else
