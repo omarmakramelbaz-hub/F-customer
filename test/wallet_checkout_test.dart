@@ -1,11 +1,14 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:faskhaninja/helpers/hive/hive_methods.dart';
 import 'package:faskhaninja/helpers/networking/api_helper.dart';
 import 'package:faskhaninja/view/layout/wallet/controller/wallet_controller.dart';
 import 'package:faskhaninja/view/layout/wallet/model/wallet_checkout.dart';
 import 'package:faskhaninja/view/layout/wallet/model/wallet_checkout_service.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:hive/hive.dart';
 
 class _CheckoutService extends WalletCheckoutService {
   final requests = <Completer<ApiResponse>>[];
@@ -30,19 +33,60 @@ class _CheckoutService extends WalletCheckoutService {
 }
 
 ApiResponse _success({dynamic data, String? message}) => ApiResponse(
-  state: ResponseState.complete,
-  data: {
-    'data':
-        data ??
-        {
-          'link': 'https://accept.paymob.com/unifiedcheckout/?test=synthetic',
-          'order_id': 42,
-        },
-    if (message != null) 'message': message,
-  },
-);
+      state: ResponseState.complete,
+      data: {
+        'data': data ??
+            {
+              'link':
+                  'https://accept.paymob.com/unifiedcheckout/?test=synthetic',
+              'order_id': 42,
+            },
+        if (message != null) 'message': message,
+      },
+    );
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
+  late Directory directory;
+  setUpAll(() async {
+    directory = await Directory.systemTemp.createTemp('wallet-checkout-');
+    Hive.init(directory.path);
+    await Hive.openBox<dynamic>('app');
+  });
+  tearDownAll(() async {
+    await HiveMethods.deleteToken();
+    await Hive.close();
+    await directory.delete(recursive: true);
+  });
+
+  test('default session permits signed-in accounts and rejects actual guests',
+      () async {
+    final service = _CheckoutService();
+    final controller = WalletController(checkoutService: service)
+      ..setSelectedPayment('online');
+    addTearDown(controller.dispose);
+    await HiveMethods.updateToken('synthetic-current-account');
+    await Hive.box<dynamic>('app').put('isVisitor', true);
+
+    expect(await controller.chargingWallet(amount: '50'), isNull);
+    expect(
+        controller.checkoutError?.type, WalletCheckoutErrorType.signInRequired);
+    expect(service.requests, isEmpty);
+
+    await Hive.box<dynamic>('app').put('isVisitor', false);
+    expect(HiveMethods.isGuestMode(), isFalse);
+    final pending = controller.chargingWallet(amount: '50');
+    expect(service.requests, hasLength(1));
+    service.requests.single.complete(_success());
+    expect(await pending, isA<WalletCheckout>());
+
+    await HiveMethods.deleteToken();
+    expect(await controller.chargingWallet(amount: '50'), isNull);
+    expect(
+        controller.checkoutError?.type, WalletCheckoutErrorType.signInRequired);
+    expect(service.requests, hasLength(1));
+  });
+
   test(
     'duplicate submit creates one checkout and keeps amount and method',
     () async {

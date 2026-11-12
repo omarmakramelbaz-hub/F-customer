@@ -71,13 +71,15 @@ class HiveMethods {
 
   static int? getSelectedCity() => _box.get('selectedCity');
 
-  static void updateSelectedCity(int cityId) => _box.put('selectedCity', cityId);
+  static void updateSelectedCity(int cityId) =>
+      _box.put('selectedCity', cityId);
 
   static void deleteSelectedCity() => _box.delete('selectedCity');
 
   static int? getSelectedCityAreaId() => _box.get('selectedCityAreaId');
 
-  static void updateSelectedCityAreaId(int cityId) => _box.put('selectedCityAreaId', cityId);
+  static void updateSelectedCityAreaId(int cityId) =>
+      _box.put('selectedCityAreaId', cityId);
 
   static String? getCity() => _box.get('City');
 
@@ -113,15 +115,17 @@ class HiveMethods {
 
     // Keep the local tombstone list bounded while preserving recent dismissals.
     final values = merged.toList();
-    final limited = values.length > 5000
-        ? values.sublist(values.length - 5000)
-        : values;
+    final limited =
+        values.length > 5000 ? values.sublist(values.length - 5000) : values;
     await _box.put(_hiddenNotificationsKey(), limited);
   }
 
+  /// The explicit guest choice, without the temporary web sign-in handoff.
+  static bool isGuestMode() =>
+      _box.get('isVisitor', defaultValue: false) == true;
+
   static bool isVisitor() {
-    final storedVisitor = _box.get('isVisitor', defaultValue: false) == true;
-    if (storedVisitor) return true;
+    if (isGuestMode()) return true;
 
     // The web review build fires several API calls immediately after login.
     // During this short hand-off window a single optional 401 must not send the
@@ -134,5 +138,6 @@ class HiveMethods {
     return false;
   }
 
-  static void updateIsVisitor(bool? isVisitor) => _box.put('isVisitor', isVisitor);
+  static void updateIsVisitor(bool? isVisitor) =>
+      _box.put('isVisitor', isVisitor);
 }

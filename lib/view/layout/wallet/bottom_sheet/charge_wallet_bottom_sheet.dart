@@ -73,8 +73,9 @@ class _ChargeWalletBottomSheetState extends State<ChargeWalletBottomSheet> {
         onSuccess: () {
           if (!mounted ||
               !context.mounted ||
-              HiveMethods.getToken() != sessionToken)
+              HiveMethods.getToken() != sessionToken) {
             return;
+          }
           if (ModalRoute.of(context)?.isCurrent ?? true) {
             Navigator.pop(context);
           }

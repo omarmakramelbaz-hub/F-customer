@@ -29,6 +29,7 @@ jobs:
       - name: Check maintained code and test formatting
         run: >-
           dart format --output=none --set-exit-if-changed
+          lib/helpers/hive/hive_methods.dart
           lib/helpers/utils/location_service.dart
           lib/helpers/utils/address_lookup_service.dart
           lib/view/layout/map/utils/places_autocomplete_bridge_web.dart
@@ -62,6 +63,7 @@ jobs:
       - name: Analyze maintained code
         run: >-
           flutter analyze --no-pub --no-fatal-infos --no-fatal-warnings
+          lib/helpers/hive/hive_methods.dart
           lib/helpers/app/init_services.dart
           lib/helpers/delivery_activity/delivery_activity_push_handler.dart
           lib/helpers/delivery_activity/delivery_provider.dart

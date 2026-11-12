@@ -17,8 +17,8 @@ class WalletController extends ChangeNotifier {
     WalletCheckoutService? checkoutService,
     String? Function()? readCheckoutSession,
     this.checkoutTimeout = const Duration(seconds: 35),
-  }) : _checkoutService = checkoutService ?? const WalletCheckoutService(),
-       _readCheckoutSession = readCheckoutSession ?? _defaultCheckoutSession;
+  })  : _checkoutService = checkoutService ?? const WalletCheckoutService(),
+        _readCheckoutSession = readCheckoutSession ?? _defaultCheckoutSession;
 
   final WalletCheckoutService _checkoutService;
   final String? Function() _readCheckoutSession;
@@ -33,7 +33,7 @@ class WalletController extends ChangeNotifier {
   WalletCheckoutError? get checkoutError => _checkoutError;
 
   static String? _defaultCheckoutSession() =>
-      HiveMethods.isVisitor() ? null : HiveMethods.getToken();
+      HiveMethods.isGuestMode() ? null : HiveMethods.getToken();
 
   final chargeWalletFormKey = GlobalKey<FormState>();
   final chargeAmountEc = TextEditingController();
@@ -106,7 +106,8 @@ class WalletController extends ChangeNotifier {
       return null;
     }
     final paymentMethod = _selectedPayment;
-    if (paymentMethod != 'online' && paymentMethod != 'v_cash') {
+    if (paymentMethod == null ||
+        (paymentMethod != 'online' && paymentMethod != 'v_cash')) {
       _checkoutError = const WalletCheckoutError(
         type: WalletCheckoutErrorType.rejected,
       );
