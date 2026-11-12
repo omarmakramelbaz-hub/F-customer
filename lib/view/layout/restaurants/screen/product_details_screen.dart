@@ -525,9 +525,8 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
             Text(
               '$price ج',
               style: AppTextStyle.text16BS(
-                color: selected
-                    ? AppColors.mainAppColor
-                    : FasakhanstaBrand.text,
+                color:
+                    selected ? AppColors.mainAppColor : FasakhanstaBrand.text,
               ),
             ),
           ],

@@ -33,9 +33,8 @@ class MenuProductCard extends StatelessWidget {
     final eligible = draw != null;
     final radius = BorderRadius.circular(18);
     final textScale = MediaQuery.textScalerOf(context).scale(10) / 10;
-    final badgeWidthFactor = (.5 + (textScale - 1) * .18)
-        .clamp(.5, .85)
-        .toDouble();
+    final badgeWidthFactor =
+        (.5 + (textScale - 1) * .18).clamp(.5, .85).toDouble();
 
     return DecoratedBox(
       decoration: BoxDecoration(
@@ -140,8 +139,8 @@ class MenuProductCard extends StatelessWidget {
                             style: TextStyle(
                               color: available
                                   ? (eligible
-                                        ? const Color(0xFF9A4A0B)
-                                        : FasakhanstaBrand.orange)
+                                      ? const Color(0xFF9A4A0B)
+                                      : FasakhanstaBrand.orange)
                                   : FasakhanstaBrand.muted,
                               fontSize: compact ? 14 : 13,
                               fontWeight: FontWeight.w700,

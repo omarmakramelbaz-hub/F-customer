@@ -69,8 +69,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
                                 10.sbH,
                                 // Html(data: cubit.model?.data?.first.value ?? ''),
                                 Html(
-                                  data:
-                                      myAccountController.setting?.privacy ??
+                                  data: myAccountController.setting?.privacy ??
                                       '',
                                   style: {
                                     'body': Style.fromTextStyle(

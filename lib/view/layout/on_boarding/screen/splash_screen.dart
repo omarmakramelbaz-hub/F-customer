@@ -249,10 +249,10 @@ class _SplashScreenState extends State<SplashScreen> {
     context.read<AuthController>().getProfile(
       onHaveIdANDToken: (id, token) {
         context.read<PusherController>().initPusher(
-          channelName: 'private-user.$id',
-          userId: id,
-          token: token,
-        );
+              channelName: 'private-user.$id',
+              userId: id,
+              token: token,
+            );
       },
       onSuccess: () async {
         if (!mounted || _isNavigationPending) return;

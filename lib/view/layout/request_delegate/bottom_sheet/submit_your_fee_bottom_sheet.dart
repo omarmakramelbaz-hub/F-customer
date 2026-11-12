@@ -48,19 +48,14 @@ class _SubmitYourFeeBottomSheetState extends State<SubmitYourFeeBottomSheet> {
 
     final currentFare =
         double.tryParse(widget.requestDelegateController.priceEC.text.trim()) ??
-        0;
+            0;
 
     _referenceFare = currentFare > 0 ? currentFare : widget.distance.toDouble();
-    final dashboardReduction =
-        widget
-            .requestDelegateController
-            .delegatesOnMap
+    final dashboardReduction = widget.requestDelegateController.delegatesOnMap
             ?.shippingMinPricePrecentage ??
         widget.shippingPercentage;
-    _maximumReductionPercentage = dashboardReduction
-        .toDouble()
-        .clamp(0.0, 100.0)
-        .toDouble();
+    _maximumReductionPercentage =
+        dashboardReduction.toDouble().clamp(0.0, 100.0).toDouble();
     _minimumFare = (_referenceFare * (1 - (_maximumReductionPercentage / 100)))
         .ceilToDouble();
 
@@ -254,9 +249,8 @@ class _SubmitYourFeeBottomSheetState extends State<SubmitYourFeeBottomSheet> {
                         fontWeight: FontWeight.w800,
                       ),
                       decoration: InputDecoration(
-                        labelText: _isArabic
-                            ? 'المبلغ اللي هتدفعه'
-                            : 'Your fare',
+                        labelText:
+                            _isArabic ? 'المبلغ اللي هتدفعه' : 'Your fare',
                         labelStyle: const TextStyle(
                           color: FasakhanstaBrand.muted,
                           fontSize: 12,

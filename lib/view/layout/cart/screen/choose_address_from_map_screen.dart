@@ -225,10 +225,9 @@ class _ChooseAddressFromMapScreenState
                                         lng: address.lng ?? '',
                                         onSuccess: () =>
                                             addressController.getAddress(
-                                              areaId: widget.args.areaId,
-                                            ),
-                                        userAddressId:
-                                            context
+                                          areaId: widget.args.areaId,
+                                        ),
+                                        userAddressId: context
                                                 .read<AuthController>()
                                                 .profile
                                                 ?.id ??
@@ -274,7 +273,7 @@ class _ChooseAddressFromMapScreenState
                               ),
                               userAddressId:
                                   context.read<AuthController>().profile?.id ??
-                                  0,
+                                      0,
                             ),
                           );
                         },

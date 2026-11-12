@@ -298,19 +298,19 @@ class _ChangePasswordCheckCodeScreenState
     if (args == null) return;
 
     context.read<AuthController>().checkCode(
-      email: args.email,
-      code: _codeEC.text,
-      onSuccess: () {
-        Navigator.pushNamed(
-          context,
-          ResetPasswordScreen.routeName,
-          arguments: ResetPasswordScreenArgs(
-            email: args.email,
-            mobile: args.mobile,
-          ),
+          email: args.email,
+          code: _codeEC.text,
+          onSuccess: () {
+            Navigator.pushNamed(
+              context,
+              ResetPasswordScreen.routeName,
+              arguments: ResetPasswordScreenArgs(
+                email: args.email,
+                mobile: args.mobile,
+              ),
+            );
+          },
         );
-      },
-    );
   }
 
   void _resendCode() {
@@ -327,13 +327,13 @@ class _ChangePasswordCheckCodeScreenState
     }
 
     context.read<AuthController>().forgetPassword(
-      email: args.email,
-      mobile: args.mobile,
-      onSuccess: () {
-        _codeEC.clear();
-        _timerController.reset();
-        _timerController.start();
-      },
-    );
+          email: args.email,
+          mobile: args.mobile,
+          onSuccess: () {
+            _codeEC.clear();
+            _timerController.reset();
+            _timerController.start();
+          },
+        );
   }
 }

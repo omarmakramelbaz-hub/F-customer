@@ -93,11 +93,10 @@ class RequestAgainScreen extends StatelessWidget {
                                                   '0',
                                               style: AppTextStyle.text16BW()
                                                   .copyWith(
-                                                    height: 1.4,
-                                                    fontSize: 14,
-                                                    color:
-                                                        FasakhanstaBrand.text,
-                                                  ),
+                                                height: 1.4,
+                                                fontSize: 14,
+                                                color: FasakhanstaBrand.text,
+                                              ),
                                             ),
                                           ),
                                         ),
@@ -138,10 +137,8 @@ class RequestAgainScreen extends StatelessWidget {
                                     radius: 60,
                                     backgroundColor: FasakhanstaBrand.surface,
                                     child: CustomNetworkImage(
-                                      imageUrl:
-                                          ordersController
-                                              .detailsOrders
-                                              ?.resturantLogo ??
+                                      imageUrl: ordersController
+                                              .detailsOrders?.resturantLogo ??
                                           '',
                                       radius: 60,
                                     ),
@@ -151,8 +148,7 @@ class RequestAgainScreen extends StatelessWidget {
                                 Center(
                                   child: Text(
                                     ordersController
-                                            .detailsOrders
-                                            ?.resturantName ??
+                                            .detailsOrders?.resturantName ??
                                         '',
                                     style: AppTextStyle.text18BS(),
                                   ),
@@ -209,8 +205,7 @@ class RequestAgainScreen extends StatelessWidget {
                         child: CustomButton(
                           onPressed: () {
                             if (ordersController
-                                    .detailsOrders
-                                    ?.resturantStatus !=
+                                    .detailsOrders?.resturantStatus !=
                                 'opened') {
                               CommonMethods.showToast(
                                 message: 'restaurantClosedOrBusy'.tr,

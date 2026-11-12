@@ -104,21 +104,12 @@ class _ExecuteTheOrderScreenState extends State<ExecuteTheOrderScreen> {
       Provider.of<CartController>(context, listen: false).getCart().then((
         value,
       ) {
-        resturantStatus = context
-            .read<CartController>()
-            .cart
-            ?.resturant
-            ?.resturantStatus;
-        resturantOpenAt = context
-            .read<CartController>()
-            .cart
-            ?.resturant
-            ?.resturantOpenAt;
-        resturantId = context
-            .read<CartController>()
-            .cart
-            ?.resturant
-            ?.resturantId;
+        resturantStatus =
+            context.read<CartController>().cart?.resturant?.resturantStatus;
+        resturantOpenAt =
+            context.read<CartController>().cart?.resturant?.resturantOpenAt;
+        resturantId =
+            context.read<CartController>().cart?.resturant?.resturantId;
         setState(() {});
         // log("================>$resturantStatus");
         // log("================>$resturantId");
@@ -183,7 +174,8 @@ class _ExecuteTheOrderScreenState extends State<ExecuteTheOrderScreen> {
           title: Text('executeTheOrder'.tr, style: AppTextStyle.text16MS()),
         ),
         body: Consumer2<CartController, AddressController>(
-          builder: (BuildContext context, cartController, addressController, _) {
+          builder:
+              (BuildContext context, cartController, addressController, _) {
             // resturantStatus = cartController.cart?.resturant?.resturantStatus;
             // log("================>$resturantStatus");
 
@@ -200,8 +192,7 @@ class _ExecuteTheOrderScreenState extends State<ExecuteTheOrderScreen> {
               hasExpiryDate = false;
             }
 
-            final dist =
-                Geolocator.distanceBetween(
+            final dist = Geolocator.distanceBetween(
                   double.parse(
                     addressController.addressDetails?.lat.toString() ?? '0.0',
                   ),
@@ -221,22 +212,22 @@ class _ExecuteTheOrderScreenState extends State<ExecuteTheOrderScreen> {
             num kmPrice;
             kmPrice = switch (dist.toStringAsFixed(0)) {
               '0' => num.parse(
-                cartController.cart?.resturant?.default_0_1.toString() ?? '0',
-              ),
+                  cartController.cart?.resturant?.default_0_1.toString() ?? '0',
+                ),
               '1' => num.parse(
-                cartController.cart?.resturant?.default_1_2.toString() ?? '0',
-              ),
+                  cartController.cart?.resturant?.default_1_2.toString() ?? '0',
+                ),
               '2' => num.parse(
-                cartController.cart?.resturant?.default_2_3.toString() ?? '0',
-              ),
+                  cartController.cart?.resturant?.default_2_3.toString() ?? '0',
+                ),
               '3' => num.parse(
-                context
-                        .watch<MyAccountController>()
-                        .setting
-                        ?.default23
-                        .toString() ??
-                    '0',
-              ),
+                  context
+                          .watch<MyAccountController>()
+                          .setting
+                          ?.default23
+                          .toString() ??
+                      '0',
+                ),
               _ =>
                 (cartController.cart?.resturant?.resturantKmPrice ?? 0) * dist,
             };
@@ -244,11 +235,11 @@ class _ExecuteTheOrderScreenState extends State<ExecuteTheOrderScreen> {
             final totalPrice = cartController.totalPrice;
             final num serviceFees =
                 (((cartController.cart?.resturant?.serviceFees ?? 0) *
-                    (totalPrice)) /
-                100);
+                        (totalPrice)) /
+                    100);
             final num addedPrice =
                 (((cartController.cart?.resturant?.tax ?? 0) * (totalPrice)) /
-                100);
+                    100);
             num resturantMinOrderPrice =
                 cartController.cart?.resturant?.resturantMinOrderPrice ?? 0;
             // final num grandTotal = (kmPrice + serviceFees + addedPrice + (totalPrice));
@@ -289,8 +280,8 @@ class _ExecuteTheOrderScreenState extends State<ExecuteTheOrderScreen> {
                                   addressController.addressDetailsResponse,
                               onReload: () =>
                                   addressController.getAddressDetails(
-                                    id: widget.args.userAddressId ?? 0,
-                                  ),
+                                id: widget.args.userAddressId ?? 0,
+                              ),
                               isEmpty: addressController.addressDetails == null,
                               loadingWidget: CustomShimmer(
                                 height: 70,
@@ -304,12 +295,11 @@ class _ExecuteTheOrderScreenState extends State<ExecuteTheOrderScreen> {
                                 children: [
                                   SizedBox(
                                     height: context.height * 0.2,
-                                    child:
-                                        addressController.addressDetails?.lat !=
+                                    child: addressController
+                                                    .addressDetails?.lat !=
                                                 null &&
                                             addressController
-                                                    .addressDetails
-                                                    ?.lng !=
+                                                    .addressDetails?.lng !=
                                                 null
                                         ? GoogleMap(
                                             markers: {
@@ -320,15 +310,13 @@ class _ExecuteTheOrderScreenState extends State<ExecuteTheOrderScreen> {
                                                 position: LatLng(
                                                   double.parse(
                                                     addressController
-                                                            .addressDetails
-                                                            ?.lat
+                                                            .addressDetails?.lat
                                                             .toString() ??
                                                         '0',
                                                   ),
                                                   double.parse(
                                                     addressController
-                                                            .addressDetails
-                                                            ?.lng
+                                                            .addressDetails?.lng
                                                             .toString() ??
                                                         '0',
                                                   ),
@@ -336,57 +324,53 @@ class _ExecuteTheOrderScreenState extends State<ExecuteTheOrderScreen> {
                                               ),
                                             },
                                             mapType: MapType.normal,
-                                            onMapCreated:
-                                                (
-                                                  GoogleMapController
-                                                  controller,
-                                                ) {
-                                                  gmc = controller;
-                                                  if (addressController
-                                                          .addressDetails !=
-                                                      null) {
-                                                    gmc!.animateCamera(
-                                                      CameraUpdate.newLatLng(
-                                                        LatLng(
-                                                          double.parse(
-                                                            addressController
-                                                                    .addressDetails
-                                                                    ?.lat
-                                                                    .toString() ??
-                                                                '0',
-                                                          ),
-                                                          double.parse(
-                                                            addressController
-                                                                    .addressDetails
-                                                                    ?.lng
-                                                                    .toString() ??
-                                                                '0',
-                                                          ),
-                                                        ),
+                                            onMapCreated: (
+                                              GoogleMapController controller,
+                                            ) {
+                                              gmc = controller;
+                                              if (addressController
+                                                      .addressDetails !=
+                                                  null) {
+                                                gmc!.animateCamera(
+                                                  CameraUpdate.newLatLng(
+                                                    LatLng(
+                                                      double.parse(
+                                                        addressController
+                                                                .addressDetails
+                                                                ?.lat
+                                                                .toString() ??
+                                                            '0',
                                                       ),
-                                                    );
-                                                  }
-                                                },
-                                            initialCameraPosition:
-                                                CameraPosition(
-                                                  target: LatLng(
-                                                    double.parse(
-                                                      addressController
-                                                              .addressDetails
-                                                              ?.lat
-                                                              .toString() ??
-                                                          '0',
-                                                    ),
-                                                    double.parse(
-                                                      addressController
-                                                              .addressDetails
-                                                              ?.lng
-                                                              .toString() ??
-                                                          '0',
+                                                      double.parse(
+                                                        addressController
+                                                                .addressDetails
+                                                                ?.lng
+                                                                .toString() ??
+                                                            '0',
+                                                      ),
                                                     ),
                                                   ),
-                                                  zoom: 12,
+                                                );
+                                              }
+                                            },
+                                            initialCameraPosition:
+                                                CameraPosition(
+                                              target: LatLng(
+                                                double.parse(
+                                                  addressController
+                                                          .addressDetails?.lat
+                                                          .toString() ??
+                                                      '0',
                                                 ),
+                                                double.parse(
+                                                  addressController
+                                                          .addressDetails?.lng
+                                                          .toString() ??
+                                                      '0',
+                                                ),
+                                              ),
+                                              zoom: 12,
+                                            ),
                                           )
                                         : const Center(
                                             child: CircularProgressIndicator(),
@@ -428,10 +412,9 @@ class _ExecuteTheOrderScreenState extends State<ExecuteTheOrderScreen> {
                                                     AppImages.addressIcon,
                                                     colorFilter:
                                                         ColorFilter.mode(
-                                                          AppColors
-                                                              .secondAppColor,
-                                                          BlendMode.srcIn,
-                                                        ),
+                                                      AppColors.secondAppColor,
+                                                      BlendMode.srcIn,
+                                                    ),
                                                     width: 16,
                                                   ),
                                                   const SizedBox(width: 10),
@@ -462,8 +445,8 @@ class _ExecuteTheOrderScreenState extends State<ExecuteTheOrderScreen> {
                                                     5.sbH,
                                                     Text(
                                                       '${'mobileNumber'.tr} : ${addressController.addressDetails?.mobile ?? ""}',
-                                                      style:
-                                                          AppTextStyle.text14RG(),
+                                                      style: AppTextStyle
+                                                          .text14RG(),
                                                     ),
                                                   ],
                                                 ],
@@ -479,9 +462,9 @@ class _ExecuteTheOrderScreenState extends State<ExecuteTheOrderScreen> {
                                             'change'.tr,
                                             style: AppTextStyle.text14MM()
                                                 .copyWith(
-                                                  decoration:
-                                                      TextDecoration.underline,
-                                                ),
+                                              decoration:
+                                                  TextDecoration.underline,
+                                            ),
                                           ),
                                         ),
                                       ],
@@ -494,10 +477,7 @@ class _ExecuteTheOrderScreenState extends State<ExecuteTheOrderScreen> {
                             24.sbH,
                             if (cartController.cart?.carts?.isNotEmpty ==
                                     true &&
-                                cartController
-                                        .cart
-                                        ?.carts
-                                        ?.first
+                                cartController.cart?.carts?.first
                                         .resturantDeliveryTime !=
                                     null)
                               Container(
@@ -541,10 +521,12 @@ class _ExecuteTheOrderScreenState extends State<ExecuteTheOrderScreen> {
                                             5.sbH,
                                             if (hasExpiryDate) ...[
                                               Text(
-                                                'deliveryAfterDays'.tr.replaceAll(
-                                                  '{}',
-                                                  "${(cartController.cart?.resturant?.resturantAreas?.firstWhere((e) => e.areaId == addressController.addressDetails?.cityId && e.type == "day" && e.expectedDelivery != "0"))?.expectedDelivery}",
-                                                ),
+                                                'deliveryAfterDays'
+                                                    .tr
+                                                    .replaceAll(
+                                                      '{}',
+                                                      "${(cartController.cart?.resturant?.resturantAreas?.firstWhere((e) => e.areaId == addressController.addressDetails?.cityId && e.type == "day" && e.expectedDelivery != "0"))?.expectedDelivery}",
+                                                    ),
                                                 style: AppTextStyle.text14RG(),
                                               ),
                                             ],
@@ -577,14 +559,13 @@ class _ExecuteTheOrderScreenState extends State<ExecuteTheOrderScreen> {
                             32.sbH,
                             if (cartController.cart?.resturant?.resturantAreas
                                     ?.any(
-                                      (e) =>
-                                          e.areaId ==
-                                              addressController
-                                                  .addressDetails
-                                                  ?.cityId &&
-                                          e.type == 'day' &&
-                                          e.expectedDelivery != '0',
-                                    ) ==
+                                  (e) =>
+                                      e.areaId ==
+                                          addressController
+                                              .addressDetails?.cityId &&
+                                      e.type == 'day' &&
+                                      e.expectedDelivery != '0',
+                                ) ==
                                 true)
                               Row(
                                 children: [
@@ -596,25 +577,21 @@ class _ExecuteTheOrderScreenState extends State<ExecuteTheOrderScreen> {
                                   IconButton(
                                     onPressed: () {
                                       final selectedArea = cartController
-                                          .cart
-                                          ?.resturant
-                                          ?.resturantAreas
+                                          .cart?.resturant?.resturantAreas
                                           ?.firstWhere(
-                                            (e) =>
-                                                e.areaId ==
-                                                    addressController
-                                                        .addressDetails
-                                                        ?.cityId &&
-                                                e.type == 'day' &&
-                                                e.expectedDelivery != '0',
-                                          );
+                                        (e) =>
+                                            e.areaId ==
+                                                addressController
+                                                    .addressDetails?.cityId &&
+                                            e.type == 'day' &&
+                                            e.expectedDelivery != '0',
+                                      );
                                       if (selectedArea != null) {
                                         DateMethods.pickTime(
                                           context,
                                           initialDate: DateTime.now().add(
                                             Duration(
-                                              days:
-                                                  int.tryParse(
+                                              days: int.tryParse(
                                                     selectedArea
                                                         .expectedDelivery
                                                         .toString(),
@@ -634,8 +611,7 @@ class _ExecuteTheOrderScreenState extends State<ExecuteTheOrderScreen> {
                                           context,
                                           initialDate: DateTime.now().add(
                                             Duration(
-                                              days:
-                                                  int.tryParse(
+                                              days: int.tryParse(
                                                     selectedArea
                                                         .expectedDelivery
                                                         .toString(),
@@ -645,8 +621,7 @@ class _ExecuteTheOrderScreenState extends State<ExecuteTheOrderScreen> {
                                           ),
                                           firstDate: DateTime.now().add(
                                             Duration(
-                                              days:
-                                                  int.tryParse(
+                                              days: int.tryParse(
                                                     selectedArea
                                                         .expectedDelivery
                                                         .toString(),
@@ -785,9 +760,9 @@ class _ExecuteTheOrderScreenState extends State<ExecuteTheOrderScreen> {
                         totalPrice: totalPrice,
                         kmPrice:
                             cartController.cart?.resturant?.resturantKmPrice !=
-                                0
-                            ? kmPrice
-                            : 0,
+                                    0
+                                ? kmPrice
+                                : 0,
                         serviceFees: serviceFees,
                         cartController: cartController,
                       ),
@@ -824,9 +799,7 @@ class _ExecuteTheOrderScreenState extends State<ExecuteTheOrderScreen> {
                           ((resturantStatus != 'opened' &&
                                   (resturantId ==
                                       cartController
-                                          .cart
-                                          ?.resturant
-                                          ?.resturantId)))
+                                          .cart?.resturant?.resturantId)))
                               ? Container(
                                   width: double.infinity,
                                   margin: const EdgeInsets.symmetric(
@@ -856,10 +829,7 @@ class _ExecuteTheOrderScreenState extends State<ExecuteTheOrderScreen> {
                                   ),
                                 )
                               : ExecuteOrderButton(
-                                  deliveryPrice:
-                                      cartController
-                                              .cart
-                                              ?.resturant
+                                  deliveryPrice: cartController.cart?.resturant
                                               ?.resturantKmPrice !=
                                           0
                                       ? kmPrice

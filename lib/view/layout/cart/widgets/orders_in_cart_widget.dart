@@ -72,7 +72,7 @@ class OrdersInCartWidget extends StatelessWidget {
                   _OptionChip(
                     text:
                         getProductFeatureName(cart.productFeatureName ?? '') ??
-                        '',
+                            '',
                   ),
                 10.sbH,
                 Row(

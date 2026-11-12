@@ -69,8 +69,8 @@ class _DelegateOrdersScreenState extends State<DelegateOrdersScreen> {
           orderData as Map<String, dynamic>,
         );
         context.read<RequestDelegateController>().updateShippingOrder(
-          orderModel,
-        );
+              orderModel,
+            );
       }
     } catch (e, stackTrace) {
       log('Error handling Pusher event: $e');
@@ -122,8 +122,7 @@ class _DelegateOrdersScreenState extends State<DelegateOrdersScreen> {
                             onReload: () =>
                                 requestDelegateController.getDelegateOrders(),
                             isEmpty: requestDelegateController
-                                .delegateOrders
-                                .isEmpty,
+                                .delegateOrders.isEmpty,
                             child: Column(
                               children: [
                                 // const SizedBox(
@@ -131,8 +130,7 @@ class _DelegateOrdersScreenState extends State<DelegateOrdersScreen> {
                                 // ),
                                 ...List.generate(
                                   requestDelegateController
-                                      .delegateOrders
-                                      .length,
+                                      .delegateOrders.length,
                                   (index) => DelegateOrderWidget(
                                     requestDelegateOrderModel:
                                         requestDelegateController

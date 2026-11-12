@@ -92,16 +92,14 @@ class VerticalStepperItem extends StatelessWidget {
       const SizedBox(width: 8),
       Expanded(
         child: Column(
-          crossAxisAlignment: isInverted
-              ? CrossAxisAlignment.end
-              : CrossAxisAlignment.start,
+          crossAxisAlignment:
+              isInverted ? CrossAxisAlignment.end : CrossAxisAlignment.start,
           children: [
             if (item.title != null) ...[
               Text(
                 item.title!.text,
                 textAlign: TextAlign.start,
-                style:
-                    item.title!.textStyle ??
+                style: item.title!.textStyle ??
                     TextStyle(
                       fontSize: 14,
                       color: dotColor,
@@ -114,8 +112,7 @@ class VerticalStepperItem extends StatelessWidget {
               Text(
                 item.subtitle!.text,
                 textAlign: TextAlign.start,
-                style:
-                    item.subtitle!.textStyle ??
+                style: item.subtitle!.textStyle ??
                     TextStyle(
                       fontSize: 12,
                       color: (index <= activeIndex)

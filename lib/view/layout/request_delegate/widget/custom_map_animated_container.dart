@@ -199,28 +199,26 @@ class CustomMapAnimatedContainer extends StatelessWidget {
     required double iconBox,
     required bool compact,
   }) {
-    final hasPickup =
-        controller.fromLat != null &&
+    final hasPickup = controller.fromLat != null &&
         controller.fromLan != null &&
         controller.fromLat!.isNotEmpty &&
         controller.fromLan!.isNotEmpty;
-    final hasDestination =
-        controller.toLat != null &&
+    final hasDestination = controller.toLat != null &&
         controller.toLan != null &&
         controller.toLat!.isNotEmpty &&
         controller.toLan!.isNotEmpty;
 
     final subtitle = hasPickup && hasDestination
         ? (_isArabic(context)
-              ? 'تم تحديد عنواني الاستلام والتوصيل'
-              : 'Pickup and delivery addresses selected')
+            ? 'تم تحديد عنواني الاستلام والتوصيل'
+            : 'Pickup and delivery addresses selected')
         : hasPickup
-        ? (_isArabic(context)
-              ? 'حدد عنوان التوصيل'
-              : 'Choose the delivery address')
-        : (_isArabic(context)
-              ? 'حدد موقع الاستلام وعنوان التوصيل'
-              : 'Set pickup and delivery addresses');
+            ? (_isArabic(context)
+                ? 'حدد عنوان التوصيل'
+                : 'Choose the delivery address')
+            : (_isArabic(context)
+                ? 'حدد موقع الاستلام وعنوان التوصيل'
+                : 'Set pickup and delivery addresses');
 
     return _actionCard(
       context: context,
@@ -251,14 +249,13 @@ class CustomMapAnimatedContainer extends StatelessWidget {
     return _actionCard(
       context: context,
       icon: Icons.inventory_2_outlined,
-      title: _isArabic(context)
-          ? 'الغرض المطلوب توصيله'
-          : 'Item to be delivered',
+      title:
+          _isArabic(context) ? 'الغرض المطلوب توصيله' : 'Item to be delivered',
       subtitle: value.isNotEmpty
           ? value
           : (_isArabic(context)
-                ? 'اضغط واكتب وصف الغرض'
-                : 'Tap to describe the item'),
+              ? 'اضغط واكتب وصف الغرض'
+              : 'Tap to describe the item'),
       highlight: value.isNotEmpty,
       trailing: Icon(
         Icons.edit_outlined,
@@ -283,15 +280,14 @@ class CustomMapAnimatedContainer extends StatelessWidget {
     final fareValue = hasFare
         ? '${controller.priceEC.text.trim()} ${_isArabic(context) ? 'ج' : 'EGP'}'
         : (_isArabic(context)
-              ? 'حدد الأجرة التي تريد دفعها'
-              : 'Set the fare you want to pay');
+            ? 'حدد الأجرة التي تريد دفعها'
+            : 'Set the fare you want to pay');
 
     return _actionCard(
       context: context,
       icon: Icons.payments_outlined,
-      title: _isArabic(context)
-          ? 'عاوز تدفع كام'
-          : 'How much do you want to pay?',
+      title:
+          _isArabic(context) ? 'عاوز تدفع كام' : 'How much do you want to pay?',
       subtitle: fareValue,
       highlight: hasFare,
       trailing: Icon(
@@ -523,9 +519,8 @@ class CustomMapAnimatedContainer extends StatelessWidget {
                                 ? AppColors.mainAppColor
                                 : _mutedColor,
                             fontSize: compact ? 10 : 10.8,
-                            fontWeight: highlight
-                                ? FontWeight.w600
-                                : FontWeight.w400,
+                            fontWeight:
+                                highlight ? FontWeight.w600 : FontWeight.w400,
                           ),
                         ),
                       ],
@@ -547,9 +542,8 @@ class CustomMapAnimatedContainer extends StatelessWidget {
       color: FasakhanstaBrand.surface,
       borderRadius: BorderRadius.circular(15),
       border: Border.all(
-        color: highlight
-            ? AppColors.mainAppColor.withOpacity(.72)
-            : _borderColor,
+        color:
+            highlight ? AppColors.mainAppColor.withOpacity(.72) : _borderColor,
         width: highlight ? 1.1 : 1,
       ),
       boxShadow: const [
@@ -728,7 +722,7 @@ class CustomMapAnimatedContainer extends StatelessWidget {
             requestDelegateController: controller,
             kmPrice:
                 int.tryParse('${controller.delegatesOnMap?.shippingKmPrice}') ??
-                0,
+                    0,
             shippingPercentage: 10,
             distance: num.tryParse('${controller.distance}') ?? 0,
           ),

@@ -47,8 +47,7 @@ class _CustomButtonBottomNavigationState
   int get _baseTotal => int.tryParse(widget.total ?? '0') ?? 0;
 
   int _displayPrice(CartController controller) {
-    final currentTotal =
-        int.tryParse(controller.totalCountAddTCart ?? '') ??
+    final currentTotal = int.tryParse(controller.totalCountAddTCart ?? '') ??
         (_baseTotal * count);
     final divider = widget.qty <= 0 ? 1 : widget.qty;
     return (currentTotal / divider).round();

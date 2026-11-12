@@ -24,9 +24,8 @@ class _CustomSwitchState extends State<CustomSwitch> {
           borderRadius: BorderRadius.circular(15),
         ),
         child: Row(
-          mainAxisAlignment: widget.value
-              ? MainAxisAlignment.end
-              : MainAxisAlignment.start,
+          mainAxisAlignment:
+              widget.value ? MainAxisAlignment.end : MainAxisAlignment.start,
           children: [
             if (widget.value == true) ...{
               const SizedBox(width: 4),

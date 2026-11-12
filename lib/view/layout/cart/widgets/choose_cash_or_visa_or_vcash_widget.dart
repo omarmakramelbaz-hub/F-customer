@@ -118,9 +118,8 @@ class PaymentMethodWidget extends StatelessWidget {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(
-                  color: isSelected
-                      ? AppColors.mainAppColor
-                      : AppColors.greyColor,
+                  color:
+                      isSelected ? AppColors.mainAppColor : AppColors.greyColor,
                   width: 1.5,
                 ),
               ),

@@ -22,8 +22,7 @@ class ChangePhoneNumberBottomSheet extends StatefulWidget {
 }
 
 class _ChangePhoneNumberBottomSheetState
-    extends State<ChangePhoneNumberBottomSheet>
-    with ValidationMixin {
+    extends State<ChangePhoneNumberBottomSheet> with ValidationMixin {
   final _formKey = GlobalKey<FormState>();
   final _phoneNumberEc = TextEditingController();
   final _passwordEC = TextEditingController();
@@ -118,9 +117,8 @@ class _ChangePhoneNumberBottomSheetState
                       keyboardType: TextInputType.phone,
                       inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                       country: _country,
-                      title: isArabic
-                          ? 'رقم الهاتف الجديد'
-                          : 'New phone number',
+                      title:
+                          isArabic ? 'رقم الهاتف الجديد' : 'New phone number',
                       hintText: isArabic
                           ? 'أدخل رقم الهاتف الجديد'
                           : 'Enter new phone number',
@@ -150,9 +148,8 @@ class _ChangePhoneNumberBottomSheetState
                     CustomFormField(
                       validator: validateEmptyField,
                       controller: _passwordEC,
-                      title: isArabic
-                          ? 'تأكيد كلمة المرور'
-                          : 'Confirm password',
+                      title:
+                          isArabic ? 'تأكيد كلمة المرور' : 'Confirm password',
                       hintText: isArabic
                           ? 'أدخل كلمة المرور لتأكيد التغيير'
                           : 'Enter your password to confirm the change',

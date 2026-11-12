@@ -79,30 +79,30 @@ class _AccountInformationScreenState extends State<AccountInformationScreen> {
                                     'male'
                                 ? SvgPicture.asset(AppImages.avatarMale)
                                 : Provider.of<AuthController>(context)
-                                          .profile
-                                          ?.gender ==
-                                      'female'
-                                ? SvgPicture.asset(AppImages.avatarFemale)
-                                : Container(
-                                    height: 56,
-                                    width: 56,
-                                    decoration: BoxDecoration(
-                                      color: AppColors.mainAppColor,
-                                      shape: BoxShape.circle,
-                                    ),
-                                    child: Center(
-                                      child: Text(
-                                        Provider.of<AuthController>(context)
-                                                .profile
-                                                ?.name
-                                                ?.substring(0, 1) ??
-                                            '',
-                                        style: AppTextStyle.text18BW(
-                                          color: FasakhanstaBrand.onOrange,
-                                        ).copyWith(fontSize: 40),
+                                            .profile
+                                            ?.gender ==
+                                        'female'
+                                    ? SvgPicture.asset(AppImages.avatarFemale)
+                                    : Container(
+                                        height: 56,
+                                        width: 56,
+                                        decoration: BoxDecoration(
+                                          color: AppColors.mainAppColor,
+                                          shape: BoxShape.circle,
+                                        ),
+                                        child: Center(
+                                          child: Text(
+                                            Provider.of<AuthController>(context)
+                                                    .profile
+                                                    ?.name
+                                                    ?.substring(0, 1) ??
+                                                '',
+                                            style: AppTextStyle.text18BW(
+                                              color: FasakhanstaBrand.onOrange,
+                                            ).copyWith(fontSize: 40),
+                                          ),
+                                        ),
                                       ),
-                                    ),
-                                  ),
                             const SizedBox(width: 20),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,

@@ -58,12 +58,12 @@ class ChooseAvatarBottomSheet extends StatelessWidget {
                 child: InkWell(
                   onTap: () {
                     context.read<AuthController>().chooseAvatar(
-                      gender: 'male',
-                      onSuccess: () {
-                        context.read<AuthController>().getProfile();
-                        Navigator.pop(context);
-                      },
-                    );
+                          gender: 'male',
+                          onSuccess: () {
+                            context.read<AuthController>().getProfile();
+                            Navigator.pop(context);
+                          },
+                        );
                   },
                   child: SvgPicture.asset(AppImages.avatarMale),
                 ),
@@ -72,12 +72,12 @@ class ChooseAvatarBottomSheet extends StatelessWidget {
                 child: InkWell(
                   onTap: () {
                     context.read<AuthController>().chooseAvatar(
-                      gender: 'female',
-                      onSuccess: () {
-                        context.read<AuthController>().getProfile();
-                        Navigator.pop(context);
-                      },
-                    );
+                          gender: 'female',
+                          onSuccess: () {
+                            context.read<AuthController>().getProfile();
+                            Navigator.pop(context);
+                          },
+                        );
                   },
                   child: SvgPicture.asset(AppImages.avatarFemale),
                 ),

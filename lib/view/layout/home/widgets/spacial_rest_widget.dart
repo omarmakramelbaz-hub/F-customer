@@ -31,9 +31,9 @@ class SpacialRestaurantsListViewWidget extends StatelessWidget {
     return ApiResponseWidget(
       apiResponse: context.read<HomeController>().spacialRestaurantApiResponse,
       onReload: () => context.read<HomeController>().getSpacialRestaurants(
-        lat: HiveMethods.getLat(),
-        lng: HiveMethods.getLan(),
-      ),
+            lat: HiveMethods.getLat(),
+            lng: HiveMethods.getLan(),
+          ),
       isEmpty: context.read<HomeController>().spacialRestaurants.isEmpty,
       loadingWidget: CustomShimmer(
         height: 180,
@@ -50,8 +50,7 @@ class SpacialRestaurantsListViewWidget extends StatelessWidget {
           separatorBuilder: (_, __) => const SizedBox(width: 12),
           itemBuilder: (context, index) {
             final restaurant = spacialRest[index];
-            final unavailable =
-                restaurant.status == 'busy' ||
+            final unavailable = restaurant.status == 'busy' ||
                 restaurant.underContract == 'yes';
 
             return SizedBox(
@@ -61,11 +60,11 @@ class SpacialRestaurantsListViewWidget extends StatelessWidget {
                 onTap: unavailable
                     ? null
                     : () => NamedNavigatorImpl.push(
-                        RestaurantDetailsScreen.routeName,
-                        arguments: RestaurantDetailsArgs(
-                          id: restaurant.id ?? 0,
+                          RestaurantDetailsScreen.routeName,
+                          arguments: RestaurantDetailsArgs(
+                            id: restaurant.id ?? 0,
+                          ),
                         ),
-                      ),
                 child: Container(
                   decoration: BoxDecoration(
                     color: FasakhanstaBrand.surface,
@@ -118,12 +117,11 @@ class SpacialRestaurantsListViewWidget extends StatelessWidget {
                                     3.sbW,
                                     Text(
                                       'freeDelivery'.tr,
-                                      style:
-                                          AppTextStyle.text12BW(
-                                            color: FasakhanstaBrand.onOrange,
-                                          ).copyWith(
-                                            color: FasakhanstaBrand.onOrange,
-                                          ),
+                                      style: AppTextStyle.text12BW(
+                                        color: FasakhanstaBrand.onOrange,
+                                      ).copyWith(
+                                        color: FasakhanstaBrand.onOrange,
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -139,11 +137,11 @@ class SpacialRestaurantsListViewWidget extends StatelessWidget {
                                   restaurant.underContract == 'yes'
                                       ? 'underContract'.tr
                                       : restaurant.status == 'closed'
-                                      ? restaurantClosedLabel(
-                                          context,
-                                          restaurant.openAt,
-                                        )
-                                      : 'busy'.tr,
+                                          ? restaurantClosedLabel(
+                                              context,
+                                              restaurant.openAt,
+                                            )
+                                          : 'busy'.tr,
                                   style: AppTextStyle.text14MW(),
                                 ),
                               ),

@@ -71,8 +71,7 @@ class _CustomSingleSelectState extends State<CustomSingleSelect> {
 
   void _showValue() {
     Future.delayed(Duration.zero, () {
-      _selectedEC.text =
-          widget.items
+      _selectedEC.text = widget.items
               ?.firstWhereOrNull((element) => element.value == widget.value)
               ?.name ??
           '';
@@ -114,22 +113,22 @@ class _CustomSingleSelectState extends State<CustomSingleSelect> {
             onTap: widget.apiResponse?.state == ResponseState.loading
                 ? null
                 : widget.items != null && widget.items?.isNotEmpty == true
-                ? () {
-                    Utils.showAppBottomSheet(
-                      CustomSingleSelectBottomSheet(
-                        value: widget.value,
-                        items: widget.items,
-                        hasRemove: widget.hasRemove,
-                        onChanged: (v) {
-                          widget.onChanged?.call(v);
-                        },
-                      ),
-                      isScrollControlled: true,
-                    );
-                  }
-                : () => CommonMethods.showAlertDialog(
-                    message: 'There is no data'.tr,
-                  ),
+                    ? () {
+                        Utils.showAppBottomSheet(
+                          CustomSingleSelectBottomSheet(
+                            value: widget.value,
+                            items: widget.items,
+                            hasRemove: widget.hasRemove,
+                            onChanged: (v) {
+                              widget.onChanged?.call(v);
+                            },
+                          ),
+                          isScrollControlled: true,
+                        );
+                      }
+                    : () => CommonMethods.showAlertDialog(
+                          message: 'There is no data'.tr,
+                        ),
             readOnly: true,
             style: AppTextStyle.textFormStyle,
             autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -139,8 +138,7 @@ class _CustomSingleSelectState extends State<CustomSingleSelect> {
               hintMaxLines: 2,
               hintText: widget.hintText,
               hintStyle: widget.hintStyle ?? AppTextStyle.hintStyle,
-              fillColor:
-                  widget.fillColor ??
+              fillColor: widget.fillColor ??
                   (widget.formFieldBorder == FormFieldBorder.underLine
                       ? Colors.transparent
                       : AppColors.textFormFillColor),
@@ -190,8 +188,7 @@ class _CustomSingleSelectState extends State<CustomSingleSelect> {
                               ),
                             ),
                             loadingWidget: const CupertinoActivityIndicator(),
-                            child:
-                                widget.icon ??
+                            child: widget.icon ??
                                 Icon(
                                   widget.items == null || widget.items!.isEmpty
                                       ? Icons.error_rounded
@@ -201,13 +198,13 @@ class _CustomSingleSelectState extends State<CustomSingleSelect> {
                                 ),
                           )
                         : widget.icon ??
-                              Icon(
-                                widget.items == null || widget.items!.isEmpty
-                                    ? Icons.error_rounded
-                                    : Icons.keyboard_arrow_down_rounded,
-                                color: AppColors.hintColor,
-                                size: 25,
-                              ),
+                            Icon(
+                              widget.items == null || widget.items!.isEmpty
+                                  ? Icons.error_rounded
+                                  : Icons.keyboard_arrow_down_rounded,
+                              color: AppColors.hintColor,
+                              size: 25,
+                            ),
                   ),
                   if (widget.suffixIcon != null) ...{
                     widget.suffixIcon ?? const SizedBox(),
@@ -363,15 +360,14 @@ class _CustomSingleSelectBottomSheetState
                                   CircleAvatar(
                                     backgroundColor:
                                         _initialValue == _items?[index].value
-                                        ? AppColors.mainAppColor
-                                        : AppColors.greyColor,
+                                            ? AppColors.mainAppColor
+                                            : AppColors.greyColor,
                                     radius: 11,
                                     child: CircleAvatar(
                                       backgroundColor: FasakhanstaBrand.surface,
                                       radius: 9,
                                       child: CircleAvatar(
-                                        backgroundColor:
-                                            _initialValue ==
+                                        backgroundColor: _initialValue ==
                                                 _items?[index].value
                                             ? AppColors.mainAppColor
                                             : FasakhanstaBrand.surface,

@@ -26,18 +26,17 @@ class RecentTransactionsWidget extends StatelessWidget {
         final transaction = items[index];
         final authId = context.read<AuthController>().profile?.id;
         final isFromMe = authId == transaction.fromUser;
-        final isCredit =
-            transaction.type == 'charging' ||
+        final isCredit = transaction.type == 'charging' ||
             (transaction.toUser == authId && !isFromMe);
         final amount = transaction.amount ?? 0;
         final color = isCredit ? Colors.green.shade700 : Colors.deepOrange;
         final icon = transaction.type == 'charging'
             ? Icons.add_card_outlined
             : transaction.type == 'transfer'
-            ? Icons.swap_horiz_rounded
-            : transaction.type == 'shipping'
-            ? Icons.shopping_bag_outlined
-            : Icons.account_balance_wallet_outlined;
+                ? Icons.swap_horiz_rounded
+                : transaction.type == 'shipping'
+                    ? Icons.shopping_bag_outlined
+                    : Icons.account_balance_wallet_outlined;
 
         return Container(
           margin: const EdgeInsets.only(bottom: 10),

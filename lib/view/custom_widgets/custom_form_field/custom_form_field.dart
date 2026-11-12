@@ -115,8 +115,7 @@ class _CustomFormFieldState extends State<CustomFormField> {
             10.sbH,
           },
           Directionality(
-            textDirection:
-                widget.textDirection ??
+            textDirection: widget.textDirection ??
                 (context.isRtl ? TextDirection.rtl : TextDirection.ltr),
             child: TextFormField(
               onFieldSubmitted: widget.onFieldSubmitted,
@@ -141,8 +140,7 @@ class _CustomFormFieldState extends State<CustomFormField> {
                 hintMaxLines: 2,
                 hintText: widget.hintText,
                 hintStyle: widget.hintStyle ?? AppTextStyle.hintStyle,
-                fillColor:
-                    widget.fillColor ??
+                fillColor: widget.fillColor ??
                     (widget.formFieldBorder == FormFieldBorder.underLine
                         ? Colors.transparent
                         : AppColors.textFormFillColor),
@@ -165,38 +163,36 @@ class _CustomFormFieldState extends State<CustomFormField> {
                 ),
                 prefixIcon:
                     widget.country != null && context.languageCode == 'en'
+                        ? Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              widget.prefixIcon ?? const SizedBox(),
+                              TextButton(
+                                onPressed: null,
+                                // onPressed:
+                                //     widget.onCountrySelect != null ? _select : null,
+                                child: Text(
+                                  '${widget.country?.flagEmoji} +${widget.country?.phoneCode}',
+                                  style: widget.textStyle ??
+                                      AppTextStyle.textFormStyle,
+                                  textDirection: TextDirection.ltr,
+                                ),
+                              ),
+                            ],
+                          )
+                        : widget.prefixIcon,
+                suffixIcon: widget.country != null &&
+                        context.languageCode == 'ar'
                     ? Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          widget.prefixIcon ?? const SizedBox(),
                           TextButton(
                             onPressed: null,
                             // onPressed:
                             //     widget.onCountrySelect != null ? _select : null,
                             child: Text(
                               '${widget.country?.flagEmoji} +${widget.country?.phoneCode}',
-                              style:
-                                  widget.textStyle ??
-                                  AppTextStyle.textFormStyle,
-                              textDirection: TextDirection.ltr,
-                            ),
-                          ),
-                        ],
-                      )
-                    : widget.prefixIcon,
-                suffixIcon:
-                    widget.country != null && context.languageCode == 'ar'
-                    ? Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          TextButton(
-                            onPressed: null,
-                            // onPressed:
-                            //     widget.onCountrySelect != null ? _select : null,
-                            child: Text(
-                              '${widget.country?.flagEmoji} +${widget.country?.phoneCode}',
-                              style:
-                                  widget.textStyle ??
+                              style: widget.textStyle ??
                                   AppTextStyle.textFormStyle,
                               textDirection: TextDirection.ltr,
                             ),
@@ -205,21 +201,22 @@ class _CustomFormFieldState extends State<CustomFormField> {
                         ],
                       )
                     : widget.isPassword
-                    ? InkWell(
-                        onTap: () {
-                          setState(() {
-                            _obscureText = !_obscureText;
-                          });
-                        },
-                        child: Icon(
-                          _obscureText
-                              ? Icons.visibility_off_rounded
-                              : Icons.visibility_rounded,
-                          size: 20,
-                          color: widget.passwordColor ?? AppColors.hintColor,
-                        ),
-                      )
-                    : widget.suffixIcon,
+                        ? InkWell(
+                            onTap: () {
+                              setState(() {
+                                _obscureText = !_obscureText;
+                              });
+                            },
+                            child: Icon(
+                              _obscureText
+                                  ? Icons.visibility_off_rounded
+                                  : Icons.visibility_rounded,
+                              size: 20,
+                              color:
+                                  widget.passwordColor ?? AppColors.hintColor,
+                            ),
+                          )
+                        : widget.suffixIcon,
               ),
               initialValue: widget.initialValue,
               focusNode: widget.focusNode ?? FocusNode(),

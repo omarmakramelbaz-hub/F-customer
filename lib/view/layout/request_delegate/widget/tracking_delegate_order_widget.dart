@@ -99,9 +99,8 @@ class TrackingDelegateOrderWidget extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: s.done ? FontWeight.w800 : FontWeight.w500,
-                    color: s.done
-                        ? FasakhanstaBrand.text
-                        : FasakhanstaBrand.muted,
+                    color:
+                        s.done ? FasakhanstaBrand.text : FasakhanstaBrand.muted,
                   ),
                 ),
               ),
@@ -113,22 +112,22 @@ class TrackingDelegateOrderWidget extends StatelessWidget {
   }
 
   Widget _stateCard(String text, IconData icon, Color color) => Container(
-    padding: const EdgeInsets.all(14),
-    decoration: BoxDecoration(
-      color: color.withValues(alpha: .08),
-      borderRadius: BorderRadius.circular(14),
-    ),
-    child: Row(
-      children: [
-        Icon(icon, color: color),
-        const SizedBox(width: 10),
-        Expanded(
-          child: Text(
-            text,
-            style: TextStyle(color: color, fontWeight: FontWeight.w800),
-          ),
+        padding: const EdgeInsets.all(14),
+        decoration: BoxDecoration(
+          color: color.withValues(alpha: .08),
+          borderRadius: BorderRadius.circular(14),
         ),
-      ],
-    ),
-  );
+        child: Row(
+          children: [
+            Icon(icon, color: color),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Text(
+                text,
+                style: TextStyle(color: color, fontWeight: FontWeight.w800),
+              ),
+            ),
+          ],
+        ),
+      );
 }

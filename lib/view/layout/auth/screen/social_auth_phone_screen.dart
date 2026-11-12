@@ -50,31 +50,31 @@ class _SocialAuthPhoneScreenState extends State<SocialAuthPhoneScreen>
     if (!_formKey.currentState!.validate()) return;
 
     context.read<AuthController>().completeSocialAuth(
-      socialAuthData: widget.socialAuthData,
-      mobile: _mobileEC.text.removeZero(),
-      countryCode: _country?.phoneCode ?? '20',
-      onSuccess: (register, mobileVerifiedAt) {
-        HiveMethods.updateIsVisitor(false);
-        if (register == 0 && mobileVerifiedAt != null) {
-          NamedNavigatorImpl.push(
-            BottomNavigationBarScreen.routeName,
-            replace: true,
-          );
-        } else {
-          NamedNavigatorImpl.push(
-            BottomNavigationBarScreen.routeName,
-            clean: true,
-          );
-        }
-      },
-      onHaveIdANDToken: (id, token) {
-        context.read<PusherController>().initPusher(
-          channelName: 'private-user.$id',
-          userId: id,
-          token: token,
+          socialAuthData: widget.socialAuthData,
+          mobile: _mobileEC.text.removeZero(),
+          countryCode: _country?.phoneCode ?? '20',
+          onSuccess: (register, mobileVerifiedAt) {
+            HiveMethods.updateIsVisitor(false);
+            if (register == 0 && mobileVerifiedAt != null) {
+              NamedNavigatorImpl.push(
+                BottomNavigationBarScreen.routeName,
+                replace: true,
+              );
+            } else {
+              NamedNavigatorImpl.push(
+                BottomNavigationBarScreen.routeName,
+                clean: true,
+              );
+            }
+          },
+          onHaveIdANDToken: (id, token) {
+            context.read<PusherController>().initPusher(
+                  channelName: 'private-user.$id',
+                  userId: id,
+                  token: token,
+                );
+          },
         );
-      },
-    );
   }
 
   @override
@@ -139,9 +139,8 @@ class _SocialAuthPhoneScreenState extends State<SocialAuthPhoneScreen>
                         ],
                       ),
                       child: Directionality(
-                        textDirection: isRtl
-                            ? TextDirection.rtl
-                            : TextDirection.ltr,
+                        textDirection:
+                            isRtl ? TextDirection.rtl : TextDirection.ltr,
                         child: Row(
                           children: [
                             Container(
@@ -170,7 +169,9 @@ class _SocialAuthPhoneScreenState extends State<SocialAuthPhoneScreen>
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    isRtl ? 'خطوة أخيرة لإكمال حسابك' : 'One last step to complete your account',
+                                    isRtl
+                                        ? 'خطوة أخيرة لإكمال حسابك'
+                                        : 'One last step to complete your account',
                                     style: const TextStyle(
                                       color: FasakhanstaBrand.text,
                                       fontSize: 19,
@@ -217,9 +218,8 @@ class _SocialAuthPhoneScreenState extends State<SocialAuthPhoneScreen>
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Directionality(
-                            textDirection: isRtl
-                                ? TextDirection.rtl
-                                : TextDirection.ltr,
+                            textDirection:
+                                isRtl ? TextDirection.rtl : TextDirection.ltr,
                             child: Row(
                               children: [
                                 Container(
@@ -307,9 +307,8 @@ class _SocialAuthPhoneScreenState extends State<SocialAuthPhoneScreen>
                               ),
                             ),
                             child: Directionality(
-                              textDirection: isRtl
-                                  ? TextDirection.rtl
-                                  : TextDirection.ltr,
+                              textDirection:
+                                  isRtl ? TextDirection.rtl : TextDirection.ltr,
                               child: Row(
                                 children: [
                                   const Icon(

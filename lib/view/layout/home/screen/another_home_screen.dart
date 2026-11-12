@@ -112,8 +112,8 @@ class _AnotherHomeScreenState extends State<AnotherHomeScreen> {
           resturantData as Map<String, dynamic>,
         );
         context.read<RestaurantsController>().updateResturantProductOrder(
-          resturantModel,
-        );
+              resturantModel,
+            );
         log('=================== update resturant product');
       }
     } catch (e, stackTrace) {
@@ -170,11 +170,11 @@ class _AnotherHomeScreenState extends State<AnotherHomeScreen> {
       if (mounted) {
         final resturantModel =
             details_restaurant_model.DetailsRestaurantModel.fromJson(
-              resturantData as Map<String, dynamic>,
-            );
-        context.read<RestaurantsController>().updateResturantDetails(
-          resturantModel,
+          resturantData as Map<String, dynamic>,
         );
+        context.read<RestaurantsController>().updateResturantDetails(
+              resturantModel,
+            );
         // context.read<HomeController>().updateSpacialResturant(resturantModel);
       }
     } catch (e, stackTrace) {
@@ -295,9 +295,7 @@ class _AnotherHomeScreenState extends State<AnotherHomeScreen> {
                                 restaurantsController,
                               )
                             : const SizedBox.shrink(),
-                        restaurantsController
-                                    .detailsRestaurant
-                                    ?.highestRated
+                        restaurantsController.detailsRestaurant?.highestRated
                                     ?.isNotEmpty ==
                                 true
                             ? _buildChoicesAccordingToYourTaste(
@@ -311,8 +309,7 @@ class _AnotherHomeScreenState extends State<AnotherHomeScreen> {
                   ],
                 ),
               ),
-              bottomNavigationBar:
-                  (cartController.cart == null ||
+              bottomNavigationBar: (cartController.cart == null ||
                       (cartController.cart?.carts?.isEmpty ?? false))
                   ? Padding(
                       padding: const EdgeInsets.symmetric(
@@ -324,13 +321,12 @@ class _AnotherHomeScreenState extends State<AnotherHomeScreen> {
                         children: [
                           Text(
                             'minOrderPrice'.tr.replaceAll(
-                              '{}',
-                              restaurantsController
-                                      .detailsRestaurant
-                                      ?.minOrderPrice
-                                      .toString() ??
-                                  '',
-                            ),
+                                  '{}',
+                                  restaurantsController
+                                          .detailsRestaurant?.minOrderPrice
+                                          .toString() ??
+                                      '',
+                                ),
                             style: AppTextStyle.text16BS(),
                           ),
                         ],
@@ -405,10 +401,11 @@ class _AnotherHomeScreenState extends State<AnotherHomeScreen> {
                               ),
                               child: Text(
                                 'egyp'.tr.replaceAll(
-                                  '{}',
-                                  cartController.cart?.totalCart.toString() ??
-                                      '0',
-                                ),
+                                      '{}',
+                                      cartController.cart?.totalCart
+                                              .toString() ??
+                                          '0',
+                                    ),
                                 style: AppTextStyle.text16BS(),
                               ),
                             ),
@@ -458,9 +455,7 @@ class _AnotherHomeScreenState extends State<AnotherHomeScreen> {
                     : const SizedBox.shrink(),
                 8.sbW,
                 restaurantsController
-                            .detailsRestaurant
-                            ?.highestRated
-                            ?.isNotEmpty ==
+                            .detailsRestaurant?.highestRated?.isNotEmpty ==
                         true
                     ? _buildTabItem(
                         context,
@@ -475,8 +470,7 @@ class _AnotherHomeScreenState extends State<AnotherHomeScreen> {
                     child: _buildTabItem(
                       context,
                       restaurantsController
-                              .productsRestaurant[index]
-                              .categoryName ??
+                              .productsRestaurant[index].categoryName ??
                           '',
                       index,
                     ),
@@ -600,9 +594,7 @@ class _AnotherHomeScreenState extends State<AnotherHomeScreen> {
             16.sbH,
             ...List.generate(
               restaurantsController
-                      .productsRestaurant[index]
-                      .resturantItems
-                      ?.length ??
+                      .productsRestaurant[index].resturantItems?.length ??
                   0,
               (indexRestaurantItems) => InkWell(
                 onTap: () {
@@ -612,20 +604,15 @@ class _AnotherHomeScreenState extends State<AnotherHomeScreen> {
                       message: 'thisRestaurantIsClosed'.tr,
                     );
                   } else {
-                    if (restaurantsController
-                            .productsRestaurant[index]
-                            .resturantItems?[indexRestaurantItems]
-                            .status ==
+                    if (restaurantsController.productsRestaurant[index]
+                            .resturantItems?[indexRestaurantItems].status ==
                         'show') {
                       NamedNavigatorImpl.push(
                         ProductDetailsScreen.routeName,
                         arguments: ProductDetailsDetailsArgs(
                           onSuccessAddItem: () {},
-                          id:
-                              restaurantsController
-                                  .productsRestaurant[index]
-                                  .resturantItems?[indexRestaurantItems]
-                                  .id ??
+                          id: restaurantsController.productsRestaurant[index]
+                                  .resturantItems?[indexRestaurantItems].id ??
                               0,
                         ),
                       );
@@ -697,15 +684,16 @@ class _AnotherHomeScreenState extends State<AnotherHomeScreen> {
                                 'show')
                               Text(
                                 'pound'.tr.replaceAll(
-                                  '{}',
-                                  restaurantsController
-                                          .productsRestaurant[index]
-                                          .resturantItems?[indexRestaurantItems]
-                                          .productPrice
-                                          ?.toStringAsFixed(2)
-                                          .toString() ??
-                                      '',
-                                ),
+                                      '{}',
+                                      restaurantsController
+                                              .productsRestaurant[index]
+                                              .resturantItems?[
+                                                  indexRestaurantItems]
+                                              .productPrice
+                                              ?.toStringAsFixed(2)
+                                              .toString() ??
+                                          '',
+                                    ),
                                 style: AppTextStyle.text16RG(),
                               )
                             else
@@ -725,8 +713,7 @@ class _AnotherHomeScreenState extends State<AnotherHomeScreen> {
                           color: AppColors.mainAppColor.withValues(alpha: 0.15),
                         ),
                         child: CustomNetworkImage(
-                          imageUrl:
-                              restaurantsController
+                          imageUrl: restaurantsController
                                   .productsRestaurant[index]
                                   .resturantItems?[indexRestaurantItems]
                                   .productImage

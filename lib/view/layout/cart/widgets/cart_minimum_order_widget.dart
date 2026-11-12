@@ -118,9 +118,8 @@ class CartMinimumOrderWidget extends StatelessWidget {
   }
 
   Widget _buildStatusIcon(bool reached) {
-    final accentColor = reached
-        ? const Color(0xFF20B66A)
-        : AppColors.mainAppColor;
+    final accentColor =
+        reached ? const Color(0xFF20B66A) : AppColors.mainAppColor;
 
     return Container(
       width: 64,

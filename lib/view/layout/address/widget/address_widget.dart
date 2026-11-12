@@ -200,8 +200,8 @@ class AddressWidget extends StatelessWidget {
   }
 
   IconData get _addressIcon {
-    final value = '${address.addressName} ${address.badge} ${address.type}'
-        .toLowerCase();
+    final value =
+        '${address.addressName} ${address.badge} ${address.type}'.toLowerCase();
     if (value.contains('home') || value.contains('منزل')) {
       return Icons.home_outlined;
     }

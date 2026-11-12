@@ -180,20 +180,21 @@ class _ServiceRatingScreenState extends State<ServiceRatingScreen> {
                                     message: 'evaluateYourApplication'.tr,
                                   )
                                 : context.read<OrdersController>().reviewOrders(
-                                    orderId: widget.args.detailsOrder?.id ?? 0,
-                                    restaurantId:
-                                        widget.args.detailsOrder?.resturantId ??
-                                        0,
-                                    rate: _rating == 0
-                                        ? 5
-                                        : _rating == 1
-                                        ? 3
-                                        : 1,
-                                    onSuccess: () {
-                                      Navigator.of(context).pop();
-                                      widget.args.onRatingChanged.call();
-                                    },
-                                  );
+                                      orderId:
+                                          widget.args.detailsOrder?.id ?? 0,
+                                      restaurantId: widget
+                                              .args.detailsOrder?.resturantId ??
+                                          0,
+                                      rate: _rating == 0
+                                          ? 5
+                                          : _rating == 1
+                                              ? 3
+                                              : 1,
+                                      onSuccess: () {
+                                        Navigator.of(context).pop();
+                                        widget.args.onRatingChanged.call();
+                                      },
+                                    );
                           },
                           text: 'submitYourRating'.tr,
                         ),
@@ -214,8 +215,7 @@ class _ServiceRatingScreenState extends State<ServiceRatingScreen> {
                   ),
                   child: CustomNetworkImage(
                     radius: 120,
-                    imageUrl:
-                        widget.args.detailsOrder?.resturantLogo ??
+                    imageUrl: widget.args.detailsOrder?.resturantLogo ??
                         ''
                             '',
                   ),

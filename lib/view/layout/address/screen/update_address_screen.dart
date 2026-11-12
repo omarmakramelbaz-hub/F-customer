@@ -171,9 +171,9 @@ class _AddAddressScreenState extends State<UpdateAddressScreen>
           .read<AddressController>()
           .getAddressDetails(id: widget.args.id)
           .then((value) {
-            currentLat = double.parse(widget.args.lat);
-            currentLng = double.parse(widget.args.lng);
-          });
+        currentLat = double.parse(widget.args.lat);
+        currentLng = double.parse(widget.args.lng);
+      });
     });
     _determinePosition();
     _country = CountryParser.parsePhoneCode('20');
@@ -280,33 +280,39 @@ class _AddAddressScreenState extends State<UpdateAddressScreen>
                                               AppImages.avatarMale,
                                             )
                                           : Provider.of<AuthController>(context)
-                                                    .profile
-                                                    ?.gender ==
-                                                'female'
-                                          ? SvgPicture.asset(
-                                              AppImages.avatarFemale,
-                                            )
-                                          : Container(
-                                              height: 20,
-                                              width: 20,
-                                              decoration: BoxDecoration(
-                                                color: AppColors.mainAppColor,
-                                                shape: BoxShape.circle,
-                                              ),
-                                              child: Center(
-                                                child: Text(
-                                                  Provider.of<AuthController>(
+                                                      .profile
+                                                      ?.gender ==
+                                                  'female'
+                                              ? SvgPicture.asset(
+                                                  AppImages.avatarFemale,
+                                                )
+                                              : Container(
+                                                  height: 20,
+                                                  width: 20,
+                                                  decoration: BoxDecoration(
+                                                    color:
+                                                        AppColors.mainAppColor,
+                                                    shape: BoxShape.circle,
+                                                  ),
+                                                  child: Center(
+                                                    child: Text(
+                                                      Provider.of<
+                                                                  AuthController>(
                                                             context,
-                                                          ).profile?.name
-                                                          ?.substring(0, 1) ??
-                                                      '',
-                                                  style: AppTextStyle.text18BW(
-                                                    color: FasakhanstaBrand
-                                                        .onOrange,
-                                                  ).copyWith(fontSize: 40),
+                                                          )
+                                                              .profile
+                                                              ?.name
+                                                              ?.substring(
+                                                                  0, 1) ??
+                                                          '',
+                                                      style:
+                                                          AppTextStyle.text18BW(
+                                                        color: FasakhanstaBrand
+                                                            .onOrange,
+                                                      ).copyWith(fontSize: 40),
+                                                    ),
+                                                  ),
                                                 ),
-                                              ),
-                                            ),
                                       const SizedBox(width: 10),
                                       Column(
                                         crossAxisAlignment:
@@ -360,8 +366,7 @@ class _AddAddressScreenState extends State<UpdateAddressScreen>
                                       borderRadius: BorderRadius.circular(25),
                                       child: SizedBox(
                                         height: context.height * 0.5,
-                                        child:
-                                            currentLat != null &&
+                                        child: currentLat != null &&
                                                 currentLng != null
                                             ? GoogleMap(
                                                 onTap: (m) {
@@ -379,33 +384,32 @@ class _AddAddressScreenState extends State<UpdateAddressScreen>
                                                 },
                                                 markers: markers,
                                                 mapType: MapType.normal,
-                                                onMapCreated:
-                                                    (
-                                                      GoogleMapController
+                                                onMapCreated: (
+                                                  GoogleMapController
                                                       controller,
-                                                    ) {
-                                                      gmc = controller;
-                                                      if (addressController
-                                                              .addressDetails !=
-                                                          null) {
-                                                        gmc!.animateCamera(
-                                                          CameraUpdate.newLatLng(
-                                                            LatLng(
-                                                              currentLat!,
-                                                              currentLng!,
-                                                            ),
-                                                          ),
-                                                        );
-                                                      }
-                                                    },
+                                                ) {
+                                                  gmc = controller;
+                                                  if (addressController
+                                                          .addressDetails !=
+                                                      null) {
+                                                    gmc!.animateCamera(
+                                                      CameraUpdate.newLatLng(
+                                                        LatLng(
+                                                          currentLat!,
+                                                          currentLng!,
+                                                        ),
+                                                      ),
+                                                    );
+                                                  }
+                                                },
                                                 initialCameraPosition:
                                                     CameraPosition(
-                                                      target: LatLng(
-                                                        currentLat!,
-                                                        currentLng!,
-                                                      ),
-                                                      zoom: 12,
-                                                    ),
+                                                  target: LatLng(
+                                                    currentLat!,
+                                                    currentLng!,
+                                                  ),
+                                                  zoom: 12,
+                                                ),
                                               )
                                             : const Center(
                                                 child: CustomLoading(),
@@ -421,8 +425,7 @@ class _AddAddressScreenState extends State<UpdateAddressScreen>
                                     loadingSize: 20,
                                     onReload: () => addressController
                                         .getAddressDetails(id: widget.args.id),
-                                    isEmpty:
-                                        addressController.addressDetails ==
+                                    isEmpty: addressController.addressDetails ==
                                         null,
                                     child: ChangeAddressWidget(
                                       addressController: addressController,
@@ -547,18 +550,16 @@ class _AddAddressScreenState extends State<UpdateAddressScreen>
                                                   mobile: _mobileEc.text,
                                                   addressName:
                                                       _addressNameEc.text,
-                                                  type:
-                                                      addressController
+                                                  type: addressController
                                                               .indexSelectedOfficeOrHouseOrApartment ==
                                                           'office'
                                                       ? 'office'
                                                       : addressController
-                                                                .indexSelectedOfficeOrHouseOrApartment ==
-                                                            'home'
-                                                      ? 'home'
-                                                      : 'apartment',
-                                                  lat:
-                                                      currentLat ??
+                                                                  .indexSelectedOfficeOrHouseOrApartment ==
+                                                              'home'
+                                                          ? 'home'
+                                                          : 'apartment',
+                                                  lat: currentLat ??
                                                       double.parse(
                                                         addressController
                                                                 .addressDetails
@@ -566,8 +567,7 @@ class _AddAddressScreenState extends State<UpdateAddressScreen>
                                                                 .toString() ??
                                                             '0',
                                                       ),
-                                                  lang:
-                                                      currentLng ??
+                                                  lang: currentLng ??
                                                       double.parse(
                                                         addressController
                                                                 .addressDetails
@@ -577,22 +577,22 @@ class _AddAddressScreenState extends State<UpdateAddressScreen>
                                                       ),
                                                   countryName:
                                                       placemarks![0].country ??
-                                                      addressController
-                                                          .addressDetails
-                                                          ?.countryName ??
-                                                      '',
+                                                          addressController
+                                                              .addressDetails
+                                                              ?.countryName ??
+                                                          '',
                                                   cityName:
                                                       placemarks![0].locality ??
-                                                      addressController
-                                                          .addressDetails
-                                                          ?.cityName ??
-                                                      '',
+                                                          addressController
+                                                              .addressDetails
+                                                              ?.cityName ??
+                                                          '',
                                                   address:
                                                       placemarks![0].street ??
-                                                      addressController
-                                                          .addressDetails
-                                                          ?.address ??
-                                                      '',
+                                                          addressController
+                                                              .addressDetails
+                                                              ?.address ??
+                                                          '',
                                                   onSuccess: () {
                                                     widget.args.onSuccess!
                                                         .call();

@@ -106,13 +106,13 @@ class _PayTipsBottomSheetState extends State<PayTipsBottomSheet>
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
                             context.read<OrdersController>().commissionOrder(
-                              orderId: widget.orderId,
-                              commission: int.parse(commissionEc.text),
-                              onSuccess: () {
-                                Navigator.pop(context);
-                                widget.onSuccess.call();
-                              },
-                            );
+                                  orderId: widget.orderId,
+                                  commission: int.parse(commissionEc.text),
+                                  onSuccess: () {
+                                    Navigator.pop(context);
+                                    widget.onSuccess.call();
+                                  },
+                                );
                           }
                         },
                         radius: 23,

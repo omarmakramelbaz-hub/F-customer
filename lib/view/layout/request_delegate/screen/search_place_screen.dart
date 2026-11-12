@@ -209,9 +209,8 @@ class _SearchPlaceScreenState extends State<SearchPlaceScreen> {
     return Consumer<RequestDelegateController>(
       builder: (context, controller, _) {
         return Directionality(
-          textDirection: _isArabic(context)
-              ? TextDirection.rtl
-              : TextDirection.ltr,
+          textDirection:
+              _isArabic(context) ? TextDirection.rtl : TextDirection.ltr,
           child: Scaffold(
             backgroundColor: Colors.transparent,
             resizeToAvoidBottomInset: true,
@@ -360,9 +359,8 @@ class _SearchPlaceScreenState extends State<SearchPlaceScreen> {
     required RequestDelegateController controller,
     required bool isFrom,
   }) {
-    final textController = isFrom
-        ? controller.fromController
-        : controller.toController;
+    final textController =
+        isFrom ? controller.fromController : controller.toController;
     final focusNode = isFrom ? fromFocusNode : toFocusNode;
     final lat = isFrom ? controller.fromLat : controller.toLat;
     final lng = isFrom ? controller.fromLan : controller.toLan;
@@ -372,8 +370,8 @@ class _SearchPlaceScreenState extends State<SearchPlaceScreen> {
     final hint = isFrom
         ? (_isArabic(context) ? 'اكتب موقع الاستلام' : 'Enter pickup location')
         : (_isArabic(context)
-              ? 'اختر أو ابحث عن عنوان التوصيل'
-              : 'Choose or search delivery address');
+            ? 'اختر أو ابحث عن عنوان التوصيل'
+            : 'Choose or search delivery address');
 
     return Container(
       padding: const EdgeInsets.all(14),
@@ -517,9 +515,8 @@ class _SearchPlaceScreenState extends State<SearchPlaceScreen> {
                 );
                 if (!mounted) return;
 
-                final selectedPoint = isFrom
-                    ? controller.fromLatLng
-                    : controller.toLatLng;
+                final selectedPoint =
+                    isFrom ? controller.fromLatLng : controller.toLatLng;
                 if (selectedPoint == null) return;
 
                 if (isFrom) {
@@ -898,8 +895,7 @@ class _SearchPlaceScreenState extends State<SearchPlaceScreen> {
     final mapController = _routeMapController;
     if (mapController == null) return;
 
-    final routePoints =
-        points ??
+    final routePoints = points ??
         _routePolylines
             .expand((polyline) => polyline.points)
             .toList(growable: false);

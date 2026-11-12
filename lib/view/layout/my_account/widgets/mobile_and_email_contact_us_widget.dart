@@ -40,11 +40,10 @@ class MobileAndEmailContactUsWidget extends StatelessWidget {
           value: hasMobile
               ? mobile
               : context.languageCode == 'ar'
-              ? 'غير متاح حاليًا'
-              : 'Not available right now',
-          onTap: hasMobile
-              ? () => UrlLauncherMethods.makePhoneCall(mobile)
-              : null,
+                  ? 'غير متاح حاليًا'
+                  : 'Not available right now',
+          onTap:
+              hasMobile ? () => UrlLauncherMethods.makePhoneCall(mobile) : null,
         ),
         const SizedBox(height: 10),
         _ContactActionCard(
@@ -53,11 +52,10 @@ class MobileAndEmailContactUsWidget extends StatelessWidget {
           value: hasEmail
               ? email
               : context.languageCode == 'ar'
-              ? 'غير متاح حاليًا'
-              : 'Not available right now',
-          onTap: hasEmail
-              ? () => UrlLauncherMethods.makeMailMessage(email)
-              : null,
+                  ? 'غير متاح حاليًا'
+                  : 'Not available right now',
+          onTap:
+              hasEmail ? () => UrlLauncherMethods.makeMailMessage(email) : null,
         ),
         if (HiveMethods.getToken() != null) ...[
           const SizedBox(height: 10),

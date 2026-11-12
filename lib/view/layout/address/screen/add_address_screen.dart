@@ -189,8 +189,8 @@ class _AddAddressScreenState extends State<AddAddressScreen>
                       final mapHeight = keyboardOpen
                           ? 0.0
                           : (constraints.maxHeight * 0.23)
-                                .clamp(compact ? 120.0 : 150.0, 190.0)
-                                .toDouble();
+                              .clamp(compact ? 120.0 : 150.0, 190.0)
+                              .toDouble();
 
                       return Center(
                         child: ConstrainedBox(
@@ -871,27 +871,27 @@ class _AddAddressScreenState extends State<AddAddressScreen>
     final mapStreet = (place?.street ?? '').trim();
 
     context.read<AddressController>().storeAddress(
-      areaName: _areaNameEc.text.trim(),
-      apartmentNo: _apartmentNoEc.text.trim(),
-      floorNo: _floorNoEc.text.trim(),
-      streetName: _streetNameEc.text.trim(),
-      mobile: _mobileEc.text.trim(),
-      addressName: _addressNameEc.text.trim(),
-      type: addressController.indexSelectedOfficeOrHouseOrApartment,
-      lat: lat,
-      lang: lng,
-      countryName: place?.country ?? fallback?.countryName ?? '',
-      cityName: place?.locality ?? fallback?.cityName ?? '',
-      address: mapStreet.isNotEmpty
-          ? mapStreet
-          : (fallback?.address ?? _streetNameEc.text.trim()),
-      badge: _badgeEc.text.trim(),
-      onSuccess: ({int? userAddressId}) {
-        NamedNavigatorImpl.pop();
-        context.read<AuthController>().getProfile();
-        widget.args.onSuccess.call();
-      },
-    );
+          areaName: _areaNameEc.text.trim(),
+          apartmentNo: _apartmentNoEc.text.trim(),
+          floorNo: _floorNoEc.text.trim(),
+          streetName: _streetNameEc.text.trim(),
+          mobile: _mobileEc.text.trim(),
+          addressName: _addressNameEc.text.trim(),
+          type: addressController.indexSelectedOfficeOrHouseOrApartment,
+          lat: lat,
+          lang: lng,
+          countryName: place?.country ?? fallback?.countryName ?? '',
+          cityName: place?.locality ?? fallback?.cityName ?? '',
+          address: mapStreet.isNotEmpty
+              ? mapStreet
+              : (fallback?.address ?? _streetNameEc.text.trim()),
+          badge: _badgeEc.text.trim(),
+          onSuccess: ({int? userAddressId}) {
+            NamedNavigatorImpl.pop();
+            context.read<AuthController>().getProfile();
+            widget.args.onSuccess.call();
+          },
+        );
   }
 
   String _resolvedAddress(BuildContext context) {

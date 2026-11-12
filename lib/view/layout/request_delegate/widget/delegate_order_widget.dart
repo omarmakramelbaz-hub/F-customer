@@ -80,9 +80,9 @@ class DelegateOrderWidget extends StatelessWidget {
                 children: [
                   Text(
                     'pound'.tr.replaceAll(
-                      '{}',
-                      '${requestDelegateOrderModel.actualPrice}',
-                    ),
+                          '{}',
+                          '${requestDelegateOrderModel.actualPrice}',
+                        ),
                     style: AppTextStyle.text16RS(),
                   ),
                   (requestDelegateOrderModel.status == 'completed' ||

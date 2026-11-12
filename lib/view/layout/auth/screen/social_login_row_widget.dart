@@ -104,7 +104,8 @@ class SocialLoginRowWidget extends StatelessWidget {
   // ID token whose audience can be verified safely by the backend.
   static const String _googleWebClientId = String.fromEnvironment(
     'GOOGLE_WEB_CLIENT_ID',
-    defaultValue: '224648167390-efdtr7rjcnept7eiml1d642sdn8n9ki7.apps.googleusercontent.com',
+    defaultValue:
+        '224648167390-efdtr7rjcnept7eiml1d642sdn8n9ki7.apps.googleusercontent.com',
   );
 
   void _onAuthSuccess(
@@ -125,10 +126,10 @@ class SocialLoginRowWidget extends StatelessWidget {
 
   void _initPusher(BuildContext context, int id, String token) {
     context.read<PusherController>().initPusher(
-      channelName: 'private-user.$id',
-      userId: id,
-      token: token,
-    );
+          channelName: 'private-user.$id',
+          userId: id,
+          token: token,
+        );
   }
 
   String _responseMessage(dynamic data, {required String fallback}) {
@@ -403,13 +404,13 @@ class SocialLoginRowWidget extends StatelessWidget {
               label: 'Apple',
               onTap: () {
                 context.read<AuthController>().signInWithApple(
-                  onSuccess: (register, mobileVerifiedAt) =>
-                      _onAuthSuccess(context, register, mobileVerifiedAt),
-                  onFirstTime: () =>
-                      NamedNavigatorImpl.push(CreateNewAccountScreen.routeName),
-                  onHaveIdANDToken: (id, token) =>
-                      _initPusher(context, id, token),
-                );
+                      onSuccess: (register, mobileVerifiedAt) =>
+                          _onAuthSuccess(context, register, mobileVerifiedAt),
+                      onFirstTime: () => NamedNavigatorImpl.push(
+                          CreateNewAccountScreen.routeName),
+                      onHaveIdANDToken: (id, token) =>
+                          _initPusher(context, id, token),
+                    );
               },
             ),
             const SizedBox(width: 8),

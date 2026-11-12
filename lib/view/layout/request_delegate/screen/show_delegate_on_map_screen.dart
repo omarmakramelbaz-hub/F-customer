@@ -77,36 +77,34 @@ class _ShowDelegateOnMapScreenState extends State<ShowDelegateOnMapScreen>
           .read<RequestDelegateController>()
           .getAcceptedDelegate(delegateOrderId: widget.args.orderId)
           .then((_) {
-            if (mounted) {
-              setState(() {
-                acceptedDelegates =
-                    requestDelegateController.acceptedDelegate?.delegates ?? [];
-              });
-            }
-            if (widget.args.orderId != null || widget.args.orderId != 0) {
-              final order = requestDelegateController.acceptedDelegate!.order;
-              requestDelegateController.setFromLat(
-                order?.fromLat.toString() ?? '0.0',
-              );
-              requestDelegateController.setFromLan(
-                order?.fromLng.toString() ?? '0.0',
-              );
-              requestDelegateController.setToLat(
-                order?.toLat.toString() ?? '0.0',
-              );
-              requestDelegateController.setToLan(
-                order?.toLng.toString() ?? '0.0',
-              );
-              _feeEC.text = requestDelegateController
-                  .acceptedDelegate!
-                  .order!
-                  .actualPrice
-                  .toString();
-              requestDelegateController.calculateDeliveryPrice(
-                kmPrice: widget.args.kmPrice,
-              );
-            }
+        if (mounted) {
+          setState(() {
+            acceptedDelegates =
+                requestDelegateController.acceptedDelegate?.delegates ?? [];
           });
+        }
+        if (widget.args.orderId != null || widget.args.orderId != 0) {
+          final order = requestDelegateController.acceptedDelegate!.order;
+          requestDelegateController.setFromLat(
+            order?.fromLat.toString() ?? '0.0',
+          );
+          requestDelegateController.setFromLan(
+            order?.fromLng.toString() ?? '0.0',
+          );
+          requestDelegateController.setToLat(
+            order?.toLat.toString() ?? '0.0',
+          );
+          requestDelegateController.setToLan(
+            order?.toLng.toString() ?? '0.0',
+          );
+          _feeEC.text = requestDelegateController
+              .acceptedDelegate!.order!.actualPrice
+              .toString();
+          requestDelegateController.calculateDeliveryPrice(
+            kmPrice: widget.args.kmPrice,
+          );
+        }
+      });
     } catch (e) {
       // Keep polling silently while delegates are being searched.
     }
@@ -268,16 +266,14 @@ class _ShowDelegateOnMapScreenState extends State<ShowDelegateOnMapScreen>
                 if (!kIsWeb)
                   CustomGoogleMapsWidget(
                     showCircle: true,
-                    addressLat:
-                        double.tryParse(
+                    addressLat: double.tryParse(
                           '${requestDelegateController.acceptedDelegate?.order?.fromLat}',
                         ) ??
                         double.tryParse(
                           '${requestDelegateController.fromLat}',
                         ) ??
                         0.0,
-                    addressLan:
-                        double.tryParse(
+                    addressLan: double.tryParse(
                           '${requestDelegateController.acceptedDelegate?.order?.fromLng}',
                         ) ??
                         double.tryParse(
@@ -311,8 +307,7 @@ class _ShowDelegateOnMapScreenState extends State<ShowDelegateOnMapScreen>
                                   });
                                 },
                                 order: requestDelegateController
-                                    .acceptedDelegate
-                                    ?.order,
+                                    .acceptedDelegate?.order,
                                 acceptedDelegateModel:
                                     acceptedDelegates?[index],
                                 cancelReCall: _cancelTimersAndOrder,
@@ -329,9 +324,8 @@ class _ShowDelegateOnMapScreenState extends State<ShowDelegateOnMapScreen>
                   right: 0,
                   left: 0,
                   child: Directionality(
-                    textDirection: isArabic
-                        ? TextDirection.rtl
-                        : TextDirection.ltr,
+                    textDirection:
+                        isArabic ? TextDirection.rtl : TextDirection.ltr,
                     child: Container(
                       width: double.infinity,
                       decoration: const BoxDecoration(
@@ -453,8 +447,7 @@ class _ShowDelegateOnMapScreenState extends State<ShowDelegateOnMapScreen>
                                       children: [
                                         _FareStepButton(
                                           icon: Icons.remove_rounded,
-                                          enabled:
-                                              (int.tryParse(_feeEC.text) ??
+                                          enabled: (int.tryParse(_feeEC.text) ??
                                                   _minimumFare()) >
                                               _minimumFare(),
                                           onTap: () => _adjustFare(-1),
@@ -472,46 +465,44 @@ class _ShowDelegateOnMapScreenState extends State<ShowDelegateOnMapScreen>
                                             ],
                                             validator: (v) =>
                                                 validateFeeInShowDelegate(
-                                                  paymentType:
-                                                      requestDelegateController
-                                                          .acceptedDelegate
-                                                          ?.order
-                                                          ?.paymentType,
-                                                  actualPrice:
-                                                      requestDelegateController
+                                              paymentType:
+                                                  requestDelegateController
+                                                      .acceptedDelegate
+                                                      ?.order
+                                                      ?.paymentType,
+                                              actualPrice:
+                                                  requestDelegateController
                                                           .acceptedDelegate
                                                           ?.order
                                                           ?.actualPrice ??
                                                       0,
-                                                  userBalance:
-                                                      requestDelegateController
+                                              userBalance:
+                                                  requestDelegateController
                                                           .acceptedDelegate
                                                           ?.order
                                                           ?.userBalance ??
                                                       0,
-                                                  value: _feeEC.text,
-                                                  distance:
-                                                      requestDelegateController
+                                              value: _feeEC.text,
+                                              distance:
+                                                  requestDelegateController
                                                           .acceptedDelegate
                                                           ?.order
                                                           ?.expectedPrice ??
                                                       requestDelegateController
                                                           .distance ??
                                                       0,
-                                                  percentage: widget
-                                                      .args
-                                                      .shippingPercentage,
-                                                  kmPrice: widget.args.kmPrice,
-                                                ),
+                                              percentage: widget
+                                                  .args.shippingPercentage,
+                                              kmPrice: widget.args.kmPrice,
+                                            ),
                                             style: TextStyle(
                                               color: AppColors.mainAppColor,
                                               fontSize: 23,
                                               fontWeight: FontWeight.w900,
                                             ),
                                             decoration: InputDecoration(
-                                              suffixText: isArabic
-                                                  ? 'ج'
-                                                  : 'EGP',
+                                              suffixText:
+                                                  isArabic ? 'ج' : 'EGP',
                                               suffixStyle: TextStyle(
                                                 color: AppColors.mainAppColor,
                                                 fontSize: 13,
@@ -521,9 +512,9 @@ class _ShowDelegateOnMapScreenState extends State<ShowDelegateOnMapScreen>
                                               fillColor: FasakhanstaBrand.field,
                                               contentPadding:
                                                   const EdgeInsets.symmetric(
-                                                    horizontal: 12,
-                                                    vertical: 13,
-                                                  ),
+                                                horizontal: 12,
+                                                vertical: 13,
+                                              ),
                                               enabledBorder: OutlineInputBorder(
                                                 borderRadius:
                                                     BorderRadius.circular(14),
@@ -550,17 +541,15 @@ class _ShowDelegateOnMapScreenState extends State<ShowDelegateOnMapScreen>
                                               ),
                                               focusedErrorBorder:
                                                   OutlineInputBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                          14,
-                                                        ),
-                                                    borderSide:
-                                                        const BorderSide(
-                                                          color:
-                                                              FasakhanstaBrand
-                                                                  .border,
-                                                        ),
-                                                  ),
+                                                borderRadius:
+                                                    BorderRadius.circular(
+                                                  14,
+                                                ),
+                                                borderSide: const BorderSide(
+                                                  color:
+                                                      FasakhanstaBrand.border,
+                                                ),
+                                              ),
                                             ),
                                             onChanged: (_) => setState(() {}),
                                           ),
@@ -613,23 +602,23 @@ class _ShowDelegateOnMapScreenState extends State<ShowDelegateOnMapScreen>
                                               .validate()) {
                                             await requestDelegateController
                                                 .riseActualPrice(
-                                                  newPrice: int.parse(
-                                                    _feeEC.text,
-                                                  ),
-                                                  onSuccess: () async {
-                                                    requestDelegateController
-                                                        .setPriceEC(
-                                                          _feeEC.text,
-                                                        );
-                                                    requestDelegateController
-                                                        .setActualPrice(
-                                                          _feeEC.text,
-                                                        );
-                                                    _resetFiveMinuteTimer();
-                                                    _resetCheckDelegateTimer();
-                                                    await _fetchAcceptedDelegates();
-                                                  },
+                                              newPrice: int.parse(
+                                                _feeEC.text,
+                                              ),
+                                              onSuccess: () async {
+                                                requestDelegateController
+                                                    .setPriceEC(
+                                                  _feeEC.text,
                                                 );
+                                                requestDelegateController
+                                                    .setActualPrice(
+                                                  _feeEC.text,
+                                                );
+                                                _resetFiveMinuteTimer();
+                                                _resetCheckDelegateTimer();
+                                                await _fetchAcceptedDelegates();
+                                              },
+                                            );
                                           }
                                         },
                                         style: ElevatedButton.styleFrom(
@@ -667,10 +656,10 @@ class _ShowDelegateOnMapScreenState extends State<ShowDelegateOnMapScreen>
                                             orderId: widget.args.orderId!,
                                             onSuccess: () =>
                                                 NamedNavigatorImpl.push(
-                                                  clean: true,
-                                                  BottomNavigationBarScreen
-                                                      .routeName,
-                                                ),
+                                              clean: true,
+                                              BottomNavigationBarScreen
+                                                  .routeName,
+                                            ),
                                           );
                                         },
                                         style: OutlinedButton.styleFrom(

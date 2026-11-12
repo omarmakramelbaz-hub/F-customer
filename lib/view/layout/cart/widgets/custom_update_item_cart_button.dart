@@ -94,17 +94,17 @@ class _CustomCartItemButtonBottomNavigationState
                       );
                     } else if (addToCartSelected) {
                       context.read<CartController>().updateItemInCart(
-                        cartId: widget.cartId,
-                        restaurantProductId: widget.restaurantProductId,
-                        productFeature: widget.featureId,
-                        productClean: widget.productClean,
-                        qty: widget.quantity,
-                        onSuccess: () {
-                          widget.onSuccessAddItems?.call();
-                          //context.read<CartController>().getCart();
-                        },
-                        anotherCart: () {},
-                      );
+                            cartId: widget.cartId,
+                            restaurantProductId: widget.restaurantProductId,
+                            productFeature: widget.featureId,
+                            productClean: widget.productClean,
+                            qty: widget.quantity,
+                            onSuccess: () {
+                              widget.onSuccessAddItems?.call();
+                              //context.read<CartController>().getCart();
+                            },
+                            anotherCart: () {},
+                          );
                     }
                     setState(() {
                       addToCartSelected = true;

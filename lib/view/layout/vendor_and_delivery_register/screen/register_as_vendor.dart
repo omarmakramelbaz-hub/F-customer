@@ -756,8 +756,8 @@ class _DocumentUpload extends StatelessWidget {
           image == null
               ? subtitle
               : (context.languageCode == 'ar'
-                    ? 'تم رفع الصورة'
-                    : 'Image uploaded'),
+                  ? 'تم رفع الصورة'
+                  : 'Image uploaded'),
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
           textAlign: TextAlign.center,
@@ -801,8 +801,8 @@ class _DocumentUpload extends StatelessWidget {
           image == null
               ? (context.languageCode == 'ar' ? 'اضغط للرفع' : 'Tap to upload')
               : (context.languageCode == 'ar'
-                    ? 'اضغط لتغيير الصورة'
-                    : 'Tap to change image'),
+                  ? 'اضغط لتغيير الصورة'
+                  : 'Tap to change image'),
           textAlign: TextAlign.center,
           style: AppTextStyle.text11RG().copyWith(
             color: AppColors.mainAppColor,

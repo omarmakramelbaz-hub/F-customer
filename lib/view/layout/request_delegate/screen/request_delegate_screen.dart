@@ -228,8 +228,7 @@ class _RequestDelegateScreenState extends State<RequestDelegateScreen>
           Marker(
             markerId: const MarkerId('currentLocation'),
             position: LatLng(lat, lng),
-            icon:
-                _orangePinIcon ??
+            icon: _orangePinIcon ??
                 BitmapDescriptor.defaultMarkerWithHue(
                   BitmapDescriptor.hueOrange,
                 ),
@@ -246,67 +245,65 @@ class _RequestDelegateScreenState extends State<RequestDelegateScreen>
       controller.initialDelegatesOnMap();
       controller
           .getDelegatesOnMap(
-            lat: currentLat.toString(),
-            lan: currentLng.toString(),
-          )
+        lat: currentLat.toString(),
+        lan: currentLng.toString(),
+      )
           .then((_) async {
-            final delegatesOnMap = controller.delegatesOnMap;
+        final delegatesOnMap = controller.delegatesOnMap;
 
-            if (delegatesOnMap?.shippingOrderId != null &&
-                delegatesOnMap?.shippingOrderId != 0) {
-              controller.setOrderId(delegatesOnMap?.shippingOrderId ?? 0);
-              NamedNavigatorImpl.push(
-                ShowDelegateOnMapScreen.routeName,
-                arguments: ShowDelegateOnMapArgs(
-                  orderId: delegatesOnMap?.shippingOrderId,
-                  fee: int.parse(
-                    delegatesOnMap?.orderData?.actualPrice.toString() ?? '0',
-                  ),
-                  kmPrice: (delegatesOnMap?.shippingKmPrice ?? 0).round(),
-                  shippingPercentage:
-                      (delegatesOnMap?.shippingMinPricePrecentage ?? 10)
-                          .round(),
-                  distance: num.parse('${controller.distance ?? 0}'),
+        if (delegatesOnMap?.shippingOrderId != null &&
+            delegatesOnMap?.shippingOrderId != 0) {
+          controller.setOrderId(delegatesOnMap?.shippingOrderId ?? 0);
+          NamedNavigatorImpl.push(
+            ShowDelegateOnMapScreen.routeName,
+            arguments: ShowDelegateOnMapArgs(
+              orderId: delegatesOnMap?.shippingOrderId,
+              fee: int.parse(
+                delegatesOnMap?.orderData?.actualPrice.toString() ?? '0',
+              ),
+              kmPrice: (delegatesOnMap?.shippingKmPrice ?? 0).round(),
+              shippingPercentage:
+                  (delegatesOnMap?.shippingMinPricePrecentage ?? 10).round(),
+              distance: num.parse('${controller.distance ?? 0}'),
+            ),
+          );
+        } else {
+          controller.setDistance(0.0);
+        }
+
+        _recalculateFareForCurrentRoute(controller);
+
+        if (delegatesOnMap?.userData != null) {
+          try {
+            final customMarkerIcon = await BitmapDescriptor.asset(
+              const ImageConfiguration(),
+              'assets/images/motorcycleImage.png',
+              height: 50,
+            );
+            final delegateMarkers =
+                delegatesOnMap!.userData!.where((userModel) {
+              final lat = double.tryParse(userModel.lat ?? '');
+              final lng = double.tryParse(userModel.lng ?? '');
+              return lat != null &&
+                  lng != null &&
+                  _isEgyptPoint(LatLng(lat, lng));
+            }).map(
+              (userModel) => Marker(
+                icon: customMarkerIcon,
+                markerId: MarkerId(userModel.id.toString()),
+                position: LatLng(
+                  double.parse(userModel.lat!),
+                  double.parse(userModel.lng!),
                 ),
-              );
-            } else {
-              controller.setDistance(0.0);
-            }
-
-            _recalculateFareForCurrentRoute(controller);
-
-            if (delegatesOnMap?.userData != null) {
-              try {
-                final customMarkerIcon = await BitmapDescriptor.asset(
-                  const ImageConfiguration(),
-                  'assets/images/motorcycleImage.png',
-                  height: 50,
-                );
-                final delegateMarkers = delegatesOnMap!.userData!
-                    .where((userModel) {
-                      final lat = double.tryParse(userModel.lat ?? '');
-                      final lng = double.tryParse(userModel.lng ?? '');
-                      return lat != null &&
-                          lng != null &&
-                          _isEgyptPoint(LatLng(lat, lng));
-                    })
-                    .map(
-                      (userModel) => Marker(
-                        icon: customMarkerIcon,
-                        markerId: MarkerId(userModel.id.toString()),
-                        position: LatLng(
-                          double.parse(userModel.lat!),
-                          double.parse(userModel.lng!),
-                        ),
-                      ),
-                    );
-                markers.addAll(delegateMarkers);
-                if (mounted) setState(() {});
-              } catch (e) {
-                log('Failed to load delegate marker image: $e');
-              }
-            }
-          });
+              ),
+            );
+            markers.addAll(delegateMarkers);
+            if (mounted) setState(() {});
+          } catch (e) {
+            log('Failed to load delegate marker image: $e');
+          }
+        }
+      });
     });
 
     if (gmc != null) {
@@ -423,8 +420,7 @@ class _RequestDelegateScreenState extends State<RequestDelegateScreen>
       return null;
     }
 
-    final distanceKm =
-        Geolocator.distanceBetween(
+    final distanceKm = Geolocator.distanceBetween(
           pickup.latitude,
           pickup.longitude,
           delivery.latitude,
@@ -514,8 +510,7 @@ class _RequestDelegateScreenState extends State<RequestDelegateScreen>
     );
     if (_fareRouteKey == key) return;
 
-    final distanceKm =
-        Geolocator.distanceBetween(
+    final distanceKm = Geolocator.distanceBetween(
           pickup.latitude,
           pickup.longitude,
           delivery.latitude,
@@ -600,9 +595,8 @@ class _RequestDelegateScreenState extends State<RequestDelegateScreen>
   }
 
   Set<Marker> _visibleMarkers(RequestDelegateController controller) {
-    final result = markers
-        .where((marker) => _isEgyptPoint(marker.position))
-        .toSet();
+    final result =
+        markers.where((marker) => _isEgyptPoint(marker.position)).toSet();
     final pickup = _pickupPoint(controller);
     final delivery = _deliveryPoint(controller);
 
@@ -614,17 +608,15 @@ class _RequestDelegateScreenState extends State<RequestDelegateScreen>
         Marker(
           markerId: const MarkerId('pickupLocation'),
           position: pickup,
-          icon:
-              _pickupGoDriveIcon ??
+          icon: _pickupGoDriveIcon ??
               _pickupRiderIcon ??
               BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueOrange),
           anchor: const Offset(.31, 1),
           zIndex: 100,
           infoWindow: InfoWindow(
             title: 'GO Drive',
-            snippet: context.languageCode == 'ar'
-                ? 'نقطة الاستلام'
-                : 'Pickup point',
+            snippet:
+                context.languageCode == 'ar' ? 'نقطة الاستلام' : 'Pickup point',
           ),
         ),
       );
@@ -635,8 +627,7 @@ class _RequestDelegateScreenState extends State<RequestDelegateScreen>
         Marker(
           markerId: const MarkerId('deliveryDestination'),
           position: delivery,
-          icon:
-              _orangePinIcon ??
+          icon: _orangePinIcon ??
               BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueOrange),
           zIndex: 90,
           infoWindow: InfoWindow(
@@ -738,8 +729,7 @@ class _RequestDelegateScreenState extends State<RequestDelegateScreen>
   Future<void> _fitSafeEndpoints(LatLng pickup, LatLng delivery) async {
     if (gmc == null) return;
 
-    final distanceKm =
-        Geolocator.distanceBetween(
+    final distanceKm = Geolocator.distanceBetween(
           pickup.latitude,
           pickup.longitude,
           delivery.latitude,
@@ -1036,8 +1026,7 @@ class _RequestDelegateScreenState extends State<RequestDelegateScreen>
   }
 
   void _onConfirmOrder(RequestDelegateController controller) {
-    final expectedPrice =
-        _calculateExpectedFareForCurrentRoute(controller) ??
+    final expectedPrice = _calculateExpectedFareForCurrentRoute(controller) ??
         controller.priceEC.text.trim();
     final serviceActivated = controller.delegatesOnMap?.goDriveBlock == 0;
 
@@ -1064,8 +1053,8 @@ class _RequestDelegateScreenState extends State<RequestDelegateScreen>
                 arguments: ShowDelegateOnMapArgs(
                   orderId: controller.orderId,
                   fee: int.parse(controller.actualPrice ?? '0'),
-                  kmPrice: (controller.delegatesOnMap?.shippingKmPrice ?? 0)
-                      .round(),
+                  kmPrice:
+                      (controller.delegatesOnMap?.shippingKmPrice ?? 0).round(),
                   shippingPercentage:
                       (controller.delegatesOnMap?.shippingMinPricePrecentage ??
                               10)
@@ -1094,12 +1083,10 @@ class _RequestDelegateScreenState extends State<RequestDelegateScreen>
                         kmPrice:
                             (controller.delegatesOnMap?.shippingKmPrice ?? 0)
                                 .round(),
-                        shippingPercentage:
-                            (controller
-                                        .delegatesOnMap
-                                        ?.shippingMinPricePrecentage ??
-                                    10)
-                                .round(),
+                        shippingPercentage: (controller.delegatesOnMap
+                                    ?.shippingMinPricePrecentage ??
+                                10)
+                            .round(),
                         distance: num.parse('${controller.distance}'),
                       ),
                     );

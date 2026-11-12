@@ -89,12 +89,11 @@ class _ContactUsScreenState extends State<ContactUsScreen>
                                     myAccountController: myAccountController,
                                     mobile:
                                         myAccountController.setting?.mobile ??
+                                            '',
+                                    email: myAccountController.setting?.email ??
                                         '',
-                                    email:
-                                        myAccountController.setting?.email ??
-                                        '',
-                                    adminId:
-                                        myAccountController.setting?.adminId
+                                    adminId: myAccountController
+                                            .setting?.adminId
                                             .toString() ??
                                         '1',
                                   ),
@@ -178,8 +177,8 @@ class _ContactUsScreenState extends State<ContactUsScreen>
                   contactText.isNotEmpty
                       ? contactText
                       : context.languageCode == 'ar'
-                      ? 'فريق الدعم موجود لمساعدتك. اختار وسيلة التواصل المناسبة أو ابعت لنا رسالة.'
-                      : 'Our support team is ready to help. Choose a contact method or send us a message.',
+                          ? 'فريق الدعم موجود لمساعدتك. اختار وسيلة التواصل المناسبة أو ابعت لنا رسالة.'
+                          : 'Our support team is ready to help. Choose a contact method or send us a message.',
                   style: AppTextStyle.text12RG().copyWith(
                     color: _muted,
                     height: 1.5,
@@ -282,13 +281,13 @@ class _ContactUsScreenState extends State<ContactUsScreen>
               if (!_formKey.currentState!.validate()) return;
 
               context.read<MyAccountController>().storeContact(
-                name: _nameEc.text.trim(),
-                email: _emailEc.text.trim(),
-                message: _messages.text.trim(),
-                onSuccess: () {
-                  Navigator.pop(context);
-                },
-              );
+                    name: _nameEc.text.trim(),
+                    email: _emailEc.text.trim(),
+                    message: _messages.text.trim(),
+                    onSuccess: () {
+                      Navigator.pop(context);
+                    },
+                  );
             },
             text: 'send'.tr,
           ),

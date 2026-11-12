@@ -65,7 +65,7 @@ class _HelpScreenState extends State<HelpScreen> {
                             return HelpBoxWidget(
                               question:
                                   myAccountController.help[index].question ??
-                                  '',
+                                      '',
                               answer:
                                   myAccountController.help[index].answer ?? '',
                             );

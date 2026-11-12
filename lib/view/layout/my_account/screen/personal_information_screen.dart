@@ -104,7 +104,9 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen>
                               isArabic
                                   ? 'البيانات الأساسية'
                                   : 'Basic information',
-                              isArabic ? 'حدّث معلوماتك التي تظهر داخل حسابك' : 'Update the information shown in your account',
+                              isArabic
+                                  ? 'حدّث معلوماتك التي تظهر داخل حسابك'
+                                  : 'Update the information shown in your account',
                             ),
                             const SizedBox(height: 9),
                             _formCard(context, authController, isArabic),
@@ -507,8 +509,7 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen>
             validator: validateEmptyDropDown,
             apiResponse: authController.areaResponse,
             onReload: authController.getArea,
-            value:
-                _country ??
+            value: _country ??
                 (authController.area.isNotEmpty
                     ? authController.area[0].id ?? 0
                     : 0),
@@ -524,7 +525,9 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen>
           Align(
             alignment: AlignmentDirectional.centerStart,
             child: Text(
-              isArabic ? 'اختر المنطقة الصحيحة لتحسين نتائج المطاعم والتوصيل.' : 'Choose the correct area for better restaurant and delivery results.',
+              isArabic
+                  ? 'اختر المنطقة الصحيحة لتحسين نتائج المطاعم والتوصيل.'
+                  : 'Choose the correct area for better restaurant and delivery results.',
               style: AppTextStyle.text9RG(color: FasakhanstaBrand.muted),
             ),
           ),
@@ -625,14 +628,14 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen>
           if (!valid) return;
 
           context.read<AuthController>().updateUserInfo(
-            name: _nameEc.text.trim(),
-            email: _emailEc.text.trim(),
-            id: _country ?? 1,
-            onSuccess: () {
-              authController.getProfile();
-              Navigator.pop(context);
-            },
-          );
+                name: _nameEc.text.trim(),
+                email: _emailEc.text.trim(),
+                id: _country ?? 1,
+                onSuccess: () {
+                  authController.getProfile();
+                  Navigator.pop(context);
+                },
+              );
         },
         style: ElevatedButton.styleFrom(
           elevation: 0,

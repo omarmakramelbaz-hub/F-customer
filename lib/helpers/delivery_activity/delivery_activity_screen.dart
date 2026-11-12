@@ -70,8 +70,8 @@ class _DeliveryActivityScreenState extends State<DeliveryActivityScreen> {
                               provider.deliveryModel?.orderStatus,
                             ),
                             color: Colors.orange,
-                            backgroundColor: FasakhanstaBrand.orange
-                                .withOpacity(0.2),
+                            backgroundColor:
+                                FasakhanstaBrand.orange.withOpacity(0.2),
                           ),
                         ],
                       ),
@@ -101,9 +101,7 @@ class _DeliveryActivityScreenState extends State<DeliveryActivityScreen> {
                 ] else
                   Center(
                     child: ElevatedButton.icon(
-                      onPressed: () => provider
-                          .init(5657)
-                          .whenComplete(
+                      onPressed: () => provider.init(5657).whenComplete(
                             () => provider.startDelivery('Preparing'),
                           ),
                       icon: const Icon(Icons.local_pizza),

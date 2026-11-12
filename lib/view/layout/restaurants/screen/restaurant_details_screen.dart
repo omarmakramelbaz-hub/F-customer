@@ -104,8 +104,8 @@ class _RestaurantDetailsScreenState extends State<RestaurantDetailsScreen> {
           productData as Map<String, dynamic>,
         );
         context.read<RestaurantsController>().updateResturantProductOrder(
-          product,
-        );
+              product,
+            );
       }
     } catch (e, stackTrace) {
       log('Error handling product.updated: $e');
@@ -156,11 +156,11 @@ class _RestaurantDetailsScreenState extends State<RestaurantDetailsScreen> {
       if (mounted) {
         final restaurant =
             details_restaurant_model.DetailsRestaurantModel.fromJson(
-              restaurantData as Map<String, dynamic>,
-            );
-        context.read<RestaurantsController>().updateResturantDetails(
-          restaurant,
+          restaurantData as Map<String, dynamic>,
         );
+        context.read<RestaurantsController>().updateResturantDetails(
+              restaurant,
+            );
       }
     } catch (e, stackTrace) {
       log('Error handling resturant.updated: $e');
@@ -273,10 +273,8 @@ class _RestaurantDetailsScreenState extends State<RestaurantDetailsScreen> {
                           _buildBestSellers(restaurantsController),
                           _buildOfferBanner(),
                           ..._buildCategories(restaurantsController),
-                          if (restaurantsController
-                                  .detailsRestaurant
-                                  ?.highestRated
-                                  ?.isNotEmpty ==
+                          if (restaurantsController.detailsRestaurant
+                                  ?.highestRated?.isNotEmpty ==
                               true)
                             _buildChoicesAccordingToYourTaste(
                               restaurantsController,

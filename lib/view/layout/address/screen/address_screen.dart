@@ -38,9 +38,8 @@ class AddressScreen extends StatelessWidget {
           final profile = context.watch<AuthController>().profile;
 
           return Directionality(
-            textDirection: _isArabic(context)
-                ? TextDirection.rtl
-                : TextDirection.ltr,
+            textDirection:
+                _isArabic(context) ? TextDirection.rtl : TextDirection.ltr,
             child: Scaffold(
               backgroundColor: Colors.transparent,
               body: SafeArea(
@@ -79,11 +78,9 @@ class AddressScreen extends StatelessWidget {
                                         addressController.address[index];
                                     return Padding(
                                       padding: EdgeInsets.only(
-                                        bottom:
-                                            index ==
+                                        bottom: index ==
                                                 addressController
-                                                        .address
-                                                        .length -
+                                                        .address.length -
                                                     1
                                             ? 0
                                             : 12,
@@ -92,9 +89,8 @@ class AddressScreen extends StatelessWidget {
                                         address: address,
                                         selectionMode: selectForDelivery,
                                         onSelect: selectForDelivery
-                                            ? () =>
-                                                  Navigator.of(context)
-                                                      .pop(address)
+                                            ? () => Navigator.of(context)
+                                                .pop(address)
                                             : null,
                                       ),
                                     );
@@ -131,11 +127,11 @@ class AddressScreen extends StatelessWidget {
                       label: Text(
                         selectForDelivery
                             ? (_isArabic(context)
-                                  ? 'إضافة عنوان جديد'
-                                  : 'Add new address')
+                                ? 'إضافة عنوان جديد'
+                                : 'Add new address')
                             : (_isArabic(context)
-                                  ? 'إضافة عنوان'
-                                  : 'Add address'),
+                                ? 'إضافة عنوان'
+                                : 'Add address'),
                         style: const TextStyle(
                           fontSize: 17,
                           fontWeight: FontWeight.w800,
@@ -167,8 +163,8 @@ class AddressScreen extends StatelessWidget {
             child: Text(
               selectForDelivery
                   ? (_isArabic(context)
-                        ? 'اختيار عنوان محفوظ'
-                        : 'Choose saved address')
+                      ? 'اختيار عنوان محفوظ'
+                      : 'Choose saved address')
                   : (_isArabic(context) ? 'العناوين' : 'Addresses'),
               textAlign: TextAlign.center,
               style: const TextStyle(
@@ -319,8 +315,8 @@ class AddressScreen extends StatelessWidget {
         Text(
           selectForDelivery
               ? (_isArabic(context)
-                    ? 'اختر عنوان التوصيل'
-                    : 'Choose delivery address')
+                  ? 'اختر عنوان التوصيل'
+                  : 'Choose delivery address')
               : (_isArabic(context) ? 'عناويني المحفوظة' : 'Saved addresses'),
           style: const TextStyle(
             color: _text,

@@ -169,8 +169,7 @@ class _ImageBuild extends StatelessWidget {
 
       case ImageType.svg:
         final lowerPath = path.toLowerCase();
-        final isRasterAsset =
-            lowerPath.endsWith('.png') ||
+        final isRasterAsset = lowerPath.endsWith('.png') ||
             lowerPath.endsWith('.jpg') ||
             lowerPath.endsWith('.jpeg') ||
             lowerPath.endsWith('.webp');
@@ -189,9 +188,8 @@ class _ImageBuild extends StatelessWidget {
           fit: fit ?? BoxFit.contain,
           width: width,
           height: height,
-          colorFilter: color != null
-              ? ColorFilter.mode(color!, BlendMode.srcIn)
-              : null,
+          colorFilter:
+              color != null ? ColorFilter.mode(color!, BlendMode.srcIn) : null,
           placeholderBuilder: (context) =>
               CupertinoActivityIndicator(color: AppColors.mainAppColor),
         );

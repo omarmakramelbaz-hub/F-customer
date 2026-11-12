@@ -72,9 +72,9 @@ class FavoriteWidget extends StatelessWidget {
           child: InkWell(
             onTap: () {
               context.read<FavoriteController>().addOrRemoveToWishlist(
-                id: favoriteModel?.id ?? 0,
-                onSuccess: () {},
-              );
+                    id: favoriteModel?.id ?? 0,
+                    onSuccess: () {},
+                  );
             },
             child: CircleAvatar(
               radius: 18,

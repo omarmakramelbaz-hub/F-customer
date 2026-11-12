@@ -127,7 +127,7 @@ class PaymentRDBottomSheet extends StatelessWidget {
                               option: option,
                               selected:
                                   requestDelegateController.selectedPayment ==
-                                  option.value,
+                                      option.value,
                               onTap: () => requestDelegateController
                                   .setSelectedPayment(option.value),
                             ),
@@ -209,9 +209,8 @@ class _PaymentOptionTile extends StatelessWidget {
                 : FasakhanstaBrand.surface,
             borderRadius: BorderRadius.circular(17),
             border: Border.all(
-              color: selected
-                  ? AppColors.mainAppColor
-                  : FasakhanstaBrand.border,
+              color:
+                  selected ? AppColors.mainAppColor : FasakhanstaBrand.border,
               width: selected ? 1.3 : 1,
             ),
           ),

@@ -87,16 +87,16 @@ class _RestaurantsScreenState extends State<RestaurantsScreen> {
       if (!mounted) return;
 
       context.read<RestaurantsController>().updateResturant(
-        RestaurantsModel.fromJson(resturantData),
-      );
+            RestaurantsModel.fromJson(resturantData),
+          );
       context.read<RestaurantsController>().updatePreviousResturant(
-        PreviousOrderHomeModel.fromJson(resturantData),
-      );
+            PreviousOrderHomeModel.fromJson(resturantData),
+          );
 
       context.read<HomeController>().getRestaurantsNearYou(
-        lat: HiveMethods.getLat(),
-        lng: HiveMethods.getLan(),
-      );
+            lat: HiveMethods.getLat(),
+            lng: HiveMethods.getLan(),
+          );
     } catch (e, stackTrace) {
       log('Error handling restaurant update: $e');
       log('Stack trace: $stackTrace');
@@ -191,8 +191,7 @@ class _RestaurantsScreenState extends State<RestaurantsScreen> {
                     ),
                     itemBuilder: (context, index) {
                       final address = addresses[index];
-                      final selected =
-                          address.id ==
+                      final selected = address.id ==
                           (auth.selectedAddressId ??
                               HiveMethods.getSelectedCity());
                       return ListTile(
@@ -297,9 +296,9 @@ class _RestaurantsScreenState extends State<RestaurantsScreen> {
     HiveMethods.updateSelectedCityAreaId(address.cityId ?? 0);
 
     context.read<HomeController>().getRestaurantsNearYou(
-      lat: HiveMethods.getLat(),
-      lng: HiveMethods.getLan(),
-    );
+          lat: HiveMethods.getLat(),
+          lng: HiveMethods.getLan(),
+        );
     setState(() {});
   }
 
@@ -320,9 +319,8 @@ class _RestaurantsScreenState extends State<RestaurantsScreen> {
       result.sort((a, b) => (b.avgRate ?? 0).compareTo(a.avgRate ?? 0));
     } else if (_selectedFilter == 'الأسرع توصيلاً') {
       result.sort(
-        (a, b) =>
-            _deliveryMinutes(a.deliveryTime)
-                .compareTo(_deliveryMinutes(b.deliveryTime)),
+        (a, b) => _deliveryMinutes(a.deliveryTime)
+            .compareTo(_deliveryMinutes(b.deliveryTime)),
       );
     } else if (_selectedFilter == 'الأقرب') {
       result.sort((a, b) {
@@ -354,8 +352,7 @@ class _RestaurantsScreenState extends State<RestaurantsScreen> {
     const earthRadius = 6371.0;
     final dLat = _toRadians(lat2 - userLat);
     final dLng = _toRadians(lng2 - userLng);
-    final a =
-        math.sin(dLat / 2) * math.sin(dLat / 2) +
+    final a = math.sin(dLat / 2) * math.sin(dLat / 2) +
         math.cos(_toRadians(userLat)) *
             math.cos(_toRadians(lat2)) *
             math.sin(dLng / 2) *
@@ -384,10 +381,8 @@ class _RestaurantsScreenState extends State<RestaurantsScreen> {
       restaurantsController.restaurant,
     );
     final nearbyRestaurants = homeController.restaurantsNearYou;
-    final nearbyIds = nearbyRestaurants
-        .map((e) => e.id)
-        .whereType<int>()
-        .toSet();
+    final nearbyIds =
+        nearbyRestaurants.map((e) => e.id).whereType<int>().toSet();
 
     return Scaffold(
       backgroundColor: Colors.transparent,
@@ -432,7 +427,8 @@ class _RestaurantsScreenState extends State<RestaurantsScreen> {
                           _EmptySection(
                             icon: Icons.delivery_dining_rounded,
                             title: 'لا توجد مطاعم توصل إلى موقعك حالياً',
-                            subtitle: 'جرّب تغيير عنوان التوصيل أو تصفح كل المطاعم بالأسفل',
+                            subtitle:
+                                'جرّب تغيير عنوان التوصيل أو تصفح كل المطاعم بالأسفل',
                           )
                         else
                           SizedBox(
@@ -606,8 +602,7 @@ class _RestaurantsScreenState extends State<RestaurantsScreen> {
                                   restaurant.lat,
                                   restaurant.lng,
                                 ),
-                                deliversHere:
-                                    restaurant.id != null &&
+                                deliversHere: restaurant.id != null &&
                                     nearbyIds.contains(restaurant.id),
                                 onTap: () => _openRestaurant(
                                   restaurant.id,

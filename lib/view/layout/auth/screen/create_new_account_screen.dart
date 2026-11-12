@@ -118,8 +118,7 @@ class _CreateNewAccountScreenState extends State<CreateNewAccountScreen>
                         validator: validateEmptyDropDown,
                         apiResponse: authController.areaResponse,
                         onReload: () => authController.getArea(),
-                        value:
-                            _country ??
+                        value: _country ??
                             (authController.area.isNotEmpty
                                 ? authController.area[0].id ?? 0
                                 : 0),
@@ -144,22 +143,24 @@ class _CreateNewAccountScreenState extends State<CreateNewAccountScreen>
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
                             context.read<AuthController>().updateUserInfo(
-                              name: _nameEc.text,
-                              email: _emailEc.text,
-                              id: _country ?? authController.area.first.id ?? 0,
-                              onSuccess: () {
-                                NamedNavigatorImpl.push(
-                                  ShareLocationScreen.routeName,
+                                  name: _nameEc.text,
+                                  email: _emailEc.text,
+                                  id: _country ??
+                                      authController.area.first.id ??
+                                      0,
+                                  onSuccess: () {
+                                    NamedNavigatorImpl.push(
+                                      ShareLocationScreen.routeName,
+                                    );
+                                  },
+                                  onHaveIdANDToken: (id, token) {
+                                    context.read<PusherController>().initPusher(
+                                          channelName: 'private-user.$id',
+                                          userId: id,
+                                          token: token,
+                                        );
+                                  },
                                 );
-                              },
-                              onHaveIdANDToken: (id, token) {
-                                context.read<PusherController>().initPusher(
-                                  channelName: 'private-user.$id',
-                                  userId: id,
-                                  token: token,
-                                );
-                              },
-                            );
                           }
                           // NavigatorMethods.pushNamed(
                           //   context,

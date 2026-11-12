@@ -76,8 +76,7 @@ class _WalletScreenState extends State<WalletScreen> {
     return Consumer2<WalletController, MyAccountController>(
       builder: (context, walletController, myAccountController, _) {
         final authController = context.read<AuthController>();
-        final balance =
-            pusherWalletAmount ??
+        final balance = pusherWalletAmount ??
             walletController.wallet?.balance?.toStringAsFixed(2) ??
             '0.00';
 
@@ -152,8 +151,8 @@ class _WalletScreenState extends State<WalletScreen> {
           ),
           bottomNavigationBar: Padding(
             padding: const EdgeInsets.fromLTRB(20, 8, 20, 18),
-            child:
-                (myAccountController.setting?.walletCardActivate == 'false' &&
+            child: (myAccountController.setting?.walletCardActivate ==
+                        'false' &&
                     myAccountController.setting?.paymentCardActivate == 'false')
                 ? const SizedBox()
                 : CustomButton(
@@ -288,10 +287,10 @@ class _WalletScreenState extends State<WalletScreen> {
   }
 
   Widget _actionDivider() => Container(
-    width: 1,
-    height: 72,
-    color: AppColors.greyColor.withValues(alpha: .12),
-  );
+        width: 1,
+        height: 72,
+        color: AppColors.greyColor.withValues(alpha: .12),
+      );
 
   Widget _buildWalletOffer() {
     return Container(

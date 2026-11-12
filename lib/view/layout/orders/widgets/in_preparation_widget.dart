@@ -135,9 +135,9 @@ class InPreparationWidget extends StatelessWidget {
                         7.sbH,
                         Text(
                           'pound'.tr.replaceAll(
-                            '{}',
-                            '${orders.grandTotal ?? 0}',
-                          ),
+                                '{}',
+                                '${orders.grandTotal ?? 0}',
+                              ),
                           style: AppTextStyle.text16BS().copyWith(
                             color: AppColors.mainAppColor,
                           ),
@@ -198,8 +198,7 @@ class InPreparationWidget extends StatelessWidget {
           ),
         ),
         ConditionBuilder(
-          when:
-              orders.status == 'pending' ||
+          when: orders.status == 'pending' ||
               (orders.status == 'another_delegate' &&
                   orders.paymentType == 'cash'),
           builder: (_) => _ActionButton(
@@ -209,9 +208,9 @@ class InPreparationWidget extends StatelessWidget {
               context,
               message: 'didYouWantToCancelThisOrder'.tr,
               onPressed: () => context.read<OrdersController>().cancelOrder(
-                orderId: orders.id!,
-                onSuccess: () => NamedNavigatorImpl.pop(),
-              ),
+                    orderId: orders.id!,
+                    onSuccess: () => NamedNavigatorImpl.pop(),
+                  ),
             ),
           ),
         ),
@@ -226,9 +225,9 @@ class InPreparationWidget extends StatelessWidget {
   }
 
   void _openTracking(BuildContext context) => NamedNavigatorImpl.push(
-    TrackingYourOrderScreen.routeName,
-    arguments: TrackingYourOrderArgs(id: orders.id ?? 0),
-  );
+        TrackingYourOrderScreen.routeName,
+        arguments: TrackingYourOrderArgs(id: orders.id ?? 0),
+      );
 
   Color _statusColor(String? status) {
     if (status == 'completed') return Colors.green;
@@ -360,27 +359,27 @@ class _ActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => InkWell(
-    onTap: onTap,
-    borderRadius: BorderRadius.circular(14),
-    child: Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-      decoration: BoxDecoration(
-        color: AppColors.mainAppColor.withValues(alpha: .08),
+        onTap: onTap,
         borderRadius: BorderRadius.circular(14),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 15, color: AppColors.mainAppColor),
-          const SizedBox(width: 5),
-          Text(
-            text,
-            style: AppTextStyle.text11BS().copyWith(
-              color: AppColors.mainAppColor,
-            ),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+          decoration: BoxDecoration(
+            color: AppColors.mainAppColor.withValues(alpha: .08),
+            borderRadius: BorderRadius.circular(14),
           ),
-        ],
-      ),
-    ),
-  );
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(icon, size: 15, color: AppColors.mainAppColor),
+              const SizedBox(width: 5),
+              Text(
+                text,
+                style: AppTextStyle.text11BS().copyWith(
+                  color: AppColors.mainAppColor,
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
 }

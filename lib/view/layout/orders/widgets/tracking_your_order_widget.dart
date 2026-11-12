@@ -43,10 +43,10 @@ class TrackingYourOrderWidget extends StatelessWidget {
     final activeStage = isDelivered
         ? 3
         : isShipped
-        ? 2
-        : isPreparing
-        ? 1
-        : 0;
+            ? 2
+            : isPreparing
+                ? 1
+                : 0;
 
     final stages = <_StatusStage>[
       _StatusStage('accepted'.tr, AppImages.checkIcon, activeStage >= 0),

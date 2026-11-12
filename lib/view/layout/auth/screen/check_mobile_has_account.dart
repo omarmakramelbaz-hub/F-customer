@@ -249,30 +249,30 @@ class _CheckMobileHasAccountState extends State<CheckMobileHasAccount>
     final mobile = _mobileEC.text.removeZero();
 
     context.read<AuthController>().checkMobileHasAccount(
-      mobile: mobile,
-      countryCode: _country!.phoneCode,
-      onSuccess: (email) {
-        CommonMethods.showChooseDialog(
-          context,
-          message: 'weWillSendCodeToThisEmail'.translate(args: [email]),
-          onPressed: () {
-            context.read<AuthController>().forgetPassword(
-              email: email,
-              mobile: mobile,
-              onSuccess: () {
-                NamedNavigatorImpl.pop();
-                NamedNavigatorImpl.push(
-                  ChangePasswordCheckCodeScreen.routeName,
-                  arguments: ChangePasswordCheckCodeArguments(
-                    email: email,
-                    mobile: mobile,
-                  ),
-                );
+          mobile: mobile,
+          countryCode: _country!.phoneCode,
+          onSuccess: (email) {
+            CommonMethods.showChooseDialog(
+              context,
+              message: 'weWillSendCodeToThisEmail'.translate(args: [email]),
+              onPressed: () {
+                context.read<AuthController>().forgetPassword(
+                      email: email,
+                      mobile: mobile,
+                      onSuccess: () {
+                        NamedNavigatorImpl.pop();
+                        NamedNavigatorImpl.push(
+                          ChangePasswordCheckCodeScreen.routeName,
+                          arguments: ChangePasswordCheckCodeArguments(
+                            email: email,
+                            mobile: mobile,
+                          ),
+                        );
+                      },
+                    );
               },
             );
           },
         );
-      },
-    );
   }
 }

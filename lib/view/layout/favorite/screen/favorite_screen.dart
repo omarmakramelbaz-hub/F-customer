@@ -51,11 +51,9 @@ class FavoriteScreen extends StatelessWidget {
                               const SizedBox(height: 18),
                               _sectionHeader(controller.favorite.length),
                               const SizedBox(height: 10),
-                              for (
-                                var index = 0;
-                                index < controller.favorite.length;
-                                index++
-                              ) ...[
+                              for (var index = 0;
+                                  index < controller.favorite.length;
+                                  index++) ...[
                                 _FavoriteRestaurantCard(
                                   model: controller.favorite[index],
                                   onRemove: () {
@@ -337,12 +335,11 @@ class _FavoriteRestaurantCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final restaurantId = model.id ?? model.resturantId ?? model.vendorId ?? 0;
     final statusInfo = _restaurantStatus(context, model.status, model.openAt);
-    final title = (model.name ?? model.vendorName ?? model.resturantName ?? '')
-        .trim();
+    final title =
+        (model.name ?? model.vendorName ?? model.resturantName ?? '').trim();
     final address = (model.address ?? '').trim();
-    final image = model.bgImage?.isNotEmpty == true
-        ? model.bgImage!
-        : (model.logo ?? '');
+    final image =
+        model.bgImage?.isNotEmpty == true ? model.bgImage! : (model.logo ?? '');
 
     return Material(
       color: FasakhanstaBrand.surface,
@@ -352,9 +349,9 @@ class _FavoriteRestaurantCard extends StatelessWidget {
         onTap: restaurantId == 0
             ? null
             : () => NamedNavigatorImpl.push(
-                RestaurantDetailsScreen.routeName,
-                arguments: RestaurantDetailsArgs(id: restaurantId),
-              ),
+                  RestaurantDetailsScreen.routeName,
+                  arguments: RestaurantDetailsArgs(id: restaurantId),
+                ),
         child: Container(
           height: 116,
           padding: const EdgeInsets.all(8),

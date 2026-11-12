@@ -56,45 +56,36 @@ class _ProductInCartDetailsScreenState
           .read<CartController>()
           .getCartItemDetails(id: widget.args.cartItemId)
           .then((v) {
-            productQuantity =
-                context.read<CartController>().cartItemDetails?.qty ?? 1;
-            productFeatureId = context
+        productQuantity =
+            context.read<CartController>().cartItemDetails?.qty ?? 1;
+        productFeatureId =
+            context.read<CartController>().cartItemDetails?.productFeature;
+        productFeature = context
                 .read<CartController>()
                 .cartItemDetails
-                ?.productFeature;
-            productFeature =
-                context
-                    .read<CartController>()
-                    .cartItemDetails
-                    ?.productFeatureName ??
-                '';
-            _chooseQuantity =
-                getProductFeatureNameValueIndex(
-                  (context
-                      .read<CartController>()
-                      .cartItemDetails
-                      ?.productFeatureName),
-                ) ??
-                0;
-            quantity =
-                getProductQuantity(
-                  (context
-                      .read<CartController>()
-                      .cartItemDetails
-                      ?.productFeatureName),
-                ) ??
-                1;
+                ?.productFeatureName ??
+            '';
+        _chooseQuantity = getProductFeatureNameValueIndex(
+              (context
+                  .read<CartController>()
+                  .cartItemDetails
+                  ?.productFeatureName),
+            ) ??
+            0;
+        quantity = getProductQuantity(
+              (context
+                  .read<CartController>()
+                  .cartItemDetails
+                  ?.productFeatureName),
+            ) ??
+            1;
 
-            _selectedRadio =
-                selectedRadio(
-                  (context
-                          .read<CartController>()
-                          .cartItemDetails
-                          ?.productClean ??
-                      ''),
-                ) ??
-                0;
-          });
+        _selectedRadio = selectedRadio(
+              (context.read<CartController>().cartItemDetails?.productClean ??
+                  ''),
+            ) ??
+            0;
+      });
       setState(() {});
     });
 
@@ -116,18 +107,14 @@ class _ProductInCartDetailsScreenState
             ) ==
             true) {
           defaultFeature = cartController
-              .cartItemDetails
-              ?.resturantProduct
-              ?.features
+              .cartItemDetails?.resturantProduct?.features
               ?.firstWhere((e) => e.name == 'kilo')
               .id;
         } else if (cartController.cartItemDetails?.resturantProduct?.features
                 ?.any((e) => e.name == 'large') ==
             true) {
           defaultFeature = cartController
-              .cartItemDetails
-              ?.resturantProduct
-              ?.features
+              .cartItemDetails?.resturantProduct?.features
               ?.firstWhere((e) => e.name == 'large')
               .id;
         } else {
@@ -152,11 +139,8 @@ class _ProductInCartDetailsScreenState
                           bottomRight: Radius.circular(20),
                         ),
                         child: CustomNetworkImage(
-                          imageUrl:
-                              cartController
-                                  .cartItemDetails
-                                  ?.resturantProduct
-                                  ?.productImage ??
+                          imageUrl: cartController.cartItemDetails
+                                  ?.resturantProduct?.productImage ??
                               '',
                           height: 200,
                           width: double.infinity,
@@ -210,8 +194,8 @@ class _ProductInCartDetailsScreenState
                                           child: InkWell(
                                             onTap: () =>
                                                 NamedNavigatorImpl.push(
-                                                  CartScreen.routeName,
-                                                ),
+                                              CartScreen.routeName,
+                                            ),
                                             child: Stack(
                                               clipBehavior: Clip.none,
                                               children: [
@@ -228,21 +212,20 @@ class _ProductInCartDetailsScreenState
                                                     child: Text(
                                                       context
                                                               .watch<
-                                                                CartController
-                                                              >()
+                                                                  CartController>()
                                                               .cart
                                                               ?.carts
                                                               ?.length
                                                               .toString() ??
                                                           '0',
-                                                      style: AppTextStyle.text16BW()
+                                                      style: AppTextStyle
+                                                              .text16BW()
                                                           .copyWith(
-                                                            height: 1.4,
-                                                            fontSize: 14,
-                                                            color:
-                                                                FasakhanstaBrand
-                                                                    .text,
-                                                          ),
+                                                        height: 1.4,
+                                                        fontSize: 14,
+                                                        color: FasakhanstaBrand
+                                                            .text,
+                                                      ),
                                                     ),
                                                   ),
                                                 ),
@@ -269,18 +252,14 @@ class _ProductInCartDetailsScreenState
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          cartController
-                                  .cartItemDetails
-                                  ?.resturantProduct
+                          cartController.cartItemDetails?.resturantProduct
                                   ?.productName ??
                               '',
                           style: AppTextStyle.text18BS(),
                         ),
                         const SizedBox(height: 12),
                         Text(
-                          cartController
-                                  .cartItemDetails
-                                  ?.resturantProduct
+                          cartController.cartItemDetails?.resturantProduct
                                   ?.productDescription ??
                               '',
                           textAlign: TextAlign.justify,
@@ -288,27 +267,18 @@ class _ProductInCartDetailsScreenState
                         ),
 
                         //============================================ Quantity Column =================================
-                        (cartController
-                                            .cartItemDetails
-                                            ?.resturantProduct
-                                            ?.features
-                                            ?.isEmpty !=
+                        (cartController.cartItemDetails?.resturantProduct
+                                            ?.features?.isEmpty !=
                                         true &&
-                                    cartController
-                                            .cartItemDetails
-                                            ?.resturantProduct
-                                            ?.features
+                                    cartController.cartItemDetails
+                                            ?.resturantProduct?.features
                                             ?.any((e) => e.name == 'kilo') ==
                                         true ||
-                                cartController
-                                        .cartItemDetails
-                                        ?.resturantProduct
+                                cartController.cartItemDetails?.resturantProduct
                                         ?.features
                                         ?.any((e) => e.name == 'half') ==
                                     true ||
-                                cartController
-                                        .cartItemDetails
-                                        ?.resturantProduct
+                                cartController.cartItemDetails?.resturantProduct
                                         ?.features
                                         ?.any((e) => e.name == 'quarter') ==
                                     true)
@@ -346,16 +316,14 @@ class _ProductInCartDetailsScreenState
                                           onTap: () {
                                             setState(() {
                                               _chooseQuantity = index;
-                                              productFeatureId =
-                                                  cartController
+                                              productFeatureId = cartController
                                                       .cartItemDetails
                                                       ?.resturantProduct
                                                       ?.features?[index]
                                                       .id ??
                                                   0;
 
-                                              productFeature =
-                                                  cartController
+                                              productFeature = cartController
                                                       .cartItemDetails
                                                       ?.resturantProduct
                                                       ?.features?[index]
@@ -379,16 +347,16 @@ class _ProductInCartDetailsScreenState
                                               Container(
                                                 padding:
                                                     const EdgeInsets.symmetric(
-                                                      horizontal: 18,
-                                                      vertical: 8,
-                                                    ),
+                                                  horizontal: 18,
+                                                  vertical: 8,
+                                                ),
                                                 height: 37,
                                                 decoration: BoxDecoration(
-                                                  color:
-                                                      _chooseQuantity == index
+                                                  color: _chooseQuantity ==
+                                                          index
                                                       ? AppColors.mainAppColor
                                                       : FasakhanstaBrand
-                                                            .surface,
+                                                          .surface,
                                                   borderRadius:
                                                       BorderRadius.circular(8),
                                                   border: Border.all(
@@ -401,32 +369,37 @@ class _ProductInCartDetailsScreenState
                                                     cartController
                                                                 .cartItemDetails
                                                                 ?.resturantProduct
-                                                                ?.features?[index]
+                                                                ?.features?[
+                                                                    index]
                                                                 .name ==
                                                             'kilo'
                                                         ? 'kilo'.tr
                                                         : cartController
-                                                                  .cartItemDetails
-                                                                  ?.resturantProduct
-                                                                  ?.features?[index]
-                                                                  .name ==
-                                                              'half'
-                                                        ? 'half'.tr
-                                                        : cartController
-                                                                  .cartItemDetails
-                                                                  ?.resturantProduct
-                                                                  ?.features?[index]
-                                                                  .name ==
-                                                              'quarter'
-                                                        ? 'quarter'.tr
-                                                        : '',
+                                                                    .cartItemDetails
+                                                                    ?.resturantProduct
+                                                                    ?.features?[
+                                                                        index]
+                                                                    .name ==
+                                                                'half'
+                                                            ? 'half'.tr
+                                                            : cartController
+                                                                        .cartItemDetails
+                                                                        ?.resturantProduct
+                                                                        ?.features?[
+                                                                            index]
+                                                                        .name ==
+                                                                    'quarter'
+                                                                ? 'quarter'.tr
+                                                                : '',
                                                     style:
                                                         _chooseQuantity == index
-                                                        ? AppTextStyle.text18MW()
-                                                              .copyWith(
+                                                            ? AppTextStyle
+                                                                    .text18MW()
+                                                                .copyWith(
                                                                 fontSize: 16,
                                                               )
-                                                        : AppTextStyle.text16MS(),
+                                                            : AppTextStyle
+                                                                .text16MS(),
                                                   ),
                                                 ),
                                               ),
@@ -458,9 +431,7 @@ class _ProductInCartDetailsScreenState
                           ],
                         ),
                         const SizedBox(height: 22),
-                        cartController
-                                    .cartItemDetails
-                                    ?.resturantProduct
+                        cartController.cartItemDetails?.resturantProduct
                                     ?.productPrice !=
                                 0
                             ? Row(
@@ -475,9 +446,8 @@ class _ProductInCartDetailsScreenState
                                         _selectedRadio = value!;
                                       });
                                       context
-                                              .read<CartController>()
-                                              .totalCountAddTCart =
-                                          null;
+                                          .read<CartController>()
+                                          .totalCountAddTCart = null;
                                     },
                                   ),
                                   Text(
@@ -489,8 +459,7 @@ class _ProductInCartDetailsScreenState
                                         : AppTextStyle.text16MG(),
                                   ),
                                   const Spacer(),
-                                  cartController
-                                              .cartItemDetails
+                                  cartController.cartItemDetails
                                               ?.resturantProduct ==
                                           null
                                       ? const SizedBox()
@@ -505,9 +474,7 @@ class _ProductInCartDetailsScreenState
                             : const SizedBox(),
                         Column(
                           children: [
-                            cartController
-                                        .cartItemDetails
-                                        ?.resturantProduct
+                            cartController.cartItemDetails?.resturantProduct
                                         ?.extraClean !=
                                     0
                                 ? Row(
@@ -522,9 +489,8 @@ class _ProductInCartDetailsScreenState
                                             _selectedRadio = value!;
                                           });
                                           context
-                                                  .read<CartController>()
-                                                  .totalCountAddTCart =
-                                              null;
+                                              .read<CartController>()
+                                              .totalCountAddTCart = null;
                                         },
                                       ),
                                       Text(
@@ -536,8 +502,7 @@ class _ProductInCartDetailsScreenState
                                             : AppTextStyle.text16MG(),
                                       ),
                                       const Spacer(),
-                                      cartController
-                                                  .cartItemDetails
+                                      cartController.cartItemDetails
                                                   ?.resturantProduct ==
                                               null
                                           ? const SizedBox()
@@ -550,9 +515,7 @@ class _ProductInCartDetailsScreenState
                                     ],
                                   )
                                 : const SizedBox(),
-                            cartController
-                                        .cartItemDetails
-                                        ?.resturantProduct
+                            cartController.cartItemDetails?.resturantProduct
                                         ?.extraClear !=
                                     0
                                 ? Row(
@@ -567,9 +530,8 @@ class _ProductInCartDetailsScreenState
                                             _selectedRadio = value!;
                                           });
                                           context
-                                                  .read<CartController>()
-                                                  .totalCountAddTCart =
-                                              null;
+                                              .read<CartController>()
+                                              .totalCountAddTCart = null;
                                         },
                                       ),
                                       Text(
@@ -581,8 +543,7 @@ class _ProductInCartDetailsScreenState
                                             : AppTextStyle.text16MG(),
                                       ),
                                       const Spacer(),
-                                      cartController
-                                                  .cartItemDetails
+                                      cartController.cartItemDetails
                                                   ?.resturantProduct ==
                                               null
                                           ? const SizedBox()
@@ -595,9 +556,7 @@ class _ProductInCartDetailsScreenState
                                     ],
                                   )
                                 : const SizedBox(),
-                            cartController
-                                        .cartItemDetails
-                                        ?.resturantProduct
+                            cartController.cartItemDetails?.resturantProduct
                                         ?.extraLarge !=
                                     0
                                 ? Row(
@@ -612,16 +571,13 @@ class _ProductInCartDetailsScreenState
                                             _selectedRadio = value!;
                                           });
                                           context
-                                                  .read<CartController>()
-                                                  .totalCountAddTCart =
-                                              null;
-                                          if (cartController
-                                                  .cartItemDetails
-                                                  ?.resturantProduct
-                                                  ?.features
+                                              .read<CartController>()
+                                              .totalCountAddTCart = null;
+                                          if (cartController.cartItemDetails
+                                                  ?.resturantProduct?.features
                                                   ?.any(
-                                                    (e) => e.name == 'large',
-                                                  ) ==
+                                                (e) => e.name == 'large',
+                                              ) ==
                                               true) {
                                             productFeatureId = cartController
                                                 .cartItemDetails
@@ -643,8 +599,7 @@ class _ProductInCartDetailsScreenState
                                             : AppTextStyle.text16MG(),
                                       ),
                                       const Spacer(),
-                                      cartController
-                                                  .cartItemDetails
+                                      cartController.cartItemDetails
                                                   ?.resturantProduct ==
                                               null
                                           ? const SizedBox()
@@ -657,9 +612,7 @@ class _ProductInCartDetailsScreenState
                                     ],
                                   )
                                 : const SizedBox(),
-                            cartController
-                                        .cartItemDetails
-                                        ?.resturantProduct
+                            cartController.cartItemDetails?.resturantProduct
                                         ?.extraMedium !=
                                     0
                                 ? Row(
@@ -674,16 +627,13 @@ class _ProductInCartDetailsScreenState
                                             _selectedRadio = value!;
                                           });
                                           context
-                                                  .read<CartController>()
-                                                  .totalCountAddTCart =
-                                              null;
-                                          if (cartController
-                                                  .cartItemDetails
-                                                  ?.resturantProduct
-                                                  ?.features
+                                              .read<CartController>()
+                                              .totalCountAddTCart = null;
+                                          if (cartController.cartItemDetails
+                                                  ?.resturantProduct?.features
                                                   ?.any(
-                                                    (e) => e.name == 'medium',
-                                                  ) ==
+                                                (e) => e.name == 'medium',
+                                              ) ==
                                               true) {
                                             productFeatureId = cartController
                                                 .cartItemDetails
@@ -705,8 +655,7 @@ class _ProductInCartDetailsScreenState
                                             : AppTextStyle.text16MG(),
                                       ),
                                       const Spacer(),
-                                      cartController
-                                                  .cartItemDetails
+                                      cartController.cartItemDetails
                                                   ?.resturantProduct ==
                                               null
                                           ? const SizedBox()
@@ -719,9 +668,7 @@ class _ProductInCartDetailsScreenState
                                     ],
                                   )
                                 : const SizedBox(),
-                            cartController
-                                        .cartItemDetails
-                                        ?.resturantProduct
+                            cartController.cartItemDetails?.resturantProduct
                                         ?.extraVacuim !=
                                     0
                                 ? Row(
@@ -736,16 +683,13 @@ class _ProductInCartDetailsScreenState
                                             _selectedRadio = value!;
                                           });
                                           context
-                                                  .read<CartController>()
-                                                  .totalCountAddTCart =
-                                              null;
-                                          if (cartController
-                                                  .cartItemDetails
-                                                  ?.resturantProduct
-                                                  ?.features
+                                              .read<CartController>()
+                                              .totalCountAddTCart = null;
+                                          if (cartController.cartItemDetails
+                                                  ?.resturantProduct?.features
                                                   ?.any(
-                                                    (e) => e.name == 'vacuim',
-                                                  ) ==
+                                                (e) => e.name == 'vacuim',
+                                              ) ==
                                               true) {
                                             productFeatureId = cartController
                                                 .cartItemDetails
@@ -767,8 +711,7 @@ class _ProductInCartDetailsScreenState
                                             : AppTextStyle.text16MG(),
                                       ),
                                       const Spacer(),
-                                      cartController
-                                                  .cartItemDetails
+                                      cartController.cartItemDetails
                                                   ?.resturantProduct ==
                                               null
                                           ? const SizedBox()
@@ -781,9 +724,7 @@ class _ProductInCartDetailsScreenState
                                     ],
                                   )
                                 : const SizedBox(),
-                            cartController
-                                        .cartItemDetails
-                                        ?.resturantProduct
+                            cartController.cartItemDetails?.resturantProduct
                                         ?.extraCombo !=
                                     0
                                 ? Row(
@@ -798,16 +739,13 @@ class _ProductInCartDetailsScreenState
                                             _selectedRadio = value!;
                                           });
                                           context
-                                                  .read<CartController>()
-                                                  .totalCountAddTCart =
-                                              null;
-                                          if (cartController
-                                                  .cartItemDetails
-                                                  ?.resturantProduct
-                                                  ?.features
+                                              .read<CartController>()
+                                              .totalCountAddTCart = null;
+                                          if (cartController.cartItemDetails
+                                                  ?.resturantProduct?.features
                                                   ?.any(
-                                                    (e) => e.name == 'combo',
-                                                  ) ==
+                                                (e) => e.name == 'combo',
+                                              ) ==
                                               true) {
                                             productFeatureId = cartController
                                                 .cartItemDetails
@@ -829,8 +767,7 @@ class _ProductInCartDetailsScreenState
                                             : AppTextStyle.text16MG(),
                                       ),
                                       const Spacer(),
-                                      cartController
-                                                  .cartItemDetails
+                                      cartController.cartItemDetails
                                                   ?.resturantProduct ==
                                               null
                                           ? const SizedBox()
@@ -859,11 +796,8 @@ class _ProductInCartDetailsScreenState
                 cartController.getCartItemDetails(id: widget.args.cartItemId),
             isEmpty: cartController.cartItemDetails == null,
             child: CustomCartItemButtonBottomNavigation(
-              productPrice:
-                  cartController
-                      .cartItemDetails
-                      ?.resturantProduct
-                      ?.productPrice ??
+              productPrice: cartController
+                      .cartItemDetails?.resturantProduct?.productPrice ??
                   0,
               cartId: widget.args.cartItemId,
               featureId: productFeatureId ?? defaultFeature,
@@ -887,29 +821,27 @@ class _ProductInCartDetailsScreenState
               //         : _selectedRadio==3?'extra_vacuim':null,
               total: _selectedRadio == 0
                   ? cartController
-                            .cartItemDetails
-                            ?.resturantProduct
-                            ?.productPrice
-                            .toString() ??
-                        ''
+                          .cartItemDetails?.resturantProduct?.productPrice
+                          .toString() ??
+                      ''
                   : _selectedRadio == 1
-                  ? '${(((cartController.cartItemDetails?.resturantProduct?.productPrice ?? 0) + (cartController.cartItemDetails?.resturantProduct?.extraClean ?? 0)))}'
-                  : _selectedRadio == 2
-                  ? '${(((cartController.cartItemDetails?.resturantProduct?.productPrice ?? 0) + (cartController.cartItemDetails?.resturantProduct?.extraClear ?? 0)))}'
-                  : _selectedRadio == 3
-                  ? '${(((cartController.cartItemDetails?.resturantProduct?.productPrice ?? 0) + (cartController.cartItemDetails?.resturantProduct?.extraLarge ?? 0)))}'
-                  : _selectedRadio == 4
-                  ? '${(((cartController.cartItemDetails?.resturantProduct?.productPrice ?? 0) + (cartController.cartItemDetails?.resturantProduct?.extraMedium ?? 0)))}'
-                  : _selectedRadio == 5
-                  ? '${(((cartController.cartItemDetails?.resturantProduct?.productPrice ?? 0) + (cartController.cartItemDetails?.resturantProduct?.extraVacuim ?? 0)))}'
-                  : _selectedRadio == 6
-                  ? '${(((cartController.cartItemDetails?.resturantProduct?.productPrice ?? 0) + (cartController.cartItemDetails?.resturantProduct?.extraCombo ?? 0)))}'
-                  : cartController
-                            .cartItemDetails
-                            ?.resturantProduct
-                            ?.productPrice
-                            .toString() ??
-                        '',
+                      ? '${(((cartController.cartItemDetails?.resturantProduct?.productPrice ?? 0) + (cartController.cartItemDetails?.resturantProduct?.extraClean ?? 0)))}'
+                      : _selectedRadio == 2
+                          ? '${(((cartController.cartItemDetails?.resturantProduct?.productPrice ?? 0) + (cartController.cartItemDetails?.resturantProduct?.extraClear ?? 0)))}'
+                          : _selectedRadio == 3
+                              ? '${(((cartController.cartItemDetails?.resturantProduct?.productPrice ?? 0) + (cartController.cartItemDetails?.resturantProduct?.extraLarge ?? 0)))}'
+                              : _selectedRadio == 4
+                                  ? '${(((cartController.cartItemDetails?.resturantProduct?.productPrice ?? 0) + (cartController.cartItemDetails?.resturantProduct?.extraMedium ?? 0)))}'
+                                  : _selectedRadio == 5
+                                      ? '${(((cartController.cartItemDetails?.resturantProduct?.productPrice ?? 0) + (cartController.cartItemDetails?.resturantProduct?.extraVacuim ?? 0)))}'
+                                      : _selectedRadio == 6
+                                          ? '${(((cartController.cartItemDetails?.resturantProduct?.productPrice ?? 0) + (cartController.cartItemDetails?.resturantProduct?.extraCombo ?? 0)))}'
+                                          : cartController
+                                                  .cartItemDetails
+                                                  ?.resturantProduct
+                                                  ?.productPrice
+                                                  .toString() ??
+                                              '',
             ),
           ),
         );

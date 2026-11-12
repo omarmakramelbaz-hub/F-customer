@@ -57,22 +57,18 @@ class CustomButton extends StatelessWidget {
             width: width ?? double.infinity,
             height: height,
             decoration: BoxDecoration(
-              color:
-                  color ??
+              color: color ??
                   (isMainColor
                       ? AppColors.mainAppColor
                       : FasakhanstaBrand.surfaceRaised),
-              gradient:
-                  gradient ??
+              gradient: gradient ??
                   (primary ? FasakhanstaBrand.buttonGradient : null),
               borderRadius: effectiveRadius,
               border: Border.all(
-                color:
-                    borderColor ??
+                color: borderColor ??
                     (primary ? Colors.transparent : FasakhanstaBrand.border),
               ),
-              boxShadow:
-                  boxShadow ??
+              boxShadow: boxShadow ??
                   (hasShadow
                       ? [
                           BoxShadow(
@@ -95,13 +91,11 @@ class CustomButton extends StatelessWidget {
                           const SizedBox(width: 10),
                         },
                         Flexible(
-                          child:
-                              child ??
+                          child: child ??
                               Text(
                                 text ?? '',
                                 textAlign: TextAlign.center,
-                                style:
-                                    style ??
+                                style: style ??
                                     AppTextStyle.buttonStyle.copyWith(
                                       color: primary
                                           ? FasakhanstaBrand.onOrange

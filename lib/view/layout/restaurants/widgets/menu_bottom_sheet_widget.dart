@@ -152,9 +152,7 @@ class _MenuBottomSheetWidgetState extends State<MenuBottomSheetWidget> {
                             ),
                             const Spacer(),
                             Text(
-                              widget
-                                      .products[productIndex]
-                                      .resturantItems
+                              widget.products[productIndex].resturantItems
                                       ?.length
                                       .toString() ??
                                   '',

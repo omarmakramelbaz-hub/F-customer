@@ -108,9 +108,9 @@ class _DelegateOfferWidgetState extends State<DelegateOfferWidget> {
                       // ),
                       Text(
                         'deliveryCount'.tr.replaceAll(
-                          '{}',
-                          '${widget.acceptedDelegateModel?.completedOrdersCount ?? ""}',
-                        ),
+                              '{}',
+                              '${widget.acceptedDelegateModel?.completedOrdersCount ?? ""}',
+                            ),
                         style: AppTextStyle.text14RS().copyWith(
                           color: FasakhanstaBrand.text,
                         ),
@@ -147,9 +147,9 @@ class _DelegateOfferWidgetState extends State<DelegateOfferWidget> {
                       SizedBox(width: context.width * 0.2),
                       Text(
                         'egyp'.tr.replaceAll(
-                          '{}',
-                          '${widget.acceptedDelegateModel?.offerPrice ?? widget.order?.actualPrice ?? requestDelegateController.actualPrice}',
-                        ),
+                              '{}',
+                              '${widget.acceptedDelegateModel?.offerPrice ?? widget.order?.actualPrice ?? requestDelegateController.actualPrice}',
+                            ),
                         style: AppTextStyle.text18RS().copyWith(
                           color: FasakhanstaBrand.text,
                         ),
@@ -168,18 +168,18 @@ class _DelegateOfferWidgetState extends State<DelegateOfferWidget> {
                           onPressed: () {
                             requestDelegateController
                                 .acceptedOrDeclinedDelegate(
-                                  orderId: requestDelegateController.orderId!,
-                                  delegateId: widget.acceptedDelegateModel!.id!,
-                                  status: 'accepted',
-                                  onSuccess: () {
-                                    widget.cancelReCall?.call();
-                                    NamedNavigatorImpl.push(
-                                      clean: true,
-                                      BottomNavigationBarScreen.routeName,
-                                    );
-                                  },
-                                  onError: () {},
+                              orderId: requestDelegateController.orderId!,
+                              delegateId: widget.acceptedDelegateModel!.id!,
+                              status: 'accepted',
+                              onSuccess: () {
+                                widget.cancelReCall?.call();
+                                NamedNavigatorImpl.push(
+                                  clean: true,
+                                  BottomNavigationBarScreen.routeName,
                                 );
+                              },
+                              onError: () {},
+                            );
                           },
                         ),
                       ),
@@ -203,16 +203,16 @@ class _DelegateOfferWidgetState extends State<DelegateOfferWidget> {
                           onPressed: () {
                             requestDelegateController
                                 .acceptedOrDeclinedDelegate(
-                                  orderId: requestDelegateController.orderId!,
-                                  delegateId: widget.acceptedDelegateModel!.id!,
-                                  status: 'declined',
-                                  onSuccess: () {
-                                    widget.onReject?.call();
-                                  },
-                                  onError: () {
-                                    widget.onErrorCall?.call();
-                                  },
-                                );
+                              orderId: requestDelegateController.orderId!,
+                              delegateId: widget.acceptedDelegateModel!.id!,
+                              status: 'declined',
+                              onSuccess: () {
+                                widget.onReject?.call();
+                              },
+                              onError: () {
+                                widget.onErrorCall?.call();
+                              },
+                            );
                           },
                         ),
                       ),

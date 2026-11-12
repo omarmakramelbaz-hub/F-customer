@@ -470,20 +470,20 @@ class _RegisterScreenState extends State<RegisterScreen> with ValidationMixin {
     if (!_formKey.currentState!.validate()) return;
 
     context.read<AuthController>().login(
-      onHaveIdANDToken: (id, token) {
-        context.read<PusherController>().initPusher(
-          channelName: 'private-user.$id',
-          userId: id,
-          token: token,
+          onHaveIdANDToken: (id, token) {
+            context.read<PusherController>().initPusher(
+                  channelName: 'private-user.$id',
+                  userId: id,
+                  token: token,
+                );
+          },
+          onFirstTime: () =>
+              NamedNavigatorImpl.push(CreateNewAccountScreen.routeName),
+          mobile: _mobileEC.text.removeZero(),
+          password: _passwordEC.text,
+          onSuccess: (register, mobileVerifiedAt) {
+            NamedNavigatorImpl.push(BottomNavigationBarScreen.routeName);
+          },
         );
-      },
-      onFirstTime: () =>
-          NamedNavigatorImpl.push(CreateNewAccountScreen.routeName),
-      mobile: _mobileEC.text.removeZero(),
-      password: _passwordEC.text,
-      onSuccess: (register, mobileVerifiedAt) {
-        NamedNavigatorImpl.push(BottomNavigationBarScreen.routeName);
-      },
-    );
   }
 }

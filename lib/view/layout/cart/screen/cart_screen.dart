@@ -52,7 +52,7 @@ class _CartScreenState extends State<CartScreen> {
         final totalPrice = cartController.totalPrice;
         final serviceFees =
             ((cartController.cart?.resturant?.serviceFees ?? 0) * totalPrice) /
-            100;
+                100;
         final addedPrice =
             ((cartController.cart?.resturant?.tax ?? 0) * totalPrice) / 100;
         final grandTotal = serviceFees + addedPrice + totalPrice;
@@ -258,7 +258,9 @@ class _CartScreenState extends State<CartScreen> {
             ],
           ),
           content: Text(
-            isArabic ? 'هل أنت متأكد أنك تريد حذف جميع المنتجات من السلة؟' : 'Are you sure you want to remove all products from your cart?',
+            isArabic
+                ? 'هل أنت متأكد أنك تريد حذف جميع المنتجات من السلة؟'
+                : 'Are you sure you want to remove all products from your cart?',
             style: AppTextStyle.text14RG(),
           ),
           actions: [
@@ -381,9 +383,9 @@ class _CartScreenState extends State<CartScreen> {
                     3.sbH,
                     Text(
                       'egyp'.tr.replaceAll(
-                        '{}',
-                        '${product.productPrice ?? 0}',
-                      ),
+                            '{}',
+                            '${product.productPrice ?? 0}',
+                          ),
                       style: AppTextStyle.text12MS().copyWith(
                         color: AppColors.mainAppColor,
                       ),
@@ -488,9 +490,9 @@ class _CartScreenState extends State<CartScreen> {
     if ((controller.cart?.resturant?.resturantMinOrderPrice ?? 0) > subtotal) {
       CommonMethods.showError(
         message: 'cantExecuteOrderLessThan'.tr.replaceAll(
-          '{}',
-          '${controller.cart?.resturant?.resturantMinOrderPrice ?? 0}',
-        ),
+              '{}',
+              '${controller.cart?.resturant?.resturantMinOrderPrice ?? 0}',
+            ),
       );
       return;
     }
@@ -499,8 +501,7 @@ class _CartScreenState extends State<CartScreen> {
       ChooseAddressFromMapScreen.routeName,
       arguments: ChooseAddressFromMapScreenArgs(
         resturantId: controller.cart?.resturant?.resturantId ?? 0,
-        areaId:
-            controller.cart?.resturant?.resturantAreas
+        areaId: controller.cart?.resturant?.resturantAreas
                 ?.map((area) => area.areaId)
                 .whereType<int>()
                 .toList() ??
@@ -519,9 +520,8 @@ class _CartScreenState extends State<CartScreen> {
           padding: const EdgeInsets.fromLTRB(18, 24, 18, 28),
           child: ConstrainedBox(
             constraints: BoxConstraints(
-              minHeight: constraints.maxHeight > 0
-                  ? constraints.maxHeight - 52
-                  : 560,
+              minHeight:
+                  constraints.maxHeight > 0 ? constraints.maxHeight - 52 : 560,
             ),
             child: Center(
               child: Container(

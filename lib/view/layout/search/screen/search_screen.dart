@@ -235,11 +235,10 @@ class _SearchScreenState extends State<SearchScreen> {
                                               setState(() {
                                                 _searchEc.text =
                                                     searchController
-                                                        .lastSearch[index]
-                                                        .search ??
-                                                    '';
-                                                search =
-                                                    searchController
+                                                            .lastSearch[index]
+                                                            .search ??
+                                                        '';
+                                                search = searchController
                                                         .lastSearch[index]
                                                         .search ??
                                                     '';
@@ -247,8 +246,8 @@ class _SearchScreenState extends State<SearchScreen> {
                                               });
                                               restaurantController
                                                   .getRestaurants(
-                                                    search: search,
-                                                  );
+                                                search: search,
+                                              );
                                             },
                                             child: Row(
                                               mainAxisSize: MainAxisSize.min,

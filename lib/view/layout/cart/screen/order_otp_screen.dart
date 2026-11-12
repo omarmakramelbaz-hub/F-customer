@@ -83,11 +83,11 @@ class _OrderOTPScreenState extends State<OrderOTPScreen>
                 controller: _codeEC,
                 onCompleted: (v) {
                   context.read<CartController>().otpChecker(
-                    otp: _codeEC.text,
-                    onSuccess: () {
-                      Navigator.pop(context);
-                    },
-                  );
+                        otp: _codeEC.text,
+                        onSuccess: () {
+                          Navigator.pop(context);
+                        },
+                      );
                 },
               ),
               const SizedBox(height: 25),
@@ -155,11 +155,11 @@ class _OrderOTPScreenState extends State<OrderOTPScreen>
             onPressed: () {
               if (_formKey.currentState!.validate()) {
                 context.read<CartController>().otpChecker(
-                  otp: _codeEC.text,
-                  onSuccess: () {
-                    Navigator.pop(context);
-                  },
-                );
+                      otp: _codeEC.text,
+                      onSuccess: () {
+                        Navigator.pop(context);
+                      },
+                    );
               }
             },
             text: 'next'.tr,

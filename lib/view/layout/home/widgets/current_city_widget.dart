@@ -101,7 +101,7 @@ class _CurrentCityWidgetState extends State<CurrentCityWidget> {
                     child: Text(
                       selectedAddressId != null
                           ? ' ${userAddresses.firstWhere((address) => address.id.toString() == selectedAddressId).cityName ?? ""} ${userAddresses.firstWhere((address) => address.id.toString() == selectedAddressId).streetName ?? ""}'
-                                .trim()
+                              .trim()
                           : 'chooseAnAddress'.tr,
                       style: AppTextStyle.text16BW(),
                       overflow: TextOverflow.ellipsis,
@@ -156,13 +156,13 @@ class _CurrentCityWidgetState extends State<CurrentCityWidget> {
                   return ListTile(
                     trailing:
                         userAddresses[index].streetName == HiveMethods.getCity()
-                        ? const CustomImage(
-                            path: AppImages.rateIcon,
-                            type: ImageType.svg,
-                            height: 20,
-                            width: 20,
-                          )
-                        : const SizedBox.shrink(),
+                            ? const CustomImage(
+                                path: AppImages.rateIcon,
+                                type: ImageType.svg,
+                                height: 20,
+                                width: 20,
+                              )
+                            : const SizedBox.shrink(),
                     leading: CustomImage(
                       path: AppImages.addressIcon,
                       type: ImageType.svg,

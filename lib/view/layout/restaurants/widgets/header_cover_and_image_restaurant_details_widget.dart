@@ -209,8 +209,8 @@ class HeaderCoverAndImageRestaurantDetailsWidget extends StatelessWidget {
     final label = isClosed
         ? restaurantClosedLabel(context, detailsRestaurant?.openAt)
         : isBusy
-        ? 'busy'.tr
-        : 'مفتوح الآن';
+            ? 'busy'.tr
+            : 'مفتوح الآن';
 
     return Container(
       constraints: const BoxConstraints(maxWidth: 210),
@@ -228,8 +228,8 @@ class HeaderCoverAndImageRestaurantDetailsWidget extends StatelessWidget {
             color: isClosed
                 ? FasakhanstaBrand.danger
                 : isBusy
-                ? FasakhanstaBrand.orange
-                : FasakhanstaBrand.success,
+                    ? FasakhanstaBrand.orange
+                    : FasakhanstaBrand.success,
             size: 8,
           ),
           const SizedBox(width: 6),

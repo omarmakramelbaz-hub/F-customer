@@ -148,11 +148,12 @@ class _VerificationCodeScreenState extends State<VerificationCodeScreen>
             onPressed: () {
               if (_formKey.currentState!.validate()) {
                 context.read<AuthController>().codeActivate(
-                  mobileCode: _codeEC.text,
-                  onSuccess: () {
-                    NamedNavigatorImpl.push(CreateNewAccountScreen.routeName);
-                  },
-                );
+                      mobileCode: _codeEC.text,
+                      onSuccess: () {
+                        NamedNavigatorImpl.push(
+                            CreateNewAccountScreen.routeName);
+                      },
+                    );
               }
             },
             text: 'next'.tr,

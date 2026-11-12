@@ -56,8 +56,8 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
       if (!mounted) return;
       final notification = NotificationsModel.fromJson(jsonData);
       context.read<NotificationsController>().addNotificationToTop(
-        notification,
-      );
+            notification,
+          );
     } catch (e, stackTrace) {
       log('Error handling Pusher event: $e');
       log('Stack trace: $stackTrace');
@@ -568,9 +568,8 @@ class _CategoryChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: selected
-          ? FasakhanstaBrand.surfaceRaised
-          : FasakhanstaBrand.surface,
+      color:
+          selected ? FasakhanstaBrand.surfaceRaised : FasakhanstaBrand.surface,
       borderRadius: BorderRadius.circular(18),
       child: InkWell(
         borderRadius: BorderRadius.circular(18),
@@ -581,9 +580,8 @@ class _CategoryChip extends StatelessWidget {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(18),
             border: Border.all(
-              color: selected
-                  ? AppColors.mainAppColor
-                  : FasakhanstaBrand.border,
+              color:
+                  selected ? AppColors.mainAppColor : FasakhanstaBrand.border,
             ),
             boxShadow: selected
                 ? [
@@ -601,9 +599,8 @@ class _CategoryChip extends StatelessWidget {
               Icon(
                 icon,
                 size: 18,
-                color: selected
-                    ? AppColors.mainAppColor
-                    : FasakhanstaBrand.muted,
+                color:
+                    selected ? AppColors.mainAppColor : FasakhanstaBrand.muted,
               ),
               const SizedBox(width: 7),
               Text(

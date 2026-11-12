@@ -50,8 +50,8 @@ class _DrawRestaurantScreenState extends State<DrawRestaurantScreen> {
     homeProvider
         .getCoupon(lat: HiveMethods.getLat(), lng: HiveMethods.getLan())
         .then((_) {
-          if (mounted && homeProvider.coupon == null) Navigator.pop(context);
-        });
+      if (mounted && homeProvider.coupon == null) Navigator.pop(context);
+    });
   }
 
   @override
@@ -211,9 +211,8 @@ class _RaffleHero extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final displayTitle = title.trim().isEmpty
-        ? 'سحب على المطاعم'
-        : title.trim();
+    final displayTitle =
+        title.trim().isEmpty ? 'سحب على المطاعم' : title.trim();
     final prize = _displayPrize(drawAmount, displayTitle);
 
     return SizedBox(
@@ -815,9 +814,8 @@ class _CodesWrap extends StatelessWidget {
                     : FasakhanstaBrand.surface,
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(
-                  color: won
-                      ? FasakhanstaBrand.border
-                      : FasakhanstaBrand.border,
+                  color:
+                      won ? FasakhanstaBrand.border : FasakhanstaBrand.border,
                 ),
               ),
               child: Text(

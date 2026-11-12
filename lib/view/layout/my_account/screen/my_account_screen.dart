@@ -587,9 +587,8 @@ class MyAccountScreen extends StatelessWidget {
                 context,
                 icon: Icons.location_on_outlined,
                 title: 'addresses'.tr,
-                subtitle: isArabic
-                    ? '$addressCount عنوان'
-                    : '$addressCount saved',
+                subtitle:
+                    isArabic ? '$addressCount عنوان' : '$addressCount saved',
                 onTap: () => NamedNavigatorImpl.push(AddressScreen.routeName),
               ),
             ),

@@ -86,7 +86,7 @@ class ConnectSupportWidget extends StatelessWidget {
                         arguments: AdminChatScreenArgs(
                           receiverId:
                               settingController.setting?.adminId.toString() ??
-                              '1',
+                                  '1',
                           senderId: context
                               .read<AuthController>()
                               .profile!

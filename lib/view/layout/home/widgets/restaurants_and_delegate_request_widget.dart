@@ -58,8 +58,8 @@ class RestaurantsAndDelegateRequestWidget extends StatelessWidget {
                             controller.restaurantsNearYou.isEmpty
                                 ? controller.spacialRestaurants.length
                                 : (HiveMethods.getCity() == null)
-                                ? controller.spacialRestaurants.length
-                                : controller.restaurantsNearYou.length,
+                                    ? controller.spacialRestaurants.length
+                                    : controller.restaurantsNearYou.length,
                             (index) {
                               return SliderArguments(
                                 child: InkWell(
@@ -67,19 +67,18 @@ class RestaurantsAndDelegateRequestWidget extends StatelessWidget {
                                     width: context.width / 3.7,
                                     fit: BoxFit.contain,
                                     path: controller.restaurantsNearYou.isEmpty
-                                        ? controller
-                                                  .spacialRestaurants[index]
-                                                  .logo ??
-                                              ''
+                                        ? controller.spacialRestaurants[index]
+                                                .logo ??
+                                            ''
                                         : (HiveMethods.getCity() == null)
-                                        ? controller
-                                                  .spacialRestaurants[index]
-                                                  .logo ??
-                                              ''
-                                        : controller
-                                                  .restaurantsNearYou[index]
-                                                  .logo ??
-                                              '',
+                                            ? controller
+                                                    .spacialRestaurants[index]
+                                                    .logo ??
+                                                ''
+                                            : controller
+                                                    .restaurantsNearYou[index]
+                                                    .logo ??
+                                                '',
                                     type: ImageType.network,
                                   ),
                                 ),

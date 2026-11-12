@@ -107,9 +107,8 @@ class _ChangePasswordBottomSheetState extends State<ChangePasswordBottomSheet>
                     CustomFormField(
                       validator: validateEmptyField,
                       controller: _currentPasswordEC,
-                      title: isArabic
-                          ? 'كلمة المرور الحالية'
-                          : 'Current password',
+                      title:
+                          isArabic ? 'كلمة المرور الحالية' : 'Current password',
                       hintText: isArabic
                           ? 'أدخل كلمة المرور الحالية'
                           : 'Enter current password',
@@ -184,9 +183,8 @@ class _ChangePasswordBottomSheetState extends State<ChangePasswordBottomSheet>
                                 AppColors.gridTwoButtonColor,
                               ],
                             ),
-                            text: isArabic
-                                ? 'حفظ كلمة المرور'
-                                : 'Save password',
+                            text:
+                                isArabic ? 'حفظ كلمة المرور' : 'Save password',
                             onPressed: () {
                               FocusScope.of(context).unfocus();
                               if (_formKey.currentState!.validate()) {

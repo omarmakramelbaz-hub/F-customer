@@ -81,7 +81,7 @@ class _MobileHomeWidgetState extends State<MobileHomeWidget> {
                         CustomNetworkImage(
                           imageUrl:
                               lastOrderController.lastOrders?.resturantLogo ??
-                              '',
+                                  '',
                           width: 50,
                           height: 50,
                           radius: 10,
@@ -149,20 +149,20 @@ class _MobileHomeWidgetState extends State<MobileHomeWidget> {
                           child: CircularPercentIndicator(
                             radius: 35.0,
                             lineWidth: 5.0,
-                            percent:
-                                lastOrderController.lastOrders?.status ==
+                            percent: lastOrderController.lastOrders?.status ==
                                     OrderStatusEnum.pending.value
                                 ? 0.25
                                 : lastOrderController.lastOrders?.status ==
-                                      OrderStatusEnum.accepted.value
-                                ? 0.5
-                                : lastOrderController.lastOrders?.status ==
-                                      OrderStatusEnum.shipped.value
-                                ? 0.75
-                                : lastOrderController.lastOrders?.status ==
-                                      OrderStatusEnum.completed.value
-                                ? 1
-                                : 0,
+                                        OrderStatusEnum.accepted.value
+                                    ? 0.5
+                                    : lastOrderController.lastOrders?.status ==
+                                            OrderStatusEnum.shipped.value
+                                        ? 0.75
+                                        : lastOrderController
+                                                    .lastOrders?.status ==
+                                                OrderStatusEnum.completed.value
+                                            ? 1
+                                            : 0,
                             center: Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Image.asset(AppImages.house),

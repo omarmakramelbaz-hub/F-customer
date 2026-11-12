@@ -31,8 +31,7 @@ class SelectLocationFromMapScreen extends StatefulWidget {
 }
 
 class _SelectLocationFromMapScreenState
-    extends State<SelectLocationFromMapScreen>
-    with WidgetsBindingObserver {
+    extends State<SelectLocationFromMapScreen> with WidgetsBindingObserver {
   GoogleMapController? gmc;
   Timer? _debounce;
   List<Placemark>? placemarks;
@@ -208,9 +207,8 @@ class _SelectLocationFromMapScreenState
     return Consumer<RequestDelegateController>(
       builder: (context, controller, _) {
         return Directionality(
-          textDirection: _isArabic(context)
-              ? TextDirection.rtl
-              : TextDirection.ltr,
+          textDirection:
+              _isArabic(context) ? TextDirection.rtl : TextDirection.ltr,
           child: Scaffold(
             backgroundColor: Colors.transparent,
             body: currentLat == null || currentLng == null
@@ -466,8 +464,7 @@ class _SelectLocationFromMapScreenState
               width: double.infinity,
               height: 55,
               child: ElevatedButton(
-                onPressed:
-                    currentLat == null ||
+                onPressed: currentLat == null ||
                         currentLng == null ||
                         isConfirmingLocation
                     ? null

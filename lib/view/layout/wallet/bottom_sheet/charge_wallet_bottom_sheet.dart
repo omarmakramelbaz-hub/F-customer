@@ -200,9 +200,9 @@ class _ChargeWalletBottomSheetState extends State<ChargeWalletBottomSheet> {
                                   final amount = double.tryParse(value) ?? 0;
                                   if (amount < 50) {
                                     return 'minimumChargeAmount'.tr.replaceAll(
-                                      '{}',
-                                      '50',
-                                    );
+                                          '{}',
+                                          '50',
+                                        );
                                   }
                                   return null;
                                 },

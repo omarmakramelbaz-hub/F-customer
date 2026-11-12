@@ -240,9 +240,9 @@ class RestaurantCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(22),
         onTap: restaurantId > 0
             ? () => NamedNavigatorImpl.push(
-                RestaurantDetailsScreen.routeName,
-                arguments: RestaurantDetailsArgs(id: restaurantId),
-              )
+                  RestaurantDetailsScreen.routeName,
+                  arguments: RestaurantDetailsArgs(id: restaurantId),
+                )
             : null,
         child: Container(
           padding: const EdgeInsets.fromLTRB(13, 13, 13, 12),

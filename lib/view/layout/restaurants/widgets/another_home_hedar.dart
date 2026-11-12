@@ -97,10 +97,10 @@ class AnotherHomeHeaderCoverAndImageRestaurantDetailsWidget
                                             // context.read<HomeController>().countCart.toString(),
                                             style: AppTextStyle.text16BW()
                                                 .copyWith(
-                                                  height: 1.4,
-                                                  fontSize: 14,
-                                                  color: FasakhanstaBrand.text,
-                                                ),
+                                              height: 1.4,
+                                              fontSize: 14,
+                                              color: FasakhanstaBrand.text,
+                                            ),
                                           ),
                                         ),
                                       ),
@@ -216,9 +216,9 @@ class AnotherHomeHeaderCoverAndImageRestaurantDetailsWidget
                             const SizedBox(width: 5),
                             Text(
                               'egyPound'.tr.replaceAll(
-                                '{}',
-                                '${detailsRestaurant?.kmPrice.toString()}',
-                              ),
+                                    '{}',
+                                    '${detailsRestaurant?.kmPrice.toString()}',
+                                  ),
                               style: AppTextStyle.text14MS(),
                             ),
                           ],

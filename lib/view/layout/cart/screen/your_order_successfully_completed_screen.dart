@@ -111,9 +111,9 @@ class _YourOrderSuccessfullyCompletedScreenState
 
   void _cancelOrder() {
     context.read<OrdersController>().cancelOrder(
-      orderId: widget.args.id,
-      onSuccess: _goHome,
-    );
+          orderId: widget.args.id,
+          onSuccess: _goHome,
+        );
   }
 
   @override

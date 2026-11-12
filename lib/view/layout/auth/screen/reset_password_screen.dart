@@ -248,13 +248,13 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen>
     if (!_formKey.currentState!.validate()) return;
 
     context.read<AuthController>().resetPassword(
-      mobile: widget.args.mobile,
-      email: widget.args.email,
-      newPassword: _passwordEC.text,
-      confirmNewPassword: _confirmPasswordEC.text,
-      onSuccess: () {
-        NamedNavigatorImpl.push(LoginScreen.routeName, clean: true);
-      },
-    );
+          mobile: widget.args.mobile,
+          email: widget.args.email,
+          newPassword: _passwordEC.text,
+          confirmNewPassword: _confirmPasswordEC.text,
+          onSuccess: () {
+            NamedNavigatorImpl.push(LoginScreen.routeName, clean: true);
+          },
+        );
   }
 }

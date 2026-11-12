@@ -85,8 +85,7 @@ class _ChooseVCashOrVisaWidgetState extends State<ChooseVCashOrVisaWidget> {
 
     if (methods.isEmpty) {
       final settingsState = liveAccountController.settingResponse.state;
-      final isLoading =
-          setting == null &&
+      final isLoading = setting == null &&
           (settingsState == ResponseState.loading ||
               settingsState == ResponseState.sleep);
 
@@ -192,8 +191,7 @@ class _ChooseVCashOrVisaWidgetState extends State<ChooseVCashOrVisaWidget> {
     required WalletController walletController,
     bool compactHorizontal = false,
   }) {
-    final selected =
-        _selectedOptionKey == method.keyName &&
+    final selected = _selectedOptionKey == method.keyName &&
         walletController.selectedPayment == method.backendMethod;
 
     return PaymentMethodWidget(
@@ -256,9 +254,8 @@ class PaymentMethodWidget extends StatelessWidget {
               : FasakhanstaBrand.surface,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: isSelected
-                ? AppColors.mainAppColor
-                : FasakhanstaBrand.border,
+            color:
+                isSelected ? AppColors.mainAppColor : FasakhanstaBrand.border,
             width: isSelected ? 1.5 : 1,
           ),
           boxShadow: isSelected
@@ -286,9 +283,8 @@ class PaymentMethodWidget extends StatelessWidget {
                       style: AppTextStyle.text10RG().copyWith(
                         color: AppColors.darkTextColor,
                         fontSize: 9.5,
-                        fontWeight: isSelected
-                            ? FontWeight.w700
-                            : FontWeight.w500,
+                        fontWeight:
+                            isSelected ? FontWeight.w700 : FontWeight.w500,
                       ),
                     ),
                   ),
@@ -315,9 +311,8 @@ class PaymentMethodWidget extends StatelessWidget {
                           style: AppTextStyle.text10RG().copyWith(
                             color: AppColors.darkTextColor,
                             fontSize: 9,
-                            fontWeight: isSelected
-                                ? FontWeight.w700
-                                : FontWeight.w500,
+                            fontWeight:
+                                isSelected ? FontWeight.w700 : FontWeight.w500,
                           ),
                         ),
                       ),

@@ -150,12 +150,12 @@ class _CustomGoogleMapsWidgetState extends State<CustomGoogleMapsWidget> {
     final toLng = double.tryParse('${order?.toLng ?? controller.toLan ?? ''}');
     final nextDelivery =
         toLat != null && toLng != null && toLat != 0 && toLng != 0
-        ? LatLng(toLat, toLng)
-        : null;
+            ? LatLng(toLat, toLng)
+            : null;
 
     final deliveryChanged =
         (_controllerDelivery?.latitude != nextDelivery?.latitude) ||
-        (_controllerDelivery?.longitude != nextDelivery?.longitude);
+            (_controllerDelivery?.longitude != nextDelivery?.longitude);
 
     if (_delegateResponded == responded && !deliveryChanged) return;
 
@@ -337,8 +337,7 @@ class _CustomGoogleMapsWidgetState extends State<CustomGoogleMapsWidget> {
       Marker(
         markerId: const MarkerId('searchingRider'),
         position: riderPosition,
-        icon:
-            _riderIcon ??
+        icon: _riderIcon ??
             BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueOrange),
         anchor: const Offset(.5, .5),
         zIndex: 30,
@@ -370,8 +369,7 @@ class _CustomGoogleMapsWidgetState extends State<CustomGoogleMapsWidget> {
       Marker(
         markerId: const MarkerId('goDrivePickup'),
         position: _pickup,
-        icon:
-            _pickupGoDriveIcon ??
+        icon: _pickupGoDriveIcon ??
             _riderIcon ??
             BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueOrange),
         anchor: const Offset(.31, 1),
@@ -384,8 +382,7 @@ class _CustomGoogleMapsWidgetState extends State<CustomGoogleMapsWidget> {
       Marker(
         markerId: const MarkerId('goDriveDelivery'),
         position: delivery,
-        icon:
-            _deliveryPinIcon ??
+        icon: _deliveryPinIcon ??
             BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
         zIndex: 90,
         infoWindow: const InfoWindow(title: 'نقطة التوصيل'),

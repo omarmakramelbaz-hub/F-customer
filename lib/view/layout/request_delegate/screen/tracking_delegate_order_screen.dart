@@ -152,8 +152,7 @@ class _TrackingDelegateOrderScreenState
     if (_offerDialogOpen ||
         offer == null ||
         offer.status != 'price_revision' ||
-        !mounted)
-      return;
+        !mounted) return;
     _offerDialogOpen = true;
     final ar = context.languageCode == 'ar';
     await showDialog<void>(
@@ -356,17 +355,17 @@ class _TrackingDelegateOrderScreenState
                                               isVendor: false,
                                               vendorDeviceToken:
                                                   requestDelegateController
-                                                      .delegateOrderDetails
-                                                      ?.resturantVendorDeviceToken ??
-                                                  '',
+                                                          .delegateOrderDetails
+                                                          ?.resturantVendorDeviceToken ??
+                                                      '',
                                               receiverDeviceToken:
                                                   orderDetails?.delegateFcmId ??
-                                                  '',
+                                                      '',
                                               senderName:
                                                   orderDetails?.userName ?? '',
                                               receiverName:
                                                   orderDetails?.delegateName ??
-                                                  '',
+                                                      '',
                                               orderId:
                                                   "VD${orderDetails?.id ?? ""}",
                                             ),
@@ -426,9 +425,9 @@ class _TrackingDelegateOrderScreenState
                                   ),
                                   Text(
                                     'pound'.tr.replaceAll(
-                                      '{}',
-                                      '${orderDetails?.actualPrice}',
-                                    ),
+                                          '{}',
+                                          '${orderDetails?.actualPrice}',
+                                        ),
                                     style: AppTextStyle.text16MS().copyWith(
                                       color: FasakhanstaBrand.text,
                                     ),
@@ -475,12 +474,14 @@ class _TrackingDelegateOrderScreenState
                                     path: orderDetails?.paymentType == 'cash'
                                         ? AppImages.cashIcon
                                         : orderDetails?.paymentType == 'online'
-                                        ? AppImages.visaIcon
-                                        : orderDetails?.paymentType == 'v_cash'
-                                        ? AppImages.vfCash
-                                        : orderDetails?.paymentType == 'wallet'
-                                        ? AppImages.payWalletIcon.tr
-                                        : '',
+                                            ? AppImages.visaIcon
+                                            : orderDetails?.paymentType ==
+                                                    'v_cash'
+                                                ? AppImages.vfCash
+                                                : orderDetails?.paymentType ==
+                                                        'wallet'
+                                                    ? AppImages.payWalletIcon.tr
+                                                    : '',
                                     type: ImageType.svg,
                                     color: AppColors.mainAppColor,
                                   ),
@@ -489,12 +490,14 @@ class _TrackingDelegateOrderScreenState
                                     orderDetails?.paymentType == 'cash'
                                         ? 'cash'.tr
                                         : orderDetails?.paymentType == 'online'
-                                        ? 'visa'.tr
-                                        : orderDetails?.paymentType == 'v_cash'
-                                        ? 'vfCash'.tr
-                                        : orderDetails?.paymentType == 'wallet'
-                                        ? 'appWallet'.tr
-                                        : '',
+                                            ? 'visa'.tr
+                                            : orderDetails?.paymentType ==
+                                                    'v_cash'
+                                                ? 'vfCash'.tr
+                                                : orderDetails?.paymentType ==
+                                                        'wallet'
+                                                    ? 'appWallet'.tr
+                                                    : '',
                                     style: AppTextStyle.text16BM(),
                                   ),
                                 ],

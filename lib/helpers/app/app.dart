@@ -107,16 +107,16 @@ class _MyAppState extends State<MyApp> {
 
 class _FasakhanstaUpgradeAlert extends UpgradeAlert {
   _FasakhanstaUpgradeAlert({required Upgrader upgrader, required Widget child})
-    : super(
-        upgrader: upgrader,
-        showIgnore: false,
-        showLater: false,
-        showPrompt: false,
-        showReleaseNotes: false,
-        barrierDismissible: false,
-        shouldPopScope: () => false,
-        child: child,
-      );
+      : super(
+          upgrader: upgrader,
+          showIgnore: false,
+          showLater: false,
+          showPrompt: false,
+          showReleaseNotes: false,
+          barrierDismissible: false,
+          shouldPopScope: () => false,
+          child: child,
+        );
 
   @override
   UpgradeAlertState createState() => _FasakhanstaUpgradeAlertState();
@@ -138,9 +138,8 @@ class _FasakhanstaUpgradeAlertState extends UpgradeAlertState {
     final dialogWidth = screenWidth < 430 ? screenWidth - 30 : 400.0;
     final isIOS = defaultTargetPlatform == TargetPlatform.iOS;
 
-    final heading = isArabic
-        ? 'إصدار أحدث من فسخانستا'
-        : 'A newer Fasakhansta version';
+    final heading =
+        isArabic ? 'إصدار أحدث من فسخانستا' : 'A newer Fasakhansta version';
     final body = isArabic
         ? 'يجب تحديث التطبيق للاستمرار والاستفادة من أحدث المميزات والتحسينات وتجربة أكثر سلاسة.'
         : 'Please update the app to continue with the latest features, improvements, and a smoother experience.';

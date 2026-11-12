@@ -94,8 +94,8 @@ class PaymentMethodWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final requestDelegateController = context
-        .watch<RequestDelegateController>();
+    final requestDelegateController =
+        context.watch<RequestDelegateController>();
     final isSelected =
         requestDelegateController.selectedPayment == selectedPayment;
 
@@ -115,9 +115,8 @@ class PaymentMethodWidget extends StatelessWidget {
                 ? FasakhanstaBrand.surfaceRaised
                 : FasakhanstaBrand.surface,
             border: Border.all(
-              color: isSelected
-                  ? AppColors.mainAppColor
-                  : FasakhanstaBrand.border,
+              color:
+                  isSelected ? AppColors.mainAppColor : FasakhanstaBrand.border,
               width: isSelected ? 1.3 : 1,
             ),
             boxShadow: const [
@@ -158,9 +157,8 @@ class PaymentMethodWidget extends StatelessWidget {
                 height: 21,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: isSelected
-                      ? AppColors.mainAppColor
-                      : Colors.transparent,
+                  color:
+                      isSelected ? AppColors.mainAppColor : Colors.transparent,
                   border: Border.all(
                     width: 1.4,
                     color: isSelected
