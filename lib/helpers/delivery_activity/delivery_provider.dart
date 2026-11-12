@@ -1,523 +1,338 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:live_activities/live_activities.dart';
-import 'package:live_activities/models/activity_update.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:pusher_channels_flutter/pusher_channels_flutter.dart';
 
+import '../networking/api_helper.dart';
+import '../networking/urls.dart';
+import '../pusher_service/pusher_controller.dart';
 import '../utils/logger.dart';
 import 'delivery_activity_model.dart';
-import 'delivery_activity_push_handler.dart';
+import 'order_activity_platform.dart';
 
-class DeliveryProvider extends ChangeNotifier {
-  final LiveActivities _liveActivitiesPlugin = LiveActivities();
-  final PusherChannelsFlutter _pusher = PusherChannelsFlutter.getInstance();
+class DeliveryProvider extends ChangeNotifier with WidgetsBindingObserver {
+  DeliveryProvider({
+    OrderActivityPlatform? platform,
+    Future<bool> Function(Map<String, dynamic>)? registerActivity,
+    Future<void> Function(Map<String, dynamic>)? unregisterActivity,
+    Future<String?> Function()? deviceToken,
+    Future<Map<String, dynamic>?> Function(int)? orderLoader,
+    PusherController? pusher,
+  })  : _platform = platform ?? NativeOrderActivityPlatform(),
+        _registerActivity = registerActivity ?? _register,
+        _unregisterActivity = unregisterActivity ?? _unregister,
+        _deviceToken =
+            deviceToken ?? (() => FirebaseMessaging.instance.getToken()),
+        _orderLoader = orderLoader ?? _loadOrder,
+        _pusher = pusher {
+    WidgetsBinding.instance.addObserver(this);
+    _tokenSubscription = _platform.tokenUpdates.listen(_receiveToken);
+    _pusher?.addEventListener('status-updated', _onStatusEvent);
+    _pusher?.addEventListener('user.updated', _onOrderEvent);
+  }
 
-  bool _liveActivitiesReady = false;
-  bool _pusherInitialized = false;
-  String? _subscribedChannel;
-  StreamSubscription<ActivityUpdate>? _activityUpdateSubscription;
+  final OrderActivityPlatform _platform;
+  final Future<bool> Function(Map<String, dynamic>) _registerActivity;
+  final Future<void> Function(Map<String, dynamic>) _unregisterActivity;
+  final Future<String?> Function() _deviceToken;
+  final Future<Map<String, dynamic>?> Function(int) _orderLoader;
+  final PusherController? _pusher;
+  StreamSubscription<OrderActivitySnapshot>? _tokenSubscription;
+  Timer? _poll;
+  Future<void> _pending = Future<void>.value();
+  bool _disposed = false;
+  bool _foreground = true;
+  bool _refreshing = false;
+  String? _registered;
+  final _versions = <int, int>{};
+  final _finished = <int>{};
   int? orderId;
   String? latestActivityId;
   String? latestActivityPushToken;
   DeliveryActivityModel? deliveryModel;
 
-  final String apiKey = '8bb214071d3189c993bf';
-  final String cluster = 'eu';
-  String get channelName => 'order.$orderId';
-  String eventName = 'status-updated';
+  static Future<bool> _register(Map<String, dynamic> data) async {
+    final response = await ApiHelper.instance.post(
+      Urls.liveActivities,
+      body: data,
+      requestTimeout: const Duration(seconds: 12),
+    );
+    return response.state == ResponseState.complete;
+  }
+
+  static Future<void> _unregister(Map<String, dynamic> data) async {
+    await ApiHelper.instance.post(
+      '${Urls.liveActivities}/unregister',
+      body: data,
+      requestTimeout: const Duration(seconds: 8),
+    );
+  }
+
+  static Future<Map<String, dynamic>?> _loadOrder(int id) async {
+    final response = await ApiHelper.instance.get('${Urls.detailsOrders}/$id');
+    final data = response.data;
+    if (response.state != ResponseState.complete ||
+        data is! Map ||
+        data['data'] is! Map) return null;
+    return Map<String, dynamic>.from(data['data'] as Map);
+  }
+
+  static int? _timestamp(String? value) {
+    final date = DateTime.tryParse(value ?? '');
+    return date == null ? null : date.millisecondsSinceEpoch ~/ 1000;
+  }
+
+  static String normalizeStatus(String status) =>
+      status.trim().toLowerCase().replaceAll(RegExp(r'[ -]'), '_');
+  static bool isTerminal(String status) => const {
+        'delivered',
+        'completed',
+        'cancelled',
+        'canceled',
+        'declined',
+        'rejected',
+        'ended',
+        'failed',
+        'payment_failed',
+      }.contains(normalizeStatus(status));
+
+  static String displayStatus(String status) {
+    switch (normalizeStatus(status)) {
+      case 'pending':
+      case 'new_order':
+      case 'accepted':
+      case 'preparing':
+      case 'in_preparation':
+        return 'Preparing';
+      case 'shipped':
+      case 'picked_up':
+      case 'on_the_way':
+      case 'out_for_delivery':
+        return 'On the Way';
+      case 'completed':
+      case 'delivered':
+        return 'Delivered';
+      case 'cancelled':
+      case 'canceled':
+      case 'declined':
+      case 'rejected':
+        return 'Cancelled';
+      default:
+        return status;
+    }
+  }
 
   Map<String, dynamic>? buildLiveActivityRegistrationPayload() {
     if (orderId == null ||
         latestActivityId == null ||
-        latestActivityPushToken == null ||
-        latestActivityPushToken!.isEmpty) {
-      return null;
-    }
-
+        latestActivityPushToken?.isNotEmpty != true) return null;
     return {
-      'order_id': orderId.toString(),
+      'order_id': orderId,
       'live_activity_id': latestActivityId,
       'live_activity_token': latestActivityPushToken,
       'platform': 'ios',
     };
   }
 
-  Future<void> init(int id) async {
-    PrintLog.i('➡️ init called with id=$id');
-    orderId = id;
-    final generatedActivityId =
-        DeliveryActivityPushHandler.activityIdForOrderId(orderId);
-    if (generatedActivityId.isNotEmpty) {
-      latestActivityId = generatedActivityId;
-      PrintLog.i('Generated deterministic activity id=$latestActivityId');
-    }
-    notifyListeners();
-    await _initializeLiveActivities();
-    await _initializePusher();
-    PrintLog.i('✅ init completed for orderId=$orderId');
-  }
-
-  Future<String> checkLiveActivitiesSupport() async {
-    PrintLog.i('➡️ checkLiveActivitiesSupport called');
-    try {
-      final supported = await _liveActivitiesPlugin.areActivitiesSupported();
-      if (Platform.isIOS) {
-        final enabled = await _liveActivitiesPlugin.areActivitiesEnabled();
-        final msg =
-            'iOS Live Activities supported: $supported, enabled: $enabled';
-        PrintLog.i(msg);
-        return msg;
-      } else {
-        final msg =
-            'Android Live Activities (notification) supported: $supported';
-        PrintLog.i(msg);
-        return msg;
-      }
-    } catch (e) {
-      final msg = 'Error checking Live Activities support: $e';
-      PrintLog.e(msg);
-      return msg;
-    }
-  }
-
-  Future<void> _initializeLiveActivities() async {
-    PrintLog.i('➡️ _initializeLiveActivities start');
-    try {
-      final supported = await _liveActivitiesPlugin.areActivitiesSupported();
-      final enabled = await _liveActivitiesPlugin.areActivitiesEnabled();
-
-      PrintLog.i('LiveActivities supported=$supported enabled=$enabled');
-
-      if (!supported) {
-        PrintLog.e('⚠️ Live Activities not available on this device/OS.');
-        return;
-      }
-      if (!enabled) {
-        PrintLog.e(
-            '⚠️ Live Activities/notifications are disabled by the user.');
-        return;
-      }
-
-      await _liveActivitiesPlugin.init(
-        appGroupId: 'group.faskhaninja.liveactivities',
-        urlScheme: Platform.isIOS ? 'la' : null,
-      );
-      _subscribeToActivityUpdates();
-
-      _liveActivitiesReady = true;
-      PrintLog.i(
-          '✅ Live Activities ready (${Platform.isIOS ? 'iOS' : 'Android'})');
-    } catch (e) {
-      PrintLog.e('❌ Live Activities init failed: $e');
-    }
-  }
-
-  void _subscribeToActivityUpdates() {
-    if (!Platform.isIOS) {
-      return;
-    }
-
-    _activityUpdateSubscription?.cancel();
-    _activityUpdateSubscription =
-        _liveActivitiesPlugin.activityUpdateStream.listen(
-      (event) {
-        event.mapOrNull(
-          active: (active) {
-            if (active.activityToken.isEmpty) {
-              return;
-            }
-            if (latestActivityId == null ||
-                latestActivityId == active.activityId) {
-              latestActivityPushToken = active.activityToken;
-              PrintLog.i(
-                  'LIVE_ACTIVITY_PUSH_TOKEN_READY (activityId=${active.activityId})');
-              notifyListeners();
-            }
-          },
-        );
-      },
-      onError: (Object error, StackTrace stackTrace) {
-        PrintLog.e('Live Activity update stream error: $error');
-      },
-    );
-  }
-
-  Future<void> _waitForLiveActivityPushToken(
-    String activityId, {
-    Duration timeout = const Duration(seconds: 45),
-  }) async {
-    if (!Platform.isIOS || !_liveActivitiesReady) {
-      return;
-    }
-
-    final end = DateTime.now().add(timeout);
-    while (DateTime.now().isBefore(end)) {
+  Future<void> syncOrder({
+    required int id,
+    required String status,
+    String? restaurantName,
+    String? updatedAt,
+  }) {
+    // Serialize native calls: an older response cannot finish after a newer stage.
+    _pending = _pending.then((_) async {
+      if (_disposed || id <= 0 || status.isEmpty) return;
       try {
-        final token = await _liveActivitiesPlugin.getPushToken(activityId);
-        if (token != null && token.isNotEmpty) {
-          latestActivityPushToken = token;
-          PrintLog.i(
-              'LIVE_ACTIVITY_PUSH_TOKEN_READY (activityId=$activityId)');
-          notifyListeners();
+        if (_finished.contains(id) && !isTerminal(status)) return;
+        final version = _timestamp(updatedAt);
+        if (version != null && version < (_versions[id] ?? 0)) return;
+        if (!await _platform.supported() || _disposed) return;
+        final model = DeliveryActivityModel(
+          orderId: '$id',
+          orderStatus: displayStatus(status),
+          restaurantName: restaurantName ?? 'Fasakhansta',
+          updatedAt: _timestamp(updatedAt),
+        );
+        if (isTerminal(status)) {
+          _finished.add(id);
+          if (version != null) _versions[id] = version;
+          await _platform.end(id, model.toMap());
+          if (orderId == id) await _clearRegistration();
           return;
         }
-      } catch (e) {
-        PrintLog.w('Unable to fetch Live Activity push token: $e');
-      }
-
-      await Future<void>.delayed(const Duration(seconds: 2));
-    }
-
-    PrintLog.e(
-      '⚠️ Live Activity push token timeout for activityId=$activityId. '
-      'Remote terminated updates require this token.',
-    );
-  }
-
-  Future<void> _initializePusher() async {
-    PrintLog.i('➡️ _initializePusher start for orderId=$orderId');
-    if (orderId == null) {
-      PrintLog.w('No orderId provided; skipping Pusher initialization');
-      return;
-    }
-    try {
-      if (!_pusherInitialized) {
-        PrintLog.i('Initializing Pusher with apiKey=$apiKey cluster=$cluster');
-        await _pusher.init(apiKey: apiKey, cluster: cluster);
-        _pusherInitialized = true;
-        PrintLog.i('✅ Pusher SDK initialized');
-      } else {
-        PrintLog.i('Pusher SDK already initialized');
-      }
-
-      if (_subscribedChannel != null && _subscribedChannel != channelName) {
-        PrintLog.i('Unsubscribing from previous channel=$_subscribedChannel');
-        await _pusher.unsubscribe(channelName: _subscribedChannel!);
-        PrintLog.i('🧹 Pusher unsubscribed from $_subscribedChannel');
-      }
-
-      if (_subscribedChannel != channelName) {
-        PrintLog.i('Subscribing to channel=$channelName');
-        await _pusher.subscribe(
-          channelName: channelName,
-          onEvent: (event) {
-            if (event is PusherEvent) _onPusherEvent(event);
-          },
-          onSubscriptionError: (message, code, e) =>
-              PrintLog.e('Pusher subscription error: $message, $code, $e'),
+        final snapshot = await _platform.sync(id, model.toMap());
+        if (snapshot == null || _disposed) return;
+        if (latestActivityId != snapshot.activityId) {
+          latestActivityPushToken = null;
+          _registered = null;
+        }
+        orderId = id;
+        if (version != null) _versions[id] = version;
+        deliveryModel = model;
+        latestActivityId = snapshot.activityId;
+        if (snapshot.pushToken?.isNotEmpty == true)
+          latestActivityPushToken = snapshot.pushToken;
+        _poll ??= Timer.periodic(
+          const Duration(seconds: 45),
+          (_) => unawaited(_refreshOrder()),
         );
-        _subscribedChannel = channelName;
-        PrintLog.i('✅ Pusher subscribed to $channelName');
-      } else {
-        PrintLog.i('Already subscribed to $channelName');
+        notifyListeners();
+        await _registerToken();
+      } catch (_) {
+        // Order tracking and checkout remain usable if system activities are disabled.
+        PrintLog.w(
+          'Live Activity sync unavailable; retrying on the next order refresh.',
+        );
       }
-
-      PrintLog.i('Connecting to Pusher...');
-      await _pusher.connect();
-      PrintLog.i('✅ Pusher connected');
-    } catch (e) {
-      PrintLog.e('❌ Pusher init error: $e');
-    }
+    });
+    return _pending;
   }
 
-  Future<void> _onPusherEvent(PusherEvent event) async {
-    PrintLog.i(
-        '📡 Event received: ${event.eventName} on channel ${event.channelName}');
-    if (event.eventName != eventName) {
-      PrintLog.i(
-          'Event ${event.eventName} is not the expected $eventName; ignoring');
-      return;
-    }
+  void _receiveToken(OrderActivitySnapshot snapshot) {
+    if (_disposed ||
+        snapshot.orderId != orderId ||
+        snapshot.activityId != latestActivityId) return;
+    latestActivityPushToken = snapshot.pushToken;
+    unawaited(_registerToken());
+  }
 
+  Future<void> _registerToken() async {
+    if (!_platform.isIOS || _disposed) return;
+    final data = buildLiveActivityRegistrationPayload();
+    if (data == null) return;
     try {
-      final data = _extractEventData(event.data);
-      final status = _extractStatus(data);
-
-      if (status == null) {
-        PrintLog.e('⚠️ Status update event received without status payload.');
-        return;
+      final device = await _deviceToken();
+      if (device == null || device.isEmpty || _disposed) return;
+      data['fcm_token'] = device;
+      final key = jsonEncode(data);
+      if (_registered == key) return;
+      if (await _registerActivity(data) &&
+          !_disposed &&
+          latestActivityId == data['live_activity_id'] &&
+          latestActivityPushToken == data['live_activity_token']) {
+        _registered = key;
       }
-
-      final normalizedStatus = _normalizeStatus(status);
-      final displayStatus = _toDisplayStatus(status);
-      PrintLog.w(
-          'Order status update raw="$status" normalized="$normalizedStatus" display="$displayStatus"');
-
-      if (deliveryModel == null) {
-        PrintLog.e('⚠️ Received event but no active delivery');
-        return;
-      }
-
-      if (normalizedStatus == 'ended' ||
-          normalizedStatus == 'cancelled' ||
-          normalizedStatus == 'declined') {
-        PrintLog.i(
-            'Status indicates end/cancel/decline: $normalizedStatus -> stopping delivery');
-        await stopDelivery();
-        return;
-      }
-
-      final updatedModel = deliveryModel!.copyWith(orderStatus: displayStatus);
-      PrintLog.i('Updated deliveryModel prepared: ${updatedModel.toMap()}');
-
-      if (_liveActivitiesReady && latestActivityId != null) {
-        PrintLog.i(
-            'Updating Live Activity id=$latestActivityId with data=${updatedModel.toMap()}');
-        await _liveActivitiesPlugin.updateActivity(
-            latestActivityId!, updatedModel.toMap());
-        PrintLog.i('✅ Live Activity updated');
-      }
-
-      deliveryModel = updatedModel;
-      notifyListeners();
-      PrintLog.i('Listeners notified after status update');
-
-      if (normalizedStatus == 'delivered' || normalizedStatus == 'completed') {
-        PrintLog.i(
-            'Status is delivered/completed; scheduling stopDelivery in 2s');
-        await Future.delayed(const Duration(seconds: 2));
-        await stopDelivery();
-        return;
-      }
-    } catch (e) {
-      PrintLog.e('⚠️ Error parsing event: $e');
+    } catch (_) {
+      PrintLog.w('Live Activity registration pending; retrying on refresh.');
     }
   }
 
-  Future<void> startDelivery(String? orderStatus) async {
-    PrintLog.i('➡️ startDelivery called with orderStatus=$orderStatus');
-    if (_liveActivitiesReady) {
-      PrintLog.i(
-          'Ending all existing Live Activities before starting a new one');
-      await _liveActivitiesPlugin.endAllActivities();
+  void _onStatusEvent(PusherEvent event) {
+    try {
+      final data = jsonDecode(event.data);
+      if (data is! Map || int.tryParse('${data['order_id']}') != orderId)
+        return;
+      // Refresh authenticated order details instead of trusting stale socket payloads.
+      unawaited(_refreshOrder());
+    } catch (_) {
+      /* Ignore malformed events. */
     }
-    if (Platform.isIOS || Platform.isAndroid) {
-      PrintLog.i('Requesting notification permission');
-      final status = await Permission.notification.request();
-      PrintLog.i('Notification permission status: $status');
-      if (!status.isGranted) {
-        PrintLog.e(
-            '⚠️ Notification permission not granted; live activity/notification may not appear.');
-      }
-    }
+  }
 
-    final newDeliveryModel = DeliveryActivityModel(
-      orderStatus: _toDisplayStatus(orderStatus ?? 'Preparing'),
-      orderId: orderId?.toString(),
-    );
-    PrintLog.i(
-        'Created new DeliveryActivityModel: ${newDeliveryModel.toMap()}');
+  void _onOrderEvent(PusherEvent event) => unawaited(_refreshOrder());
 
-    String? activityId;
-    final generatedActivityId =
-        DeliveryActivityPushHandler.activityIdForOrderId(orderId);
-    final fallbackId = generatedActivityId.isNotEmpty
-        ? generatedActivityId
-        : DateTime.now().millisecondsSinceEpoch.toString();
-
-    if (_liveActivitiesReady) {
-      PrintLog.i('Creating Live Activity with id=$fallbackId');
-      activityId = await _liveActivitiesPlugin.createActivity(
-        fallbackId,
-        newDeliveryModel.toMap(),
-        iOSEnableRemoteUpdates: true,
+  Future<void> _refreshOrder() async {
+    final id = orderId;
+    if (_disposed || !_foreground || _refreshing || id == null) return;
+    _refreshing = true;
+    try {
+      final data = await _orderLoader(id);
+      if (_disposed ||
+          orderId != id ||
+          data == null ||
+          int.tryParse('${data['id']}') != id) return;
+      final status = data['status']?.toString();
+      if (status == null || status.isEmpty) return;
+      await syncOrder(
+        id: id,
+        status: status,
+        restaurantName: data['resturant_name']?.toString(),
+        updatedAt: data['updated_at']?.toString(),
       );
-      PrintLog.i('Live Activity created with id=$activityId');
+    } catch (_) {
+      PrintLog.w('Live Activity order refresh unavailable.');
+    } finally {
+      _refreshing = false;
     }
-
-    PrintLog.i('ActivityID: $activityId');
-
-    latestActivityId = activityId ?? fallbackId;
-    latestActivityPushToken = null;
-    if (_liveActivitiesReady && Platform.isIOS && latestActivityId != null) {
-      unawaited(_waitForLiveActivityPushToken(latestActivityId!));
-      unawaited(
-        Future<void>.delayed(const Duration(milliseconds: 800), () async {
-          try {
-            final token =
-                await _liveActivitiesPlugin.getPushToken(latestActivityId!);
-            if (token != null && token.isNotEmpty) {
-              latestActivityPushToken = token;
-              PrintLog.i(
-                  'LIVE_ACTIVITY_PUSH_TOKEN_READY (activityId=$latestActivityId)');
-              notifyListeners();
-            } else {
-              PrintLog.w(
-                'Live Activity push token is empty for activityId=$latestActivityId, waiting for activityUpdateStream.',
-              );
-            }
-          } catch (e) {
-            PrintLog.w('Unable to fetch Live Activity push token: $e');
-          }
-        }),
-      );
-    }
-    deliveryModel = newDeliveryModel;
-    notifyListeners();
-    PrintLog.i('startDelivery finished - latestActivityId=$latestActivityId');
-  }
-
-  Future<void> updateStatus(String status) async {
-    PrintLog.i('➡️ updateStatus called with status=$status');
-    if (deliveryModel == null) {
-      PrintLog.w('updateStatus ignored - no active deliveryModel');
-      return;
-    }
-
-    final normalizedStatus = _normalizeStatus(status);
-    PrintLog.i('Normalized status: $normalizedStatus');
-    if (normalizedStatus == 'delivered' || normalizedStatus == 'completed') {
-      PrintLog.i('Status indicates delivered/completed -> stopping delivery');
-      await stopDelivery();
-      return;
-    }
-
-    final updatedModel =
-        deliveryModel!.copyWith(orderStatus: _toDisplayStatus(status));
-    PrintLog.i('Prepared updatedModel: ${updatedModel.toMap()}');
-
-    if (_liveActivitiesReady && latestActivityId != null) {
-      PrintLog.i(
-          'Updating Live Activity id=$latestActivityId with ${updatedModel.toMap()}');
-      await _liveActivitiesPlugin.updateActivity(
-          latestActivityId!, updatedModel.toMap());
-      PrintLog.i('✅ Live Activity updated from updateStatus');
-    }
-
-    deliveryModel = updatedModel;
-    notifyListeners();
-    PrintLog.i('updateStatus finished and listeners notified');
-  }
-
-  Future<void> stopDelivery() async {
-    PrintLog.i('➡️ stopDelivery called');
-    if (_liveActivitiesReady) {
-      PrintLog.i('Ending all Live Activities');
-      await _liveActivitiesPlugin.endAllActivities();
-      PrintLog.i('✅ All Live Activities ended');
-    } else {
-      PrintLog.i('Live activities not ready; skipping endAllActivities');
-    }
-    latestActivityId = null;
-    latestActivityPushToken = null;
-    deliveryModel = null;
-    notifyListeners();
-    PrintLog.i(
-        'stopDelivery finished - delivery cleared and listeners notified');
   }
 
   @override
-  void dispose() {
-    PrintLog.i('➡️ dispose called - cleaning up resources');
-    if (_subscribedChannel != null) {
-      PrintLog.i('Unsubscribing from channel=$_subscribedChannel (dispose)');
-      unawaited(_pusher.unsubscribe(channelName: _subscribedChannel!));
-      _subscribedChannel = null;
-    }
-    if (_activityUpdateSubscription != null) {
-      unawaited(_activityUpdateSubscription!.cancel());
-      _activityUpdateSubscription = null;
-    }
-    _pusher.disconnect();
-    PrintLog.i('📴 Pusher disconnected');
-    _liveActivitiesPlugin.dispose();
-    PrintLog.i('LiveActivities disposed');
-    super.dispose();
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    _foreground = state == AppLifecycleState.resumed;
+    if (_foreground) unawaited(_refreshOrder());
   }
 
-  Map<String, dynamic> _extractEventData(String? rawData) {
-    if (rawData == null || rawData.isEmpty) return {};
-
-    dynamic decoded;
-    try {
-      decoded = jsonDecode(rawData);
-    } catch (_) {
-      PrintLog.w('_extractEventData: failed to jsonDecode rawData');
-      return {};
-    }
-
-    final initialData = _toMap(decoded);
-    if (initialData == null) {
-      PrintLog.w('_extractEventData: decoded payload is not a Map');
-      return {};
-    }
-    Map<String, dynamic> data = initialData;
-
-    final nestedData = data['data'];
-    if (nestedData is String && nestedData.isNotEmpty) {
+  Future<void> _clearRegistration() async {
+    final id = orderId;
+    final activity = latestActivityId;
+    _poll?.cancel();
+    _poll = null;
+    orderId = null;
+    latestActivityId = null;
+    latestActivityPushToken = null;
+    deliveryModel = null;
+    _registered = null;
+    if (!_disposed) notifyListeners();
+    if (_platform.isIOS && id != null && activity != null) {
       try {
-        final nestedDecoded = jsonDecode(nestedData);
-        final nestedMap = _toMap(nestedDecoded);
-        if (nestedMap != null) data = nestedMap;
+        await _unregisterActivity({
+          'order_id': id,
+          'live_activity_id': activity,
+        });
       } catch (_) {
-        // Ignore invalid nested JSON and keep original payload.
-        PrintLog.w(
-            '_extractEventData: nested data is not valid JSON - keeping original payload');
-      }
-    } else {
-      final nestedMap = _toMap(nestedData);
-      if (nestedMap != null) data = nestedMap;
-    }
-
-    return data;
-  }
-
-  Map<String, dynamic>? _toMap(dynamic value) {
-    if (value is Map<String, dynamic>) return value;
-    if (value is Map) return Map<String, dynamic>.from(value);
-    return null;
-  }
-
-  String? _extractStatus(Map<String, dynamic> data) {
-    PrintLog.i('➡️ _extractStatus called with data keys=${data.keys.toList()}');
-    final values = <dynamic>[
-      data['order_status'],
-      data['orderStatus'],
-      data['status'],
-      if (data['order'] is Map) (data['order'] as Map)['status'],
-    ];
-
-    for (final value in values) {
-      if (value == null) continue;
-      final status = value.toString().trim();
-      if (status.isNotEmpty) {
-        PrintLog.i('_extractStatus found status=$status');
-        return status;
+        /* Server expires inactive registrations. */
       }
     }
-    PrintLog.w('_extractStatus: no status found in payload');
-    return null;
   }
 
-  String _normalizeStatus(String value) {
-    return value.toLowerCase().trim().replaceAll(RegExp(r'[\s-]+'), '_');
+  Future<void> init(int id) async {
+    orderId = id;
   }
 
-  String _toDisplayStatus(String rawValue) {
-    final normalized = _normalizeStatus(rawValue);
+  Future<void> startDelivery(String? status) async {
+    final id = orderId;
+    if (id != null) await syncOrder(id: id, status: status ?? 'Preparing');
+  }
 
-    switch (normalized) {
-      case 'new_order':
-      case 'pending':
-      case 'accepted':
-      case 'preparing':
-      case 'in_preparation':
-        return 'Preparing';
-      case 'picked_up':
-      case 'on_the_way':
-      case 'out_for_delivery':
-      case 'shipped':
-        return 'On the Way';
-      case 'delivered':
-      case 'completed':
-        return 'Delivered';
-      default:
-        final value = rawValue.replaceAll('_', ' ').trim();
-        return value.isEmpty ? 'Preparing' : value;
+  Future<void> updateStatus(String status) async {
+    final id = orderId;
+    if (id != null) await syncOrder(id: id, status: status);
+  }
+
+  Future<void> stopDelivery() async {
+    await _pending;
+    final id = orderId;
+    if (id != null) {
+      try {
+        await _platform.end(
+            id,
+            {
+              'order_id': '$id',
+              'order_status': 'ended',
+            },
+            immediate: true);
+      } catch (_) {
+        /* Already ended. */
+      }
     }
+    await _clearRegistration();
+  }
+
+  Future<String> checkLiveActivitiesSupport() async =>
+      'Live Activities supported: ${await _platform.supported()}';
+
+  @override
+  void dispose() {
+    _disposed = true;
+    _poll?.cancel();
+    _tokenSubscription?.cancel();
+    _pusher?.removeEventListener('status-updated', _onStatusEvent);
+    _pusher?.removeEventListener('user.updated', _onOrderEvent);
+    WidgetsBinding.instance.removeObserver(this);
+    _platform.dispose();
+    super.dispose();
   }
 }

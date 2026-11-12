@@ -1,8 +1,11 @@
 class DeliveryActivityModel {
   final String? orderStatus;
   final String? orderId;
+  final String? restaurantName;
+  final int? updatedAt;
 
-  const DeliveryActivityModel({this.orderStatus, this.orderId});
+  const DeliveryActivityModel(
+      {this.orderStatus, this.orderId, this.restaurantName, this.updatedAt});
 
   Map<String, dynamic> toMap() {
     final map = <String, dynamic>{};
@@ -15,6 +18,8 @@ class DeliveryActivityModel {
       map['orderId'] = orderId;
     }
 
+    if (restaurantName != null) map['restaurant_name'] = restaurantName;
+    if (updatedAt != null) map['updated_at'] = updatedAt;
     return map;
   }
 
@@ -22,6 +27,8 @@ class DeliveryActivityModel {
     return DeliveryActivityModel(
       orderStatus: orderStatus ?? this.orderStatus,
       orderId: orderId ?? this.orderId,
+      restaurantName: restaurantName,
+      updatedAt: updatedAt,
     );
   }
 }

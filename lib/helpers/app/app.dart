@@ -43,7 +43,10 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => DeliveryProvider()),
+        ChangeNotifierProvider(create: (_) => PusherController()),
+        ChangeNotifierProvider(
+            create: (context) =>
+                DeliveryProvider(pusher: context.read<PusherController>())),
         ChangeNotifierProvider(create: (_) => AuthController()),
         ChangeNotifierProvider(create: (_) => HomeController()),
         ChangeNotifierProvider(create: (_) => WalletController()),
@@ -56,7 +59,6 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider(create: (_) => RequestDelegateController()),
         ChangeNotifierProvider(create: (_) => AdvertisingController()..init()),
         ChangeNotifierProvider(create: (_) => CartController()..init()),
-        ChangeNotifierProvider(create: (_) => PusherController()),
         ChangeNotifierProvider(create: (_) => LastCorderController()),
       ],
       child: StreamBuilder<String>(

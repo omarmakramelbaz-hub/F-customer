@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:faskhaninja/helpers/delivery_activity/delivery_provider.dart';
 import 'package:faskhaninja/helpers/networking/api_helper.dart';
 import 'package:faskhaninja/helpers/pusher_service/pusher_controller.dart';
 import 'package:faskhaninja/view/layout/auth/controller/auth_controller.dart';
@@ -113,7 +114,20 @@ class _TrackingVideoPlatform extends VideoPlayerPlatform {
       const SizedBox.expand();
 }
 
+class _TrackingActivity extends DeliveryProvider {
+  final stages = <String>[];
+  @override
+  Future<void> syncOrder(
+      {required int id,
+      required String status,
+      String? restaurantName,
+      String? updatedAt}) async {
+    stages.add('$id:$status');
+  }
+}
+
 class _TrackingHarness {
+  final activity = _TrackingActivity();
   final navigator = GlobalKey<NavigatorState>();
   final auth = _TrackingAuth();
   final pusher = _TrackingPusher();
@@ -139,6 +153,7 @@ class _TrackingHarness {
       orders.dispose();
       auth.dispose();
       pusher.dispose();
+      activity.dispose();
     });
 
     await tester.pumpWidget(
@@ -147,6 +162,7 @@ class _TrackingHarness {
           ChangeNotifierProvider<OrdersController>.value(value: orders),
           ChangeNotifierProvider<AuthController>.value(value: auth),
           ChangeNotifierProvider<PusherController>.value(value: pusher),
+          ChangeNotifierProvider<DeliveryProvider>.value(value: activity),
         ],
         child: MaterialApp(
           navigatorKey: navigator,
@@ -176,6 +192,7 @@ void main() {
     await harness.mount(tester);
     expect(find.text('طلبك بيتجهّز'), findsOneWidget);
     final initialRequests = harness.detailRequests;
+    expect(harness.activity.stages.last, '501:accepted');
 
     harness.status = 'shipped';
     harness.pusher.emit(999);
@@ -187,6 +204,7 @@ void main() {
     await tester.pumpAndSettle();
     expect(harness.detailRequests, greaterThan(initialRequests));
     expect(find.text('طلبك في الطريق'), findsOneWidget);
+    expect(harness.activity.stages.last, '501:shipped');
     expect(find.text('طلبك بيتجهّز'), findsNothing);
     expect(tester.takeException(), isNull);
   });
