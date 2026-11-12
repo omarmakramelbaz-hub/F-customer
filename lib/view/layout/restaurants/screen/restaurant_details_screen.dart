@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -29,7 +30,7 @@ import '../model/products_restaurant_model.dart';
 import '../widgets/choices_according_to_your_taste_widget.dart';
 import '../widgets/header_cover_and_image_restaurant_details_widget.dart';
 import '../widgets/previous_orders_list_view_widget.dart';
-import '../../home/widgets/draw_badge_chip.dart';
+import '../widgets/menu_product_card.dart';
 import 'product_details_screen.dart';
 
 class RestaurantDetailsArgs {
@@ -495,7 +496,7 @@ class _RestaurantDetailsScreenState extends State<RestaurantDetailsScreen> {
           ),
           const SizedBox(height: 12),
           SizedBox(
-            height: 212,
+            height: _productCardHeight(155),
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
               itemCount: items.length,
@@ -508,64 +509,25 @@ class _RestaurantDetailsScreenState extends State<RestaurantDetailsScreen> {
     );
   }
 
+  double _productCardHeight(double width) {
+    final textScale = MediaQuery.textScalerOf(context).scale(14) / 14;
+    return math.max(width / .70, 250 + math.max(0, textScale - 1) * 70);
+  }
+
   Widget _productCard(ResturantItems item) {
-    return GestureDetector(
-      onTap: () => _openProduct(item.id ?? 0),
-      child: Container(
-        width: 155,
-        decoration: BoxDecoration(
-          color: AppColors.whiteColor,
-          borderRadius: BorderRadius.circular(18),
-          border: Border.all(color: const Color(0xFFEAEAEA)),
+    return SizedBox(
+      width: 155,
+      child: MenuProductCard(
+        name: item.productName ?? '',
+        priceLabel: '${item.productPrice?.toStringAsFixed(0) ?? '-'} ج',
+        image: CustomNetworkImage(
+          imageUrl: item.productImage ?? '',
+          radius: 0,
+          fit: BoxFit.cover,
         ),
-        clipBehavior: Clip.antiAlias,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(
-              height: 112,
-              width: double.infinity,
-              child: Stack(
-                children: [
-                  Positioned.fill(
-                    child: CustomNetworkImage(
-                      imageUrl: item.productImage ?? '',
-                      radius: 0,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                  if (item.draw != null)
-                    Positioned(
-                      left: 5,
-                      right: 5,
-                      bottom: 5,
-                      child: Align(alignment: Alignment.centerRight, child: DrawBadgeChip(badge: item.draw!, compact: true)),
-                    ),
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(10, 8, 10, 4),
-              child: Text(item.productName ?? '', maxLines: 1, overflow: TextOverflow.ellipsis, style: AppTextStyle.text14BS()),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text('${item.productPrice?.toStringAsFixed(0) ?? '-'} ج', style: AppTextStyle.text14BS().copyWith(color: AppColors.mainAppColor)),
-                  Container(
-                    width: 30,
-                    height: 30,
-                    decoration: BoxDecoration(color: AppColors.mainAppColor, borderRadius: BorderRadius.circular(10)),
-                    child: const Icon(Icons.add, color: Colors.white, size: 20),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 8),
-          ],
-        ),
+        draw: item.draw,
+        compact: true,
+        onTap: () => _openProduct(item.id ?? 0),
       ),
     );
   }
@@ -616,24 +578,32 @@ class _RestaurantDetailsScreenState extends State<RestaurantDetailsScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(category.categoryName ?? '', style: AppTextStyle.text18BS()),
-                Text('عرض الكل', style: AppTextStyle.text12BS().copyWith(color: AppColors.mainAppColor)),
+                Text(category.categoryName ?? '',
+                    style: AppTextStyle.text18BS()),
+                Text('عرض الكل',
+                    style: AppTextStyle.text12BS()
+                        .copyWith(color: AppColors.mainAppColor)),
               ],
             ),
             const SizedBox(height: 12),
-            GridView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: category.resturantItems?.length ?? 0,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 10,
-                mainAxisSpacing: 10,
-                childAspectRatio: .70,
-              ),
-              itemBuilder: (context, itemIndex) {
-                final item = category.resturantItems![itemIndex];
-                return _gridProductCard(item);
+            LayoutBuilder(
+              builder: (context, constraints) {
+                final cardWidth = (constraints.maxWidth - 10) / 2;
+                return GridView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: category.resturantItems?.length ?? 0,
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 10,
+                    mainAxisSpacing: 10,
+                    mainAxisExtent: _productCardHeight(cardWidth),
+                  ),
+                  itemBuilder: (context, itemIndex) {
+                    final item = category.resturantItems![itemIndex];
+                    return _gridProductCard(item);
+                  },
+                );
               },
             ),
           ],
@@ -644,7 +614,19 @@ class _RestaurantDetailsScreenState extends State<RestaurantDetailsScreen> {
 
   Widget _gridProductCard(ResturantItems item) {
     final available = item.status == 'show';
-    return GestureDetector(
+    return MenuProductCard(
+      name: item.productName ?? '',
+      priceLabel: available
+          ? '${item.productPrice?.toStringAsFixed(0) ?? '-'} ج'
+          : 'غير متاح',
+      image: CustomNetworkImage(
+        imageUrl: item.productImage ?? '',
+        radius: 0,
+        fit: BoxFit.cover,
+      ),
+      draw: item.draw,
+      available: available,
+      highestRated: item.highestRated == 'yes',
       onTap: () {
         if (!available) {
           CommonMethods.showError(message: 'productNotAvailable'.tr);
@@ -652,71 +634,6 @@ class _RestaurantDetailsScreenState extends State<RestaurantDetailsScreen> {
         }
         _openProduct(item.id ?? 0);
       },
-      child: Container(
-        decoration: BoxDecoration(
-          color: AppColors.whiteColor,
-          borderRadius: BorderRadius.circular(18),
-          border: Border.all(color: const Color(0xFFEAEAEA)),
-        ),
-        clipBehavior: Clip.antiAlias,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-              child: Stack(
-                children: [
-                  Positioned.fill(
-                    child: CustomNetworkImage(
-                      imageUrl: item.productImage ?? '',
-                      radius: 0,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                  if (item.draw != null)
-                    Positioned(
-                      left: 6,
-                      right: 6,
-                      bottom: 6,
-                      child: Align(alignment: Alignment.centerRight, child: DrawBadgeChip(badge: item.draw!, compact: true)),
-                    ),
-                  if (item.highestRated == 'yes')
-                    Positioned(
-                      top: 8,
-                      right: 8,
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                        decoration: BoxDecoration(color: AppColors.mainAppColor, borderRadius: BorderRadius.circular(8)),
-                        child: Text('الأكثر طلباً', style: AppTextStyle.text10BW()),
-                      ),
-                    ),
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(10, 8, 10, 3),
-              child: Text(item.productName ?? '', maxLines: 1, overflow: TextOverflow.ellipsis, style: AppTextStyle.text14BS()),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    available ? '${item.productPrice?.toStringAsFixed(0) ?? '-'} ج' : 'غير متاح',
-                    style: AppTextStyle.text13BS().copyWith(color: available ? AppColors.mainAppColor : Colors.grey),
-                  ),
-                  Container(
-                    width: 34,
-                    height: 34,
-                    decoration: BoxDecoration(color: available ? AppColors.mainAppColor : Colors.grey, shape: BoxShape.circle),
-                    child: const Icon(Icons.add, color: Colors.white, size: 20),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 
