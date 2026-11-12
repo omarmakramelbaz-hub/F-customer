@@ -21,9 +21,15 @@ let surfaceEnd = Color(hex: 0x1C1C1C)
 struct LiveActivitiesAppAttributes: ActivityAttributes, Identifiable {
     public typealias LiveDeliveryData = ContentState
 
-    public struct ContentState: Codable, Hashable {}
+    public struct ContentState: Codable, Hashable {
+        var orderId: String
+        var orderStatus: String
+        var restaurantName: String
+        var updatedAt: Int
+    }
 
     var id = UUID()
+    var orderId: String
 }
 
 
@@ -295,13 +301,13 @@ struct DeliveryStatusView: View {
 struct DeliveryActivityWidget: Widget {
     var body: some WidgetConfiguration {
         ActivityConfiguration(for: LiveActivitiesAppAttributes.self) { context in
-            let data = deliveryData(prefix: "\(context.attributes.id)")
+            let data = DeliveryLiveData(orderStatus: displayStatus(context.state.orderStatus), restaurantName: context.state.restaurantName, orderId: context.state.orderId)
 
             DeliveryStatusView(data: data)
                 .activityBackgroundTint(.clear)
                 .activitySystemActionForegroundColor(.white)
         } dynamicIsland: { context in
-            let data = deliveryData(prefix: "\(context.attributes.id)")
+            let data = DeliveryLiveData(orderStatus: displayStatus(context.state.orderStatus), restaurantName: context.state.restaurantName, orderId: context.state.orderId)
 
             return DynamicIsland {
                 DynamicIslandExpandedRegion(.leading) {

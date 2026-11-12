@@ -12,6 +12,8 @@ class DeliveryActivityPushHandler {
   static const String _appGroupId = 'group.faskhaninja.liveactivities';
 
   static Future<void> handlePushData(Map<String, dynamic> payload) async {
+    // iOS data pushes use the native typed ActivityKit state.
+    if (Platform.isIOS) return;
     final data = _extractPayload(payload);
 
     final looksLikeLiveActivity = _looksLikeLiveActivityUpdate(data);

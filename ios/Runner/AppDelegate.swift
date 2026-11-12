@@ -9,20 +9,21 @@ import GoogleSignIn
 import ActivityKit
 
 @available(iOS 16.1, *)
-private struct LiveActivitiesAppAttributes: ActivityAttributes, Identifiable {
-    public struct ContentState: Codable, Hashable {
-        var appGroupId: String
-
-        init(appGroupId: String) {
-            self.appGroupId = appGroupId
-        }
+struct LiveActivitiesAppAttributes: ActivityAttributes, Identifiable {
+    struct ContentState: Codable, Hashable {
+        var orderId: String
+        var orderStatus: String
+        var restaurantName: String
+        var updatedAt: Int
     }
-
     var id = UUID()
+    var orderId: String
 }
 
 @main
 @objc class AppDelegate: FlutterAppDelegate {
+    private var orderActivityChannel: FlutterMethodChannel?
+    private var orderActivityTokenTasks: [String: Task<Void, Never>] = [:]
     private let liveActivityAppGroupId = "group.faskhaninja.liveactivities"
   
   override func application(
@@ -33,6 +34,7 @@ private struct LiveActivitiesAppAttributes: ActivityAttributes, Identifiable {
         ApplicationDelegate.shared.application(application, didFinishLaunchingWithOptions: launchOptions)
         GMSServices.provideAPIKey("AIzaSyBDfirv6d7BiO-9YnsU5zCHEn9iM9iNtuM")
         GeneratedPluginRegistrant.register(with: self)
+        configureOrderActivityChannel()
         FlutterLocalNotificationsPlugin.setPluginRegistrantCallback { (registry) in
             GeneratedPluginRegistrant.register(with: registry)
         }
@@ -133,53 +135,122 @@ private struct LiveActivitiesAppAttributes: ActivityAttributes, Identifiable {
     @available(iOS 16.1, *)
     private func updateLiveActivityFromPush(_ userInfo: [AnyHashable: Any]) async -> Bool {
         let payload = mergedLiveActivityPayload(userInfo)
-        guard let rawStatus = extractStatus(from: payload) else {
-            print("LIVE_ACTIVITY_NATIVE_UPDATE_SKIPPED => missing order status")
-            return false
-        }
-
-        let displayStatus = toDisplayStatus(rawStatus)
-        let shouldEnd = isTerminalStatus(rawStatus)
-        let orderId = extractOrderId(from: payload)
-
-        guard let sharedDefault = UserDefaults(suiteName: liveActivityAppGroupId) else {
-            print("LIVE_ACTIVITY_NATIVE_UPDATE_SKIPPED => app group unavailable")
-            return false
-        }
-
-        let activities = Activity<LiveActivitiesAppAttributes>.activities
-        if activities.isEmpty {
-            print("LIVE_ACTIVITY_NATIVE_UPDATE_SKIPPED => no active activities")
-            return false
-        }
-
-        sharedDefault.set(displayStatus, forKey: "order_status")
-        sharedDefault.set(displayStatus, forKey: "orderStatus")
-        if let orderId = orderId, !orderId.isEmpty {
-            sharedDefault.set(orderId, forKey: "order_id")
-            sharedDefault.set(orderId, forKey: "orderId")
-        }
-
-        for activity in activities {
-            let prefix = activity.attributes.id.uuidString
-            sharedDefault.set(displayStatus, forKey: "\(prefix)_order_status")
-            sharedDefault.set(displayStatus, forKey: "\(prefix)_orderStatus")
-            if let orderId = orderId, !orderId.isEmpty {
-                sharedDefault.set(orderId, forKey: "\(prefix)_order_id")
-                sharedDefault.set(orderId, forKey: "\(prefix)_orderId")
-            }
-
-            if shouldEnd {
-                await activity.end(dismissalPolicy: .immediate)
-                print("LIVE_ACTIVITY_NATIVE_END => \(activity.id) status=\(displayStatus)")
+        guard let orderId = extractOrderId(from: payload),
+              let status = extractStatus(from: payload) else { return false }
+        let matches = Activity<LiveActivitiesAppAttributes>.activities.filter { $0.attributes.orderId == orderId }
+        for activity in matches {
+            let state = orderActivityState(payload, previous: activity.contentState)
+            if state.updatedAt > 0 && activity.contentState.updatedAt > state.updatedAt { continue }
+            cacheOrderActivity(state, prefix: activity.attributes.id.uuidString)
+            if isTerminalStatus(status) {
+                await activity.end(using: state, dismissalPolicy: .after(Date().addingTimeInterval(120)))
             } else {
-                let contentState = LiveActivitiesAppAttributes.ContentState(appGroupId: liveActivityAppGroupId)
-                await activity.update(using: contentState)
-                print("LIVE_ACTIVITY_NATIVE_UPDATE => \(activity.id) status=\(displayStatus)")
+                await activity.update(using: state)
             }
         }
+        return !matches.isEmpty
+    }
 
-        return true
+    private func configureOrderActivityChannel() {
+        guard let controller = window?.rootViewController as? FlutterViewController else { return }
+        let channel = FlutterMethodChannel(name: "com.fasakhansta/order_activity", binaryMessenger: controller.binaryMessenger)
+        orderActivityChannel = channel
+        channel.setMethodCallHandler { [weak self] call, result in
+            guard let self = self else { result(nil); return }
+            guard #available(iOS 16.1, *) else {
+                result(call.method == "supported" ? false : nil)
+                return
+            }
+            if call.method == "supported" {
+                result(ActivityAuthorizationInfo().areActivitiesEnabled)
+                return
+            }
+            guard let data = call.arguments as? [String: Any],
+                  let orderId = self.extractOrderId(from: data) else {
+                result(FlutterError(code: "invalid_order", message: "Missing order ID", details: nil))
+                return
+            }
+            Task { @MainActor in
+                let existing = Activity<LiveActivitiesAppAttributes>.activities.first { $0.attributes.orderId == orderId }
+                let state = self.orderActivityState(data, previous: existing?.contentState)
+                do {
+                    if call.method == "sync" {
+                        guard ActivityAuthorizationInfo().areActivitiesEnabled else { result(nil); return }
+                        let activity: Activity<LiveActivitiesAppAttributes>
+                        if let existing = existing {
+                            activity = existing
+                            if state.updatedAt == 0 || existing.contentState.updatedAt <= state.updatedAt {
+                                await activity.update(using: state)
+                            }
+                        } else {
+                            // iOS only allows local creation while the app is visible.
+                            guard UIApplication.shared.applicationState == .active else { result(nil); return }
+                            activity = try Activity.request(
+                                attributes: LiveActivitiesAppAttributes(orderId: orderId),
+                                contentState: state, pushType: .token)
+                        }
+                        self.cacheOrderActivity(state, prefix: activity.attributes.id.uuidString)
+                        self.observeOrderActivityToken(activity)
+                        result(self.orderActivitySnapshot(activity))
+                    } else if call.method == "end" {
+                        if let activity = existing {
+                            self.cacheOrderActivity(state, prefix: activity.attributes.id.uuidString)
+                            let immediate = data["immediate"] as? Bool ?? false
+                            await activity.end(using: state, dismissalPolicy: immediate ? .immediate : .after(Date().addingTimeInterval(120)))
+                            self.orderActivityTokenTasks.removeValue(forKey: activity.id)?.cancel()
+                        }
+                        result(nil)
+                    } else {
+                        result(FlutterMethodNotImplemented)
+                    }
+                } catch {
+                    result(FlutterError(code: "activity_unavailable", message: "Unable to update order activity", details: nil))
+                }
+            }
+        }
+    }
+
+    @available(iOS 16.1, *)
+    private func orderActivitySnapshot(_ activity: Activity<LiveActivitiesAppAttributes>) -> [String: Any] {
+        var data: [String: Any] = ["order_id": activity.attributes.orderId, "activity_id": activity.id]
+        if let token = activity.pushToken { data["push_token"] = token.map { String(format: "%02x", $0) }.joined() }
+        return data
+    }
+
+    @available(iOS 16.1, *)
+    private func observeOrderActivityToken(_ activity: Activity<LiveActivitiesAppAttributes>) {
+        guard orderActivityTokenTasks[activity.id] == nil else { return }
+        orderActivityTokenTasks[activity.id] = Task { [weak self] in
+            for await token in activity.pushTokenUpdates {
+                guard !Task.isCancelled else { return }
+                let data: [String: Any] = [
+                    "order_id": activity.attributes.orderId, "activity_id": activity.id,
+                    "push_token": token.map { String(format: "%02x", $0) }.joined()
+                ]
+                await MainActor.run { self?.orderActivityChannel?.invokeMethod("token", arguments: data) }
+            }
+        }
+    }
+
+    @available(iOS 16.1, *)
+    private func orderActivityState(_ data: [String: Any], previous: LiveActivitiesAppAttributes.ContentState?) -> LiveActivitiesAppAttributes.ContentState {
+        let version = Int(String(describing: data["updated_at"] ?? "")) ?? previous?.updatedAt ?? 0
+        return LiveActivitiesAppAttributes.ContentState(
+            orderId: extractOrderId(from: data) ?? previous?.orderId ?? "",
+            orderStatus: toDisplayStatus(extractStatus(from: data) ?? previous?.orderStatus ?? "Preparing"),
+            restaurantName: data["restaurant_name"] as? String ?? previous?.restaurantName ?? "Fasakhansta",
+            updatedAt: version)
+    }
+
+    @available(iOS 16.1, *)
+    private func cacheOrderActivity(_ state: LiveActivitiesAppAttributes.ContentState, prefix: String) {
+        guard let defaults = UserDefaults(suiteName: liveActivityAppGroupId) else { return }
+        for key in ["order_status", "orderStatus"] {
+            defaults.set(state.orderStatus, forKey: key)
+            defaults.set(state.orderStatus, forKey: "\(prefix)_\(key)")
+        }
+        defaults.set(state.orderId, forKey: "order_id")
+        defaults.set(state.restaurantName, forKey: "restaurant_name")
     }
 
     private func isLiveActivityPayload(_ userInfo: [AnyHashable: Any]) -> Bool {
@@ -282,7 +353,7 @@ private struct LiveActivitiesAppAttributes: ActivityAttributes, Identifiable {
             normalized == "delivered" ||
             normalized == "completed" ||
             normalized == "cancelled" ||
-            normalized == "declined"
+            normalized == "declined" || normalized == "canceled" || normalized == "rejected" || normalized == "failed" || normalized == "payment_failed"
     }
 
     private func toDisplayStatus(_ rawStatus: String) -> String {
@@ -299,6 +370,8 @@ private struct LiveActivitiesAppAttributes: ActivityAttributes, Identifiable {
             return "On the Way"
         case "delivered", "completed":
             return "Delivered"
+        case "cancelled", "canceled", "declined", "rejected":
+            return "Cancelled"
         default:
             let value = rawStatus.replacingOccurrences(of: "_", with: " ").trimmingCharacters(in: .whitespacesAndNewlines)
             return value.isEmpty ? "Preparing" : value

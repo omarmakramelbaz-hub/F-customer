@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:pusher_channels_flutter/pusher_channels_flutter.dart';
 
+import '../../../../helpers/delivery_activity/delivery_provider.dart';
 import '../../../../helpers/networking/api_helper.dart';
 import '../../../../helpers/networking/urls.dart';
 import '../../../../helpers/pusher_service/pusher_controller.dart';
@@ -138,6 +139,18 @@ class _TrackingYourOrderScreenState extends State<TrackingYourOrderScreen>
     try {
       if (mounted && _requestFailed) setState(() => _requestFailed = false);
       await _orders.getDetailsOrders(id: widget.args.id);
+      if (!mounted ||
+          _orders.detailsOrdersApiResponse.state != ResponseState.complete)
+        return;
+      final order = _orders.detailsOrders;
+      if (order?.id == widget.args.id && order?.status != null) {
+        await context.read<DeliveryProvider?>()?.syncOrder(
+              id: widget.args.id,
+              status: order!.status!,
+              restaurantName: order.resturantName,
+              updatedAt: order.updatedAt,
+            );
+      }
     } catch (_) {
       if (mounted) setState(() => _requestFailed = true);
     } finally {

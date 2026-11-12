@@ -57,14 +57,15 @@ class _YourOrderSuccessfullyCompletedScreenState
     );
 
     Future.delayed(Duration.zero, () async {
-      await ordersController.getDetailsOrders(id: widget.args.id).whenComplete(
-        () {
-          liveActivitiesController.init(widget.args.id).whenComplete(() {
-            liveActivitiesController.startDelivery(
-              ordersController.detailsOrders?.status,
-            );
-          });
-        },
+      await ordersController.getDetailsOrders(id: widget.args.id);
+      final order = ordersController.detailsOrders;
+      if (!mounted || order?.id != widget.args.id || order?.status == null)
+        return;
+      await liveActivitiesController.syncOrder(
+        id: widget.args.id,
+        status: order!.status!,
+        restaurantName: order.resturantName,
+        updatedAt: order.updatedAt,
       );
     });
   }
