@@ -1,0 +1,118 @@
+name: Fasakhansta Customer Android Store Release
+
+on:
+  push:
+    branches: [ "codex/customer-store-release-20261113" ]
+    paths:
+      - '.github/workflows/customer-android-store-release.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: fasakhansta-customer-android-store-2.0.9-113
+  cancel-in-progress: false
+
+jobs:
+  build_signed_aab:
+    if: github.ref == 'refs/heads/codex/customer-store-release-20261113'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      BUILD_NAME: '2.0.9'
+      BUILD_NUMBER: '113'
+
+    steps:
+      - name: Checkout exact source
+        uses: actions/checkout@v4
+
+      - name: Setup Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.47.0'
+          channel: stable
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get --enforce-lockfile
+
+      - name: Run customer regression tests
+        run: flutter test --no-pub
+
+      - name: Verify release signing configuration
+        run: |
+          set -euo pipefail
+          test -s android/key.properties
+          test -s android/app/FaskhaNinja-keystore.jks
+          python3 <<'PYTHON'
+          from pathlib import Path
+          import re
+
+          gradle = Path('android/app/build.gradle').read_text()
+          if not re.search(r'applicationId\s*=\s*"com\.smartvision\.faskhanista"', gradle):
+              raise SystemExit('Unexpected Android customer app identity')
+          if 'signingConfig = signingConfigs.release' not in gradle:
+              raise SystemExit('Release signing configuration is missing')
+          strings = Path('android/app/src/main/res/values/strings.xml').read_text()
+          if re.search(r'\[YOUR_[^]]+\]', strings):
+              raise SystemExit('Android service configuration contains placeholders')
+          print('Customer package and release signing configuration verified')
+          PYTHON
+
+      - name: Build signed Play Store AAB
+        run: flutter build appbundle --release --no-pub --build-name="$BUILD_NAME" --build-number="$BUILD_NUMBER"
+
+      - name: Verify and prepare signed AAB
+        run: |
+          set -euo pipefail
+          AAB=build/app/outputs/bundle/release/app-release.aab
+          test -s "$AAB"
+          jarsigner -verify "$AAB" > "$RUNNER_TEMP/aab-signature-check.txt" 2>&1
+          if ! grep -q 'jar verified' "$RUNNER_TEMP/aab-signature-check.txt"; then
+            echo '::error::AAB signature verification failed'
+            exit 1
+          fi
+          mkdir -p release-assets
+          cp "$AAB" "release-assets/Fasakhansta-$BUILD_NAME-$BUILD_NUMBER.aab"
+          python3 <<'PYTHON'
+          import hashlib
+          import json
+          import os
+          from pathlib import Path
+          import zipfile
+
+          artifact = Path('release-assets') / (
+              'Fasakhansta-' + os.environ['BUILD_NAME'] + '-' + os.environ['BUILD_NUMBER'] + '.aab'
+          )
+          with zipfile.ZipFile(artifact) as archive:
+              if archive.testzip() is not None or 'base/manifest/AndroidManifest.xml' not in archive.namelist():
+                  raise SystemExit('Invalid Android App Bundle archive')
+          with artifact.open('rb') as source:
+              digest = hashlib.file_digest(source, 'sha256').hexdigest()
+          receipt = {
+              'application_id': 'com.smartvision.faskhanista',
+              'version_name': os.environ['BUILD_NAME'],
+              'version_code': int(os.environ['BUILD_NUMBER']),
+              'source_sha': os.environ['GITHUB_SHA'],
+              'aab_sha256': digest,
+              'signature_verified': True,
+              'play_upload_performed': False,
+          }
+          Path('release-assets/android-release-result.json').write_text(json.dumps(receipt, indent=2) + '\n')
+          print(json.dumps(receipt, sort_keys=True))
+          PYTHON
+
+      - name: Upload Play Store AAB artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Fasakhansta-PlayStore-2.0.9-113-${{ github.sha }}
+          path: release-assets/
+          if-no-files-found: error
+          retention-days: 14
+
