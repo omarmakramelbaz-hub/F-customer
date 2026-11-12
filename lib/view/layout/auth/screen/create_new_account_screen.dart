@@ -27,7 +27,8 @@ class CreateNewAccountScreen extends StatefulWidget {
   State<CreateNewAccountScreen> createState() => _CreateNewAccountScreenState();
 }
 
-class _CreateNewAccountScreenState extends State<CreateNewAccountScreen> with ValidationMixin {
+class _CreateNewAccountScreenState extends State<CreateNewAccountScreen>
+    with ValidationMixin {
   int? _country;
   final _formKey = GlobalKey<FormState>();
   final _nameEc = TextEditingController();
@@ -61,20 +62,31 @@ class _CreateNewAccountScreenState extends State<CreateNewAccountScreen> with Va
             child: Scaffold(
               appBar: CustomAppBar(
                 centerTitle: false,
-                title: const CustomImage(path: AppImages.appLogo, type: ImageType.asset, height: 55, radius: 12),
-                appBarColor: AppColors.whiteColor,
+                title: const CustomImage(
+                  path: AppImages.appLogo,
+                  type: ImageType.asset,
+                  height: 55,
+                  radius: 12,
+                ),
+                appBarColor: Colors.transparent,
               ),
               body: ApiResponseWidget(
                 apiResponse: authController.areaResponse,
                 onReload: () => authController.getArea(),
                 isEmpty: authController.area.isEmpty,
                 child: SingleChildScrollView(
-                  padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 25,
+                    vertical: 10,
+                  ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const SizedBox(height: 25),
-                      Text('createANewAccount'.tr, style: AppTextStyle.text20BS()),
+                      Text(
+                        'createANewAccount'.tr,
+                        style: AppTextStyle.text20BS(),
+                      ),
                       18.sbH,
                       Text(
                         'completeTheInformationToCreateYourAccount'.tr,
@@ -106,15 +118,24 @@ class _CreateNewAccountScreenState extends State<CreateNewAccountScreen> with Va
                         validator: validateEmptyDropDown,
                         apiResponse: authController.areaResponse,
                         onReload: () => authController.getArea(),
-                        value: _country ?? (authController.area.isNotEmpty ? authController.area[0].id ?? 0 : 0),
+                        value: _country ??
+                            (authController.area.isNotEmpty
+                                ? authController.area[0].id ?? 0
+                                : 0),
                         onChanged: (value) {
                           setState(() {
                             _country = value;
                           });
                         },
                         title: 'country'.tr,
-                        items:
-                            authController.area.map((e) => CustomSelectItem(value: e.id, name: e.title ?? '')).toList(),
+                        items: authController.area
+                            .map(
+                              (e) => CustomSelectItem(
+                                value: e.id,
+                                name: e.title ?? '',
+                              ),
+                            )
+                            .toList(),
                       ),
                       const SizedBox(height: 150),
                       CustomButton(
@@ -124,9 +145,13 @@ class _CreateNewAccountScreenState extends State<CreateNewAccountScreen> with Va
                             context.read<AuthController>().updateUserInfo(
                                   name: _nameEc.text,
                                   email: _emailEc.text,
-                                  id: _country ?? authController.area.first.id ?? 0,
+                                  id: _country ??
+                                      authController.area.first.id ??
+                                      0,
                                   onSuccess: () {
-                                    NamedNavigatorImpl.push(ShareLocationScreen.routeName);
+                                    NamedNavigatorImpl.push(
+                                      ShareLocationScreen.routeName,
+                                    );
                                   },
                                   onHaveIdANDToken: (id, token) {
                                     context.read<PusherController>().initPusher(

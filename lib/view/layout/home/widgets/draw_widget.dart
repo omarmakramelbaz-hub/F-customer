@@ -1,3 +1,4 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../helpers/routes/app_routers_import.dart';
@@ -31,9 +32,9 @@ class RestaurantsDrawWidget extends StatelessWidget {
             width: double.infinity,
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 28),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: FasakhanstaBrand.surface,
               borderRadius: BorderRadius.circular(22),
-              border: Border.all(color: const Color(0xFFF0F0F0)),
+              border: Border.all(color: FasakhanstaBrand.border),
               boxShadow: const [
                 BoxShadow(
                   color: Color(0x0D000000),
@@ -51,10 +52,17 @@ class RestaurantsDrawWidget extends StatelessWidget {
                     color: AppColors.mainAppColor.withValues(alpha: .10),
                     shape: BoxShape.circle,
                   ),
-                  child: Icon(Icons.storefront_rounded, color: AppColors.mainAppColor, size: 30),
+                  child: Icon(
+                    Icons.storefront_rounded,
+                    color: AppColors.mainAppColor,
+                    size: 30,
+                  ),
                 ),
                 const SizedBox(height: 12),
-                Text('لا توجد مطاعم مشاركة حالياً', style: AppTextStyle.text14BS()),
+                Text(
+                  'لا توجد مطاعم مشاركة حالياً',
+                  style: AppTextStyle.text14BS(),
+                ),
               ],
             ),
           )
@@ -88,9 +96,9 @@ class _ParticipationStatsCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: const Color(0xFFF3FBFA),
+        color: FasakhanstaBrand.surfaceRaised,
         borderRadius: BorderRadius.circular(22),
-        border: Border.all(color: const Color(0xFFCFEAE6)),
+        border: Border.all(color: FasakhanstaBrand.border),
         boxShadow: const [
           BoxShadow(
             color: Color(0x0A000000),
@@ -108,12 +116,12 @@ class _ParticipationStatsCard extends StatelessWidget {
                 width: 42,
                 height: 42,
                 decoration: const BoxDecoration(
-                  color: Colors.white,
+                  color: FasakhanstaBrand.surface,
                   shape: BoxShape.circle,
                 ),
                 child: const Icon(
                   Icons.confirmation_number_rounded,
-                  color: Color(0xFF0A857A),
+                  color: FasakhanstaBrand.success,
                   size: 23,
                 ),
               ),
@@ -122,11 +130,16 @@ class _ParticipationStatsCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('مشاركاتك المؤهلة في السحب', style: AppTextStyle.text15BS()),
+                    Text(
+                      'مشاركاتك المؤهلة في السحب',
+                      style: AppTextStyle.text15BS(),
+                    ),
                     const SizedBox(height: 2),
                     Text(
                       'كل طلب مؤهل = فرصة مستقلة للفوز',
-                      style: AppTextStyle.text11RG(color: const Color(0xFF6F7D7B)),
+                      style: AppTextStyle.text11RG(
+                        color: FasakhanstaBrand.muted,
+                      ),
                     ),
                   ],
                 ),
@@ -176,9 +189,9 @@ class _UserStat extends StatelessWidget {
       constraints: const BoxConstraints(minHeight: 82),
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 11),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: FasakhanstaBrand.surface,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFE6F1EF)),
+        border: Border.all(color: FasakhanstaBrand.border),
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -189,7 +202,7 @@ class _UserStat extends StatelessWidget {
             value,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: AppTextStyle.text16BS(color: const Color(0xFF153B3A)),
+            style: AppTextStyle.text16BS(color: FasakhanstaBrand.text),
           ),
           const SizedBox(height: 3),
           Text(
@@ -197,7 +210,7 @@ class _UserStat extends StatelessWidget {
             textAlign: TextAlign.center,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: AppTextStyle.text10RG(color: const Color(0xFF778482)),
+            style: AppTextStyle.text10RG(color: FasakhanstaBrand.muted),
           ),
         ],
       ),
@@ -221,7 +234,7 @@ class RestaurantCard extends StatelessWidget {
     final restaurantId = restaurant.id ?? 0;
 
     return Material(
-      color: Colors.white,
+      color: FasakhanstaBrand.surface,
       borderRadius: BorderRadius.circular(22),
       child: InkWell(
         borderRadius: BorderRadius.circular(22),
@@ -234,9 +247,9 @@ class RestaurantCard extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.fromLTRB(13, 13, 13, 12),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: FasakhanstaBrand.surface,
             borderRadius: BorderRadius.circular(22),
-            border: Border.all(color: const Color(0xFFF0F0F0)),
+            border: Border.all(color: FasakhanstaBrand.border),
             boxShadow: const [
               BoxShadow(
                 color: Color(0x12000000),
@@ -279,7 +292,7 @@ class RestaurantCard extends StatelessWidget {
                                 const Icon(
                                   Icons.location_on_outlined,
                                   size: 15,
-                                  color: Color(0xFF7B8589),
+                                  color: FasakhanstaBrand.muted,
                                 ),
                                 const SizedBox(width: 4),
                                 Expanded(
@@ -287,25 +300,35 @@ class RestaurantCard extends StatelessWidget {
                                     address,
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
-                                    style: AppTextStyle.text12RG(color: const Color(0xFF7B8589)),
+                                    style: AppTextStyle.text12RG(
+                                      color: FasakhanstaBrand.muted,
+                                    ),
                                   ),
                                 ),
                               ],
                             ),
                           const SizedBox(height: 10),
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 6),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 9,
+                              vertical: 6,
+                            ),
                             decoration: BoxDecoration(
-                              color: const Color(0xFFFFF5EC),
+                              color: FasakhanstaBrand.surfaceRaised,
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                const Icon(Icons.star_rounded, size: 17, color: Color(0xFFFF7A00)),
+                                const Icon(
+                                  Icons.star_rounded,
+                                  size: 17,
+                                  color: FasakhanstaBrand.orange,
+                                ),
                                 const SizedBox(width: 4),
                                 Text(
-                                  restaurant.avgRate?.toStringAsFixed(1) ?? '0.0',
+                                  restaurant.avgRate?.toStringAsFixed(1) ??
+                                      '0.0',
                                   style: AppTextStyle.text13BS(),
                                 ),
                               ],
@@ -323,7 +346,7 @@ class RestaurantCard extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 13),
-                const Divider(height: 1, color: Color(0xFFF0F0F0)),
+                const Divider(height: 1, color: FasakhanstaBrand.border),
                 const SizedBox(height: 11),
                 Row(
                   children: [
@@ -360,11 +383,8 @@ class RestaurantCard extends StatelessWidget {
     );
   }
 
-  Widget _metricDivider() => Container(
-        width: 1,
-        height: 46,
-        color: const Color(0xFFEDEDED),
-      );
+  Widget _metricDivider() =>
+      Container(width: 1, height: 46, color: FasakhanstaBrand.surfaceRaised);
 }
 
 class _RestaurantImage extends StatelessWidget {
@@ -380,9 +400,13 @@ class _RestaurantImage extends StatelessWidget {
           ? Container(
               width: 94,
               height: 94,
-              color: const Color(0xFFFFF4EA),
+              color: FasakhanstaBrand.surfaceRaised,
               alignment: Alignment.center,
-              child: Icon(Icons.storefront_rounded, color: AppColors.mainAppColor, size: 36),
+              child: Icon(
+                Icons.storefront_rounded,
+                color: AppColors.mainAppColor,
+                size: 36,
+              ),
             )
           : CustomImage(
               path: image,
@@ -404,18 +428,22 @@ class _ParticipatingBadge extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
       decoration: BoxDecoration(
-        color: const Color(0xFFE8F7F3),
+        color: FasakhanstaBrand.surfaceRaised,
         borderRadius: BorderRadius.circular(12),
       ),
       child: const Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(Icons.check_circle_rounded, size: 14, color: Color(0xFF0A857A)),
+          Icon(
+            Icons.check_circle_rounded,
+            size: 14,
+            color: FasakhanstaBrand.success,
+          ),
           SizedBox(width: 4),
           Text(
             'مشارك',
             style: TextStyle(
-              color: Color(0xFF0A857A),
+              color: FasakhanstaBrand.success,
               fontSize: 10,
               fontWeight: FontWeight.w700,
             ),
@@ -447,7 +475,7 @@ class _MetricItem extends StatelessWidget {
           label,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
-          style: AppTextStyle.text10RG(color: const Color(0xFF7A7A7A)),
+          style: AppTextStyle.text10RG(color: FasakhanstaBrand.muted),
         ),
         const SizedBox(height: 2),
         Text(

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import '../../../helpers/networking/urls.dart';
+import '../../../helpers/theme/fasakhansta_brand.dart';
 import '../../../helpers/payment/order_payment_confirmation.dart';
 import '../../../helpers/payment/payment_navigation_policy.dart';
 import 'embedded_payment_browser.dart';
@@ -181,10 +182,10 @@ class _CustomPaymentWebViewScreenState extends State<CustomPaymentWebViewScreen>
             },
           );
     return Scaffold(
-      backgroundColor: const Color(0xFF092225),
+      backgroundColor: FasakhanstaBrand.background,
       appBar: AppBar(
-        backgroundColor: const Color(0xFF092225),
-        foregroundColor: const Color(0xFFFFF4E2),
+        backgroundColor: FasakhanstaBrand.background,
+        foregroundColor: FasakhanstaBrand.text,
         surfaceTintColor: Colors.transparent,
         centerTitle: true,
         title: Row(
@@ -218,7 +219,7 @@ class _CustomPaymentWebViewScreenState extends State<CustomPaymentWebViewScreen>
         actions: const [
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 16),
-            child: Icon(Icons.lock_outline, color: Color(0xFFFF8A35)),
+            child: Icon(Icons.lock_outline, color: FasakhanstaBrand.orange),
           ),
         ],
       ),
@@ -236,8 +237,8 @@ class _CustomPaymentWebViewScreenState extends State<CustomPaymentWebViewScreen>
               if (_progress < 1 && !_loadError && checkout != null)
                 LinearProgressIndicator(
                   value: _progress == 0 ? null : _progress,
-                  color: const Color(0xFFFF8A35),
-                  backgroundColor: const Color(0xFF173B43),
+                  color: FasakhanstaBrand.orange,
+                  backgroundColor: FasakhanstaBrand.surfaceRaised,
                 ),
               if (_awaitingConfirmation)
                 Padding(
@@ -246,7 +247,7 @@ class _CustomPaymentWebViewScreenState extends State<CustomPaymentWebViewScreen>
                     isArabic
                         ? 'جارٍ تأكيد الدفع...'
                         : 'Confirming your payment...',
-                    style: const TextStyle(color: Color(0xFFFFF4E2)),
+                    style: const TextStyle(color: FasakhanstaBrand.text),
                   ),
                 ),
               Expanded(
@@ -260,7 +261,7 @@ class _CustomPaymentWebViewScreenState extends State<CustomPaymentWebViewScreen>
                               const Icon(
                                 Icons.wifi_off_rounded,
                                 size: 40,
-                                color: Color(0xFFFF8A35),
+                                color: FasakhanstaBrand.orange,
                               ),
                               const SizedBox(height: 12),
                               Text(
@@ -269,7 +270,7 @@ class _CustomPaymentWebViewScreenState extends State<CustomPaymentWebViewScreen>
                                     : 'Could not load the payment page',
                                 textAlign: TextAlign.center,
                                 style: const TextStyle(
-                                  color: Color(0xFFFFF4E2),
+                                  color: FasakhanstaBrand.text,
                                 ),
                               ),
                               if (events != null) ...[
@@ -278,8 +279,9 @@ class _CustomPaymentWebViewScreenState extends State<CustomPaymentWebViewScreen>
                                   key: const ValueKey('retry-payment'),
                                   onPressed: _reload,
                                   style: FilledButton.styleFrom(
-                                    backgroundColor: const Color(0xFFFF8A35),
-                                    foregroundColor: const Color(0xFF092225),
+                                    backgroundColor: FasakhanstaBrand.orange,
+                                    foregroundColor:
+                                        FasakhanstaBrand.background,
                                   ),
                                   child: Text(
                                     isArabic ? 'إعادة المحاولة' : 'Retry',
@@ -314,7 +316,7 @@ class _CustomPaymentWebViewScreenState extends State<CustomPaymentWebViewScreen>
                     style: Theme.of(context)
                         .textTheme
                         .bodySmall
-                        ?.copyWith(color: const Color(0xFFFFF4E2)),
+                        ?.copyWith(color: FasakhanstaBrand.text),
                   ),
                 ),
             ],

@@ -1,3 +1,4 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -49,7 +50,8 @@ class CustomToast extends StatelessWidget {
     final displayTitle = title?.trim().isNotEmpty == true
         ? title!.trim()
         : _defaultTitle(isArabic);
-    final hasAction = actionLabel?.trim().isNotEmpty == true && onAction != null;
+    final hasAction =
+        actionLabel?.trim().isNotEmpty == true && onAction != null;
 
     return Directionality(
       textDirection: isArabic ? TextDirection.rtl : TextDirection.ltr,
@@ -63,12 +65,9 @@ class CustomToast extends StatelessWidget {
             margin: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
             padding: const EdgeInsets.fromLTRB(12, 11, 12, 11),
             decoration: BoxDecoration(
-              color: const Color(0xFFFFF9F3),
+              color: FasakhanstaBrand.surfaceRaised,
               borderRadius: BorderRadius.circular(20),
-              border: Border.all(
-                color: const Color(0xFFFFD2AE),
-                width: 1,
-              ),
+              border: Border.all(color: FasakhanstaBrand.border, width: 1),
               boxShadow: const [
                 BoxShadow(
                   color: Color(0x18000000),
@@ -96,7 +95,7 @@ class CustomToast extends StatelessWidget {
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
-                          color: Color(0xFF202328),
+                          color: FasakhanstaBrand.text,
                           fontSize: 14.5,
                           fontWeight: FontWeight.w800,
                           height: 1.15,
@@ -109,7 +108,7 @@ class CustomToast extends StatelessWidget {
                           maxLines: hasAction ? 2 : 2,
                           overflow: TextOverflow.ellipsis,
                           style: const TextStyle(
-                            color: Color(0xFF858B94),
+                            color: FasakhanstaBrand.muted,
                             fontSize: 11.5,
                             fontWeight: FontWeight.w500,
                             height: 1.3,
@@ -127,10 +126,10 @@ class CustomToast extends StatelessWidget {
                               vertical: 6,
                             ),
                             decoration: BoxDecoration(
-                              color: Colors.white,
+                              color: FasakhanstaBrand.surface,
                               borderRadius: BorderRadius.circular(12),
                               border: Border.all(
-                                color: const Color(0xFFFFD2AE),
+                                color: FasakhanstaBrand.border,
                               ),
                             ),
                             child: Row(
@@ -170,7 +169,7 @@ class CustomToast extends StatelessWidget {
                       child: Icon(
                         Icons.close_rounded,
                         size: 19,
-                        color: Color(0xFF9A9A9A),
+                        color: FasakhanstaBrand.muted,
                       ),
                     ),
                   ),
@@ -231,7 +230,7 @@ class _ToastIcon extends StatelessWidget {
       width: 46,
       height: 46,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: FasakhanstaBrand.surface,
         borderRadius: BorderRadius.circular(14),
         boxShadow: const [
           BoxShadow(
@@ -268,10 +267,7 @@ class _ToastIcon extends StatelessWidget {
                 height: 30,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  border: Border.all(
-                    color: AppColors.mainAppColor,
-                    width: 2.3,
-                  ),
+                  border: Border.all(color: AppColors.mainAppColor, width: 2.3),
                 ),
                 child: Icon(
                   Icons.check_rounded,
@@ -286,7 +282,7 @@ class _ToastIcon extends StatelessWidget {
                   width: 7,
                   height: 7,
                   decoration: const BoxDecoration(
-                    color: Color(0xFF28B96B),
+                    color: FasakhanstaBrand.successTint,
                     shape: BoxShape.circle,
                   ),
                 ),
@@ -295,29 +291,13 @@ class _ToastIcon extends StatelessWidget {
           ),
         );
       case ToastType.error:
-        return Icon(
-          Icons.error_outline_rounded,
-          color: accentColor,
-          size: 28,
-        );
+        return Icon(Icons.error_outline_rounded, color: accentColor, size: 28);
       case ToastType.offline:
-        return Icon(
-          Icons.wifi_off_rounded,
-          color: accentColor,
-          size: 26,
-        );
+        return Icon(Icons.wifi_off_rounded, color: accentColor, size: 26);
       case ToastType.warning:
-        return Icon(
-          Icons.warning_amber_rounded,
-          color: accentColor,
-          size: 28,
-        );
+        return Icon(Icons.warning_amber_rounded, color: accentColor, size: 28);
       case ToastType.help:
-        return Icon(
-          Icons.info_outline_rounded,
-          color: accentColor,
-          size: 27,
-        );
+        return Icon(Icons.info_outline_rounded, color: accentColor, size: 27);
     }
   }
 }

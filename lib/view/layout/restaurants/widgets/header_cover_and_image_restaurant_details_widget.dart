@@ -1,3 +1,4 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -58,9 +59,9 @@ class HeaderCoverAndImageRestaurantDetailsWidget extends StatelessWidget {
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
                       colors: [
-                        Colors.black.withValues(alpha: .10),
-                        Colors.black.withValues(alpha: .04),
-                        Colors.black.withValues(alpha: .28),
+                        FasakhanstaBrand.surfaceRaised.withValues(alpha: .10),
+                        FasakhanstaBrand.surfaceRaised.withValues(alpha: .04),
+                        FasakhanstaBrand.surfaceRaised.withValues(alpha: .28),
                       ],
                       stops: const [0, .48, 1],
                     ),
@@ -87,12 +88,15 @@ class HeaderCoverAndImageRestaurantDetailsWidget extends StatelessWidget {
                             : Icons.favorite_outline_rounded,
                         iconColor: detailsRestaurant?.isFav == 1
                             ? AppColors.mainAppColor
-                            : AppColors.secondAppColor,
+                            : FasakhanstaBrand.text,
                         onTap: () {
-                          context.read<RestaurantsController>().addOrRemoveToWishlist(
+                          context
+                              .read<RestaurantsController>()
+                              .addOrRemoveToWishlist(
                                 id: detailsRestaurant?.id ?? 0,
                                 onSuccess: () {
-                                  detailsRestaurant?.isFav = detailsRestaurant?.isFav == 1 ? 0 : 1;
+                                  detailsRestaurant?.isFav =
+                                      detailsRestaurant?.isFav == 1 ? 0 : 1;
                                 },
                               );
                         },
@@ -103,7 +107,9 @@ class HeaderCoverAndImageRestaurantDetailsWidget extends StatelessWidget {
                       icon: Icons.share_outlined,
                       onTap: () {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('تم تجهيز مشاركة الفرع')),
+                          const SnackBar(
+                            content: Text('تم تجهيز مشاركة الفرع'),
+                          ),
                         );
                       },
                     ),
@@ -118,7 +124,7 @@ class HeaderCoverAndImageRestaurantDetailsWidget extends StatelessWidget {
                 child: Container(
                   padding: const EdgeInsets.fromLTRB(18, 18, 18, 14),
                   decoration: BoxDecoration(
-                    color: AppColors.whiteColor,
+                    color: FasakhanstaBrand.surface,
                     borderRadius: BorderRadius.circular(26),
                     boxShadow: const [
                       BoxShadow(
@@ -146,12 +152,13 @@ class HeaderCoverAndImageRestaurantDetailsWidget extends StatelessWidget {
                           const SizedBox(width: 6),
                           const Icon(
                             Icons.star_rounded,
-                            color: Color(0xFFFFB400),
+                            color: FasakhanstaBrand.orange,
                             size: 20,
                           ),
                           const SizedBox(width: 4),
                           Text(
-                            detailsRestaurant?.avgRate?.toStringAsFixed(1) ?? '-',
+                            detailsRestaurant?.avgRate?.toStringAsFixed(1) ??
+                                '-',
                             style: AppTextStyle.text14BS(),
                           ),
                         ],
@@ -209,9 +216,9 @@ class HeaderCoverAndImageRestaurantDetailsWidget extends StatelessWidget {
       constraints: const BoxConstraints(maxWidth: 210),
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
-        color: AppColors.whiteColor,
+        color: FasakhanstaBrand.surface,
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: const Color(0xFFECECEC)),
+        border: Border.all(color: FasakhanstaBrand.border),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -219,10 +226,10 @@ class HeaderCoverAndImageRestaurantDetailsWidget extends StatelessWidget {
           Icon(
             Icons.circle,
             color: isClosed
-                ? Colors.red
+                ? FasakhanstaBrand.danger
                 : isBusy
-                    ? Colors.orange
-                    : Colors.green,
+                    ? FasakhanstaBrand.orange
+                    : FasakhanstaBrand.success,
             size: 8,
           ),
           const SizedBox(width: 6),
@@ -253,7 +260,7 @@ class HeaderCoverAndImageRestaurantDetailsWidget extends StatelessWidget {
           width: 46,
           height: 46,
           decoration: const BoxDecoration(
-            color: Colors.white,
+            color: FasakhanstaBrand.surface,
             shape: BoxShape.circle,
             boxShadow: [
               BoxShadow(
@@ -265,7 +272,7 @@ class HeaderCoverAndImageRestaurantDetailsWidget extends StatelessWidget {
           ),
           child: Icon(
             icon,
-            color: iconColor ?? AppColors.secondAppColor,
+            color: iconColor ?? FasakhanstaBrand.text,
             size: 23,
           ),
         ),

@@ -1,3 +1,5 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
+
 import 'dart:convert';
 import 'dart:developer';
 
@@ -53,7 +55,9 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
       log('Notification updated: $jsonData');
       if (!mounted) return;
       final notification = NotificationsModel.fromJson(jsonData);
-      context.read<NotificationsController>().addNotificationToTop(notification);
+      context.read<NotificationsController>().addNotificationToTop(
+            notification,
+          );
     } catch (e, stackTrace) {
       log('Error handling Pusher event: $e');
       log('Stack trace: $stackTrace');
@@ -104,9 +108,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     }
   }
 
-  Future<void> _showClearAllDialog(
-    NotificationsController controller,
-  ) async {
+  Future<void> _showClearAllDialog(NotificationsController controller) async {
     if (controller.notifications.isEmpty) return;
 
     final confirmed = await showDialog<bool>(
@@ -119,7 +121,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
           child: Container(
             padding: const EdgeInsets.fromLTRB(20, 22, 20, 18),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: FasakhanstaBrand.surface,
               borderRadius: BorderRadius.circular(24),
               boxShadow: const [
                 BoxShadow(
@@ -136,13 +138,13 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                   width: 58,
                   height: 58,
                   decoration: BoxDecoration(
-                    color: const Color(0xFFFFF1F0),
+                    color: FasakhanstaBrand.surfaceRaised,
                     borderRadius: BorderRadius.circular(18),
                   ),
                   child: const Icon(
                     Icons.delete_sweep_rounded,
                     size: 30,
-                    color: Color(0xFFE64949),
+                    color: FasakhanstaBrand.danger,
                   ),
                 ),
                 const SizedBox(height: 14),
@@ -150,7 +152,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                   'حذف جميع الإشعارات؟',
                   textAlign: TextAlign.center,
                   style: AppTextStyle.text18BS().copyWith(
-                    color: const Color(0xFF181A1F),
+                    color: FasakhanstaBrand.text,
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -158,7 +160,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                   'سيتم حذف كل الإشعارات الظاهرة حالياً من قائمة الإشعارات. الإشعارات الجديدة ستظهر بشكل طبيعي.',
                   textAlign: TextAlign.center,
                   style: AppTextStyle.text13RM().copyWith(
-                    color: const Color(0xFF7E838C),
+                    color: FasakhanstaBrand.muted,
                     height: 1.55,
                   ),
                 ),
@@ -169,9 +171,11 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                       child: OutlinedButton(
                         onPressed: () => Navigator.pop(dialogContext, false),
                         style: OutlinedButton.styleFrom(
-                          foregroundColor: const Color(0xFF555A64),
+                          foregroundColor: FasakhanstaBrand.muted,
                           padding: const EdgeInsets.symmetric(vertical: 13),
-                          side: const BorderSide(color: Color(0xFFE2E4E8)),
+                          side: const BorderSide(
+                            color: FasakhanstaBrand.border,
+                          ),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(14),
                           ),
@@ -184,14 +188,17 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                       child: FilledButton.icon(
                         onPressed: () => Navigator.pop(dialogContext, true),
                         style: FilledButton.styleFrom(
-                          backgroundColor: const Color(0xFFE64949),
-                          foregroundColor: Colors.white,
+                          backgroundColor: FasakhanstaBrand.dangerTint,
+                          foregroundColor: FasakhanstaBrand.onOrange,
                           padding: const EdgeInsets.symmetric(vertical: 13),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(14),
                           ),
                         ),
-                        icon: const Icon(Icons.delete_outline_rounded, size: 18),
+                        icon: const Icon(
+                          Icons.delete_outline_rounded,
+                          size: 18,
+                        ),
                         label: const Text('حذف الكل'),
                       ),
                     ),
@@ -241,9 +248,9 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
           Container(
             padding: const EdgeInsets.fromLTRB(24, 28, 24, 24),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: FasakhanstaBrand.surface,
               borderRadius: BorderRadius.circular(28),
-              border: Border.all(color: const Color(0xFFEEEFF2)),
+              border: Border.all(color: FasakhanstaBrand.border),
               boxShadow: const [
                 BoxShadow(
                   color: Color(0x0D000000),
@@ -259,7 +266,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                   height: 118,
                   padding: const EdgeInsets.all(25),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFFFF3E8),
+                    color: FasakhanstaBrand.surfaceRaised,
                     shape: BoxShape.circle,
                     border: Border.all(
                       color: AppColors.mainAppColor.withValues(alpha: .14),
@@ -275,7 +282,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                   'مفيش إشعارات جديدة',
                   textAlign: TextAlign.center,
                   style: AppTextStyle.text16BM().copyWith(
-                    color: const Color(0xFF181A1F),
+                    color: FasakhanstaBrand.text,
                     fontSize: 18,
                     fontWeight: FontWeight.w800,
                   ),
@@ -285,7 +292,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                   _emptyMessage(),
                   textAlign: TextAlign.center,
                   style: AppTextStyle.text13RM().copyWith(
-                    color: const Color(0xFF8A8F98),
+                    color: FasakhanstaBrand.muted,
                     height: 1.55,
                   ),
                 ),
@@ -308,7 +315,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                     ),
                     style: OutlinedButton.styleFrom(
                       foregroundColor: AppColors.mainAppColor,
-                      backgroundColor: const Color(0xFFFFF8F2),
+                      backgroundColor: FasakhanstaBrand.surfaceRaised,
                       padding: const EdgeInsets.symmetric(horizontal: 20),
                       side: BorderSide(
                         color: AppColors.mainAppColor.withValues(alpha: .34),
@@ -353,7 +360,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
         final visible = _filter(all);
 
         return Scaffold(
-          backgroundColor: const Color(0xFFF8F9FB),
+          backgroundColor: Colors.transparent,
           body: PageContainer(
             bottom: false,
             child: SafeArea(
@@ -463,7 +470,7 @@ class _TopBar extends StatelessWidget {
           Positioned(
             left: 14,
             child: Material(
-              color: Colors.white,
+              color: FasakhanstaBrand.surface,
               shape: const CircleBorder(),
               elevation: 1.5,
               shadowColor: Colors.black12,
@@ -476,7 +483,7 @@ class _TopBar extends StatelessWidget {
                   child: Icon(
                     Icons.arrow_back_ios_new_rounded,
                     size: 19,
-                    color: Color(0xFF111111),
+                    color: FasakhanstaBrand.text,
                   ),
                 ),
               ),
@@ -492,7 +499,7 @@ class _TopBar extends StatelessWidget {
                   duration: const Duration(milliseconds: 180),
                   opacity: hasNotifications ? 1 : .35,
                   child: Material(
-                    color: const Color(0xFFFFF1F0),
+                    color: FasakhanstaBrand.surfaceRaised,
                     borderRadius: BorderRadius.circular(13),
                     child: InkWell(
                       borderRadius: BorderRadius.circular(13),
@@ -503,7 +510,7 @@ class _TopBar extends StatelessWidget {
                         child: Icon(
                           Icons.delete_sweep_rounded,
                           size: 21,
-                          color: Color(0xFFE64949),
+                          color: FasakhanstaBrand.danger,
                         ),
                       ),
                     ),
@@ -561,7 +568,8 @@ class _CategoryChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: selected ? const Color(0xFFFFF3E9) : Colors.white,
+      color:
+          selected ? FasakhanstaBrand.surfaceRaised : FasakhanstaBrand.surface,
       borderRadius: BorderRadius.circular(18),
       child: InkWell(
         borderRadius: BorderRadius.circular(18),
@@ -572,9 +580,8 @@ class _CategoryChip extends StatelessWidget {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(18),
             border: Border.all(
-              color: selected
-                  ? AppColors.mainAppColor
-                  : const Color(0xFFE7E7E7),
+              color:
+                  selected ? AppColors.mainAppColor : FasakhanstaBrand.border,
             ),
             boxShadow: selected
                 ? [
@@ -592,9 +599,8 @@ class _CategoryChip extends StatelessWidget {
               Icon(
                 icon,
                 size: 18,
-                color: selected
-                    ? AppColors.mainAppColor
-                    : const Color(0xFF777777),
+                color:
+                    selected ? AppColors.mainAppColor : FasakhanstaBrand.muted,
               ),
               const SizedBox(width: 7),
               Text(
@@ -602,7 +608,7 @@ class _CategoryChip extends StatelessWidget {
                 style: AppTextStyle.text13MS().copyWith(
                   color: selected
                       ? AppColors.mainAppColor
-                      : const Color(0xFF696969),
+                      : FasakhanstaBrand.muted,
                   fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
                 ),
               ),

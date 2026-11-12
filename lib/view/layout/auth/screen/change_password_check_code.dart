@@ -1,3 +1,4 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
 import 'package:custom_timer/custom_timer.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -19,10 +20,7 @@ class ChangePasswordCheckCodeArguments {
   final String mobile;
   final String email;
 
-  ChangePasswordCheckCodeArguments({
-    required this.mobile,
-    required this.email,
-  });
+  ChangePasswordCheckCodeArguments({required this.mobile, required this.email});
 }
 
 class ChangePasswordCheckCodeScreen extends StatefulWidget {
@@ -42,9 +40,9 @@ class _ChangePasswordCheckCodeScreenState
   final _formKey = GlobalKey<FormState>();
   final _codeEC = TextEditingController();
 
-  static const _text = Color(0xFF171A1F);
-  static const _muted = Color(0xFF858B94);
-  static const _border = Color(0xFFE7EAEE);
+  static const _text = FasakhanstaBrand.text;
+  static const _muted = FasakhanstaBrand.muted;
+  static const _border = FasakhanstaBrand.border;
 
   late final CustomTimerController _timerController = CustomTimerController(
     vsync: this,
@@ -75,7 +73,7 @@ class _ChangePasswordCheckCodeScreenState
     return Form(
       key: _formKey,
       child: Scaffold(
-        backgroundColor: const Color(0xFFF7F8FA),
+        backgroundColor: Colors.transparent,
         appBar: CustomAppBar(
           centerTitle: false,
           height: 70,
@@ -85,7 +83,7 @@ class _ChangePasswordCheckCodeScreenState
             height: 52,
             radius: 12,
           ),
-          appBarColor: Colors.white,
+          appBarColor: Colors.transparent,
         ),
         body: SafeArea(
           top: false,
@@ -118,10 +116,13 @@ class _ChangePasswordCheckCodeScreenState
         gradient: const LinearGradient(
           begin: Alignment.topRight,
           end: Alignment.bottomLeft,
-          colors: [Color(0xFFFFF8F1), Color(0xFFFFF1E4)],
+          colors: [
+            FasakhanstaBrand.surfaceRaised,
+            FasakhanstaBrand.surfaceRaised,
+          ],
         ),
         borderRadius: BorderRadius.circular(22),
-        border: Border.all(color: const Color(0xFFFFDFC2)),
+        border: Border.all(color: FasakhanstaBrand.border),
       ),
       child: Row(
         children: [
@@ -129,7 +130,7 @@ class _ChangePasswordCheckCodeScreenState
             width: 52,
             height: 52,
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: FasakhanstaBrand.surface,
               borderRadius: BorderRadius.circular(16),
             ),
             child: Icon(
@@ -174,7 +175,7 @@ class _ChangePasswordCheckCodeScreenState
     return Container(
       padding: const EdgeInsets.fromLTRB(16, 18, 16, 18),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: FasakhanstaBrand.surface,
         borderRadius: BorderRadius.circular(24),
         border: Border.all(color: _border),
         boxShadow: const [
@@ -192,7 +193,7 @@ class _ChangePasswordCheckCodeScreenState
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: const Color(0xFFF8F9FB),
+                color: FasakhanstaBrand.surfaceRaised,
                 borderRadius: BorderRadius.circular(14),
                 border: Border.all(color: _border),
               ),
@@ -229,7 +230,7 @@ class _ChangePasswordCheckCodeScreenState
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
               decoration: BoxDecoration(
-                color: const Color(0xFFFFF6ED),
+                color: FasakhanstaBrand.surfaceRaised,
                 borderRadius: BorderRadius.circular(20),
               ),
               child: CustomTimer(
@@ -279,7 +280,7 @@ class _ChangePasswordCheckCodeScreenState
           ),
           const SizedBox(height: 12),
           CustomButton(
-            style: AppTextStyle.text18BW(),
+            style: AppTextStyle.text18BW(color: FasakhanstaBrand.onOrange),
             onPressed: _verifyCode,
             radius: 18,
             text: 'next'.tr,

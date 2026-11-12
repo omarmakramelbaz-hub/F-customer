@@ -1,3 +1,5 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
+
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -51,13 +53,13 @@ class _BottomNavigationBarScreenState extends State<BottomNavigationBarScreen> {
           final fullVideoHome = controller.screenIndex == 0 &&
               context.watch<AuthController>().profile?.appMultiVendor == null;
           final scaffold = Scaffold(
-            backgroundColor: fullVideoHome ? const Color(0xFF102B2E) : null,
+            backgroundColor: fullVideoHome ? Colors.transparent : null,
             extendBody: fullVideoHome,
             resizeToAvoidBottomInset: false,
             body: logic.getCurrentScreen(controller.screenIndex),
             bottomNavigationBar: _buildBottomNavBar(
               controller,
-              fullVideoHome: fullVideoHome,
+              fullVideoHome: true,
             ),
           );
 
@@ -146,7 +148,7 @@ class _BottomNavigationBarScreenState extends State<BottomNavigationBarScreen> {
           child: DecoratedBox(
             decoration: const BoxDecoration(
               color: Color(0x660C2728),
-              border: Border(top: BorderSide(color: Color(0x26FFF9E1))),
+              border: Border(top: BorderSide(color: FasakhanstaBrand.border)),
             ),
             child: SafeArea(top: false, child: navigationItems),
           ),
@@ -159,9 +161,9 @@ class _BottomNavigationBarScreenState extends State<BottomNavigationBarScreen> {
       child: Container(
         margin: const EdgeInsets.fromLTRB(12, 0, 12, 9),
         decoration: BoxDecoration(
-          color: AppColors.whiteColor,
+          color: FasakhanstaBrand.surface,
           borderRadius: BorderRadius.circular(26),
-          border: Border.all(color: const Color(0xFFEDEFF2), width: 1),
+          border: Border.all(color: FasakhanstaBrand.border, width: 1),
           boxShadow: const [
             BoxShadow(
               color: Color(0x12000000),
@@ -303,7 +305,7 @@ class _BottomNavigationBarScreenState extends State<BottomNavigationBarScreen> {
     final accentColor =
         fullVideoHome ? const Color(0xFFFFAD5B) : AppColors.mainAppColor;
     final badgeBorderColor =
-        fullVideoHome ? const Color(0xFF183D3C) : AppColors.whiteColor;
+        fullVideoHome ? FasakhanstaBrand.border : FasakhanstaBrand.border;
 
     return Material(
       color: Colors.transparent,
@@ -376,8 +378,8 @@ class _BottomNavigationBarScreenState extends State<BottomNavigationBarScreen> {
                           badgeCount > 99 ? '99+' : '$badgeCount',
                           style: TextStyle(
                             color: fullVideoHome
-                                ? const Color(0xFF183D3C)
-                                : Colors.white,
+                                ? FasakhanstaBrand.text
+                                : FasakhanstaBrand.text,
                             fontSize: 8.5,
                             fontWeight: FontWeight.w800,
                             height: 1,

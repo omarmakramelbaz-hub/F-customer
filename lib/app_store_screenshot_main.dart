@@ -7,6 +7,7 @@ import 'helpers/delivery_activity/delivery_provider.dart';
 import 'helpers/pusher_service/pusher_controller.dart';
 import 'helpers/routes/app_routers_import.dart';
 import 'helpers/theme/theme.dart';
+import 'helpers/theme/fasakhansta_brand.dart';
 import 'helpers/translation/all_translation.dart';
 import 'view/layout/address/controller/address_controller.dart';
 import 'view/layout/auth/controller/auth_controller.dart';
@@ -64,7 +65,9 @@ class _ScreenshotApp extends StatelessWidget {
             supportedLocales: GlobalTranslations.supportedLocales(),
             localizationsDelegates: context.localizationsDelegates,
             debugShowCheckedModeBanner: false,
-            builder: (context, child) => botToastBuilder(context, child),
+            builder: (context, child) => FasakhanstaAppBackground(
+              child: botToastBuilder(context, child),
+            ),
             navigatorObservers: [BotToastNavigatorObserver()],
             initialRoute: initialRoute,
             onGenerateRoute: NamedNavigatorImpl.onGenerateRoute,

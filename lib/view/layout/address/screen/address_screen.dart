@@ -1,3 +1,4 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
@@ -17,15 +18,12 @@ class AddressScreen extends StatelessWidget {
   static const String routeName = 'AddressScreen';
   final bool selectForDelivery;
 
-  const AddressScreen({
-    super.key,
-    this.selectForDelivery = false,
-  });
+  const AddressScreen({super.key, this.selectForDelivery = false});
 
-  static const _text = Color(0xFF171A1F);
-  static const _muted = Color(0xFF8D939C);
-  static const _border = Color(0xFFE8EBEF);
-  static const _softOrange = Color(0xFFFFF4E8);
+  static const _text = FasakhanstaBrand.text;
+  static const _muted = FasakhanstaBrand.muted;
+  static const _border = FasakhanstaBrand.border;
+  static const _softOrange = FasakhanstaBrand.orangeTint;
 
   bool _isArabic(BuildContext context) => context.languageCode == 'ar';
 
@@ -43,7 +41,7 @@ class AddressScreen extends StatelessWidget {
             textDirection:
                 _isArabic(context) ? TextDirection.rtl : TextDirection.ltr,
             child: Scaffold(
-              backgroundColor: const Color(0xFFFAFAFA),
+              backgroundColor: Colors.transparent,
               body: SafeArea(
                 child: Column(
                   children: [
@@ -81,7 +79,9 @@ class AddressScreen extends StatelessWidget {
                                     return Padding(
                                       padding: EdgeInsets.only(
                                         bottom: index ==
-                                                addressController.address.length - 1
+                                                addressController
+                                                        .address.length -
+                                                    1
                                             ? 0
                                             : 12,
                                       ),
@@ -89,7 +89,8 @@ class AddressScreen extends StatelessWidget {
                                         address: address,
                                         selectionMode: selectForDelivery,
                                         onSelect: selectForDelivery
-                                            ? () => Navigator.of(context).pop(address)
+                                            ? () => Navigator.of(context)
+                                                .pop(address)
                                             : null,
                                       ),
                                     );
@@ -107,19 +108,17 @@ class AddressScreen extends StatelessWidget {
               bottomNavigationBar: SafeArea(
                 top: false,
                 child: Container(
-                  color: Colors.white,
+                  color: FasakhanstaBrand.surface,
                   padding: const EdgeInsets.fromLTRB(16, 10, 16, 14),
                   child: SizedBox(
                     height: 56,
                     child: ElevatedButton.icon(
-                      onPressed: () => _openAddAddress(
-                        context,
-                        addressController,
-                      ),
+                      onPressed: () =>
+                          _openAddAddress(context, addressController),
                       style: ElevatedButton.styleFrom(
                         elevation: 0,
                         backgroundColor: AppColors.mainAppColor,
-                        foregroundColor: Colors.white,
+                        foregroundColor: FasakhanstaBrand.onOrange,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(18),
                         ),
@@ -151,7 +150,7 @@ class AddressScreen extends StatelessWidget {
 
   Widget _header(BuildContext context, AddressController controller) {
     return Container(
-      color: Colors.white,
+      color: FasakhanstaBrand.surface,
       padding: const EdgeInsets.fromLTRB(14, 8, 14, 10),
       child: Row(
         children: [
@@ -245,7 +244,7 @@ class AddressScreen extends StatelessWidget {
           ),
           const Icon(
             Icons.chevron_left_rounded,
-            color: Color(0xFFADB2BA),
+            color: FasakhanstaBrand.muted,
             size: 24,
           ),
         ],
@@ -269,7 +268,7 @@ class AddressScreen extends StatelessWidget {
             width: 36,
             height: 36,
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: FasakhanstaBrand.surface,
               borderRadius: BorderRadius.circular(11),
             ),
             child: Icon(
@@ -285,7 +284,7 @@ class AddressScreen extends StatelessWidget {
                   ? 'اضغط على العنوان الذي تريد التوصيل إليه'
                   : 'Tap the address you want to deliver to',
               style: const TextStyle(
-                color: _text,
+                color: FasakhanstaBrand.onOrange,
                 fontSize: 12.5,
                 fontWeight: FontWeight.w700,
               ),
@@ -318,9 +317,7 @@ class AddressScreen extends StatelessWidget {
               ? (_isArabic(context)
                   ? 'اختر عنوان التوصيل'
                   : 'Choose delivery address')
-              : (_isArabic(context)
-                  ? 'عناويني المحفوظة'
-                  : 'Saved addresses'),
+              : (_isArabic(context) ? 'عناويني المحفوظة' : 'Saved addresses'),
           style: const TextStyle(
             color: _text,
             fontSize: 16,
@@ -359,23 +356,16 @@ class AddressScreen extends StatelessWidget {
                 ? 'أضف عنوانًا لتسهيل اختيار موقع التوصيل لاحقًا.'
                 : 'Add an address to make delivery selection faster.',
             textAlign: TextAlign.center,
-            style: const TextStyle(
-              color: _muted,
-              fontSize: 11.5,
-              height: 1.4,
-            ),
+            style: const TextStyle(color: _muted, fontSize: 11.5, height: 1.4),
           ),
         ],
       ),
     );
   }
 
-  Widget _roundButton({
-    required IconData icon,
-    required VoidCallback onTap,
-  }) {
+  Widget _roundButton({required IconData icon, required VoidCallback onTap}) {
     return Material(
-      color: Colors.white,
+      color: FasakhanstaBrand.surface,
       shape: const CircleBorder(),
       elevation: 2,
       shadowColor: const Color(0x22000000),
@@ -393,7 +383,7 @@ class AddressScreen extends StatelessWidget {
 
   BoxDecoration _cardDecoration({double radius = 18}) {
     return BoxDecoration(
-      color: Colors.white,
+      color: FasakhanstaBrand.surface,
       borderRadius: BorderRadius.circular(radius),
       border: Border.all(color: _border),
       boxShadow: const [
@@ -412,9 +402,7 @@ class AddressScreen extends StatelessWidget {
   ) {
     NamedNavigatorImpl.push(
       AddAddressScreen.routeName,
-      arguments: AddAddressArgs(
-        onSuccess: addressController.getAddress,
-      ),
+      arguments: AddAddressArgs(onSuccess: addressController.getAddress),
     );
   }
 }

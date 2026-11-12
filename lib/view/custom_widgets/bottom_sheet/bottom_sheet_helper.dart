@@ -1,3 +1,4 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
 import 'package:flutter/material.dart';
 
 import '../../../helpers/extensions/extensions.dart';
@@ -20,14 +21,19 @@ class BottomSheetHelper {
       isDismissible: barrierDismissible,
       isScrollControlled: true,
       context: context,
-      backgroundColor: AppColors.whiteColor,
+      backgroundColor: FasakhanstaBrand.surface,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(topRight: Radius.circular(20), topLeft: Radius.circular(20)),
+        borderRadius: BorderRadius.only(
+          topRight: Radius.circular(20),
+          topLeft: Radius.circular(20),
+        ),
       ),
       builder: (BuildContext context) {
         if (!isHidden) {
           return Padding(
-            padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+            padding: EdgeInsets.only(
+              bottom: MediaQuery.of(context).viewInsets.bottom,
+            ),
             child: Container(
               width: MediaQuery.of(context).size.width,
               padding: const EdgeInsets.only(top: 15.0),
@@ -39,7 +45,10 @@ class BottomSheetHelper {
                   Container(
                     height: 5.0,
                     width: 50.0,
-                    decoration: BoxDecoration(color: AppColors.whiteColor, borderRadius: BorderRadius.circular(20)),
+                    decoration: BoxDecoration(
+                      color: FasakhanstaBrand.surface,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
                   ),
                   15.sbH,
                   Flexible(child: content),
@@ -49,7 +58,10 @@ class BottomSheetHelper {
           );
         } else {
           return Container(
-            decoration: BoxDecoration(color: AppColors.whiteColor, borderRadius: BorderRadius.circular(20)),
+            decoration: BoxDecoration(
+              color: FasakhanstaBrand.surface,
+              borderRadius: BorderRadius.circular(20),
+            ),
             padding: const EdgeInsets.only(bottom: 24),
             child: content,
           );

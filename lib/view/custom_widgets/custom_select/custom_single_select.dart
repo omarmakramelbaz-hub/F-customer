@@ -1,3 +1,4 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -70,7 +71,10 @@ class _CustomSingleSelectState extends State<CustomSingleSelect> {
 
   void _showValue() {
     Future.delayed(Duration.zero, () {
-      _selectedEC.text = widget.items?.firstWhereOrNull((element) => element.value == widget.value)?.name ?? '';
+      _selectedEC.text = widget.items
+              ?.firstWhereOrNull((element) => element.value == widget.value)
+              ?.name ??
+          '';
     });
   }
 
@@ -84,11 +88,25 @@ class _CustomSingleSelectState extends State<CustomSingleSelect> {
         children: [
           Row(
             children: [
-              if (widget.title != null) ...{Expanded(child: Text(widget.title!, style: AppTextStyle.formTitleStyle))},
-              if (widget.otherSideTitle != null) ...{Text(widget.otherSideTitle!, style: AppTextStyle.formTitleStyle)},
+              if (widget.title != null) ...{
+                Expanded(
+                  child: Text(
+                    widget.title!,
+                    style: AppTextStyle.formTitleStyle,
+                  ),
+                ),
+              },
+              if (widget.otherSideTitle != null) ...{
+                Text(
+                  widget.otherSideTitle!,
+                  style: AppTextStyle.formTitleStyle,
+                ),
+              },
             ],
           ),
-          if (widget.title != null || widget.otherSideTitle != null) ...{10.sbH},
+          if (widget.title != null || widget.otherSideTitle != null) ...{
+            10.sbH,
+          },
           TextFormField(
             controller: _selectedEC,
             validator: (v) => widget.validator?.call(widget.value),
@@ -108,7 +126,9 @@ class _CustomSingleSelectState extends State<CustomSingleSelect> {
                           isScrollControlled: true,
                         );
                       }
-                    : () => CommonMethods.showAlertDialog(message: 'There is no data'.tr),
+                    : () => CommonMethods.showAlertDialog(
+                          message: 'There is no data'.tr,
+                        ),
             readOnly: true,
             style: AppTextStyle.textFormStyle,
             autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -123,12 +143,25 @@ class _CustomSingleSelectState extends State<CustomSingleSelect> {
                       ? Colors.transparent
                       : AppColors.textFormFillColor),
               filled: true,
-              border: _border(color: widget.unFocusColor ?? AppColors.textFormBorderColor),
-              disabledBorder: _border(color: widget.unFocusColor ?? AppColors.textFormBorderColor),
-              focusedBorder: _border(color: widget.unFocusColor ?? AppColors.mainAppColor),
-              enabledBorder: _border(color: widget.unFocusColor ?? AppColors.textFormBorderColor),
-              contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-              suffixIconConstraints: BoxConstraints(maxWidth: widget.suffixIcon != null ? 110 : 40),
+              border: _border(
+                color: widget.unFocusColor ?? AppColors.textFormBorderColor,
+              ),
+              disabledBorder: _border(
+                color: widget.unFocusColor ?? AppColors.textFormBorderColor,
+              ),
+              focusedBorder: _border(
+                color: widget.unFocusColor ?? AppColors.mainAppColor,
+              ),
+              enabledBorder: _border(
+                color: widget.unFocusColor ?? AppColors.textFormBorderColor,
+              ),
+              contentPadding: const EdgeInsets.symmetric(
+                vertical: 10,
+                horizontal: 10,
+              ),
+              suffixIconConstraints: BoxConstraints(
+                maxWidth: widget.suffixIcon != null ? 110 : 40,
+              ),
               prefixIcon: widget.prefixIcon,
               suffixIcon: Row(
                 mainAxisSize: MainAxisSize.min,
@@ -142,11 +175,17 @@ class _CustomSingleSelectState extends State<CustomSingleSelect> {
                             isEmpty: false,
                             errorWidget: IconButton(
                               onPressed: widget.onReload,
-                              icon: Icon(Icons.wifi_protected_setup_rounded, color: AppColors.hintColor),
+                              icon: Icon(
+                                Icons.wifi_protected_setup_rounded,
+                                color: AppColors.hintColor,
+                              ),
                             ),
                             offlineWidget: GestureDetector(
                               onTap: widget.onReload,
-                              child: Icon(Icons.wifi_protected_setup_rounded, color: AppColors.hintColor),
+                              child: Icon(
+                                Icons.wifi_protected_setup_rounded,
+                                color: AppColors.hintColor,
+                              ),
                             ),
                             loadingWidget: const CupertinoActivityIndicator(),
                             child: widget.icon ??
@@ -167,7 +206,10 @@ class _CustomSingleSelectState extends State<CustomSingleSelect> {
                               size: 25,
                             ),
                   ),
-                  if (widget.suffixIcon != null) ...{widget.suffixIcon ?? const SizedBox(), const SizedBox(width: 10)},
+                  if (widget.suffixIcon != null) ...{
+                    widget.suffixIcon ?? const SizedBox(),
+                    const SizedBox(width: 10),
+                  },
                 ],
               ),
             ),
@@ -200,13 +242,21 @@ class CustomSingleSelectBottomSheet extends StatefulWidget {
   final List<CustomSelectItem>? items;
   final void Function(dynamic)? onChanged;
   final bool hasRemove;
-  const CustomSingleSelectBottomSheet({super.key, this.value, this.items, this.onChanged, this.hasRemove = true});
+  const CustomSingleSelectBottomSheet({
+    super.key,
+    this.value,
+    this.items,
+    this.onChanged,
+    this.hasRemove = true,
+  });
 
   @override
-  State<CustomSingleSelectBottomSheet> createState() => _CustomSingleSelectBottomSheetState();
+  State<CustomSingleSelectBottomSheet> createState() =>
+      _CustomSingleSelectBottomSheetState();
 }
 
-class _CustomSingleSelectBottomSheetState extends State<CustomSingleSelectBottomSheet> {
+class _CustomSingleSelectBottomSheetState
+    extends State<CustomSingleSelectBottomSheet> {
   dynamic _initialValue;
   List<CustomSelectItem>? _items;
   @override
@@ -221,7 +271,7 @@ class _CustomSingleSelectBottomSheetState extends State<CustomSingleSelectBottom
     return Container(
       // margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
       decoration: BoxDecoration(
-        color: AppColors.whiteColor,
+        color: FasakhanstaBrand.surface,
         borderRadius: const BorderRadius.vertical(top: Radius.circular(15)),
       ),
       constraints: BoxConstraints(maxHeight: context.height * 0.75),
@@ -248,7 +298,11 @@ class _CustomSingleSelectBottomSheetState extends State<CustomSingleSelectBottom
                     unFocusColor: AppColors.offWhiteColor,
                     hintText: 'search'.tr,
                     onChanged: (v) {
-                      _items = widget.items?.where((element) => element.name.toLowerCase().contains(v)).toList();
+                      _items = widget.items
+                          ?.where(
+                            (element) => element.name.toLowerCase().contains(v),
+                          )
+                          .toList();
                       setState(() {});
                     },
                   ),
@@ -304,17 +358,19 @@ class _CustomSingleSelectBottomSheetState extends State<CustomSingleSelectBottom
                                   ),
                                   const SizedBox(width: 10),
                                   CircleAvatar(
-                                    backgroundColor: _initialValue == _items?[index].value
-                                        ? AppColors.mainAppColor
-                                        : AppColors.greyColor,
+                                    backgroundColor:
+                                        _initialValue == _items?[index].value
+                                            ? AppColors.mainAppColor
+                                            : AppColors.greyColor,
                                     radius: 11,
                                     child: CircleAvatar(
-                                      backgroundColor: AppColors.whiteColor,
+                                      backgroundColor: FasakhanstaBrand.surface,
                                       radius: 9,
                                       child: CircleAvatar(
-                                        backgroundColor: _initialValue == _items?[index].value
+                                        backgroundColor: _initialValue ==
+                                                _items?[index].value
                                             ? AppColors.mainAppColor
-                                            : AppColors.whiteColor,
+                                            : FasakhanstaBrand.surface,
                                         radius: 7,
                                       ),
                                     ),

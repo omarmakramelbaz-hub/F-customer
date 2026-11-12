@@ -1,3 +1,4 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../helpers/extensions/extensions.dart';
@@ -13,7 +14,10 @@ import '../../restaurants/screen/restaurants_screen.dart';
 import '../controller/home_controller.dart';
 
 class RestaurantsAndDelegateRequestWidget extends StatelessWidget {
-  const RestaurantsAndDelegateRequestWidget({super.key, required this.controller});
+  const RestaurantsAndDelegateRequestWidget({
+    super.key,
+    required this.controller,
+  });
   final HomeController controller;
 
   @override
@@ -28,15 +32,20 @@ class RestaurantsAndDelegateRequestWidget extends StatelessWidget {
           child: Container(
             padding: const EdgeInsets.symmetric(vertical: 5),
             decoration: BoxDecoration(
-              color: AppColors.whiteColor,
+              color: FasakhanstaBrand.surface,
               borderRadius: BorderRadius.circular(12),
               border: Border.all(color: AppColors.borderColor),
             ),
             child: SizedBox(
               child: Column(
                 children: [
-                  if (controller.restaurantsNearYou.isEmpty && controller.spacialRestaurants.isEmpty)
-                    const CustomImage(path: AppImages.restaurantHome, type: ImageType.asset, height: 75)
+                  if (controller.restaurantsNearYou.isEmpty &&
+                      controller.spacialRestaurants.isEmpty)
+                    const CustomImage(
+                      path: AppImages.restaurantHome,
+                      type: ImageType.asset,
+                      height: 75,
+                    )
                   else
                     Expanded(
                       child: CustomSlider(
@@ -58,10 +67,18 @@ class RestaurantsAndDelegateRequestWidget extends StatelessWidget {
                                     width: context.width / 3.7,
                                     fit: BoxFit.contain,
                                     path: controller.restaurantsNearYou.isEmpty
-                                        ? controller.spacialRestaurants[index].logo ?? ''
+                                        ? controller.spacialRestaurants[index]
+                                                .logo ??
+                                            ''
                                         : (HiveMethods.getCity() == null)
-                                            ? controller.spacialRestaurants[index].logo ?? ''
-                                            : controller.restaurantsNearYou[index].logo ?? '',
+                                            ? controller
+                                                    .spacialRestaurants[index]
+                                                    .logo ??
+                                                ''
+                                            : controller
+                                                    .restaurantsNearYou[index]
+                                                    .logo ??
+                                                '',
                                     type: ImageType.network,
                                   ),
                                 ),

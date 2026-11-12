@@ -1,3 +1,4 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -19,9 +20,13 @@ class CurrentAddressWidget extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
-        color: AppColors.whiteColor,
+        color: FasakhanstaBrand.surface,
         boxShadow: [
-          BoxShadow(color: AppColors.greyColor.withValues(alpha: 0.3), offset: const Offset(0, 0), blurRadius: 10),
+          BoxShadow(
+            color: AppColors.greyColor.withValues(alpha: 0.3),
+            offset: const Offset(0, 0),
+            blurRadius: 10,
+          ),
         ],
       ),
       child: Row(
@@ -54,7 +59,9 @@ class CurrentAddressWidget extends StatelessWidget {
             },
             child: Text(
               'change'.tr,
-              style: AppTextStyle.text14MM().copyWith(decoration: TextDecoration.underline),
+              style: AppTextStyle.text14MM().copyWith(
+                decoration: TextDecoration.underline,
+              ),
             ),
           ),
         ],

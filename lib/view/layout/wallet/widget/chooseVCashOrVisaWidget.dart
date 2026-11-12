@@ -1,3 +1,4 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
@@ -10,15 +11,13 @@ import '../../my_account/controller/my_account_controller.dart';
 import '../controller/wallet_controller.dart';
 
 class ChooseVCashOrVisaWidget extends StatefulWidget {
-  const ChooseVCashOrVisaWidget({
-    super.key,
-    required this.myAccountController,
-  });
+  const ChooseVCashOrVisaWidget({super.key, required this.myAccountController});
 
   final MyAccountController myAccountController;
 
   @override
-  State<ChooseVCashOrVisaWidget> createState() => _ChooseVCashOrVisaWidgetState();
+  State<ChooseVCashOrVisaWidget> createState() =>
+      _ChooseVCashOrVisaWidgetState();
 }
 
 class _ChooseVCashOrVisaWidgetState extends State<ChooseVCashOrVisaWidget> {
@@ -69,11 +68,7 @@ class _ChooseVCashOrVisaWidgetState extends State<ChooseVCashOrVisaWidget> {
           keyName: 'vodafone_cash',
           label: isArabic ? 'فودافون' : 'Vodafone',
           backendMethod: 'v_cash',
-          brand: Image.asset(
-            AppImages.vfCash,
-            height: 18,
-            fit: BoxFit.contain,
-          ),
+          brand: Image.asset(AppImages.vfCash, height: 18, fit: BoxFit.contain),
         ),
       if (cardEnabled)
         _PaymentOptionData(
@@ -254,12 +249,13 @@ class PaymentMethodWidget extends StatelessWidget {
             ? const EdgeInsets.symmetric(horizontal: 8, vertical: 6)
             : const EdgeInsets.fromLTRB(4, 7, 4, 6),
         decoration: BoxDecoration(
-          color: isSelected ? const Color(0xFFFFF7F0) : Colors.white,
+          color: isSelected
+              ? FasakhanstaBrand.surfaceRaised
+              : FasakhanstaBrand.surface,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: isSelected
-                ? AppColors.mainAppColor
-                : const Color(0xFFE6E6E6),
+            color:
+                isSelected ? AppColors.mainAppColor : FasakhanstaBrand.border,
             width: isSelected ? 1.5 : 1,
           ),
           boxShadow: isSelected
@@ -336,16 +332,18 @@ class PaymentMethodWidget extends StatelessWidget {
       height: 14,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: isSelected ? AppColors.mainAppColor : Colors.white,
+        color: isSelected ? AppColors.mainAppColor : FasakhanstaBrand.surface,
         border: Border.all(
-          color: isSelected
-              ? AppColors.mainAppColor
-              : const Color(0xFFBDBDBD),
+          color: isSelected ? AppColors.mainAppColor : FasakhanstaBrand.border,
           width: 1.2,
         ),
       ),
       child: isSelected
-          ? const Icon(Icons.check_rounded, size: 9, color: Colors.white)
+          ? const Icon(
+              Icons.check_rounded,
+              size: 9,
+              color: FasakhanstaBrand.text,
+            )
           : null,
     );
   }

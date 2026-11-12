@@ -1,3 +1,5 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
+
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
@@ -90,7 +92,8 @@ class _ImageBuild extends StatelessWidget {
           fit: fit,
           width: width,
           height: height,
-          placeholder: (context, url) => CupertinoActivityIndicator(color: AppColors.mainAppColor),
+          placeholder: (context, url) =>
+              CupertinoActivityIndicator(color: AppColors.mainAppColor),
           errorWidget: (context, url, error) {
             try {
               debugPrint('Network Image Error: $error, URL: $url');
@@ -102,14 +105,20 @@ class _ImageBuild extends StatelessWidget {
               return Container(
                 width: width,
                 height: height,
-                decoration: BoxDecoration(color: Colors.grey.shade200, borderRadius: BorderRadius.circular(radius)),
+                decoration: BoxDecoration(
+                  color: FasakhanstaBrand.surfaceRaised,
+                  borderRadius: BorderRadius.circular(radius),
+                ),
                 child: Image.asset(AppImages.appLogo, fit: fit),
               );
             } catch (e) {
               return Container(
                 width: width,
                 height: height,
-                decoration: BoxDecoration(color: Colors.grey.shade200, borderRadius: BorderRadius.circular(radius)),
+                decoration: BoxDecoration(
+                  color: FasakhanstaBrand.surfaceRaised,
+                  borderRadius: BorderRadius.circular(radius),
+                ),
                 child: Image.asset(AppImages.appLogo, fit: fit),
               );
             }
@@ -128,7 +137,10 @@ class _ImageBuild extends StatelessWidget {
             return Container(
               width: width,
               height: height,
-              decoration: BoxDecoration(color: Colors.grey.shade200, borderRadius: BorderRadius.circular(radius)),
+              decoration: BoxDecoration(
+                color: FasakhanstaBrand.surfaceRaised,
+                borderRadius: BorderRadius.circular(radius),
+              ),
               child: Image.asset(AppImages.appLogo, fit: fit),
             );
           },
@@ -146,7 +158,10 @@ class _ImageBuild extends StatelessWidget {
             return Container(
               width: width,
               height: height,
-              decoration: BoxDecoration(color: Colors.grey.shade200, borderRadius: BorderRadius.circular(radius)),
+              decoration: BoxDecoration(
+                color: FasakhanstaBrand.surfaceRaised,
+                borderRadius: BorderRadius.circular(radius),
+              ),
               child: Image.asset(AppImages.appLogo, fit: fit),
             );
           },
@@ -173,8 +188,10 @@ class _ImageBuild extends StatelessWidget {
           fit: fit ?? BoxFit.contain,
           width: width,
           height: height,
-          colorFilter: color != null ? ColorFilter.mode(color!, BlendMode.srcIn) : null,
-          placeholderBuilder: (context) => CupertinoActivityIndicator(color: AppColors.mainAppColor),
+          colorFilter:
+              color != null ? ColorFilter.mode(color!, BlendMode.srcIn) : null,
+          placeholderBuilder: (context) =>
+              CupertinoActivityIndicator(color: AppColors.mainAppColor),
         );
     }
   }

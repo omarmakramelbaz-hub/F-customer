@@ -30,6 +30,13 @@ jobs:
         run: >-
           dart format --output=none --set-exit-if-changed
           lib/helpers/hive/hive_methods.dart
+          lib/helpers/theme/theme.dart
+          lib/helpers/theme/app_colors.dart
+          lib/helpers/theme/fasakhansta_brand.dart
+          lib/helpers/app/app.dart
+          lib/view/custom_widgets/buttons/custom_button.dart
+          lib/view/custom_widgets/custom_form_field/custom_form_field.dart
+          lib/view/custom_widgets/page_container/page_container.dart
           lib/helpers/utils/location_service.dart
           lib/helpers/utils/address_lookup_service.dart
           lib/view/layout/map/utils/places_autocomplete_bridge_web.dart
@@ -71,6 +78,13 @@ jobs:
           lib/helpers/notification_helper/notification_helper.dart
           lib/helpers/notification_helper/firebase_notification_helper.dart
           lib/helpers/pusher_service/pusher_controller.dart
+          lib/helpers/theme/theme.dart
+          lib/helpers/theme/app_colors.dart
+          lib/helpers/theme/fasakhansta_brand.dart
+          lib/helpers/app/app.dart
+          lib/view/custom_widgets/buttons/custom_button.dart
+          lib/view/custom_widgets/custom_form_field/custom_form_field.dart
+          lib/view/custom_widgets/page_container/page_container.dart
           lib/helpers/utils/location_service.dart
           lib/helpers/utils/address_lookup_service.dart
           lib/view/layout/address/screen/map_screen.dart

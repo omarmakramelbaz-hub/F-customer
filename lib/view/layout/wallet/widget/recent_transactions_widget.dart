@@ -1,3 +1,5 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
+
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
@@ -24,7 +26,8 @@ class RecentTransactionsWidget extends StatelessWidget {
         final transaction = items[index];
         final authId = context.read<AuthController>().profile?.id;
         final isFromMe = authId == transaction.fromUser;
-        final isCredit = transaction.type == 'charging' || (transaction.toUser == authId && !isFromMe);
+        final isCredit = transaction.type == 'charging' ||
+            (transaction.toUser == authId && !isFromMe);
         final amount = transaction.amount ?? 0;
         final color = isCredit ? Colors.green.shade700 : Colors.deepOrange;
         final icon = transaction.type == 'charging'
@@ -39,16 +42,21 @@ class RecentTransactionsWidget extends StatelessWidget {
           margin: const EdgeInsets.only(bottom: 10),
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
           decoration: BoxDecoration(
-            color: AppColors.whiteColor,
+            color: FasakhanstaBrand.surface,
             borderRadius: BorderRadius.circular(18),
-            border: Border.all(color: AppColors.greyColor.withValues(alpha: .12)),
+            border: Border.all(
+              color: AppColors.greyColor.withValues(alpha: .12),
+            ),
           ),
           child: Row(
             children: [
               Container(
                 width: 46,
                 height: 46,
-                decoration: BoxDecoration(color: color.withValues(alpha: .10), shape: BoxShape.circle),
+                decoration: BoxDecoration(
+                  color: color.withValues(alpha: .10),
+                  shape: BoxShape.circle,
+                ),
                 child: Icon(icon, color: color),
               ),
               const SizedBox(width: 12),
@@ -56,12 +64,19 @@ class RecentTransactionsWidget extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(buildTransaction(transaction.type ?? ''), style: AppTextStyle.text16MS()),
+                    Text(
+                      buildTransaction(transaction.type ?? ''),
+                      style: AppTextStyle.text16MS(),
+                    ),
                     if (transaction.orderNo != null) ...[
                       const SizedBox(height: 4),
-                      Text(transaction.orderNo!, style: AppTextStyle.text14RM()),
+                      Text(
+                        transaction.orderNo!,
+                        style: AppTextStyle.text14RM(),
+                      ),
                     ],
-                    if (transaction.fromUserName != null && transaction.toUserName != null) ...[
+                    if (transaction.fromUserName != null &&
+                        transaction.toUserName != null) ...[
                       const SizedBox(height: 3),
                       Text(
                         '${isFromMe ? 'من محفظتك' : transaction.fromUserName} ← ${transaction.toUser == authId ? 'محفظتك' : transaction.toUserName}',
@@ -71,7 +86,10 @@ class RecentTransactionsWidget extends StatelessWidget {
                       ),
                     ],
                     const SizedBox(height: 5),
-                    Text(DateMethods.formatToDate(transaction.createdAt ?? ''), style: AppTextStyle.text14RM()),
+                    Text(
+                      DateMethods.formatToDate(transaction.createdAt ?? ''),
+                      style: AppTextStyle.text14RM(),
+                    ),
                   ],
                 ),
               ),

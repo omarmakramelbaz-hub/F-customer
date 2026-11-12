@@ -1,3 +1,5 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
+
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
@@ -42,10 +44,12 @@ class CustomCartItemButtonBottomNavigation extends StatefulWidget {
   });
 
   @override
-  State<CustomCartItemButtonBottomNavigation> createState() => _CustomCartItemButtonBottomNavigationState();
+  State<CustomCartItemButtonBottomNavigation> createState() =>
+      _CustomCartItemButtonBottomNavigationState();
 }
 
-class _CustomCartItemButtonBottomNavigationState extends State<CustomCartItemButtonBottomNavigation> {
+class _CustomCartItemButtonBottomNavigationState
+    extends State<CustomCartItemButtonBottomNavigation> {
   bool addToCartSelected = false;
   int _quantity = 0;
   @override
@@ -62,8 +66,14 @@ class _CustomCartItemButtonBottomNavigationState extends State<CustomCartItemBut
     return Container(
       height: 74,
       decoration: BoxDecoration(
-        color: AppColors.whiteColor,
-        boxShadow: [BoxShadow(color: Colors.grey.withValues(alpha: 0.5), blurRadius: 10, offset: const Offset(0, 0))],
+        color: FasakhanstaBrand.surface,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withValues(alpha: 0.5),
+            blurRadius: 10,
+            offset: const Offset(0, 0),
+          ),
+        ],
       ),
       padding: const EdgeInsets.symmetric(horizontal: 15),
       child: Row(
@@ -103,11 +113,22 @@ class _CustomCartItemButtonBottomNavigationState extends State<CustomCartItemBut
                   child: Container(
                     width: double.infinity,
                     // height: 45,
-                    padding: const EdgeInsets.symmetric(horizontal: 29, vertical: 10),
-                    decoration: BoxDecoration(color: AppColors.mainAppColor, borderRadius: BorderRadius.circular(23)),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 29,
+                      vertical: 10,
+                    ),
+                    decoration: BoxDecoration(
+                      color: AppColors.mainAppColor,
+                      borderRadius: BorderRadius.circular(23),
+                    ),
                     child: Row(
                       children: [
-                        Flexible(child: Text('saveChanges'.tr, style: AppTextStyle.buttonStyle)),
+                        Flexible(
+                          child: Text(
+                            'saveChanges'.tr,
+                            style: AppTextStyle.buttonStyle,
+                          ),
+                        ),
                         const SizedBox(width: 10),
                         // (widget.qty == 0)
                         //     ? Text(
@@ -116,7 +137,10 @@ class _CustomCartItemButtonBottomNavigationState extends State<CustomCartItemBut
                         //       )
                         //     :
                         Text(
-                          (double.parse(widget.total ?? '0') * widget.quantity / widget.qty).toString(),
+                          (double.parse(widget.total ?? '0') *
+                                  widget.quantity /
+                                  widget.qty)
+                              .toString(),
                           style: AppTextStyle.buttonStyle,
                         ),
                       ],
@@ -131,12 +155,19 @@ class _CustomCartItemButtonBottomNavigationState extends State<CustomCartItemBut
             children: [
               const SizedBox(width: 10),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 15,
+                  vertical: 10,
+                ),
                 decoration: BoxDecoration(
-                  color: AppColors.whiteColor,
+                  color: FasakhanstaBrand.surface,
                   borderRadius: BorderRadius.circular(23),
                   boxShadow: [
-                    BoxShadow(color: Colors.grey.withValues(alpha: 0.5), blurRadius: 7, offset: const Offset(0, 0)),
+                    BoxShadow(
+                      color: Colors.grey.withValues(alpha: 0.5),
+                      blurRadius: 7,
+                      offset: const Offset(0, 0),
+                    ),
                   ],
                 ),
                 child: Row(
@@ -147,7 +178,11 @@ class _CustomCartItemButtonBottomNavigationState extends State<CustomCartItemBut
                           _quantity++;
                         });
                       },
-                      child: Icon(Icons.add, color: AppColors.yellowColor, size: 20),
+                      child: Icon(
+                        Icons.add,
+                        color: AppColors.yellowColor,
+                        size: 20,
+                      ),
                     ),
                     const SizedBox(width: 15),
                     Text(_quantity.toString()),
@@ -160,7 +195,11 @@ class _CustomCartItemButtonBottomNavigationState extends State<CustomCartItemBut
                           });
                         }
                       },
-                      child: Icon(Icons.remove, color: AppColors.secondAppColor, size: 12),
+                      child: Icon(
+                        Icons.remove,
+                        color: FasakhanstaBrand.text,
+                        size: 12,
+                      ),
                     ),
                   ],
                 ),

@@ -1,3 +1,4 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -25,7 +26,7 @@ class OrdersInCartWidget extends StatelessWidget {
       margin: const EdgeInsets.fromLTRB(16, 0, 16, 12),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: AppColors.whiteColor,
+        color: FasakhanstaBrand.surface,
         borderRadius: BorderRadius.circular(18),
         border: Border.all(color: AppColors.greyColor.withValues(alpha: .15)),
         boxShadow: [
@@ -62,18 +63,26 @@ class OrdersInCartWidget extends StatelessWidget {
                 ],
                 8.sbH,
                 if (cart.productClean != null) ...[
-                  _OptionChip(text: getProductClean(cart.productClean ?? '') ?? ''),
+                  _OptionChip(
+                    text: getProductClean(cart.productClean ?? '') ?? '',
+                  ),
                   4.sbH,
                 ],
                 if (cart.productFeatureName != null)
-                  _OptionChip(text: getProductFeatureName(cart.productFeatureName ?? '') ?? ''),
+                  _OptionChip(
+                    text:
+                        getProductFeatureName(cart.productFeatureName ?? '') ??
+                            '',
+                  ),
                 10.sbH,
                 Row(
                   children: [
                     Expanded(
                       child: Text(
                         'pound'.translate(args: [total.toStringAsFixed(2)]),
-                        style: AppTextStyle.text16MS().copyWith(color: AppColors.mainAppColor),
+                        style: AppTextStyle.text16MS().copyWith(
+                          color: AppColors.mainAppColor,
+                        ),
                       ),
                     ),
                     _buildQuantityControl(cartController, quantity),
@@ -129,22 +138,33 @@ class OrdersInCartWidget extends StatelessWidget {
 
   String? getProductClean(String? productClean) {
     switch (productClean) {
-      case 'extra_clean': return 'clean'.tr;
-      case 'extra_clear': return 'clear'.tr;
-      case 'extra_large': return 'large'.tr;
-      case 'extra_medium': return 'medium'.tr;
-      case 'extra_vacuim': return 'vacuum'.tr;
-      case 'extra_combo': return 'combo'.tr;
-      default: return '';
+      case 'extra_clean':
+        return 'clean'.tr;
+      case 'extra_clear':
+        return 'clear'.tr;
+      case 'extra_large':
+        return 'large'.tr;
+      case 'extra_medium':
+        return 'medium'.tr;
+      case 'extra_vacuim':
+        return 'vacuum'.tr;
+      case 'extra_combo':
+        return 'combo'.tr;
+      default:
+        return '';
     }
   }
 
   String? getProductFeatureName(String? productFeatureName) {
     switch (productFeatureName) {
-      case 'kilo': return 'kilo'.tr;
-      case 'half': return 'half'.tr;
-      case 'quarter': return 'quarter'.tr;
-      default: return '';
+      case 'kilo':
+        return 'kilo'.tr;
+      case 'half':
+        return 'half'.tr;
+      case 'quarter':
+        return 'quarter'.tr;
+      default:
+        return '';
     }
   }
 }

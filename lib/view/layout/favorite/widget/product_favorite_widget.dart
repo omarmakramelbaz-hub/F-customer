@@ -1,3 +1,4 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -16,7 +17,7 @@ class ProductFavoriteWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.whiteColor,
+        color: FasakhanstaBrand.surface,
         borderRadius: BorderRadius.circular(18),
         border: Border.all(color: AppColors.borderColor),
       ),
@@ -26,7 +27,9 @@ class ProductFavoriteWidget extends StatelessWidget {
           Stack(
             children: [
               ClipRRect(
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(18)),
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(18),
+                ),
                 child: CustomNetworkImage(
                   imageUrl: product.productImage ?? '',
                   height: 145,
@@ -38,11 +41,17 @@ class ProductFavoriteWidget extends StatelessWidget {
                 top: 8,
                 right: 8,
                 child: InkWell(
-                  onTap: () => context.read<FavoriteController>().addOrRemoveProductFavorite(id: product.id ?? 0),
+                  onTap: () => context
+                      .read<FavoriteController>()
+                      .addOrRemoveProductFavorite(id: product.id ?? 0),
                   child: const CircleAvatar(
                     radius: 18,
-                    backgroundColor: Colors.white,
-                    child: Icon(Icons.favorite_rounded, color: Colors.red, size: 20),
+                    backgroundColor: FasakhanstaBrand.surface,
+                    child: Icon(
+                      Icons.favorite_rounded,
+                      color: FasakhanstaBrand.danger,
+                      size: 20,
+                    ),
                   ),
                 ),
               ),
@@ -69,7 +78,9 @@ class ProductFavoriteWidget extends StatelessWidget {
                 const SizedBox(height: 8),
                 Text(
                   '${product.productPrice ?? 0} جنيه',
-                  style: AppTextStyle.text16MS().copyWith(color: AppColors.mainAppColor),
+                  style: AppTextStyle.text16MS().copyWith(
+                    color: AppColors.mainAppColor,
+                  ),
                 ),
               ],
             ),

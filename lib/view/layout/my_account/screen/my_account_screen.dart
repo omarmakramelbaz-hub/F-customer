@@ -1,3 +1,4 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -38,7 +39,7 @@ class MyAccountScreen extends StatelessWidget {
     final isArabic = context.languageCode == 'ar';
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF6F7F9),
+      backgroundColor: Colors.transparent,
       body: SafeArea(
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
@@ -55,20 +56,28 @@ class MyAccountScreen extends StatelessWidget {
                 const SizedBox(height: 22),
                 _sectionTitle(
                   isArabic ? 'الحساب والأمان' : 'Account & security',
-                  isArabic ? 'إدارة بيانات حسابك وحمايته' : 'Manage and protect your account',
+                  isArabic
+                      ? 'إدارة بيانات حسابك وحمايته'
+                      : 'Manage and protect your account',
                 ),
                 const SizedBox(height: 9),
                 _menuCard(context, [
                   _MenuItem(
                     Icons.person_outline_rounded,
                     'personalInformation'.tr,
-                    isArabic ? 'الاسم والبريد والمنطقة' : 'Name, email and area',
-                    () => NamedNavigatorImpl.push(PersonalInformationScreen.routeName),
+                    isArabic
+                        ? 'الاسم والبريد والمنطقة'
+                        : 'Name, email and area',
+                    () => NamedNavigatorImpl.push(
+                      PersonalInformationScreen.routeName,
+                    ),
                   ),
                   _MenuItem(
                     Icons.phone_iphone_rounded,
                     'changePhoneNumber'.tr,
-                    isArabic ? 'تحديث رقم الهاتف المرتبط بالحساب' : 'Update your account phone number',
+                    isArabic
+                        ? 'تحديث رقم الهاتف المرتبط بالحساب'
+                        : 'Update your account phone number',
                     () => Utils.showAppBottomSheet(
                       enableDrag: true,
                       isScrollControlled: true,
@@ -78,7 +87,9 @@ class MyAccountScreen extends StatelessWidget {
                   _MenuItem(
                     Icons.lock_outline_rounded,
                     'changePassword'.tr,
-                    isArabic ? 'تغيير كلمة المرور بأمان' : 'Change your password securely',
+                    isArabic
+                        ? 'تغيير كلمة المرور بأمان'
+                        : 'Change your password securely',
                     () => Utils.showAppBottomSheet(
                       isScrollControlled: true,
                       const ChangePasswordBottomSheet(),
@@ -88,33 +99,47 @@ class MyAccountScreen extends StatelessWidget {
                 const SizedBox(height: 22),
                 _sectionTitle(
                   isArabic ? 'الإعدادات والدعم' : 'Settings & support',
-                  isArabic ? 'كل ما تحتاجه لإدارة تجربتك' : 'Everything you need to manage your experience',
+                  isArabic
+                      ? 'كل ما تحتاجه لإدارة تجربتك'
+                      : 'Everything you need to manage your experience',
                 ),
                 const SizedBox(height: 9),
                 _menuCard(context, [
                   _MenuItem(
                     Icons.language_rounded,
                     'changeTheLanguage'.tr,
-                    isArabic ? 'تغيير لغة واجهة التطبيق' : 'Change app language',
-                    () => Utils.showAppBottomSheet(const ChangeLangBottomSheet()),
+                    isArabic
+                        ? 'تغيير لغة واجهة التطبيق'
+                        : 'Change app language',
+                    () =>
+                        Utils.showAppBottomSheet(const ChangeLangBottomSheet()),
                   ),
                   _MenuItem(
                     Icons.headset_mic_outlined,
                     'contactUs'.tr,
-                    isArabic ? 'تواصل مع فريق الدعم' : 'Contact our support team',
+                    isArabic
+                        ? 'تواصل مع فريق الدعم'
+                        : 'Contact our support team',
                     () => NamedNavigatorImpl.push(ContactUsScreen.routeName),
                   ),
                   _MenuItem(
                     Icons.verified_user_outlined,
                     'privacyPolicy'.tr,
-                    isArabic ? 'تعرف على كيفية حماية بياناتك' : 'Learn how your data is protected',
-                    () => NamedNavigatorImpl.push(PrivacyPolicyScreen.routeName),
+                    isArabic
+                        ? 'تعرف على كيفية حماية بياناتك'
+                        : 'Learn how your data is protected',
+                    () =>
+                        NamedNavigatorImpl.push(PrivacyPolicyScreen.routeName),
                   ),
                   _MenuItem(
                     Icons.description_outlined,
                     'termsAndConditions'.tr,
-                    isArabic ? 'الشروط المنظمة لاستخدام الخدمة' : 'Terms for using the service',
-                    () => NamedNavigatorImpl.push(TermsAndConditionsScreen.routeName),
+                    isArabic
+                        ? 'الشروط المنظمة لاستخدام الخدمة'
+                        : 'Terms for using the service',
+                    () => NamedNavigatorImpl.push(
+                      TermsAndConditionsScreen.routeName,
+                    ),
                   ),
                 ]),
                 const SizedBox(height: 18),
@@ -128,33 +153,47 @@ class MyAccountScreen extends StatelessWidget {
                 const SizedBox(height: 18),
                 _sectionTitle(
                   isArabic ? 'الإعدادات والدعم' : 'Settings & support',
-                  isArabic ? 'يمكنك الوصول إليها بدون تسجيل دخول' : 'Available without signing in',
+                  isArabic
+                      ? 'يمكنك الوصول إليها بدون تسجيل دخول'
+                      : 'Available without signing in',
                 ),
                 const SizedBox(height: 9),
                 _menuCard(context, [
                   _MenuItem(
                     Icons.language_rounded,
                     'changeTheLanguage'.tr,
-                    isArabic ? 'تغيير لغة واجهة التطبيق' : 'Change app language',
-                    () => Utils.showAppBottomSheet(const ChangeLangBottomSheet()),
+                    isArabic
+                        ? 'تغيير لغة واجهة التطبيق'
+                        : 'Change app language',
+                    () =>
+                        Utils.showAppBottomSheet(const ChangeLangBottomSheet()),
                   ),
                   _MenuItem(
                     Icons.headset_mic_outlined,
                     'contactUs'.tr,
-                    isArabic ? 'تواصل مع فريق الدعم' : 'Contact our support team',
+                    isArabic
+                        ? 'تواصل مع فريق الدعم'
+                        : 'Contact our support team',
                     () => NamedNavigatorImpl.push(ContactUsScreen.routeName),
                   ),
                   _MenuItem(
                     Icons.verified_user_outlined,
                     'privacyPolicy'.tr,
-                    isArabic ? 'تعرف على كيفية حماية بياناتك' : 'Learn how your data is protected',
-                    () => NamedNavigatorImpl.push(PrivacyPolicyScreen.routeName),
+                    isArabic
+                        ? 'تعرف على كيفية حماية بياناتك'
+                        : 'Learn how your data is protected',
+                    () =>
+                        NamedNavigatorImpl.push(PrivacyPolicyScreen.routeName),
                   ),
                   _MenuItem(
                     Icons.description_outlined,
                     'termsAndConditions'.tr,
-                    isArabic ? 'الشروط المنظمة لاستخدام الخدمة' : 'Terms for using the service',
-                    () => NamedNavigatorImpl.push(TermsAndConditionsScreen.routeName),
+                    isArabic
+                        ? 'الشروط المنظمة لاستخدام الخدمة'
+                        : 'Terms for using the service',
+                    () => NamedNavigatorImpl.push(
+                      TermsAndConditionsScreen.routeName,
+                    ),
                   ),
                 ]),
                 const SizedBox(height: 18),
@@ -214,9 +253,9 @@ class MyAccountScreen extends StatelessWidget {
             width: 44,
             height: 44,
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: FasakhanstaBrand.surface,
               borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: const Color(0xFFE8EAED)),
+              border: Border.all(color: FasakhanstaBrand.border),
               boxShadow: const [
                 BoxShadow(
                   color: Color(0x08000000),
@@ -235,15 +274,18 @@ class MyAccountScreen extends StatelessWidget {
                 constraints: const BoxConstraints(minWidth: 19, minHeight: 19),
                 padding: const EdgeInsets.symmetric(horizontal: 4),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFF45116),
+                  color: FasakhanstaBrand.orange,
                   borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: Colors.white, width: 1.5),
+                  border: Border.all(
+                    color: FasakhanstaBrand.border,
+                    width: 1.5,
+                  ),
                 ),
                 child: Center(
                   child: Text(
                     '$badge',
                     style: const TextStyle(
-                      color: Colors.white,
+                      color: FasakhanstaBrand.onOrange,
                       fontSize: 10,
                       fontWeight: FontWeight.w700,
                     ),
@@ -273,7 +315,10 @@ class MyAccountScreen extends StatelessWidget {
           gradient: const LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [Color(0xFF151515), Color(0xFF292929)],
+            colors: [
+              FasakhanstaBrand.surfaceRaised,
+              FasakhanstaBrand.surfaceRaised,
+            ],
           ),
           boxShadow: const [
             BoxShadow(
@@ -306,7 +351,7 @@ class MyAccountScreen extends StatelessWidget {
                   width: 130,
                   height: 130,
                   decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: .035),
+                    color: FasakhanstaBrand.surface.withValues(alpha: .035),
                     shape: BoxShape.circle,
                   ),
                 ),
@@ -323,7 +368,10 @@ class MyAccountScreen extends StatelessWidget {
                           height: 82,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            border: Border.all(color: Colors.white, width: 2.4),
+                            border: Border.all(
+                              color: FasakhanstaBrand.border,
+                              width: 2.4,
+                            ),
                             boxShadow: const [
                               BoxShadow(
                                 color: Color(0x33000000),
@@ -342,7 +390,7 @@ class MyAccountScreen extends StatelessWidget {
                                     radius: 41,
                                   )
                                 : Container(
-                                    color: const Color(0xFFFFF0E4),
+                                    color: FasakhanstaBrand.surfaceRaised,
                                     child: Icon(
                                       Icons.person_rounded,
                                       size: 48,
@@ -360,9 +408,16 @@ class MyAccountScreen extends StatelessWidget {
                             decoration: BoxDecoration(
                               color: AppColors.mainAppColor,
                               shape: BoxShape.circle,
-                              border: Border.all(color: const Color(0xFF202020), width: 2),
+                              border: Border.all(
+                                color: FasakhanstaBrand.border,
+                                width: 2,
+                              ),
                             ),
-                            child: const Icon(Icons.edit_rounded, size: 14, color: Colors.white),
+                            child: const Icon(
+                              Icons.edit_rounded,
+                              size: 14,
+                              color: FasakhanstaBrand.onOrange,
+                            ),
                           ),
                         ),
                       ],
@@ -380,21 +435,32 @@ class MyAccountScreen extends StatelessWidget {
                                   name.isEmpty ? 'account'.tr : name,
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
-                                  style: AppTextStyle.text20BS(color: Colors.white),
+                                  style: AppTextStyle.text20BS(
+                                    color: FasakhanstaBrand.text,
+                                  ),
                                 ),
                               ),
                               Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 9,
+                                  vertical: 5,
+                                ),
                                 decoration: BoxDecoration(
-                                  color: AppColors.mainAppColor.withValues(alpha: .17),
+                                  color: AppColors.mainAppColor.withValues(
+                                    alpha: .17,
+                                  ),
                                   borderRadius: BorderRadius.circular(20),
                                   border: Border.all(
-                                    color: AppColors.mainAppColor.withValues(alpha: .45),
+                                    color: AppColors.mainAppColor.withValues(
+                                      alpha: .45,
+                                    ),
                                   ),
                                 ),
                                 child: Text(
                                   isArabic ? 'حسابك' : 'Your account',
-                                  style: AppTextStyle.text10BW(),
+                                  style: AppTextStyle.text10BW(
+                                    color: FasakhanstaBrand.onOrange,
+                                  ),
                                 ),
                               ),
                             ],
@@ -403,14 +469,24 @@ class MyAccountScreen extends StatelessWidget {
                             const SizedBox(height: 7),
                             Row(
                               children: [
-                                Icon(Icons.phone_iphone_rounded, size: 15, color: Colors.white.withValues(alpha: .72)),
+                                Icon(
+                                  Icons.phone_iphone_rounded,
+                                  size: 15,
+                                  color: FasakhanstaBrand.text.withValues(
+                                    alpha: .72,
+                                  ),
+                                ),
                                 const SizedBox(width: 5),
                                 Flexible(
                                   child: Text(
                                     mobile,
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
-                                    style: AppTextStyle.text12RG(color: Colors.white.withValues(alpha: .78)),
+                                    style: AppTextStyle.text12RG(
+                                      color: FasakhanstaBrand.text.withValues(
+                                        alpha: .78,
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ],
@@ -420,14 +496,22 @@ class MyAccountScreen extends StatelessWidget {
                             const SizedBox(height: 6),
                             Row(
                               children: [
-                                Icon(Icons.location_on_outlined, size: 15, color: AppColors.mainAppColor),
+                                Icon(
+                                  Icons.location_on_outlined,
+                                  size: 15,
+                                  color: AppColors.mainAppColor,
+                                ),
                                 const SizedBox(width: 5),
                                 Expanded(
                                   child: Text(
                                     area,
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
-                                    style: AppTextStyle.text12RG(color: Colors.white.withValues(alpha: .72)),
+                                    style: AppTextStyle.text12RG(
+                                      color: FasakhanstaBrand.text.withValues(
+                                        alpha: .72,
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ],
@@ -437,7 +521,9 @@ class MyAccountScreen extends StatelessWidget {
                           Row(
                             children: [
                               Text(
-                                isArabic ? 'تعديل الملف الشخصي' : 'Edit profile',
+                                isArabic
+                                    ? 'تعديل الملف الشخصي'
+                                    : 'Edit profile',
                                 style: AppTextStyle.text11BM(),
                               ),
                               const SizedBox(width: 4),
@@ -501,7 +587,8 @@ class MyAccountScreen extends StatelessWidget {
                 context,
                 icon: Icons.location_on_outlined,
                 title: 'addresses'.tr,
-                subtitle: isArabic ? '$addressCount عنوان' : '$addressCount saved',
+                subtitle:
+                    isArabic ? '$addressCount عنوان' : '$addressCount saved',
                 onTap: () => NamedNavigatorImpl.push(AddressScreen.routeName),
               ),
             ),
@@ -535,11 +622,15 @@ class MyAccountScreen extends StatelessWidget {
         height: 76,
         padding: const EdgeInsets.symmetric(horizontal: 12),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: FasakhanstaBrand.surface,
           borderRadius: BorderRadius.circular(19),
-          border: Border.all(color: const Color(0xFFE8EAED)),
+          border: Border.all(color: FasakhanstaBrand.border),
           boxShadow: const [
-            BoxShadow(color: Color(0x07000000), blurRadius: 12, offset: Offset(0, 5)),
+            BoxShadow(
+              color: Color(0x07000000),
+              blurRadius: 12,
+              offset: Offset(0, 5),
+            ),
           ],
         ),
         child: Row(
@@ -548,7 +639,7 @@ class MyAccountScreen extends StatelessWidget {
               width: 42,
               height: 42,
               decoration: BoxDecoration(
-                color: const Color(0xFFFFF3E8),
+                color: FasakhanstaBrand.surfaceRaised,
                 borderRadius: BorderRadius.circular(14),
               ),
               child: Icon(icon, size: 22, color: AppColors.mainAppColor),
@@ -570,7 +661,7 @@ class MyAccountScreen extends StatelessWidget {
                     subtitle,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: AppTextStyle.text10RG(color: const Color(0xFF888D95)),
+                    style: AppTextStyle.text10RG(color: FasakhanstaBrand.muted),
                   ),
                 ],
               ),
@@ -597,7 +688,7 @@ class MyAccountScreen extends StatelessWidget {
                   subtitle,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: AppTextStyle.text10RG(color: const Color(0xFF8D9299)),
+                  style: AppTextStyle.text10RG(color: FasakhanstaBrand.muted),
                 ),
               ],
             ),
@@ -618,11 +709,15 @@ class MyAccountScreen extends StatelessWidget {
   Widget _menuCard(BuildContext context, List<_MenuItem> items) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: FasakhanstaBrand.surface,
         borderRadius: BorderRadius.circular(22),
-        border: Border.all(color: const Color(0xFFE8EAED)),
+        border: Border.all(color: FasakhanstaBrand.border),
         boxShadow: const [
-          BoxShadow(color: Color(0x06000000), blurRadius: 14, offset: Offset(0, 5)),
+          BoxShadow(
+            color: Color(0x06000000),
+            blurRadius: 14,
+            offset: Offset(0, 5),
+          ),
         ],
       ),
       child: Column(
@@ -634,20 +729,29 @@ class MyAccountScreen extends StatelessWidget {
                 onTap: item.onTap,
                 borderRadius: BorderRadius.vertical(
                   top: index == 0 ? const Radius.circular(22) : Radius.zero,
-                  bottom: index == items.length - 1 ? const Radius.circular(22) : Radius.zero,
+                  bottom: index == items.length - 1
+                      ? const Radius.circular(22)
+                      : Radius.zero,
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 11),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 13,
+                    vertical: 11,
+                  ),
                   child: Row(
                     children: [
                       Container(
                         width: 42,
                         height: 42,
                         decoration: BoxDecoration(
-                          color: const Color(0xFFFFF4EA),
+                          color: FasakhanstaBrand.surfaceRaised,
                           borderRadius: BorderRadius.circular(14),
                         ),
-                        child: Icon(item.icon, color: AppColors.mainAppColor, size: 22),
+                        child: Icon(
+                          item.icon,
+                          color: AppColors.mainAppColor,
+                          size: 22,
+                        ),
                       ),
                       const SizedBox(width: 11),
                       Expanded(
@@ -660,7 +764,9 @@ class MyAccountScreen extends StatelessWidget {
                               item.subtitle,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
-                              style: AppTextStyle.text10RG(color: const Color(0xFF92969D)),
+                              style: AppTextStyle.text10RG(
+                                color: FasakhanstaBrand.muted,
+                              ),
                             ),
                           ],
                         ),
@@ -669,7 +775,7 @@ class MyAccountScreen extends StatelessWidget {
                         width: 30,
                         height: 30,
                         decoration: BoxDecoration(
-                          color: const Color(0xFFF7F7F8),
+                          color: FasakhanstaBrand.surfaceRaised,
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: Icon(
@@ -677,7 +783,7 @@ class MyAccountScreen extends StatelessWidget {
                               ? Icons.chevron_right_rounded
                               : Icons.chevron_left_rounded,
                           size: 20,
-                          color: const Color(0xFF90949A),
+                          color: FasakhanstaBrand.muted,
                         ),
                       ),
                     ],
@@ -689,7 +795,7 @@ class MyAccountScreen extends StatelessWidget {
                   height: 1,
                   indent: 66,
                   endIndent: 14,
-                  color: Color(0xFFF0F0F1),
+                  color: FasakhanstaBrand.border,
                 ),
             ],
           );
@@ -707,9 +813,9 @@ class MyAccountScreen extends StatelessWidget {
         height: 54,
         padding: const EdgeInsets.symmetric(horizontal: 15),
         decoration: BoxDecoration(
-          color: const Color(0xFFFFF7F6),
+          color: FasakhanstaBrand.surfaceRaised,
           borderRadius: BorderRadius.circular(18),
-          border: Border.all(color: const Color(0xFFFFDAD6)),
+          border: Border.all(color: FasakhanstaBrand.border),
         ),
         child: Row(
           children: [
@@ -717,21 +823,25 @@ class MyAccountScreen extends StatelessWidget {
               width: 38,
               height: 38,
               decoration: BoxDecoration(
-                color: const Color(0xFFFFEAE7),
+                color: FasakhanstaBrand.surfaceRaised,
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: const Icon(Icons.logout_rounded, color: Color(0xFFD83A2E), size: 21),
+              child: const Icon(
+                Icons.logout_rounded,
+                color: FasakhanstaBrand.orange,
+                size: 21,
+              ),
             ),
             const SizedBox(width: 11),
             Expanded(
               child: Text(
                 'logOut'.tr,
-                style: AppTextStyle.text14BS(color: const Color(0xFFD83A2E)),
+                style: AppTextStyle.text14BS(color: FasakhanstaBrand.orange),
               ),
             ),
             Text(
               isArabic ? 'إنهاء الجلسة' : 'End session',
-              style: AppTextStyle.text10RG(color: const Color(0xFFB8655F)),
+              style: AppTextStyle.text10RG(color: FasakhanstaBrand.danger),
             ),
           ],
         ),
@@ -744,7 +854,7 @@ class MyAccountScreen extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.fromLTRB(14, 14, 14, 8),
       decoration: BoxDecoration(
-        color: const Color(0xFF191919),
+        color: FasakhanstaBrand.surfaceRaised,
         borderRadius: BorderRadius.circular(22),
       ),
       child: Column(
@@ -758,7 +868,11 @@ class MyAccountScreen extends StatelessWidget {
                   color: AppColors.mainAppColor.withValues(alpha: .15),
                   borderRadius: BorderRadius.circular(13),
                 ),
-                child: Icon(Icons.handshake_outlined, color: AppColors.mainAppColor, size: 22),
+                child: Icon(
+                  Icons.handshake_outlined,
+                  color: AppColors.mainAppColor,
+                  size: 22,
+                ),
               ),
               const SizedBox(width: 10),
               Expanded(
@@ -766,13 +880,21 @@ class MyAccountScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      isArabic ? 'انضم إلى شبكة فسخانستا' : 'Join the Faskhansta network',
-                      style: AppTextStyle.text14BS(color: Colors.white),
+                      isArabic
+                          ? 'انضم إلى شبكة فسخانستا'
+                          : 'Join the Faskhansta network',
+                      style: AppTextStyle.text14BS(
+                        color: FasakhanstaBrand.text,
+                      ),
                     ),
                     const SizedBox(height: 2),
                     Text(
-                      isArabic ? 'فرص للمندوبين والتجار' : 'Opportunities for couriers and merchants',
-                      style: AppTextStyle.text10RG(color: Colors.white.withValues(alpha: .6)),
+                      isArabic
+                          ? 'فرص للمندوبين والتجار'
+                          : 'Opportunities for couriers and merchants',
+                      style: AppTextStyle.text10RG(
+                        color: FasakhanstaBrand.text.withValues(alpha: .6),
+                      ),
                     ),
                   ],
                 ),
@@ -786,7 +908,10 @@ class MyAccountScreen extends StatelessWidget {
             'registerAsADelegate'.tr,
             () => NamedNavigatorImpl.push(RegisterAsDeliveryScreen.routeName),
           ),
-          Divider(height: 1, color: Colors.white.withValues(alpha: .08)),
+          Divider(
+            height: 1,
+            color: FasakhanstaBrand.border.withValues(alpha: .08),
+          ),
           _partnerRow(
             context,
             Icons.storefront_outlined,
@@ -812,12 +937,17 @@ class MyAccountScreen extends StatelessWidget {
           children: [
             Icon(icon, color: AppColors.mainAppColor, size: 22),
             const SizedBox(width: 10),
-            Expanded(child: Text(title, style: AppTextStyle.text13BS(color: Colors.white))),
+            Expanded(
+              child: Text(
+                title,
+                style: AppTextStyle.text13BS(color: FasakhanstaBrand.text),
+              ),
+            ),
             Icon(
               context.languageCode == 'en'
                   ? Icons.chevron_right_rounded
                   : Icons.chevron_left_rounded,
-              color: Colors.white.withValues(alpha: .55),
+              color: FasakhanstaBrand.text.withValues(alpha: .55),
               size: 22,
             ),
           ],
@@ -835,11 +965,18 @@ class MyAccountScreen extends StatelessWidget {
         gradient: const LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [Color(0xFF171717), Color(0xFF272727)],
+          colors: [
+            FasakhanstaBrand.surfaceRaised,
+            FasakhanstaBrand.surfaceRaised,
+          ],
         ),
         borderRadius: BorderRadius.circular(26),
         boxShadow: const [
-          BoxShadow(color: Color(0x18000000), blurRadius: 22, offset: Offset(0, 8)),
+          BoxShadow(
+            color: Color(0x18000000),
+            blurRadius: 22,
+            offset: Offset(0, 8),
+          ),
         ],
       ),
       child: Column(
@@ -850,15 +987,23 @@ class MyAccountScreen extends StatelessWidget {
             decoration: BoxDecoration(
               color: AppColors.mainAppColor.withValues(alpha: .16),
               borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: AppColors.mainAppColor.withValues(alpha: .35)),
+              border: Border.all(
+                color: AppColors.mainAppColor.withValues(alpha: .35),
+              ),
             ),
-            child: Icon(Icons.person_rounded, size: 34, color: AppColors.mainAppColor),
+            child: Icon(
+              Icons.person_rounded,
+              size: 34,
+              color: AppColors.mainAppColor,
+            ),
           ),
           const SizedBox(height: 13),
           Text(
-            isArabic ? 'سجل دخولك لإدارة حسابك' : 'Sign in to manage your account',
+            isArabic
+                ? 'سجل دخولك لإدارة حسابك'
+                : 'Sign in to manage your account',
             textAlign: TextAlign.center,
-            style: AppTextStyle.text18BS(color: Colors.white),
+            style: AppTextStyle.text18BS(color: FasakhanstaBrand.text),
           ),
           const SizedBox(height: 6),
           Text(
@@ -866,26 +1011,36 @@ class MyAccountScreen extends StatelessWidget {
                 ? 'تابع طلباتك واحفظ عناوينك واستفد من كل المميزات بسهولة.'
                 : 'Track orders, save addresses and enjoy all features easily.',
             textAlign: TextAlign.center,
-            style: AppTextStyle.text12RG(color: Colors.white.withValues(alpha: .65)).copyWith(height: 1.45),
+            style: AppTextStyle.text12RG(
+              color: FasakhanstaBrand.text.withValues(alpha: .65),
+            ).copyWith(height: 1.45),
           ),
           const SizedBox(height: 17),
           SizedBox(
             width: double.infinity,
             height: 48,
             child: ElevatedButton(
-              onPressed: () => NamedNavigatorImpl.push(clean: true, LoginScreen.routeName),
+              onPressed: () =>
+                  NamedNavigatorImpl.push(clean: true, LoginScreen.routeName),
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.mainAppColor,
-                foregroundColor: Colors.white,
+                foregroundColor: FasakhanstaBrand.onOrange,
                 elevation: 0,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15),
+                ),
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Icon(Icons.login_rounded, size: 20),
                   const SizedBox(width: 8),
-                  Text('signIn'.tr, style: AppTextStyle.text15BS(color: Colors.white)),
+                  Text(
+                    'signIn'.tr,
+                    style: AppTextStyle.text15BS(
+                      color: FasakhanstaBrand.onOrange,
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -901,9 +1056,9 @@ class MyAccountScreen extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.fromLTRB(14, 15, 14, 8),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: FasakhanstaBrand.surface,
         borderRadius: BorderRadius.circular(22),
-        border: Border.all(color: const Color(0xFFE8EAED)),
+        border: Border.all(color: FasakhanstaBrand.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -914,21 +1069,32 @@ class MyAccountScreen extends StatelessWidget {
                 width: 39,
                 height: 39,
                 decoration: BoxDecoration(
-                  color: const Color(0xFFFFF2E5),
+                  color: FasakhanstaBrand.surfaceRaised,
                   borderRadius: BorderRadius.circular(13),
                 ),
-                child: Icon(Icons.handshake_outlined, color: AppColors.mainAppColor, size: 22),
+                child: Icon(
+                  Icons.handshake_outlined,
+                  color: AppColors.mainAppColor,
+                  size: 22,
+                ),
               ),
               const SizedBox(width: 10),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(isArabic ? 'انضم كشريك' : 'Join as a partner', style: AppTextStyle.text15BS()),
+                    Text(
+                      isArabic ? 'انضم كشريك' : 'Join as a partner',
+                      style: AppTextStyle.text15BS(),
+                    ),
                     const SizedBox(height: 2),
                     Text(
-                      isArabic ? 'اختار الطريقة المناسبة ليك وابدأ معانا' : 'Choose how you want to partner with us',
-                      style: AppTextStyle.text10RG(color: const Color(0xFF8B9098)),
+                      isArabic
+                          ? 'اختار الطريقة المناسبة ليك وابدأ معانا'
+                          : 'Choose how you want to partner with us',
+                      style: AppTextStyle.text10RG(
+                        color: FasakhanstaBrand.muted,
+                      ),
                     ),
                   ],
                 ),
@@ -940,16 +1106,22 @@ class MyAccountScreen extends StatelessWidget {
             context: context,
             icon: Icons.delivery_dining_rounded,
             title: 'registerAsADelegate'.tr,
-            subtitle: isArabic ? 'وصّل الطلبات وحقق دخل إضافي' : 'Deliver orders and earn extra income',
-            onTap: () => NamedNavigatorImpl.push(RegisterAsDeliveryScreen.routeName),
+            subtitle: isArabic
+                ? 'وصّل الطلبات وحقق دخل إضافي'
+                : 'Deliver orders and earn extra income',
+            onTap: () =>
+                NamedNavigatorImpl.push(RegisterAsDeliveryScreen.routeName),
           ),
-          const Divider(height: 1, indent: 58, color: Color(0xFFF0F0F1)),
+          const Divider(height: 1, indent: 58, color: FasakhanstaBrand.border),
           _guestPartnerRow(
             context: context,
             icon: Icons.storefront_outlined,
             title: 'registerAsAMerchant'.tr,
-            subtitle: isArabic ? 'اعرض منتجاتك وابدأ البيع' : 'Show your products and start selling',
-            onTap: () => NamedNavigatorImpl.push(RegisterAsVendorScreen.routeName),
+            subtitle: isArabic
+                ? 'اعرض منتجاتك وابدأ البيع'
+                : 'Show your products and start selling',
+            onTap: () =>
+                NamedNavigatorImpl.push(RegisterAsVendorScreen.routeName),
           ),
         ],
       ),
@@ -974,7 +1146,7 @@ class MyAccountScreen extends StatelessWidget {
               width: 44,
               height: 44,
               decoration: BoxDecoration(
-                color: const Color(0xFFFFF5EC),
+                color: FasakhanstaBrand.surfaceRaised,
                 borderRadius: BorderRadius.circular(14),
               ),
               child: Icon(icon, color: AppColors.mainAppColor, size: 23),
@@ -990,7 +1162,7 @@ class MyAccountScreen extends StatelessWidget {
                     subtitle,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: AppTextStyle.text10RG(color: const Color(0xFF8B9098)),
+                    style: AppTextStyle.text10RG(color: FasakhanstaBrand.muted),
                   ),
                 ],
               ),
@@ -1000,7 +1172,7 @@ class MyAccountScreen extends StatelessWidget {
                   ? Icons.chevron_right_rounded
                   : Icons.chevron_left_rounded,
               size: 22,
-              color: const Color(0xFFA7ABB2),
+              color: FasakhanstaBrand.muted,
             ),
           ],
         ),

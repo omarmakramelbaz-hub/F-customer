@@ -1,3 +1,5 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
+
 import 'dart:async';
 import 'dart:developer';
 import 'dart:ui' as ui;
@@ -142,16 +144,13 @@ class _RequestDelegateScreenState extends State<RequestDelegateScreen>
         ..lineTo(canvasWidth - 7, 44)
         ..lineTo(poleX, 44)
         ..close();
-      canvas.drawPath(
-        flagPath,
-        ui.Paint()..color = AppColors.mainAppColor,
-      );
+      canvas.drawPath(flagPath, ui.Paint()..color = AppColors.mainAppColor);
 
       final textPainter = TextPainter(
         text: const TextSpan(
           text: 'GO Drive',
           style: TextStyle(
-            color: Colors.white,
+            color: FasakhanstaBrand.text,
             fontSize: 13,
             fontWeight: FontWeight.w800,
           ),
@@ -161,10 +160,7 @@ class _RequestDelegateScreenState extends State<RequestDelegateScreen>
       )..layout(maxWidth: canvasWidth - poleX - 16);
       textPainter.paint(
         canvas,
-        Offset(
-          poleX + 10,
-          29 - (textPainter.height / 2),
-        ),
+        Offset(poleX + 10, 29 - (textPainter.height / 2)),
       );
 
       final picture = recorder.endRecording();
@@ -177,9 +173,7 @@ class _RequestDelegateScreenState extends State<RequestDelegateScreen>
       );
       if (markerBytes == null) return;
 
-      final icon = BitmapDescriptor.fromBytes(
-        markerBytes.buffer.asUint8List(),
-      );
+      final icon = BitmapDescriptor.fromBytes(markerBytes.buffer.asUint8List());
       if (!mounted) return;
       setState(() => _pickupGoDriveIcon = icon);
     } catch (e) {
@@ -214,8 +208,10 @@ class _RequestDelegateScreenState extends State<RequestDelegateScreen>
   }
 
   Future<void> _updateLocation(double lat, double lng) async {
-    final controller =
-        Provider.of<RequestDelegateController>(context, listen: false);
+    final controller = Provider.of<RequestDelegateController>(
+      context,
+      listen: false,
+    );
 
     _orangePinIcon ??= await BitmapDescriptor.asset(
       const ImageConfiguration(),
@@ -249,9 +245,9 @@ class _RequestDelegateScreenState extends State<RequestDelegateScreen>
       controller.initialDelegatesOnMap();
       controller
           .getDelegatesOnMap(
-            lat: currentLat.toString(),
-            lan: currentLng.toString(),
-          )
+        lat: currentLat.toString(),
+        lan: currentLng.toString(),
+      )
           .then((_) async {
         final delegatesOnMap = controller.delegatesOnMap;
 
@@ -284,24 +280,23 @@ class _RequestDelegateScreenState extends State<RequestDelegateScreen>
               'assets/images/motorcycleImage.png',
               height: 50,
             );
-            final delegateMarkers = delegatesOnMap!.userData!
-                .where((userModel) {
-                  final lat = double.tryParse(userModel.lat ?? '');
-                  final lng = double.tryParse(userModel.lng ?? '');
-                  return lat != null &&
-                      lng != null &&
-                      _isEgyptPoint(LatLng(lat, lng));
-                })
-                .map(
-                  (userModel) => Marker(
-                    icon: customMarkerIcon,
-                    markerId: MarkerId(userModel.id.toString()),
-                    position: LatLng(
-                      double.parse(userModel.lat!),
-                      double.parse(userModel.lng!),
-                    ),
-                  ),
-                );
+            final delegateMarkers =
+                delegatesOnMap!.userData!.where((userModel) {
+              final lat = double.tryParse(userModel.lat ?? '');
+              final lng = double.tryParse(userModel.lng ?? '');
+              return lat != null &&
+                  lng != null &&
+                  _isEgyptPoint(LatLng(lat, lng));
+            }).map(
+              (userModel) => Marker(
+                icon: customMarkerIcon,
+                markerId: MarkerId(userModel.id.toString()),
+                position: LatLng(
+                  double.parse(userModel.lat!),
+                  double.parse(userModel.lng!),
+                ),
+              ),
+            );
             markers.addAll(delegateMarkers);
             if (mounted) setState(() {});
           } catch (e) {
@@ -312,9 +307,7 @@ class _RequestDelegateScreenState extends State<RequestDelegateScreen>
     });
 
     if (gmc != null) {
-      await gmc!.animateCamera(
-        CameraUpdate.newLatLng(LatLng(lat, lng)),
-      );
+      await gmc!.animateCamera(CameraUpdate.newLatLng(LatLng(lat, lng)));
     }
 
     try {
@@ -341,11 +334,10 @@ class _RequestDelegateScreenState extends State<RequestDelegateScreen>
     });
   }
 
-  double? _resolveShippingKmPrice(
-    RequestDelegateController controller,
-  ) {
-    final liveKmPrice =
-        double.tryParse('${controller.delegatesOnMap?.shippingKmPrice}');
+  double? _resolveShippingKmPrice(RequestDelegateController controller) {
+    final liveKmPrice = double.tryParse(
+      '${controller.delegatesOnMap?.shippingKmPrice}',
+    );
     if (liveKmPrice != null && liveKmPrice > 0) {
       _cachedShippingKmPrice = liveKmPrice;
       return liveKmPrice;
@@ -444,9 +436,7 @@ class _RequestDelegateScreenState extends State<RequestDelegateScreen>
     ).round().toString();
   }
 
-  void _recalculateFareForCurrentRoute(
-    RequestDelegateController controller,
-  ) {
+  void _recalculateFareForCurrentRoute(RequestDelegateController controller) {
     final fromLat = double.tryParse(controller.fromLat ?? '');
     final fromLng = double.tryParse(controller.fromLan ?? '');
     final toLat = double.tryParse(controller.toLat ?? '');
@@ -470,13 +460,8 @@ class _RequestDelegateScreenState extends State<RequestDelegateScreen>
 
     final pickup = LatLng(fromLat, fromLng);
     final delivery = LatLng(toLat, toLng);
-    final distanceKm = Geolocator.distanceBetween(
-          fromLat,
-          fromLng,
-          toLat,
-          toLng,
-        ) /
-        1000;
+    final distanceKm =
+        Geolocator.distanceBetween(fromLat, fromLng, toLat, toLng) / 1000;
     final updatedFare = _calculateDashboardFare(
       distanceKm: distanceKm,
       kmPrice: kmPrice,
@@ -498,9 +483,7 @@ class _RequestDelegateScreenState extends State<RequestDelegateScreen>
     controller.setActualPrice(updatedFare);
   }
 
-  void _syncFareForSelectedRoute(
-    RequestDelegateController controller,
-  ) {
+  void _syncFareForSelectedRoute(RequestDelegateController controller) {
     final pickup = _pickupPoint(controller);
     final delivery = _deliveryPoint(controller);
     final kmPrice = _resolveShippingKmPrice(controller);
@@ -612,9 +595,8 @@ class _RequestDelegateScreenState extends State<RequestDelegateScreen>
   }
 
   Set<Marker> _visibleMarkers(RequestDelegateController controller) {
-    final result = markers
-        .where((marker) => _isEgyptPoint(marker.position))
-        .toSet();
+    final result =
+        markers.where((marker) => _isEgyptPoint(marker.position)).toSet();
     final pickup = _pickupPoint(controller);
     final delivery = _deliveryPoint(controller);
 
@@ -628,16 +610,13 @@ class _RequestDelegateScreenState extends State<RequestDelegateScreen>
           position: pickup,
           icon: _pickupGoDriveIcon ??
               _pickupRiderIcon ??
-              BitmapDescriptor.defaultMarkerWithHue(
-                BitmapDescriptor.hueOrange,
-              ),
+              BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueOrange),
           anchor: const Offset(.31, 1),
           zIndex: 100,
           infoWindow: InfoWindow(
             title: 'GO Drive',
-            snippet: context.languageCode == 'ar'
-                ? 'نقطة الاستلام'
-                : 'Pickup point',
+            snippet:
+                context.languageCode == 'ar' ? 'نقطة الاستلام' : 'Pickup point',
           ),
         ),
       );
@@ -649,9 +628,7 @@ class _RequestDelegateScreenState extends State<RequestDelegateScreen>
           markerId: const MarkerId('deliveryDestination'),
           position: delivery,
           icon: _orangePinIcon ??
-              BitmapDescriptor.defaultMarkerWithHue(
-                BitmapDescriptor.hueOrange,
-              ),
+              BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueOrange),
           zIndex: 90,
           infoWindow: InfoWindow(
             title: context.languageCode == 'ar'
@@ -769,10 +746,7 @@ class _RequestDelegateScreenState extends State<RequestDelegateScreen>
     try {
       await gmc!.animateCamera(
         CameraUpdate.newCameraPosition(
-          CameraPosition(
-            target: center,
-            zoom: zoom,
-          ),
+          CameraPosition(target: center, zoom: zoom),
         ),
       );
     } catch (e) {
@@ -825,7 +799,7 @@ class _RequestDelegateScreenState extends State<RequestDelegateScreen>
       builder: (context, controller, _) {
         if (!isLocationLoaded) {
           return const Scaffold(
-            backgroundColor: Colors.white,
+            backgroundColor: Colors.transparent,
             body: Center(child: CustomLoading()),
           );
         }
@@ -834,7 +808,7 @@ class _RequestDelegateScreenState extends State<RequestDelegateScreen>
         _syncSelectedRoute(controller);
 
         return Scaffold(
-          backgroundColor: Colors.white,
+          backgroundColor: Colors.transparent,
           body: Stack(
             children: [
               GoogleMap(
@@ -857,9 +831,7 @@ class _RequestDelegateScreenState extends State<RequestDelegateScreen>
                     });
                   } else if (currentLat != null && currentLng != null) {
                     gmc!.animateCamera(
-                      CameraUpdate.newLatLng(
-                        LatLng(currentLat!, currentLng!),
-                      ),
+                      CameraUpdate.newLatLng(LatLng(currentLat!, currentLng!)),
                     );
                   }
                 },
@@ -885,7 +857,7 @@ class _RequestDelegateScreenState extends State<RequestDelegateScreen>
                       width: 48,
                       height: 48,
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: FasakhanstaBrand.surface,
                         shape: BoxShape.circle,
                         border: Border.all(
                           color: AppColors.mainAppColor.withOpacity(.28),
@@ -918,7 +890,7 @@ class _RequestDelegateScreenState extends State<RequestDelegateScreen>
                     height: _panelHeight,
                     width: double.infinity,
                     radius: 34,
-                    fillColor: Colors.white,
+                    fillColor: FasakhanstaBrand.field,
                     shimmerColor: const Color(0xFFF3F4F6),
                   ),
                   apiResponse: controller.delegateOnMapApiResponse,
@@ -943,7 +915,7 @@ class _RequestDelegateScreenState extends State<RequestDelegateScreen>
   Widget _buildBottomNavigationBar(RequestDelegateController controller) {
     return Container(
       decoration: const BoxDecoration(
-        color: Colors.white,
+        color: FasakhanstaBrand.surface,
         boxShadow: [
           BoxShadow(
             color: Color(0x12000000),
@@ -968,7 +940,7 @@ class _RequestDelegateScreenState extends State<RequestDelegateScreen>
                   gradient: const LinearGradient(
                     begin: Alignment.centerLeft,
                     end: Alignment.centerRight,
-                    colors: [Color(0xFFFF9A2F), Color(0xFFFF6800)],
+                    colors: [FasakhanstaBrand.orange, FasakhanstaBrand.orange],
                   ),
                   boxShadow: const [
                     BoxShadow(
@@ -982,7 +954,7 @@ class _RequestDelegateScreenState extends State<RequestDelegateScreen>
                   child: Text(
                     'confirmOrder'.tr,
                     style: const TextStyle(
-                      color: Colors.white,
+                      color: FasakhanstaBrand.onOrange,
                       fontSize: 18,
                       fontWeight: FontWeight.w800,
                     ),
@@ -1010,9 +982,9 @@ class _RequestDelegateScreenState extends State<RequestDelegateScreen>
           width: 62,
           height: 56,
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: FasakhanstaBrand.surface,
             borderRadius: BorderRadius.circular(18),
-            border: Border.all(color: const Color(0xFFE7E9ED)),
+            border: Border.all(color: FasakhanstaBrand.border),
             boxShadow: const [
               BoxShadow(
                 color: Color(0x0D000000),
@@ -1024,12 +996,12 @@ class _RequestDelegateScreenState extends State<RequestDelegateScreen>
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(icon, color: const Color(0xFF252A31), size: 22),
+              Icon(icon, color: FasakhanstaBrand.text, size: 22),
               const SizedBox(height: 2),
               Text(
                 label,
                 style: const TextStyle(
-                  color: Color(0xFF5D626A),
+                  color: FasakhanstaBrand.muted,
                   fontSize: 9.5,
                   fontWeight: FontWeight.w600,
                 ),

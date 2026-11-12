@@ -1,3 +1,5 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
+
 import 'dart:convert';
 import 'dart:developer';
 
@@ -62,7 +64,10 @@ class _WalletScreenState extends State<WalletScreen> {
 
   @override
   void dispose() {
-    _pusherController.removeEventListener('balance.updated', _handleWalletUpdate);
+    _pusherController.removeEventListener(
+      'balance.updated',
+      _handleWalletUpdate,
+    );
     super.dispose();
   }
 
@@ -71,7 +76,9 @@ class _WalletScreenState extends State<WalletScreen> {
     return Consumer2<WalletController, MyAccountController>(
       builder: (context, walletController, myAccountController, _) {
         final authController = context.read<AuthController>();
-        final balance = pusherWalletAmount ?? walletController.wallet?.balance?.toStringAsFixed(2) ?? '0.00';
+        final balance = pusherWalletAmount ??
+            walletController.wallet?.balance?.toStringAsFixed(2) ??
+            '0.00';
 
         return Scaffold(
           extendBody: true,
@@ -89,12 +96,27 @@ class _WalletScreenState extends State<WalletScreen> {
                     pusherWalletAmount: pusherWalletAmount,
                   ),
                   const SizedBox(height: 16),
-                  _buildQuickActions(context, walletController, myAccountController, authController),
+                  _buildQuickActions(
+                    context,
+                    walletController,
+                    myAccountController,
+                    authController,
+                  ),
                   const SizedBox(height: 22),
                   Row(
                     children: [
-                      Expanded(child: Text('عروض استخدام رصيد المحفظة', style: AppTextStyle.text18BS())),
-                      Text('عرض الكل', style: AppTextStyle.text16MS().copyWith(color: AppColors.mainAppColor)),
+                      Expanded(
+                        child: Text(
+                          'عروض استخدام رصيد المحفظة',
+                          style: AppTextStyle.text18BS(),
+                        ),
+                      ),
+                      Text(
+                        'عرض الكل',
+                        style: AppTextStyle.text16MS().copyWith(
+                          color: AppColors.mainAppColor,
+                        ),
+                      ),
                     ],
                   ),
                   const SizedBox(height: 10),
@@ -102,8 +124,16 @@ class _WalletScreenState extends State<WalletScreen> {
                   const SizedBox(height: 24),
                   Row(
                     children: [
-                      Expanded(child: Text('سجل العمليات', style: AppTextStyle.text18BS())),
-                      Text('${walletController.wallet?.wallet?.length ?? 0} عملية', style: AppTextStyle.text14RM()),
+                      Expanded(
+                        child: Text(
+                          'سجل العمليات',
+                          style: AppTextStyle.text18BS(),
+                        ),
+                      ),
+                      Text(
+                        '${walletController.wallet?.wallet?.length ?? 0} عملية',
+                        style: AppTextStyle.text14RM(),
+                      ),
                     ],
                   ),
                   const SizedBox(height: 10),
@@ -111,7 +141,9 @@ class _WalletScreenState extends State<WalletScreen> {
                     apiResponse: walletController.walletResponse,
                     onReload: walletController.getWallet,
                     isEmpty: walletController.wallet?.wallet?.isEmpty ?? true,
-                    child: RecentTransactionsWidget(wallet: walletController.wallet?.wallet),
+                    child: RecentTransactionsWidget(
+                      wallet: walletController.wallet?.wallet,
+                    ),
                   ),
                 ],
               ),
@@ -119,14 +151,17 @@ class _WalletScreenState extends State<WalletScreen> {
           ),
           bottomNavigationBar: Padding(
             padding: const EdgeInsets.fromLTRB(20, 8, 20, 18),
-            child: (myAccountController.setting?.walletCardActivate == 'false' &&
+            child: (myAccountController.setting?.walletCardActivate ==
+                        'false' &&
                     myAccountController.setting?.paymentCardActivate == 'false')
                 ? const SizedBox()
                 : CustomButton(
                     text: 'walletCharging'.tr,
                     onPressed: () {
                       if (authController.profile?.email == null) {
-                        NamedNavigatorImpl.push(PersonalInformationScreen.routeName);
+                        NamedNavigatorImpl.push(
+                          PersonalInformationScreen.routeName,
+                        );
                       } else {
                         Utils.showAppBottomSheet(
                           enableDrag: true,
@@ -157,10 +192,16 @@ class _WalletScreenState extends State<WalletScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 16),
       decoration: BoxDecoration(
-        color: AppColors.whiteColor,
+        color: FasakhanstaBrand.surface,
         borderRadius: BorderRadius.circular(24),
         border: Border.all(color: AppColors.greyColor.withValues(alpha: .10)),
-        boxShadow: [BoxShadow(color: AppColors.greyColor.withValues(alpha: .08), blurRadius: 14, offset: const Offset(0, 5))],
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.greyColor.withValues(alpha: .08),
+            blurRadius: 14,
+            offset: const Offset(0, 5),
+          ),
+        ],
       ),
       child: Row(
         children: [
@@ -179,7 +220,9 @@ class _WalletScreenState extends State<WalletScreen> {
                 isScrollControlled: true,
                 ChangeNotifierProvider.value(
                   value: walletController,
-                  child: MoneyTransferBottomSheet(walletController: walletController),
+                  child: MoneyTransferBottomSheet(
+                    walletController: walletController,
+                  ),
                 ),
               );
             },
@@ -198,7 +241,10 @@ class _WalletScreenState extends State<WalletScreen> {
                 isScrollControlled: true,
                 ChangeNotifierProvider.value(
                   value: walletController,
-                  child: ChargeWalletBottomSheet(walletController: walletController, myAccountController: myAccountController),
+                  child: ChargeWalletBottomSheet(
+                    walletController: walletController,
+                    myAccountController: myAccountController,
+                  ),
                 ),
               );
             },
@@ -208,7 +254,11 @@ class _WalletScreenState extends State<WalletScreen> {
     );
   }
 
-  Widget _actionItem({required IconData icon, required String title, required VoidCallback onTap}) {
+  Widget _actionItem({
+    required IconData icon,
+    required String title,
+    required VoidCallback onTap,
+  }) {
     return Expanded(
       child: InkWell(
         onTap: onTap,
@@ -218,18 +268,29 @@ class _WalletScreenState extends State<WalletScreen> {
             Container(
               width: 54,
               height: 54,
-              decoration: BoxDecoration(color: AppColors.mainAppColor.withValues(alpha: .08), shape: BoxShape.circle),
+              decoration: BoxDecoration(
+                color: AppColors.mainAppColor.withValues(alpha: .08),
+                shape: BoxShape.circle,
+              ),
               child: Icon(icon, color: AppColors.mainAppColor, size: 27),
             ),
             const SizedBox(height: 8),
-            Text(title, style: AppTextStyle.text14MS(), textAlign: TextAlign.center),
+            Text(
+              title,
+              style: AppTextStyle.text14MS(),
+              textAlign: TextAlign.center,
+            ),
           ],
         ),
       ),
     );
   }
 
-  Widget _actionDivider() => Container(width: 1, height: 72, color: AppColors.greyColor.withValues(alpha: .12));
+  Widget _actionDivider() => Container(
+        width: 1,
+        height: 72,
+        color: AppColors.greyColor.withValues(alpha: .12),
+      );
 
   Widget _buildWalletOffer() {
     return Container(
@@ -238,7 +299,10 @@ class _WalletScreenState extends State<WalletScreen> {
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [AppColors.mainAppColor, AppColors.mainAppColor.withValues(alpha: .72)],
+          colors: [
+            AppColors.mainAppColor,
+            AppColors.mainAppColor.withValues(alpha: .72),
+          ],
           begin: Alignment.centerLeft,
           end: Alignment.centerRight,
         ),
@@ -251,19 +315,44 @@ class _WalletScreenState extends State<WalletScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text('اشحن محفظتك واستمتع', style: AppTextStyle.text18BS().copyWith(color: Colors.white)),
+                Text(
+                  'اشحن محفظتك واستمتع',
+                  style: AppTextStyle.text18BS().copyWith(
+                    color: FasakhanstaBrand.onOrange,
+                  ),
+                ),
                 const SizedBox(height: 6),
-                Text('استخدم رصيدك بسهولة في طلباتك القادمة', style: AppTextStyle.text14RM().copyWith(color: Colors.white.withValues(alpha: .9))),
+                Text(
+                  'استخدم رصيدك بسهولة في طلباتك القادمة',
+                  style: AppTextStyle.text14RM().copyWith(
+                    color: FasakhanstaBrand.onOrange.withValues(alpha: .9),
+                  ),
+                ),
                 const SizedBox(height: 12),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
-                  decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(14)),
-                  child: Text('فسخانستا', style: AppTextStyle.text14MS().copyWith(color: AppColors.mainAppColor)),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 14,
+                    vertical: 7,
+                  ),
+                  decoration: BoxDecoration(
+                    color: FasakhanstaBrand.surface,
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  child: Text(
+                    'فسخانستا',
+                    style: AppTextStyle.text14MS().copyWith(
+                      color: AppColors.mainAppColor,
+                    ),
+                  ),
                 ),
               ],
             ),
           ),
-          const Icon(Icons.card_giftcard_rounded, color: Colors.white, size: 70),
+          const Icon(
+            Icons.card_giftcard_rounded,
+            color: FasakhanstaBrand.onOrange,
+            size: 70,
+          ),
         ],
       ),
     );

@@ -1,3 +1,4 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -43,7 +44,8 @@ class ChoosePaymentMethodWidget extends StatelessWidget {
                   height: 21,
                 ),
               ),
-              if (myAccountController.setting?.paymentCardActivate == 'true') ...[
+              if (myAccountController.setting?.paymentCardActivate ==
+                  'true') ...[
                 const SizedBox(height: 10),
                 PaymentMethodWidget(
                   label: 'creditCard'.tr,
@@ -55,7 +57,8 @@ class ChoosePaymentMethodWidget extends StatelessWidget {
                   ),
                 ),
               ],
-              if (myAccountController.setting?.walletCardActivate == 'true') ...[
+              if (myAccountController.setting?.walletCardActivate ==
+                  'true') ...[
                 const SizedBox(height: 10),
                 PaymentMethodWidget(
                   label: 'digitalWalletAndInstaPay'.tr,
@@ -91,7 +94,8 @@ class PaymentMethodWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final requestDelegateController = context.watch<RequestDelegateController>();
+    final requestDelegateController =
+        context.watch<RequestDelegateController>();
     final isSelected =
         requestDelegateController.selectedPayment == selectedPayment;
 
@@ -107,11 +111,12 @@ class PaymentMethodWidget extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 14),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15),
-            color: isSelected ? const Color(0xFFFFF6EC) : Colors.white,
+            color: isSelected
+                ? FasakhanstaBrand.surfaceRaised
+                : FasakhanstaBrand.surface,
             border: Border.all(
-              color: isSelected
-                  ? AppColors.mainAppColor
-                  : const Color(0xFFE6E9ED),
+              color:
+                  isSelected ? AppColors.mainAppColor : FasakhanstaBrand.border,
               width: isSelected ? 1.3 : 1,
             ),
             boxShadow: const [
@@ -129,7 +134,7 @@ class PaymentMethodWidget extends StatelessWidget {
                 height: 38,
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
-                  color: const Color(0xFFFFF7EF),
+                  color: FasakhanstaBrand.surfaceRaised,
                   borderRadius: BorderRadius.circular(11),
                 ),
                 child: leading,
@@ -141,7 +146,7 @@ class PaymentMethodWidget extends StatelessWidget {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: AppTextStyle.text16MS().copyWith(
-                    color: const Color(0xFF1B1E23),
+                    color: FasakhanstaBrand.text,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -152,20 +157,19 @@ class PaymentMethodWidget extends StatelessWidget {
                 height: 21,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: isSelected
-                      ? AppColors.mainAppColor
-                      : Colors.transparent,
+                  color:
+                      isSelected ? AppColors.mainAppColor : Colors.transparent,
                   border: Border.all(
                     width: 1.4,
                     color: isSelected
                         ? AppColors.mainAppColor
-                        : const Color(0xFFB9BEC6),
+                        : FasakhanstaBrand.border,
                   ),
                 ),
                 child: isSelected
                     ? const Icon(
                         Icons.check_rounded,
-                        color: Colors.white,
+                        color: FasakhanstaBrand.onOrange,
                         size: 15,
                       )
                     : null,

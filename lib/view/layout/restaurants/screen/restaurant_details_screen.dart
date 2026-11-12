@@ -1,3 +1,5 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
+
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:math' as math;
@@ -47,7 +49,8 @@ class RestaurantDetailsScreen extends StatefulWidget {
   const RestaurantDetailsScreen({super.key, required this.args});
 
   @override
-  State<RestaurantDetailsScreen> createState() => _RestaurantDetailsScreenState();
+  State<RestaurantDetailsScreen> createState() =>
+      _RestaurantDetailsScreenState();
 }
 
 class _RestaurantDetailsScreenState extends State<RestaurantDetailsScreen> {
@@ -74,10 +77,22 @@ class _RestaurantDetailsScreenState extends State<RestaurantDetailsScreen> {
     });
 
     _pusherController = context.read<PusherController>();
-    _pusherController.addEventListener('product.updated', _handleProductUpdated);
-    _pusherController.addEventListener('product.updated', _handlePreviousProductUpdated);
-    _pusherController.addEventListener('product.updated', _handleHightsRatedUpdated);
-    _pusherController.addEventListener('resturant.updated', _handleResturantUpdated);
+    _pusherController.addEventListener(
+      'product.updated',
+      _handleProductUpdated,
+    );
+    _pusherController.addEventListener(
+      'product.updated',
+      _handlePreviousProductUpdated,
+    );
+    _pusherController.addEventListener(
+      'product.updated',
+      _handleHightsRatedUpdated,
+    );
+    _pusherController.addEventListener(
+      'resturant.updated',
+      _handleResturantUpdated,
+    );
   }
 
   void _handleProductUpdated(PusherEvent event) {
@@ -85,8 +100,12 @@ class _RestaurantDetailsScreenState extends State<RestaurantDetailsScreen> {
       final decodedData = json.decode(event.data) as Map<String, dynamic>;
       final productData = decodedData['product'];
       if (mounted) {
-        final product = ResturantItems.fromJson(productData as Map<String, dynamic>);
-        context.read<RestaurantsController>().updateResturantProductOrder(product);
+        final product = ResturantItems.fromJson(
+          productData as Map<String, dynamic>,
+        );
+        context.read<RestaurantsController>().updateResturantProductOrder(
+              product,
+            );
       }
     } catch (e, stackTrace) {
       log('Error handling product.updated: $e');
@@ -99,8 +118,12 @@ class _RestaurantDetailsScreenState extends State<RestaurantDetailsScreen> {
       final decodedData = json.decode(event.data) as Map<String, dynamic>;
       final productData = decodedData['product'];
       if (mounted) {
-        final product = HighestRated.fromJson(productData as Map<String, dynamic>);
-        context.read<RestaurantsController>().updateAccordingToYourTasteResturantProduct(product);
+        final product = HighestRated.fromJson(
+          productData as Map<String, dynamic>,
+        );
+        context
+            .read<RestaurantsController>()
+            .updateAccordingToYourTasteResturantProduct(product);
       }
     } catch (e, stackTrace) {
       log('Error handling highest rated update: $e');
@@ -113,8 +136,12 @@ class _RestaurantDetailsScreenState extends State<RestaurantDetailsScreen> {
       final decodedData = json.decode(event.data) as Map<String, dynamic>;
       final productData = decodedData['product'];
       if (mounted) {
-        final product = PreviousOrderModel.fromJson(productData as Map<String, dynamic>);
-        context.read<RestaurantsController>().updateResturantPreviousProductOrder(product);
+        final product = PreviousOrderModel.fromJson(
+          productData as Map<String, dynamic>,
+        );
+        context
+            .read<RestaurantsController>()
+            .updateResturantPreviousProductOrder(product);
       }
     } catch (e, stackTrace) {
       log('Error handling previous product update: $e');
@@ -127,10 +154,13 @@ class _RestaurantDetailsScreenState extends State<RestaurantDetailsScreen> {
       final decodedData = json.decode(event.data) as Map<String, dynamic>;
       final restaurantData = decodedData['resturant'];
       if (mounted) {
-        final restaurant = details_restaurant_model.DetailsRestaurantModel.fromJson(
+        final restaurant =
+            details_restaurant_model.DetailsRestaurantModel.fromJson(
           restaurantData as Map<String, dynamic>,
         );
-        context.read<RestaurantsController>().updateResturantDetails(restaurant);
+        context.read<RestaurantsController>().updateResturantDetails(
+              restaurant,
+            );
       }
     } catch (e, stackTrace) {
       log('Error handling resturant.updated: $e');
@@ -140,10 +170,22 @@ class _RestaurantDetailsScreenState extends State<RestaurantDetailsScreen> {
 
   @override
   void dispose() {
-    _pusherController.removeEventListener('product.updated', _handleProductUpdated);
-    _pusherController.removeEventListener('product.updated', _handlePreviousProductUpdated);
-    _pusherController.removeEventListener('product.updated', _handleHightsRatedUpdated);
-    _pusherController.removeEventListener('resturant.updated', _handleResturantUpdated);
+    _pusherController.removeEventListener(
+      'product.updated',
+      _handleProductUpdated,
+    );
+    _pusherController.removeEventListener(
+      'product.updated',
+      _handlePreviousProductUpdated,
+    );
+    _pusherController.removeEventListener(
+      'product.updated',
+      _handleHightsRatedUpdated,
+    );
+    _pusherController.removeEventListener(
+      'resturant.updated',
+      _handleResturantUpdated,
+    );
     _verticalScrollController.dispose();
     super.dispose();
   }
@@ -192,13 +234,15 @@ class _RestaurantDetailsScreenState extends State<RestaurantDetailsScreen> {
       builder: (context, restaurantsController, _) {
         _categoryKeys
           ..clear()
-          ..addAll(List.generate(
-            restaurantsController.productsRestaurant.length,
-            (_) => GlobalKey(),
-          ));
+          ..addAll(
+            List.generate(
+              restaurantsController.productsRestaurant.length,
+              (_) => GlobalKey(),
+            ),
+          );
 
         return Container(
-          color: AppColors.whiteColor,
+          color: FasakhanstaBrand.surface,
           child: ApiResponseWidget(
             apiResponse: restaurantsController.restaurantsDetailsApiResponse,
             onReload: () {
@@ -208,7 +252,7 @@ class _RestaurantDetailsScreenState extends State<RestaurantDetailsScreen> {
             },
             isEmpty: restaurantsController.detailsRestaurant == null,
             child: Scaffold(
-              backgroundColor: const Color(0xFFFAFAFA),
+              backgroundColor: Colors.transparent,
               body: Column(
                 children: [
                   HeaderCoverAndImageRestaurantDetailsWidget(
@@ -229,8 +273,12 @@ class _RestaurantDetailsScreenState extends State<RestaurantDetailsScreen> {
                           _buildBestSellers(restaurantsController),
                           _buildOfferBanner(),
                           ..._buildCategories(restaurantsController),
-                          if (restaurantsController.detailsRestaurant?.highestRated?.isNotEmpty == true)
-                            _buildChoicesAccordingToYourTaste(restaurantsController),
+                          if (restaurantsController.detailsRestaurant
+                                  ?.highestRated?.isNotEmpty ==
+                              true)
+                            _buildChoicesAccordingToYourTaste(
+                              restaurantsController,
+                            ),
                         ],
                       ),
                     ),
@@ -364,17 +412,27 @@ class _RestaurantDetailsScreenState extends State<RestaurantDetailsScreen> {
       height: 72,
       padding: const EdgeInsets.symmetric(horizontal: 8),
       decoration: BoxDecoration(
-        color: AppColors.whiteColor,
+        color: FasakhanstaBrand.surface,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFEDEDED)),
+        border: Border.all(color: FasakhanstaBrand.border),
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(icon, color: AppColors.mainAppColor, size: 20),
           const SizedBox(height: 3),
-          Text(value, maxLines: 1, overflow: TextOverflow.ellipsis, style: AppTextStyle.text14BS()),
-          Text(title, maxLines: 1, overflow: TextOverflow.ellipsis, style: AppTextStyle.text11RS()),
+          Text(
+            value,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: AppTextStyle.text14BS(),
+          ),
+          Text(
+            title,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: AppTextStyle.text11RS(),
+          ),
         ],
       ),
     );
@@ -386,13 +444,17 @@ class _RestaurantDetailsScreenState extends State<RestaurantDetailsScreen> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
         decoration: BoxDecoration(
-          color: const Color(0xFFFFF4EC),
+          color: FasakhanstaBrand.surfaceRaised,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: const Color(0xFFFFE0CF)),
+          border: Border.all(color: FasakhanstaBrand.border),
         ),
         child: Row(
           children: [
-            Icon(Icons.card_giftcard_rounded, color: AppColors.mainAppColor, size: 28),
+            Icon(
+              Icons.card_giftcard_rounded,
+              color: AppColors.mainAppColor,
+              size: 28,
+            ),
             const SizedBox(width: 10),
             Expanded(
               child: Text(
@@ -402,7 +464,12 @@ class _RestaurantDetailsScreenState extends State<RestaurantDetailsScreen> {
               ),
             ),
             const SizedBox(width: 8),
-            Text('التفاصيل', style: AppTextStyle.text12BS().copyWith(color: AppColors.mainAppColor)),
+            Text(
+              'التفاصيل',
+              style: AppTextStyle.text12BS().copyWith(
+                color: AppColors.mainAppColor,
+              ),
+            ),
           ],
         ),
       ),
@@ -433,13 +500,21 @@ class _RestaurantDetailsScreenState extends State<RestaurantDetailsScreen> {
                     height: 58,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: selected ? AppColors.mainAppColor.withValues(alpha: .12) : AppColors.whiteColor,
+                      color: selected
+                          ? AppColors.mainAppColor.withValues(alpha: .12)
+                          : FasakhanstaBrand.surface,
                       border: Border.all(
-                        color: selected ? AppColors.mainAppColor : const Color(0xFFE7E7E7),
+                        color: selected
+                            ? AppColors.mainAppColor
+                            : FasakhanstaBrand.border,
                         width: selected ? 2 : 1,
                       ),
                     ),
-                    child: Icon(_categoryIcon(index), color: AppColors.mainAppColor, size: 28),
+                    child: Icon(
+                      _categoryIcon(index),
+                      color: AppColors.mainAppColor,
+                      size: 28,
+                    ),
                   ),
                   const SizedBox(height: 5),
                   Text(
@@ -447,7 +522,9 @@ class _RestaurantDetailsScreenState extends State<RestaurantDetailsScreen> {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     textAlign: TextAlign.center,
-                    style: selected ? AppTextStyle.text12BS() : AppTextStyle.text12RS(),
+                    style: selected
+                        ? AppTextStyle.text12BS()
+                        : AppTextStyle.text12RS(),
                   ),
                 ],
               ),
@@ -491,7 +568,12 @@ class _RestaurantDetailsScreenState extends State<RestaurantDetailsScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text('الأكثر مبيعاً 🏆', style: AppTextStyle.text18BS()),
-              Text('عرض الكل', style: AppTextStyle.text13BS().copyWith(color: AppColors.mainAppColor)),
+              Text(
+                'عرض الكل',
+                style: AppTextStyle.text13BS().copyWith(
+                  color: AppColors.mainAppColor,
+                ),
+              ),
             ],
           ),
           const SizedBox(height: 12),
@@ -538,7 +620,7 @@ class _RestaurantDetailsScreenState extends State<RestaurantDetailsScreen> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 15),
         decoration: BoxDecoration(
-          color: const Color(0xFF061827),
+          color: FasakhanstaBrand.surfaceRaised,
           borderRadius: BorderRadius.circular(20),
         ),
         child: Row(
@@ -546,17 +628,34 @@ class _RestaurantDetailsScreenState extends State<RestaurantDetailsScreen> {
             Container(
               width: 52,
               height: 52,
-              decoration: BoxDecoration(color: AppColors.mainAppColor, borderRadius: BorderRadius.circular(15)),
-              child: const Icon(Icons.local_fire_department_rounded, color: Colors.white, size: 30),
+              decoration: BoxDecoration(
+                color: AppColors.mainAppColor,
+                borderRadius: BorderRadius.circular(15),
+              ),
+              child: const Icon(
+                Icons.local_fire_department_rounded,
+                color: FasakhanstaBrand.onOrange,
+                size: 30,
+              ),
             ),
             const SizedBox(width: 12),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  Text('🔥 عرض نار', style: AppTextStyle.text18BS().copyWith(color: AppColors.mainAppColor)),
+                  Text(
+                    '🔥 عرض نار',
+                    style: AppTextStyle.text18BS().copyWith(
+                      color: AppColors.mainAppColor,
+                    ),
+                  ),
                   const SizedBox(height: 3),
-                  Text('اختيارات مميزة من منتجات فسخانستا', style: AppTextStyle.text12RS().copyWith(color: Colors.white)),
+                  Text(
+                    'اختيارات مميزة من منتجات فسخانستا',
+                    style: AppTextStyle.text12RS().copyWith(
+                      color: FasakhanstaBrand.text,
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -578,11 +677,16 @@ class _RestaurantDetailsScreenState extends State<RestaurantDetailsScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(category.categoryName ?? '',
-                    style: AppTextStyle.text18BS()),
-                Text('عرض الكل',
-                    style: AppTextStyle.text12BS()
-                        .copyWith(color: AppColors.mainAppColor)),
+                Text(
+                  category.categoryName ?? '',
+                  style: AppTextStyle.text18BS(),
+                ),
+                Text(
+                  'عرض الكل',
+                  style: AppTextStyle.text12BS().copyWith(
+                    color: AppColors.mainAppColor,
+                  ),
+                ),
               ],
             ),
             const SizedBox(height: 12),
@@ -668,7 +772,10 @@ class _RestaurantDetailsScreenState extends State<RestaurantDetailsScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('choicesAccordingToYourTaste'.tr, style: AppTextStyle.text18BS()),
+          Text(
+            'choicesAccordingToYourTaste'.tr,
+            style: AppTextStyle.text18BS(),
+          ),
           const SizedBox(height: 8),
           const ChoicesAccordingToYourTasteWidget(),
         ],
@@ -690,27 +797,48 @@ class _RestaurantDetailsScreenState extends State<RestaurantDetailsScreen> {
             constraints: const BoxConstraints.tightFor(height: 64),
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: AppColors.whiteColor,
+              color: FasakhanstaBrand.surface,
               borderRadius: BorderRadius.circular(18),
-              boxShadow: const [BoxShadow(blurRadius: 18, color: Color(0x22000000), offset: Offset(0, 5))],
+              boxShadow: const [
+                BoxShadow(
+                  blurRadius: 18,
+                  color: Color(0x22000000),
+                  offset: Offset(0, 5),
+                ),
+              ],
             ),
             child: Row(
               children: [
                 Container(
                   width: 48,
                   height: 48,
-                  decoration: BoxDecoration(color: AppColors.mainAppColor.withValues(alpha: .12), borderRadius: BorderRadius.circular(14)),
+                  decoration: BoxDecoration(
+                    color: AppColors.mainAppColor.withValues(alpha: .12),
+                    borderRadius: BorderRadius.circular(14),
+                  ),
                   child: Stack(
                     clipBehavior: Clip.none,
                     children: [
-                      Center(child: Icon(Icons.shopping_cart_outlined, color: AppColors.mainAppColor, size: 27)),
+                      Center(
+                        child: Icon(
+                          Icons.shopping_cart_outlined,
+                          color: AppColors.mainAppColor,
+                          size: 27,
+                        ),
+                      ),
                       Positioned(
                         top: -4,
                         right: -4,
                         child: Container(
                           padding: const EdgeInsets.all(5),
-                          decoration: const BoxDecoration(color: Colors.red, shape: BoxShape.circle),
-                          child: Text('${cart?.carts?.length ?? 0}', style: AppTextStyle.text9BW()),
+                          decoration: const BoxDecoration(
+                            color: FasakhanstaBrand.dangerTint,
+                            shape: BoxShape.circle,
+                          ),
+                          child: Text(
+                            '${cart?.carts?.length ?? 0}',
+                            style: AppTextStyle.text9BW(),
+                          ),
                         ),
                       ),
                     ],
@@ -723,19 +851,30 @@ class _RestaurantDetailsScreenState extends State<RestaurantDetailsScreen> {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       Text('السلة', style: AppTextStyle.text13BS()),
-                      Text('${cart?.totalCart?.toString() ?? 0} ج', style: AppTextStyle.text16BS().copyWith(color: AppColors.mainAppColor)),
+                      Text(
+                        '${cart?.totalCart?.toString() ?? 0} ج',
+                        style: AppTextStyle.text16BS().copyWith(
+                          color: AppColors.mainAppColor,
+                        ),
+                      ),
                     ],
                   ),
                 ),
                 const SizedBox(width: 10),
                 ElevatedButton(
-                  onPressed: () => NamedNavigatorImpl.push(CartScreen.routeName),
+                  onPressed: () =>
+                      NamedNavigatorImpl.push(CartScreen.routeName),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.mainAppColor,
-                    foregroundColor: Colors.white,
+                    foregroundColor: FasakhanstaBrand.onOrange,
                     elevation: 0,
-                    padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 14),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 22,
+                      vertical: 14,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14),
+                    ),
                   ),
                   child: const Text('عرض السلة'),
                 ),

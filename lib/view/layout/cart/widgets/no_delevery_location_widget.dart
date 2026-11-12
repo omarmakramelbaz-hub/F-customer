@@ -1,3 +1,4 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -40,7 +41,7 @@ class NoDeliveryLocationWidget extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
-                color: AppColors.whiteColor,
+                color: FasakhanstaBrand.surface,
                 boxShadow: [
                   BoxShadow(
                     color: AppColors.greyColor.withValues(alpha: 0.2),
@@ -55,7 +56,9 @@ class NoDeliveryLocationWidget extends StatelessWidget {
                   const SizedBox(width: 15),
                   Text(
                     'addAddress'.tr,
-                    style: AppTextStyle.text18RS().copyWith(height: context.languageCode == 'ar' ? 1.5 : 1),
+                    style: AppTextStyle.text18RS().copyWith(
+                      height: context.languageCode == 'ar' ? 1.5 : 1,
+                    ),
                   ),
                 ],
               ),

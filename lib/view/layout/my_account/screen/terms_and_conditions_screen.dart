@@ -1,3 +1,4 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:provider/provider.dart';
@@ -41,7 +42,7 @@ class TermsAndConditionsScreen extends StatelessWidget {
                       child: Container(
                         width: context.width,
                         decoration: BoxDecoration(
-                          color: AppColors.whiteColor,
+                          color: FasakhanstaBrand.surface,
                           borderRadius: const BorderRadius.only(
                             topLeft: Radius.circular(34),
                             topRight: Radius.circular(34),
@@ -61,12 +62,20 @@ class TermsAndConditionsScreen extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 const SizedBox(height: 24),
-                                Text('termsAndConditions'.tr, style: AppTextStyle.text18BS()),
+                                Text(
+                                  'termsAndConditions'.tr,
+                                  style: AppTextStyle.text18BS(),
+                                ),
                                 const SizedBox(height: 24),
                                 Html(
-                                  data: myAccountController.setting?.terms ?? '',
+                                  data:
+                                      myAccountController.setting?.terms ?? '',
                                   style: {
-                                    'body': Style.fromTextStyle(AppTextStyle.text16RS(color: AppColors.blackColor)),
+                                    'body': Style.fromTextStyle(
+                                      AppTextStyle.text16RS(
+                                        color: FasakhanstaBrand.text,
+                                      ),
+                                    ),
                                   },
                                 ),
                                 const SizedBox(height: 34),

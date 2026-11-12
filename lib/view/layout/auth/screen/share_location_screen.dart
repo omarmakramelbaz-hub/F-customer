@@ -38,7 +38,8 @@ class _ShareLocationScreenState extends State<ShareLocationScreen> {
 
   Future<void> _requestPermission() async {
     LocationPermission permission = await Geolocator.requestPermission();
-    if (permission == LocationPermission.whileInUse || permission == LocationPermission.always) {
+    if (permission == LocationPermission.whileInUse ||
+        permission == LocationPermission.always) {
       log('Location permission granted.');
     } else {
       log('Location permissions are denied');
@@ -61,7 +62,9 @@ class _ShareLocationScreenState extends State<ShareLocationScreen> {
       }
     }
     if (permission == LocationPermission.deniedForever) {
-      log('Location permissions are permanently denied, we cannot request permissions.');
+      log(
+        'Location permissions are permanently denied, we cannot request permissions.',
+      );
       return;
     }
 
@@ -80,8 +83,13 @@ class _ShareLocationScreenState extends State<ShareLocationScreen> {
     return Scaffold(
       appBar: CustomAppBar(
         centerTitle: false,
-        title: const CustomImage(path: AppImages.appLogo, type: ImageType.asset, height: 55, radius: 12),
-        appBarColor: AppColors.whiteColor,
+        title: const CustomImage(
+          path: AppImages.appLogo,
+          type: ImageType.asset,
+          height: 55,
+          radius: 12,
+        ),
+        appBarColor: Colors.transparent,
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
@@ -89,10 +97,14 @@ class _ShareLocationScreenState extends State<ShareLocationScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 25),
-            Text('allowSharingOfYourLocation'.tr, style: AppTextStyle.text20BS()),
+            Text(
+              'allowSharingOfYourLocation'.tr,
+              style: AppTextStyle.text20BS(),
+            ),
             18.sbH,
             Text(
-              'sharingYourLocationIsCompletelySafeAndIsNotSharedWithAnyoneElse'.tr,
+              'sharingYourLocationIsCompletelySafeAndIsNotSharedWithAnyoneElse'
+                  .tr,
               style: AppTextStyle.text18RDG(),
             ),
             18.sbH,
@@ -111,7 +123,10 @@ class _ShareLocationScreenState extends State<ShareLocationScreen> {
             Center(
               child: TextButton(
                 onPressed: () {
-                  NamedNavigatorImpl.push(clean: true, BottomNavigationBarScreen.routeName);
+                  NamedNavigatorImpl.push(
+                    clean: true,
+                    BottomNavigationBarScreen.routeName,
+                  );
                 },
                 child: Text('skipForNow'.tr, style: AppTextStyle.text18RS()),
               ),

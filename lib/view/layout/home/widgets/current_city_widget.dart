@@ -1,3 +1,4 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
@@ -41,13 +42,16 @@ class _CurrentCityWidgetState extends State<CurrentCityWidget> {
     return Consumer<AuthController>(
       builder: (context, value2, child) {
         final value = context.read<AuthController>();
-        final userAddresses = context.read<AuthController>().profile?.userAddresses ?? [];
+        final userAddresses =
+            context.read<AuthController>().profile?.userAddresses ?? [];
 
         final String? selectedCity = HiveMethods.getSelectedCity()?.toString();
 
         // Only set `selectedAddressId` if `selectedCity` is valid and exists in `userAddresses`
         String? selectedAddressId;
-        if (userAddresses.any((address) => address.id.toString() == selectedCity)) {
+        if (userAddresses.any(
+          (address) => address.id.toString() == selectedCity,
+        )) {
           selectedAddressId = selectedCity;
         }
 
@@ -55,7 +59,11 @@ class _CurrentCityWidgetState extends State<CurrentCityWidget> {
           unauthorizedWidget: const SizedBox.shrink(),
           offlineWidget: InkWell(
             onTap: () {
-              _showCitySelectionSheet(context, userAddresses, selectedAddressId);
+              _showCitySelectionSheet(
+                context,
+                userAddresses,
+                selectedAddressId,
+              );
             },
             child: Text(
               selectedAddressId != null
@@ -76,7 +84,11 @@ class _CurrentCityWidgetState extends State<CurrentCityWidget> {
           ),
           child: GestureDetector(
             onTap: () {
-              _showCitySelectionSheet(context, userAddresses, selectedAddressId);
+              _showCitySelectionSheet(
+                context,
+                userAddresses,
+                selectedAddressId,
+              );
             },
             child: Container(
               width: context.width * 0.7,
@@ -87,19 +99,23 @@ class _CurrentCityWidgetState extends State<CurrentCityWidget> {
                   Container(
                     constraints: BoxConstraints(maxWidth: context.width * 0.6),
                     child: Text(
-                        selectedAddressId != null
-                            ? ' ${userAddresses.firstWhere((address) => address.id.toString() == selectedAddressId).cityName ?? ""} ${userAddresses.firstWhere((address) => address.id.toString() == selectedAddressId).streetName ?? ""}'
-                                .trim()
-                            : 'chooseAnAddress'.tr,
-                        style: AppTextStyle.text16BW(),
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 1),
+                      selectedAddressId != null
+                          ? ' ${userAddresses.firstWhere((address) => address.id.toString() == selectedAddressId).cityName ?? ""} ${userAddresses.firstWhere((address) => address.id.toString() == selectedAddressId).streetName ?? ""}'
+                              .trim()
+                          : 'chooseAnAddress'.tr,
+                      style: AppTextStyle.text16BW(),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                    ),
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 5),
                     child: SvgPicture.asset(
                       AppImages.droPIcon,
-                      colorFilter: ColorFilter.mode(AppColors.whiteColor, BlendMode.srcIn),
+                      colorFilter: ColorFilter.mode(
+                        AppColors.whiteColor,
+                        BlendMode.srcIn,
+                      ),
                     ),
                   ),
                 ],
@@ -112,7 +128,10 @@ class _CurrentCityWidgetState extends State<CurrentCityWidget> {
   }
 
   Future<bool?> _showCitySelectionSheet(
-      BuildContext context, List<UserAddresses> userAddresses, String? selectedAddressId) {
+    BuildContext context,
+    List<UserAddresses> userAddresses,
+    String? selectedAddressId,
+  ) {
     return BottomSheetHelper.gShowModalBottomSheet(
       context: context,
       maxHeight: context.height * 0.8,
@@ -122,7 +141,12 @@ class _CurrentCityWidgetState extends State<CurrentCityWidget> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('deliveryAddresses'.tr, style: AppTextStyle.text16MS().copyWith(color: AppColors.blackColor)),
+            Text(
+              'deliveryAddresses'.tr,
+              style: AppTextStyle.text16MS().copyWith(
+                color: FasakhanstaBrand.text,
+              ),
+            ),
             SizedBox(
               height: context.height * 0.65,
               child: ListView.builder(
@@ -130,10 +154,20 @@ class _CurrentCityWidgetState extends State<CurrentCityWidget> {
                 itemBuilder: (context, index) {
                   final address = userAddresses[index];
                   return ListTile(
-                    trailing: userAddresses[index].streetName == HiveMethods.getCity()
-                        ? const CustomImage(path: AppImages.rateIcon, type: ImageType.svg, height: 20, width: 20)
-                        : const SizedBox.shrink(),
-                    leading: CustomImage(path: AppImages.addressIcon, type: ImageType.svg, color: AppColors.blackColor),
+                    trailing:
+                        userAddresses[index].streetName == HiveMethods.getCity()
+                            ? const CustomImage(
+                                path: AppImages.rateIcon,
+                                type: ImageType.svg,
+                                height: 20,
+                                width: 20,
+                              )
+                            : const SizedBox.shrink(),
+                    leading: CustomImage(
+                      path: AppImages.addressIcon,
+                      type: ImageType.svg,
+                      color: FasakhanstaBrand.text,
+                    ),
                     contentPadding: EdgeInsets.zero,
                     horizontalTitleGap: 0,
                     title: Text(
@@ -146,12 +180,21 @@ class _CurrentCityWidgetState extends State<CurrentCityWidget> {
                       setState(() {
                         selectedAddressId = address.id.toString();
                         HiveMethods.updateSelectedCity(address.id ?? 0);
-                        HiveMethods.updateLat(double.tryParse(address.lat.toString()) ?? 0);
-                        HiveMethods.updateLan(double.tryParse(address.lng.toString()) ?? 0);
+                        HiveMethods.updateLat(
+                          double.tryParse(address.lat.toString()) ?? 0,
+                        );
+                        HiveMethods.updateLan(
+                          double.tryParse(address.lng.toString()) ?? 0,
+                        );
                         HiveMethods.updateCity(address.streetName ?? '');
-                        HiveMethods.updateSelectedCityAreaId(address.cityId ?? 0);
+                        HiveMethods.updateSelectedCityAreaId(
+                          address.cityId ?? 0,
+                        );
 
-                        Provider.of<AuthController>(context, listen: false).setSelectedAddressId(address.id);
+                        Provider.of<AuthController>(
+                          context,
+                          listen: false,
+                        ).setSelectedAddressId(address.id);
                         widget.onCityChanged.call();
                       });
                     },
@@ -160,19 +203,32 @@ class _CurrentCityWidgetState extends State<CurrentCityWidget> {
               ),
             ),
             ListTile(
-              title: Text('deliveryToAnotherAddress'.tr, style: AppTextStyle.text16BS()),
-              trailing: Icon(Icons.arrow_forward_ios, color: AppColors.blackColor),
+              title: Text(
+                'deliveryToAnotherAddress'.tr,
+                style: AppTextStyle.text16BS(),
+              ),
+              trailing: Icon(
+                Icons.arrow_forward_ios,
+                color: FasakhanstaBrand.text,
+              ),
               onTap: () {
                 Navigator.pop(context);
                 NamedNavigatorImpl.push(
                   AddAddressScreen.routeName,
                   arguments: AddAddressArgs(
                     onSuccess: () {
-                      Provider.of<AuthController>(context, listen: false).getProfile();
+                      Provider.of<AuthController>(
+                        context,
+                        listen: false,
+                      ).getProfile();
 
                       Navigator.pop(context);
                       WidgetsBinding.instance.addPostFrameCallback((_) {
-                        _showCitySelectionSheet(context, userAddresses, selectedAddressId);
+                        _showCitySelectionSheet(
+                          context,
+                          userAddresses,
+                          selectedAddressId,
+                        );
                       });
                     },
                   ),

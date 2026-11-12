@@ -1,3 +1,4 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -58,10 +59,12 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
           final defaultFeature = _defaultFeatureId(restaurantsController);
 
           return Scaffold(
-            backgroundColor: const Color(0xFFFAFAFA),
+            backgroundColor: Colors.transparent,
             body: ApiResponseWidget(
-              apiResponse: restaurantsController.productsDetailsRestaurantApiResponse,
-              onReload: () => restaurantsController.getProductsDetailsRestaurant(id: widget.args.id),
+              apiResponse:
+                  restaurantsController.productsDetailsRestaurantApiResponse,
+              onReload: () => restaurantsController
+                  .getProductsDetailsRestaurant(id: widget.args.id),
               isEmpty: restaurantsController.productsDetailsRestaurant == null,
               child: SingleChildScrollView(
                 padding: const EdgeInsets.only(bottom: 30),
@@ -78,8 +81,12 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                             child: _buildProductInfoCard(restaurantsController),
                           ),
                           const SizedBox(height: 18),
-                          if (_quantityFeatures(restaurantsController).isNotEmpty)
-                            _buildQuantitySection(restaurantsController, defaultFeature),
+                          if (_quantityFeatures(restaurantsController)
+                              .isNotEmpty)
+                            _buildQuantitySection(
+                              restaurantsController,
+                              defaultFeature,
+                            ),
                           _buildPreparationSection(restaurantsController),
                           _buildInfoNote(),
                         ],
@@ -91,8 +98,10 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
             ),
             bottomNavigationBar: ApiResponseWidget(
               loadingWidget: const SizedBox(),
-              apiResponse: restaurantsController.productsDetailsRestaurantApiResponse,
-              onReload: () => restaurantsController.getProductsDetailsRestaurant(id: widget.args.id),
+              apiResponse:
+                  restaurantsController.productsDetailsRestaurantApiResponse,
+              onReload: () => restaurantsController
+                  .getProductsDetailsRestaurant(id: widget.args.id),
               isEmpty: restaurantsController.productsDetailsRestaurant == null,
               child: CustomButtonBottomNavigation(
                 featureId: productFeatureId ?? defaultFeature,
@@ -101,9 +110,12 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                   widget.args.onSuccessAddItem?.call();
                   context.read<CartController>().getCart();
                 },
-                restaurantProductId: restaurantsController.productsDetailsRestaurant?.id ?? 0,
+                restaurantProductId:
+                    restaurantsController.productsDetailsRestaurant?.id ?? 0,
                 productFeature: productFeature,
-                productClean: _selectedRadio == 0 ? null : getProductClean(_selectedRadio),
+                productClean: _selectedRadio == 0
+                    ? null
+                    : getProductClean(_selectedRadio),
                 total: getTotalFromSelectedRadio(restaurantsController),
               ),
             ),
@@ -140,7 +152,10 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
-                colors: [Colors.black.withValues(alpha: .12), Colors.transparent],
+                colors: [
+                  FasakhanstaBrand.surfaceRaised.withValues(alpha: .12),
+                  Colors.transparent,
+                ],
               ),
             ),
           ),
@@ -169,18 +184,29 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
             decoration: BoxDecoration(
-              color: const Color(0xFF075E62),
+              color: FasakhanstaBrand.successTint,
               borderRadius: BorderRadius.circular(20),
               boxShadow: const [
-                BoxShadow(color: Color(0x22000000), blurRadius: 10, offset: Offset(0, 4)),
+                BoxShadow(
+                  color: Color(0x22000000),
+                  blurRadius: 10,
+                  offset: Offset(0, 4),
+                ),
               ],
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(Icons.check_circle_rounded, size: 18, color: Colors.white),
+                const Icon(
+                  Icons.check_circle_rounded,
+                  size: 18,
+                  color: FasakhanstaBrand.text,
+                ),
                 const SizedBox(width: 6),
-                Text('متوفر', style: AppTextStyle.text13BS(color: Colors.white)),
+                Text(
+                  'متوفر',
+                  style: AppTextStyle.text13BS(color: FasakhanstaBrand.text),
+                ),
               ],
             ),
           ),
@@ -195,7 +221,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
     int? badge,
   }) {
     return Material(
-      color: Colors.white,
+      color: FasakhanstaBrand.surface,
       shape: const CircleBorder(),
       elevation: 3,
       child: InkWell(
@@ -207,21 +233,32 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
           child: Stack(
             clipBehavior: Clip.none,
             children: [
-              Center(child: Icon(icon, size: 23, color: const Color(0xFF17202A))),
+              Center(child: Icon(icon, size: 23, color: FasakhanstaBrand.text)),
               if (badge != null && badge > 0)
                 Positioned(
                   right: -2,
                   bottom: -2,
                   child: Container(
-                    constraints: const BoxConstraints(minWidth: 18, minHeight: 18),
+                    constraints: const BoxConstraints(
+                      minWidth: 18,
+                      minHeight: 18,
+                    ),
                     padding: const EdgeInsets.symmetric(horizontal: 4),
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
                       color: AppColors.mainAppColor,
                       borderRadius: BorderRadius.circular(10),
-                      border: Border.all(color: Colors.white, width: 1.5),
+                      border: Border.all(
+                        color: FasakhanstaBrand.border,
+                        width: 1.5,
+                      ),
                     ),
-                    child: Text('$badge', style: AppTextStyle.text10BW()),
+                    child: Text(
+                      '$badge',
+                      style: AppTextStyle.text10BW(
+                        color: FasakhanstaBrand.onOrange,
+                      ),
+                    ),
                   ),
                 ),
             ],
@@ -239,24 +276,28 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
       width: double.infinity,
       padding: const EdgeInsets.fromLTRB(18, 22, 18, 18),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: FasakhanstaBrand.surface,
         borderRadius: BorderRadius.circular(26),
         boxShadow: const [
-          BoxShadow(color: Color(0x16000000), blurRadius: 24, offset: Offset(0, 8)),
+          BoxShadow(
+            color: Color(0x16000000),
+            blurRadius: 24,
+            offset: Offset(0, 8),
+          ),
         ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            product?.productName ?? '',
-            style: AppTextStyle.text20BS(),
-          ),
+          Text(product?.productName ?? '', style: AppTextStyle.text20BS()),
           if (product?.draw != null) ...[
             const SizedBox(height: 8),
             DrawBadgeChip(badge: product!.draw!),
           ],
-          if ((product?.productDescription ?? '').toString().trim().isNotEmpty) ...[
+          if ((product?.productDescription ?? '')
+              .toString()
+              .trim()
+              .isNotEmpty) ...[
             const SizedBox(height: 8),
             Text(
               product?.productDescription ?? '',
@@ -272,13 +313,15 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
               _infoTile(
                 Icons.scale_outlined,
                 'الكمية',
-                _quantityFeatures(controller).isNotEmpty ? 'حسب الاختيار' : 'حسب المنتج',
+                _quantityFeatures(controller).isNotEmpty
+                    ? 'حسب الاختيار'
+                    : 'حسب المنتج',
               ),
               _infoTile(Icons.tune_rounded, 'التجهيز', 'حسب اختيارك'),
             ],
           ),
           const SizedBox(height: 18),
-          const Divider(height: 1, color: Color(0xFFEEEEEE)),
+          const Divider(height: 1, color: FasakhanstaBrand.border),
           const SizedBox(height: 16),
           Row(
             crossAxisAlignment: CrossAxisAlignment.end,
@@ -300,13 +343,13 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       decoration: BoxDecoration(
-        color: const Color(0xFFF6F7F8),
+        color: FasakhanstaBrand.surfaceRaised,
         borderRadius: BorderRadius.circular(14),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 18, color: const Color(0xFF2F7C86)),
+          Icon(icon, size: 18, color: FasakhanstaBrand.info),
           const SizedBox(width: 8),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -321,7 +364,10 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
     );
   }
 
-  Widget _buildQuantitySection(RestaurantsController controller, int? defaultFeature) {
+  Widget _buildQuantitySection(
+    RestaurantsController controller,
+    int? defaultFeature,
+  ) {
     final features = _quantityFeatures(controller);
 
     return Padding(
@@ -363,13 +409,19 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
         height: 50,
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: selected ? AppColors.mainAppColor : Colors.white,
+          color: selected ? AppColors.mainAppColor : FasakhanstaBrand.surface,
           borderRadius: BorderRadius.circular(14),
           border: Border.all(
-            color: selected ? AppColors.mainAppColor : const Color(0xFFE2E2E2),
+            color: selected ? AppColors.mainAppColor : FasakhanstaBrand.border,
           ),
           boxShadow: selected
-              ? const [BoxShadow(color: Color(0x1FFF6A00), blurRadius: 12, offset: Offset(0, 4))]
+              ? const [
+                  BoxShadow(
+                    color: Color(0x1FFF6A00),
+                    blurRadius: 12,
+                    offset: Offset(0, 4),
+                  ),
+                ]
               : null,
         ),
         child: Text(
@@ -391,17 +443,19 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
         children: [
           _sectionTitle('selectTheCategory'.tr),
           const SizedBox(height: 12),
-          ...options.map((option) => Padding(
-                padding: const EdgeInsets.only(bottom: 10),
-                child: _preparationCard(
-                  controller: controller,
-                  value: option.value,
-                  title: option.title,
-                  subtitle: option.subtitle,
-                  price: option.price,
-                  featureName: option.featureName,
-                ),
-              )),
+          ...options.map(
+            (option) => Padding(
+              padding: const EdgeInsets.only(bottom: 10),
+              child: _preparationCard(
+                controller: controller,
+                value: option.value,
+                title: option.title,
+                subtitle: option.subtitle,
+                price: option.price,
+                featureName: option.featureName,
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -437,10 +491,12 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
         duration: const Duration(milliseconds: 180),
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
         decoration: BoxDecoration(
-          color: selected ? const Color(0xFFFFF8F3) : Colors.white,
+          color: selected
+              ? FasakhanstaBrand.surfaceRaised
+              : FasakhanstaBrand.surface,
           borderRadius: BorderRadius.circular(18),
           border: Border.all(
-            color: selected ? AppColors.mainAppColor : const Color(0xFFE7E7E7),
+            color: selected ? AppColors.mainAppColor : FasakhanstaBrand.border,
             width: selected ? 1.5 : 1,
           ),
         ),
@@ -451,7 +507,8 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
               groupValue: _selectedRadio,
               activeColor: AppColors.mainAppColor,
               materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              onChanged: (_) => _selectPreparation(controller, value, featureName),
+              onChanged: (_) =>
+                  _selectPreparation(controller, value, featureName),
             ),
             const SizedBox(width: 6),
             Expanded(
@@ -468,7 +525,8 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
             Text(
               '$price ج',
               style: AppTextStyle.text16BS(
-                color: selected ? AppColors.mainAppColor : AppColors.secondAppColor,
+                color:
+                    selected ? AppColors.mainAppColor : FasakhanstaBrand.text,
               ),
             ),
           ],
@@ -484,14 +542,18 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
         width: double.infinity,
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 13),
         decoration: BoxDecoration(
-          color: const Color(0xFFF2FAFC),
+          color: FasakhanstaBrand.surfaceRaised,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: const Color(0xFFCFEAF0)),
+          border: Border.all(color: FasakhanstaBrand.border),
         ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Icon(Icons.info_outline_rounded, color: Color(0xFF147C8A), size: 22),
+            const Icon(
+              Icons.info_outline_rounded,
+              color: FasakhanstaBrand.info,
+              size: 22,
+            ),
             const SizedBox(width: 10),
             Expanded(
               child: Column(
@@ -520,7 +582,13 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
 
   List<dynamic> _quantityFeatures(RestaurantsController controller) {
     return _allFeatures(controller)
-        .where((feature) => const {'kilo', 'half', 'quarter'}.contains(feature.name?.toString()))
+        .where(
+          (feature) => const {
+            'kilo',
+            'half',
+            'quarter',
+          }.contains(feature.name?.toString()),
+        )
         .toList();
   }
 
@@ -538,7 +606,9 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
 
   bool _isFeatureSelected(dynamic feature, int? defaultFeature) {
     final id = int.tryParse('${feature.id}');
-    return productFeatureId != null ? productFeatureId == id : defaultFeature == id;
+    return productFeatureId != null
+        ? productFeatureId == id
+        : defaultFeature == id;
   }
 
   void _selectQuantityFeature(dynamic feature) {
@@ -565,7 +635,11 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
     };
   }
 
-  void _selectPreparation(RestaurantsController controller, int value, String? featureName) {
+  void _selectPreparation(
+    RestaurantsController controller,
+    int value,
+    String? featureName,
+  ) {
     setState(() {
       _selectedRadio = value;
       if (featureName != null) {
@@ -581,7 +655,9 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
     context.read<CartController>().totalCountAddTCart = null;
   }
 
-  List<_PreparationOption> _preparationOptions(RestaurantsController controller) {
+  List<_PreparationOption> _preparationOptions(
+    RestaurantsController controller,
+  ) {
     final data = controller.productsDetailsRestaurant;
     if (data == null) return const [];
 
@@ -589,30 +665,46 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
     final options = <_PreparationOption>[];
 
     if (base != 0) {
-      options.add(_PreparationOption(
-        value: 0,
-        title: 'full'.tr,
-        subtitle: 'السعر الأساسي للمنتج',
-        price: base,
-      ));
+      options.add(
+        _PreparationOption(
+          value: 0,
+          title: 'full'.tr,
+          subtitle: 'السعر الأساسي للمنتج',
+          price: base,
+        ),
+      );
     }
 
-    void addExtra(int value, dynamic extra, String title, String subtitle, String featureName) {
+    void addExtra(
+      int value,
+      dynamic extra,
+      String title,
+      String subtitle,
+      String featureName,
+    ) {
       final extraValue = _toInt(extra);
       if (extraValue == 0) return;
-      options.add(_PreparationOption(
-        value: value,
-        title: title,
-        subtitle: subtitle,
-        price: base + extraValue,
-        featureName: featureName,
-      ));
+      options.add(
+        _PreparationOption(
+          value: value,
+          title: title,
+          subtitle: subtitle,
+          price: base + extraValue,
+          featureName: featureName,
+        ),
+      );
     }
 
     addExtra(1, data.extraClean, 'clean'.tr, 'تنظيف وتجهيز المنتج', 'clean');
     addExtra(2, data.extraClear, 'clear'.tr, 'تجهيز إضافي للمنتج', 'clear');
     addExtra(3, data.extraLarge, 'large'.tr, 'اختيار الحجم الكبير', 'large');
-    addExtra(4, data.extraMedium, 'medium'.tr, 'اختيار الحجم المتوسط', 'medium');
+    addExtra(
+      4,
+      data.extraMedium,
+      'medium'.tr,
+      'اختيار الحجم المتوسط',
+      'medium',
+    );
     addExtra(5, data.extraVacuim, 'vacuum'.tr, 'تغليف وتجهيز فاكيوم', 'vacuim');
     addExtra(6, data.extraCombo, 'combo'.tr, 'تجهيز كومبو', 'combo');
 
@@ -625,7 +717,9 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
     return int.tryParse(value?.toString() ?? '') ?? 0;
   }
 
-  String getTotalFromSelectedRadio(RestaurantsController restaurantsController) {
+  String getTotalFromSelectedRadio(
+    RestaurantsController restaurantsController,
+  ) {
     final data = restaurantsController.productsDetailsRestaurant;
     if (data == null) return '0';
 

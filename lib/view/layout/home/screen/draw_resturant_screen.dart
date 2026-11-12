@@ -1,3 +1,4 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pusher_channels_flutter/pusher_channels_flutter.dart';
@@ -28,11 +29,17 @@ class _DrawRestaurantScreenState extends State<DrawRestaurantScreen> {
   @override
   void initState() {
     _pusherController = context.read<PusherController>();
-    _pusherController.addEventListener('coupon.wheel.updated', _couponWheelUpdated);
+    _pusherController.addEventListener(
+      'coupon.wheel.updated',
+      _couponWheelUpdated,
+    );
     Future.microtask(() {
       final controller = context.read<HomeController>();
       controller.initialCoupon();
-      controller.getCoupon(lat: HiveMethods.getLat(), lng: HiveMethods.getLan());
+      controller.getCoupon(
+        lat: HiveMethods.getLat(),
+        lng: HiveMethods.getLan(),
+      );
     });
     super.initState();
   }
@@ -40,14 +47,19 @@ class _DrawRestaurantScreenState extends State<DrawRestaurantScreen> {
   void _couponWheelUpdated(PusherEvent event) {
     final homeProvider = context.read<HomeController>();
     if (!mounted) return;
-    homeProvider.getCoupon(lat: HiveMethods.getLat(), lng: HiveMethods.getLan()).then((_) {
+    homeProvider
+        .getCoupon(lat: HiveMethods.getLat(), lng: HiveMethods.getLan())
+        .then((_) {
       if (mounted && homeProvider.coupon == null) Navigator.pop(context);
     });
   }
 
   @override
   void dispose() {
-    _pusherController.removeEventListener('coupon.wheel.updated', _couponWheelUpdated);
+    _pusherController.removeEventListener(
+      'coupon.wheel.updated',
+      _couponWheelUpdated,
+    );
     super.dispose();
   }
 
@@ -60,10 +72,12 @@ class _DrawRestaurantScreenState extends State<DrawRestaurantScreen> {
         final restaurantsCount = data?.resturants?.length ?? 0;
         final byProducts = data?.isByProducts ?? false;
         // The other draws by products running now, each with its items and the customer's codes.
-        final otherProductDraws = (coupon?.productDraws ?? const <Data>[]).where((d) => d.id != data?.id).toList();
+        final otherProductDraws = (coupon?.productDraws ?? const <Data>[])
+            .where((d) => d.id != data?.id)
+            .toList();
 
         return Scaffold(
-          backgroundColor: const Color(0xFFFBFBFB),
+          backgroundColor: Colors.transparent,
           body: SafeArea(
             child: Directionality(
               textDirection: TextDirection.rtl,
@@ -84,9 +98,13 @@ class _DrawRestaurantScreenState extends State<DrawRestaurantScreen> {
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
                             Text(
-                              byProducts ? 'اشتري الأصناف المختارة من أي فرع وادخل السحب!' : 'كل طلب مؤهل يأخذك لفرصة ربح رائعة!',
+                              byProducts
+                                  ? 'اشتري الأصناف المختارة من أي فرع وادخل السحب!'
+                                  : 'كل طلب مؤهل يأخذك لفرصة ربح رائعة!',
                               textAlign: TextAlign.right,
-                              style: AppTextStyle.text13RG(color: const Color(0xFF777777)),
+                              style: AppTextStyle.text13RG(
+                                color: FasakhanstaBrand.muted,
+                              ),
                             ),
                             const SizedBox(height: 14),
                             _RaffleHero(
@@ -97,14 +115,18 @@ class _DrawRestaurantScreenState extends State<DrawRestaurantScreen> {
                             ),
                             const SizedBox(height: 18),
                             if (data?.winnerCode != null) ...[
-                              _WinnerCodeCard(code: data!.winnerCode!, mine: data.myCodes.contains(data.winnerCode)),
+                              _WinnerCodeCard(
+                                code: data!.winnerCode!,
+                                mine: data.myCodes.contains(data.winnerCode),
+                              ),
                               const SizedBox(height: 18),
                             ],
                             if (byProducts)
                               _ProductsDrawCard(draw: data!, showTitle: false)
                             else
                               _SubscriptionInfoCard(price: data?.price ?? ''),
-                            if (!byProducts && (data?.myCodes.isNotEmpty ?? false)) ...[
+                            if (!byProducts &&
+                                (data?.myCodes.isNotEmpty ?? false)) ...[
                               const SizedBox(height: 18),
                               _MyCodesCard(codes: data!.myCodes),
                             ],
@@ -114,13 +136,17 @@ class _DrawRestaurantScreenState extends State<DrawRestaurantScreen> {
                             ],
                             if (coupon?.recentWinners.isNotEmpty ?? false) ...[
                               const SizedBox(height: 18),
-                              _RecentWinnersCard(winners: coupon!.recentWinners),
+                              _RecentWinnersCard(
+                                winners: coupon!.recentWinners,
+                              ),
                             ],
                             if (!byProducts) ...[
                               const SizedBox(height: 24),
                               _SectionHeader(count: restaurantsCount),
                               const SizedBox(height: 14),
-                              RestaurantsDrawWidget(homeController: homeController),
+                              RestaurantsDrawWidget(
+                                homeController: homeController,
+                              ),
                             ],
                           ],
                         ),
@@ -185,7 +211,8 @@ class _RaffleHero extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final displayTitle = title.trim().isEmpty ? 'سحب على المطاعم' : title.trim();
+    final displayTitle =
+        title.trim().isEmpty ? 'سحب على المطاعم' : title.trim();
     final prize = _displayPrize(drawAmount, displayTitle);
 
     return SizedBox(
@@ -201,7 +228,7 @@ class _RaffleHero extends StatelessWidget {
             child: Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(28),
-                color: const Color(0xFF073F46),
+                color: FasakhanstaBrand.infoTint,
                 boxShadow: const [
                   BoxShadow(
                     color: Color(0x2A052B35),
@@ -264,7 +291,9 @@ class _RaffleHero extends StatelessWidget {
                       decoration: BoxDecoration(
                         color: AppColors.mainAppColor.withValues(alpha: .94),
                         borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: Colors.white.withValues(alpha: .28)),
+                        border: Border.all(
+                          color: FasakhanstaBrand.border.withValues(alpha: .28),
+                        ),
                         boxShadow: const [
                           BoxShadow(
                             color: Color(0x35000000),
@@ -273,30 +302,45 @@ class _RaffleHero extends StatelessWidget {
                           ),
                         ],
                       ),
-                      child: const Icon(Icons.card_giftcard_rounded, color: Colors.white, size: 36),
+                      child: const Icon(
+                        Icons.card_giftcard_rounded,
+                        color: FasakhanstaBrand.onOrange,
+                        size: 36,
+                      ),
                     ),
                   ),
                   Positioned(
                     top: 18,
                     right: 18,
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 7,
+                      ),
                       decoration: BoxDecoration(
                         color: AppColors.mainAppColor,
                         borderRadius: BorderRadius.circular(14),
                         boxShadow: const [
-                          BoxShadow(color: Color(0x25000000), blurRadius: 8, offset: Offset(0, 3)),
+                          BoxShadow(
+                            color: Color(0x25000000),
+                            blurRadius: 8,
+                            offset: Offset(0, 3),
+                          ),
                         ],
                       ),
                       child: const Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Icon(Icons.star_rounded, color: Colors.white, size: 15),
+                          Icon(
+                            Icons.star_rounded,
+                            color: FasakhanstaBrand.onOrange,
+                            size: 15,
+                          ),
                           SizedBox(width: 5),
                           Text(
                             'المسابقة الحالية',
                             style: TextStyle(
-                              color: Colors.white,
+                              color: FasakhanstaBrand.onOrange,
                               fontSize: 11,
                               fontWeight: FontWeight.w800,
                             ),
@@ -316,10 +360,9 @@ class _RaffleHero extends StatelessWidget {
                           displayTitle,
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
-                          style: AppTextStyle.text22BS(color: Colors.white).copyWith(
-                            height: 1.15,
-                            fontSize: 27,
-                          ),
+                          style: AppTextStyle.text22BS(
+                            color: FasakhanstaBrand.text,
+                          ).copyWith(height: 1.15, fontSize: 27),
                         ),
                         const SizedBox(height: 8),
                         Text(
@@ -327,7 +370,7 @@ class _RaffleHero extends StatelessWidget {
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: AppTextStyle.text13RG(
-                            color: Colors.white.withValues(alpha: .88),
+                            color: FasakhanstaBrand.text.withValues(alpha: .88),
                           ),
                         ),
                       ],
@@ -374,7 +417,11 @@ class _RaffleHero extends StatelessWidget {
 }
 
 class _GlassStat extends StatelessWidget {
-  const _GlassStat({required this.icon, required this.label, required this.value});
+  const _GlassStat({
+    required this.icon,
+    required this.label,
+    required this.value,
+  });
 
   final IconData icon;
   final String label;
@@ -388,7 +435,9 @@ class _GlassStat extends StatelessWidget {
       decoration: BoxDecoration(
         color: const Color(0xD9FFFFFF),
         borderRadius: BorderRadius.circular(17),
-        border: Border.all(color: Colors.white.withValues(alpha: .48)),
+        border: Border.all(
+          color: FasakhanstaBrand.border.withValues(alpha: .48),
+        ),
       ),
       child: Row(
         children: [
@@ -411,14 +460,14 @@ class _GlassStat extends StatelessWidget {
                   label,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: AppTextStyle.text10RG(color: const Color(0xFF6E7475)),
+                  style: AppTextStyle.text10RG(color: FasakhanstaBrand.muted),
                 ),
                 const SizedBox(height: 2),
                 Text(
                   value,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: AppTextStyle.text14BS(color: const Color(0xFF132C31)),
+                  style: AppTextStyle.text14BS(color: FasakhanstaBrand.text),
                 ),
               ],
             ),
@@ -439,9 +488,9 @@ class _CountdownCard extends StatelessWidget {
       height: 82,
       padding: const EdgeInsets.symmetric(horizontal: 18),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: FasakhanstaBrand.surface,
         borderRadius: BorderRadius.circular(22),
-        border: Border.all(color: const Color(0xFFF1F1F1)),
+        border: Border.all(color: FasakhanstaBrand.border),
         boxShadow: const [
           BoxShadow(
             color: Color(0x1D000000),
@@ -456,10 +505,14 @@ class _CountdownCard extends StatelessWidget {
             width: 50,
             height: 50,
             decoration: const BoxDecoration(
-              color: Color(0xFFEAF8F6),
+              color: FasakhanstaBrand.surfaceRaised,
               shape: BoxShape.circle,
             ),
-            child: const Icon(Icons.schedule_rounded, color: Color(0xFF0B7F77), size: 27),
+            child: const Icon(
+              Icons.schedule_rounded,
+              color: FasakhanstaBrand.success,
+              size: 27,
+            ),
           ),
           const SizedBox(width: 13),
           Expanded(
@@ -491,9 +544,9 @@ class _SubscriptionInfoCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.fromLTRB(15, 15, 15, 15),
       decoration: BoxDecoration(
-        color: const Color(0xFFFFF9F4),
+        color: FasakhanstaBrand.surfaceRaised,
         borderRadius: BorderRadius.circular(22),
-        border: Border.all(color: const Color(0xFFFFDFC5)),
+        border: Border.all(color: FasakhanstaBrand.border),
         boxShadow: const [
           BoxShadow(
             color: Color(0x0A000000),
@@ -508,11 +561,15 @@ class _SubscriptionInfoCard extends StatelessWidget {
             width: 49,
             height: 49,
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: FasakhanstaBrand.surface,
               shape: BoxShape.circle,
-              border: Border.all(color: const Color(0xFFFFDFC5)),
+              border: Border.all(color: FasakhanstaBrand.border),
             ),
-            child: Icon(Icons.info_outline_rounded, color: AppColors.mainAppColor, size: 27),
+            child: Icon(
+              Icons.info_outline_rounded,
+              color: AppColors.mainAppColor,
+              size: 27,
+            ),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -528,9 +585,14 @@ class _SubscriptionInfoCard extends StatelessWidget {
                       ),
                       TextSpan(
                         text: _formatPrice(price),
-                        style: AppTextStyle.text15BS(color: AppColors.mainAppColor),
+                        style: AppTextStyle.text15BS(
+                          color: AppColors.mainAppColor,
+                        ),
                       ),
-                      TextSpan(text: ' أو أكثر', style: AppTextStyle.text14BS()),
+                      TextSpan(
+                        text: ' أو أكثر',
+                        style: AppTextStyle.text14BS(),
+                      ),
                     ],
                   ),
                   textAlign: TextAlign.right,
@@ -538,7 +600,7 @@ class _SubscriptionInfoCard extends StatelessWidget {
                 const SizedBox(height: 5),
                 Text(
                   'كل طلب مؤهل يمنحك فرصة واحدة للدخول في السحب',
-                  style: AppTextStyle.text11RG(color: const Color(0xFF7A7A7A)),
+                  style: AppTextStyle.text11RG(color: FasakhanstaBrand.muted),
                 ),
               ],
             ),
@@ -551,7 +613,11 @@ class _SubscriptionInfoCard extends StatelessWidget {
               color: AppColors.mainAppColor.withValues(alpha: .10),
               borderRadius: BorderRadius.circular(13),
             ),
-            child: Icon(Icons.shopping_bag_outlined, color: AppColors.mainAppColor, size: 24),
+            child: Icon(
+              Icons.shopping_bag_outlined,
+              color: AppColors.mainAppColor,
+              size: 24,
+            ),
           ),
         ],
       ),
@@ -574,7 +640,11 @@ class _SectionHeader extends StatelessWidget {
             color: AppColors.mainAppColor.withValues(alpha: .10),
             shape: BoxShape.circle,
           ),
-          child: Icon(Icons.groups_rounded, color: AppColors.mainAppColor, size: 24),
+          child: Icon(
+            Icons.groups_rounded,
+            color: AppColors.mainAppColor,
+            size: 24,
+          ),
         ),
         const SizedBox(width: 11),
         Expanded(
@@ -583,22 +653,32 @@ class _SectionHeader extends StatelessWidget {
             children: [
               Text('المطاعم المشاركة في السحب', style: AppTextStyle.text19BS()),
               const SizedBox(height: 2),
-              Text('$count مطعم مشارك', style: AppTextStyle.text12RG(color: const Color(0xFF858585))),
+              Text(
+                '$count مطعم مشارك',
+                style: AppTextStyle.text12RG(color: FasakhanstaBrand.muted),
+              ),
             ],
           ),
         ),
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           decoration: BoxDecoration(
-            color: const Color(0xFFF0FAF9),
+            color: FasakhanstaBrand.surfaceRaised,
             borderRadius: BorderRadius.circular(13),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(Icons.chevron_right_rounded, size: 18, color: Color(0xFF0B7F77)),
+              const Icon(
+                Icons.chevron_right_rounded,
+                size: 18,
+                color: FasakhanstaBrand.success,
+              ),
               const SizedBox(width: 3),
-              Text('عرض الكل', style: AppTextStyle.text12BS(color: const Color(0xFF0B7F77))),
+              Text(
+                'عرض الكل',
+                style: AppTextStyle.text12BS(color: FasakhanstaBrand.success),
+              ),
             ],
           ),
         ),
@@ -629,7 +709,8 @@ String _remainingText(String? value) {
   final raw = value?.trim() ?? '';
   if (raw.isEmpty) return '-';
 
-  final parsed = DateTime.tryParse(raw) ?? DateTime.tryParse(raw.replaceFirst(' ', 'T'));
+  final parsed =
+      DateTime.tryParse(raw) ?? DateTime.tryParse(raw.replaceFirst(' ', 'T'));
   if (parsed == null) return raw;
 
   final difference = parsed.difference(DateTime.now());
@@ -644,7 +725,6 @@ String _remainingText(String? value) {
   return '$minutes دقيقة';
 }
 
-
 /// A draw by chosen products: its items (bought from any branch, the ordinary way), the prize and the customer's codes.
 class _ProductsDrawCard extends StatelessWidget {
   const _ProductsDrawCard({required this.draw, required this.showTitle});
@@ -653,7 +733,10 @@ class _ProductsDrawCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final names = draw.products.map((p) => p.name).where((n) => n.trim().isNotEmpty).toList();
+    final names = draw.products
+        .map((p) => p.name)
+        .where((n) => n.trim().isNotEmpty)
+        .toList();
     return _DrawCard(
       icon: Icons.card_giftcard_rounded,
       children: [
@@ -668,7 +751,7 @@ class _ProductsDrawCard extends StatelessWidget {
         const SizedBox(height: 6),
         Text(
           'اشتري أي صنف من الأصناف دي من أي فرع، وكل قطعة بتاخد بيها كود دخول بعد ما الأوردر يتسلّم.',
-          style: AppTextStyle.text11RG(color: const Color(0xFF7A7A7A)),
+          style: AppTextStyle.text11RG(color: FasakhanstaBrand.muted),
         ),
         if (names.isNotEmpty) ...[
           const SizedBox(height: 10),
@@ -711,7 +794,12 @@ class _CodesWrap extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(codes.length == 1 ? 'كود الدخول بتاعك' : 'أكواد الدخول بتاعتك (${codes.length})', style: AppTextStyle.text13BS()),
+        Text(
+          codes.length == 1
+              ? 'كود الدخول بتاعك'
+              : 'أكواد الدخول بتاعتك (${codes.length})',
+          style: AppTextStyle.text13BS(),
+        ),
         const SizedBox(height: 8),
         Wrap(
           spacing: 6,
@@ -721,15 +809,24 @@ class _CodesWrap extends StatelessWidget {
             return Container(
               padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
               decoration: BoxDecoration(
-                color: won ? const Color(0xFFE7F7EE) : Colors.white,
+                color: won
+                    ? FasakhanstaBrand.surfaceRaised
+                    : FasakhanstaBrand.surface,
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: won ? const Color(0xFF1E9E5A) : const Color(0xFFE2E2E2)),
+                border: Border.all(
+                  color:
+                      won ? FasakhanstaBrand.border : FasakhanstaBrand.border,
+                ),
               ),
               child: Text(
                 code,
                 textDirection: TextDirection.ltr,
-                style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, letterSpacing: 1.2,
-                    color: won ? const Color(0xFF1E9E5A) : const Color(0xFF132C31)),
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 1.2,
+                  color: won ? FasakhanstaBrand.success : FasakhanstaBrand.text,
+                ),
               ),
             );
           }).toList(),
@@ -751,10 +848,21 @@ class _WinnerCodeCard extends StatelessWidget {
       icon: Icons.emoji_events_rounded,
       highlight: true,
       children: [
-        Text(mine ? 'مبروك! كودك هو الكود الفائز' : 'الكود الفائز', style: AppTextStyle.text14BS()),
+        Text(
+          mine ? 'مبروك! كودك هو الكود الفائز' : 'الكود الفائز',
+          style: AppTextStyle.text14BS(),
+        ),
         const SizedBox(height: 6),
-        Text(code, textDirection: TextDirection.ltr,
-            style: TextStyle(fontSize: 22, fontWeight: FontWeight.w900, letterSpacing: 2, color: AppColors.mainAppColor)),
+        Text(
+          code,
+          textDirection: TextDirection.ltr,
+          style: TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.w900,
+            letterSpacing: 2,
+            color: AppColors.mainAppColor,
+          ),
+        ),
       ],
     );
   }
@@ -782,12 +890,20 @@ class _RecentWinnersCard extends StatelessWidget {
                     winner.name,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: AppTextStyle.text12RG(color: const Color(0xFF555555)),
+                    style: AppTextStyle.text12RG(color: FasakhanstaBrand.muted),
                   ),
                 ),
                 const SizedBox(width: 8),
-                Text(winner.code, textDirection: TextDirection.ltr,
-                    style: TextStyle(fontSize: 13, fontWeight: FontWeight.w800, letterSpacing: 1.2, color: AppColors.mainAppColor)),
+                Text(
+                  winner.code,
+                  textDirection: TextDirection.ltr,
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: 1.2,
+                    color: AppColors.mainAppColor,
+                  ),
+                ),
               ],
             ),
           ),
@@ -806,17 +922,26 @@ class DrawBadgeName extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(
-        color: const Color(0xFFFFF1E6),
+        color: FasakhanstaBrand.surfaceRaised,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: AppColors.mainAppColor.withValues(alpha: .30)),
+        border: Border.all(
+          color: AppColors.mainAppColor.withValues(alpha: .30),
+        ),
       ),
-      child: Text(name, style: AppTextStyle.text12BS(color: const Color(0xFFB94F00))),
+      child: Text(
+        name,
+        style: AppTextStyle.text12BS(color: FasakhanstaBrand.orange),
+      ),
     );
   }
 }
 
 class _DrawCard extends StatelessWidget {
-  const _DrawCard({required this.icon, required this.children, this.highlight = false});
+  const _DrawCard({
+    required this.icon,
+    required this.children,
+    this.highlight = false,
+  });
   final IconData icon;
   final List<Widget> children;
   final bool highlight;
@@ -826,10 +951,20 @@ class _DrawCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(15),
       decoration: BoxDecoration(
-        color: highlight ? const Color(0xFFFFF9F4) : Colors.white,
+        color: highlight
+            ? FasakhanstaBrand.surfaceRaised
+            : FasakhanstaBrand.surface,
         borderRadius: BorderRadius.circular(22),
-        border: Border.all(color: highlight ? const Color(0xFFFFDFC5) : const Color(0xFFF1F1F1)),
-        boxShadow: const [BoxShadow(color: Color(0x0A000000), blurRadius: 12, offset: Offset(0, 4))],
+        border: Border.all(
+          color: highlight ? FasakhanstaBrand.border : FasakhanstaBrand.border,
+        ),
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0x0A000000),
+            blurRadius: 12,
+            offset: Offset(0, 4),
+          ),
+        ],
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -837,11 +972,19 @@ class _DrawCard extends StatelessWidget {
           Container(
             width: 42,
             height: 42,
-            decoration: BoxDecoration(color: AppColors.mainAppColor.withValues(alpha: .10), borderRadius: BorderRadius.circular(13)),
+            decoration: BoxDecoration(
+              color: AppColors.mainAppColor.withValues(alpha: .10),
+              borderRadius: BorderRadius.circular(13),
+            ),
             child: Icon(icon, color: AppColors.mainAppColor, size: 23),
           ),
           const SizedBox(width: 12),
-          Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: children)),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: children,
+            ),
+          ),
         ],
       ),
     );

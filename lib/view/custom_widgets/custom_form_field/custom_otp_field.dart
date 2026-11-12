@@ -1,3 +1,5 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
+
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
@@ -10,7 +12,12 @@ class CustomOtpField extends StatefulWidget {
   final int length;
   final TextEditingController? controller;
   final void Function(String)? onCompleted;
-  const CustomOtpField({super.key, this.length = 4, this.controller, this.onCompleted});
+  const CustomOtpField({
+    super.key,
+    this.length = 4,
+    this.controller,
+    this.onCompleted,
+  });
 
   @override
   State<CustomOtpField> createState() => _CustomOtpFieldState();
@@ -27,7 +34,11 @@ class _CustomOtpFieldState extends State<CustomOtpField> {
           defaultPinTheme: PinTheme(
             width: 50,
             height: 50,
-            textStyle: TextStyle(fontSize: 20, color: AppColors.whiteColor, fontWeight: FontWeight.w600),
+            textStyle: TextStyle(
+              fontSize: 20,
+              color: FasakhanstaBrand.text,
+              fontWeight: FontWeight.w600,
+            ),
             decoration: BoxDecoration(
               color: AppColors.textFormFillColor,
               border: Border.all(color: AppColors.textFormBorderColor),
@@ -37,7 +48,11 @@ class _CustomOtpFieldState extends State<CustomOtpField> {
           focusedPinTheme: PinTheme(
             width: 50,
             height: 50,
-            textStyle: TextStyle(fontSize: 20, color: AppColors.mainAppColor, fontWeight: FontWeight.w600),
+            textStyle: TextStyle(
+              fontSize: 20,
+              color: AppColors.mainAppColor,
+              fontWeight: FontWeight.w600,
+            ),
             decoration: BoxDecoration(
               color: AppColors.textFormFillColor,
               border: Border.all(color: AppColors.textFormBorderColor),
@@ -47,7 +62,11 @@ class _CustomOtpFieldState extends State<CustomOtpField> {
           submittedPinTheme: PinTheme(
             width: 50,
             height: 50,
-            textStyle: TextStyle(fontSize: 20, color: AppColors.mainAppColor, fontWeight: FontWeight.w600),
+            textStyle: TextStyle(
+              fontSize: 20,
+              color: AppColors.mainAppColor,
+              fontWeight: FontWeight.w600,
+            ),
             decoration: BoxDecoration(
               color: AppColors.textFormFillColor,
               border: Border.all(color: AppColors.textFormBorderColor),
@@ -57,21 +76,31 @@ class _CustomOtpFieldState extends State<CustomOtpField> {
           errorPinTheme: PinTheme(
             width: 50,
             height: 50,
-            textStyle: TextStyle(fontSize: 20, color: AppColors.mainAppColor, fontWeight: FontWeight.w600),
+            textStyle: TextStyle(
+              fontSize: 20,
+              color: AppColors.mainAppColor,
+              fontWeight: FontWeight.w600,
+            ),
             decoration: BoxDecoration(
               color: AppColors.textFormFillColor,
-              border: Border.all(color: Colors.red.shade700),
+              border: Border.all(color: FasakhanstaBrand.border),
               borderRadius: BorderRadius.circular(25),
             ),
           ),
           errorBuilder: (errorText, pin) {
             return Align(
-              alignment: context.isRtl ? AlignmentDirectional.centerEnd : AlignmentDirectional.centerStart,
+              alignment: context.isRtl
+                  ? AlignmentDirectional.centerEnd
+                  : AlignmentDirectional.centerStart,
               child: Padding(
                 padding: const EdgeInsets.all(5),
                 child: Text(
                   errorText!,
-                  style: TextStyle(fontSize: 12, color: Colors.red.shade700, fontWeight: FontWeight.w400),
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: FasakhanstaBrand.danger,
+                    fontWeight: FontWeight.w400,
+                  ),
                 ),
               ),
             );
@@ -82,7 +111,8 @@ class _CustomOtpFieldState extends State<CustomOtpField> {
                 : '${'The code consists of'.tr} ${widget.length} ${'digits'.tr}';
           },
           pinputAutovalidateMode: PinputAutovalidateMode.onSubmit,
-          onTapOutside: (event) => FocusManager.instance.primaryFocus?.unfocus(),
+          onTapOutside: (event) =>
+              FocusManager.instance.primaryFocus?.unfocus(),
           onCompleted: widget.onCompleted,
         ),
       ),

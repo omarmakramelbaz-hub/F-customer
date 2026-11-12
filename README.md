@@ -88,3 +88,23 @@ so a repeated page event cannot pop tracking or submit another order.
 The payment changes do not alter settlement, wallet balances, webhook verification
 or the staff-controlled order lifecycle. Unit and widget tests use synthetic
 checkout pages and responses and do not charge a live payment method.
+
+## Shared app identity
+
+All customer routes use the home palette through `FasakhanstaBrand`, the dark
+Material theme, and one static seafood poster behind the navigator. The home
+and order-tracking routes retain their own video playback and lifecycle. Cards,
+forms, sheets and navigation share petrol surfaces, warm readable text and
+orange actions. Pure white remains available for artwork and hosted content.
+
+Non-eligible menu cards use petrol surfaces; draw-eligible cards keep their
+approved gold treatment, actual API prize and animated top-left badge.
+Secondary buttons respect their explicit background instead of inheriting the
+primary orange gradient. Input validation, authentication, prices, stock, order
+operations and the authenticated Paymob completion flow remain on their existing
+controllers and services. No preview data or simulated payments are included.
+
+`test/app_identity_test.dart` checks text contrast, form validation and button
+taps at enlarged Arabic text, secondary actions, safe-area icon brightness and
+regular/gold product cards. Run it with the existing regression suite before
+releasing the Firebase Web review build.

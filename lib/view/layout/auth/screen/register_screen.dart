@@ -1,3 +1,4 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
 import 'package:country_picker/country_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -37,10 +38,10 @@ class _RegisterScreenState extends State<RegisterScreen> with ValidationMixin {
 
   Country? _country;
 
-  static const _text = Color(0xFF171A1F);
-  static const _muted = Color(0xFF858B94);
-  static const _border = Color(0xFFE7EAEE);
-  static const _softOrange = Color(0xFFFFF3E7);
+  static const _text = FasakhanstaBrand.text;
+  static const _muted = FasakhanstaBrand.muted;
+  static const _border = FasakhanstaBrand.border;
+  static const _softOrange = FasakhanstaBrand.orangeTint;
 
   @override
   void initState() {
@@ -64,7 +65,7 @@ class _RegisterScreenState extends State<RegisterScreen> with ValidationMixin {
         return Form(
           key: _formKey,
           child: Scaffold(
-            backgroundColor: const Color(0xFFF7F8FA),
+            backgroundColor: Colors.transparent,
             appBar: CustomAppBar(
               showLang: true,
               centerTitle: false,
@@ -75,7 +76,7 @@ class _RegisterScreenState extends State<RegisterScreen> with ValidationMixin {
                 height: 52,
                 radius: 12,
               ),
-              appBarColor: Colors.white,
+              appBarColor: Colors.transparent,
             ),
             body: SafeArea(
               top: false,
@@ -117,10 +118,13 @@ class _RegisterScreenState extends State<RegisterScreen> with ValidationMixin {
         gradient: const LinearGradient(
           begin: Alignment.topRight,
           end: Alignment.bottomLeft,
-          colors: [Color(0xFFFFF8F1), Color(0xFFFFF0E1)],
+          colors: [
+            FasakhanstaBrand.surfaceRaised,
+            FasakhanstaBrand.surfaceRaised,
+          ],
         ),
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: const Color(0xFFFFD9B8)),
+        border: Border.all(color: FasakhanstaBrand.border),
       ),
       child: Row(
         children: [
@@ -128,7 +132,7 @@ class _RegisterScreenState extends State<RegisterScreen> with ValidationMixin {
             width: 58,
             height: 58,
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: FasakhanstaBrand.surface,
               borderRadius: BorderRadius.circular(18),
               boxShadow: const [
                 BoxShadow(
@@ -155,12 +159,15 @@ class _RegisterScreenState extends State<RegisterScreen> with ValidationMixin {
                     decoration: BoxDecoration(
                       color: AppColors.mainAppColor,
                       shape: BoxShape.circle,
-                      border: Border.all(color: Colors.white, width: 2),
+                      border: Border.all(
+                        color: FasakhanstaBrand.border,
+                        width: 2,
+                      ),
                     ),
                     child: const Icon(
                       Icons.add_rounded,
                       size: 13,
-                      color: Colors.white,
+                      color: FasakhanstaBrand.onOrange,
                     ),
                   ),
                 ),
@@ -206,7 +213,7 @@ class _RegisterScreenState extends State<RegisterScreen> with ValidationMixin {
                           ? 'بياناتك محفوظة وآمنة'
                           : 'Your information stays private and secure',
                       style: AppTextStyle.text10RG().copyWith(
-                        color: const Color(0xFF7F6A57),
+                        color: FasakhanstaBrand.muted,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -226,7 +233,7 @@ class _RegisterScreenState extends State<RegisterScreen> with ValidationMixin {
     return Container(
       padding: const EdgeInsets.fromLTRB(16, 18, 16, 16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: FasakhanstaBrand.surface,
         borderRadius: BorderRadius.circular(24),
         border: Border.all(color: _border),
         boxShadow: const [
@@ -313,10 +320,7 @@ class _RegisterScreenState extends State<RegisterScreen> with ValidationMixin {
           height: 54,
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              colors: [
-                AppColors.mainAppColor,
-                const Color(0xFFFF8B25),
-              ],
+              colors: [AppColors.mainAppColor, FasakhanstaBrand.orange],
             ),
             borderRadius: BorderRadius.circular(16),
             boxShadow: [
@@ -332,22 +336,20 @@ class _RegisterScreenState extends State<RegisterScreen> with ValidationMixin {
             children: [
               Text(
                 'next'.tr,
-                style: AppTextStyle.text18BW().copyWith(
-                  fontSize: 17,
-                  fontWeight: FontWeight.w800,
-                ),
+                style: AppTextStyle.text18BW(color: FasakhanstaBrand.onOrange)
+                    .copyWith(fontSize: 17, fontWeight: FontWeight.w800),
               ),
               const SizedBox(width: 9),
               Container(
                 width: 28,
                 height: 28,
                 decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: .20),
+                  color: FasakhanstaBrand.surface.withValues(alpha: .20),
                   shape: BoxShape.circle,
                 ),
                 child: const Icon(
                   Icons.arrow_forward_rounded,
-                  color: Colors.white,
+                  color: FasakhanstaBrand.text,
                   size: 17,
                 ),
               ),
@@ -364,7 +366,7 @@ class _RegisterScreenState extends State<RegisterScreen> with ValidationMixin {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 13),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: FasakhanstaBrand.surface,
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: _border),
       ),
@@ -437,7 +439,7 @@ class _RegisterScreenState extends State<RegisterScreen> with ValidationMixin {
     return Container(
       padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: FasakhanstaBrand.surface,
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: _border),
       ),

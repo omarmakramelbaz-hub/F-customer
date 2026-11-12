@@ -1,3 +1,4 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:geocoding/geocoding.dart';
@@ -9,7 +10,11 @@ import '../../../../helpers/translation/all_translation.dart';
 import '../controller/address_controller.dart';
 
 class ChangeAddressWidget extends StatelessWidget {
-  const ChangeAddressWidget({super.key, required this.addressController, this.placemarks});
+  const ChangeAddressWidget({
+    super.key,
+    required this.addressController,
+    this.placemarks,
+  });
   final AddressController addressController;
   final List<Placemark>? placemarks;
   @override
@@ -18,9 +23,13 @@ class ChangeAddressWidget extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
-        color: AppColors.whiteColor,
+        color: FasakhanstaBrand.surface,
         boxShadow: [
-          BoxShadow(color: AppColors.greyColor.withValues(alpha: 0.2), offset: const Offset(0, -3), blurRadius: 10),
+          BoxShadow(
+            color: AppColors.greyColor.withValues(alpha: 0.2),
+            offset: const Offset(0, -3),
+            blurRadius: 10,
+          ),
         ],
       ),
       child: Column(

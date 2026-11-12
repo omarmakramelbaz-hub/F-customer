@@ -1,3 +1,4 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
 import 'package:custom_timer/custom_timer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -27,7 +28,8 @@ class VerificationCodeScreen extends StatefulWidget {
   State<VerificationCodeScreen> createState() => _VerificationCodeScreenState();
 }
 
-class _VerificationCodeScreenState extends State<VerificationCodeScreen> with SingleTickerProviderStateMixin {
+class _VerificationCodeScreenState extends State<VerificationCodeScreen>
+    with SingleTickerProviderStateMixin {
   final _formKey = GlobalKey<FormState>();
   final _codeEC = TextEditingController();
   late final CustomTimerController _timerController = CustomTimerController(
@@ -59,8 +61,13 @@ class _VerificationCodeScreenState extends State<VerificationCodeScreen> with Si
       child: Scaffold(
         appBar: CustomAppBar(
           centerTitle: false,
-          title: const CustomImage(path: AppImages.appLogo, type: ImageType.asset, height: 55, radius: 12),
-          appBarColor: AppColors.whiteColor,
+          title: const CustomImage(
+            path: AppImages.appLogo,
+            type: ImageType.asset,
+            height: 55,
+            radius: 12,
+          ),
+          appBarColor: Colors.transparent,
         ),
         body: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
@@ -70,7 +77,10 @@ class _VerificationCodeScreenState extends State<VerificationCodeScreen> with Si
               const SizedBox(height: 25),
               Text('verificationCode'.tr, style: AppTextStyle.text20BS()),
               18.sbH,
-              Text('pleaseEnterTheVerificationCodeSentToTheNumber'.tr, style: AppTextStyle.text18RDG()),
+              Text(
+                'pleaseEnterTheVerificationCodeSentToTheNumber'.tr,
+                style: AppTextStyle.text18RDG(),
+              ),
               const SizedBox(height: 25),
               CustomOtpField(controller: _codeEC, onCompleted: (v) {}),
               const SizedBox(height: 25),
@@ -78,7 +88,10 @@ class _VerificationCodeScreenState extends State<VerificationCodeScreen> with Si
                 child: CustomTimer(
                   controller: _timerController,
                   builder: (state, time) {
-                    return Text('${time.minutes}:${time.seconds}', style: AppTextStyle.text18MS());
+                    return Text(
+                      '${time.minutes}:${time.seconds}',
+                      style: AppTextStyle.text18MS(),
+                    );
                   },
                 ),
               ),
@@ -86,14 +99,15 @@ class _VerificationCodeScreenState extends State<VerificationCodeScreen> with Si
               Center(
                 child: TextButton(
                   onPressed: () {
-                    if (_timerController.state.value == CustomTimerState.finished) {
+                    if (_timerController.state.value ==
+                        CustomTimerState.finished) {
                       _timerController.reset();
                       _timerController.start();
                     } else {
                       CommonMethods.showToast(
                         message: 'Wait for the end of time'.tr,
                         type: ToastType.warning,
-                        backgroundColor: Colors.orange.shade900,
+                        backgroundColor: FasakhanstaBrand.orange,
                       );
                     }
                   },
@@ -102,7 +116,10 @@ class _VerificationCodeScreenState extends State<VerificationCodeScreen> with Si
                     children: [
                       SvgPicture.asset(
                         AppImages.refreshIcon,
-                        colorFilter: ColorFilter.mode(AppColors.whiteColor, BlendMode.srcIn),
+                        colorFilter: ColorFilter.mode(
+                          AppColors.whiteColor,
+                          BlendMode.srcIn,
+                        ),
                         width: 22,
                         height: 22,
                         fit: BoxFit.contain,
@@ -113,7 +130,7 @@ class _VerificationCodeScreenState extends State<VerificationCodeScreen> with Si
                         style: TextStyle(
                           decoration: TextDecoration.underline,
                           fontSize: 14,
-                          color: AppColors.blackColor,
+                          color: FasakhanstaBrand.text,
                           fontWeight: FontWeight.w400,
                         ),
                       ),
@@ -127,13 +144,14 @@ class _VerificationCodeScreenState extends State<VerificationCodeScreen> with Si
         bottomNavigationBar: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
           child: CustomButton(
-            style: AppTextStyle.text18BW(),
+            style: AppTextStyle.text18BW(color: FasakhanstaBrand.onOrange),
             onPressed: () {
               if (_formKey.currentState!.validate()) {
                 context.read<AuthController>().codeActivate(
                       mobileCode: _codeEC.text,
                       onSuccess: () {
-                        NamedNavigatorImpl.push(CreateNewAccountScreen.routeName);
+                        NamedNavigatorImpl.push(
+                            CreateNewAccountScreen.routeName);
                       },
                     );
               }

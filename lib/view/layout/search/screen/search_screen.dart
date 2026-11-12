@@ -1,3 +1,5 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
+
 import 'dart:convert';
 import 'dart:developer';
 
@@ -40,7 +42,10 @@ class _SearchScreenState extends State<SearchScreen> {
   @override
   void initState() {
     _pusherController = context.read<PusherController>();
-    _pusherController.addEventListener('resturant.updated', _handleResturantUpdated);
+    _pusherController.addEventListener(
+      'resturant.updated',
+      _handleResturantUpdated,
+    );
     super.initState();
     searchFocusNode = FocusNode();
 
@@ -53,7 +58,9 @@ class _SearchScreenState extends State<SearchScreen> {
       final resturantData = decodedData['resturant'];
 
       if (mounted) {
-        final resturantModel = RestaurantsModel.fromJson(resturantData as Map<String, dynamic>);
+        final resturantModel = RestaurantsModel.fromJson(
+          resturantData as Map<String, dynamic>,
+        );
 
         context.read<RestaurantsController>().updateResturant(resturantModel);
       }
@@ -67,7 +74,10 @@ class _SearchScreenState extends State<SearchScreen> {
   void dispose() {
     _searchEc.dispose();
     searchFocusNode.dispose();
-    _pusherController.removeEventListener('resturant.updated', _handleResturantUpdated);
+    _pusherController.removeEventListener(
+      'resturant.updated',
+      _handleResturantUpdated,
+    );
     super.dispose();
   }
 
@@ -82,7 +92,7 @@ class _SearchScreenState extends State<SearchScreen> {
           appBar: CustomAppBar(
             height: 50,
             leading: IconButton(
-              icon: Icon(Icons.arrow_back_ios, color: AppColors.blackColor),
+              icon: Icon(Icons.arrow_back_ios, color: FasakhanstaBrand.text),
               onPressed: () => NamedNavigatorImpl.pop(),
             ),
             title: Text('restaurants'.tr, style: AppTextStyle.text16BS()),
@@ -95,7 +105,10 @@ class _SearchScreenState extends State<SearchScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 10,
+                    ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -129,7 +142,9 @@ class _SearchScreenState extends State<SearchScreen> {
                               focusNode: searchFocusNode,
                               onFieldSubmitted: (value) {
                                 if (value.isNotEmpty) {
-                                  restaurantController.getRestaurants(search: value);
+                                  restaurantController.getRestaurants(
+                                    search: value,
+                                  );
                                 }
                                 if (value.isEmpty) {
                                   restaurantController.getRestaurants();
@@ -137,7 +152,10 @@ class _SearchScreenState extends State<SearchScreen> {
                               },
                               controller: _searchEc,
                               prefixIcon: Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 13),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 13,
+                                  vertical: 13,
+                                ),
                                 child: SvgPicture.asset(AppImages.searchIcon),
                               ),
                               hintText: 'searchForWhatYouWant'.tr,
@@ -155,17 +173,22 @@ class _SearchScreenState extends State<SearchScreen> {
                       });
                     },
                   ),
-                  isSelected == true ? const SizedBox(height: 16) : const SizedBox(),
+                  isSelected == true
+                      ? const SizedBox(height: 16)
+                      : const SizedBox(),
                   isSelected == true || _searchEc.text.isNotEmpty
                       ? const Expanded(child: AllRestaurantsWidget())
                       : Column(
                           children: [
                             const SizedBox(height: 24),
                             Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 20,
+                                vertical: 24,
+                              ),
                               width: context.width,
                               decoration: BoxDecoration(
-                                color: AppColors.whiteColor,
+                                color: FasakhanstaBrand.surface,
                                 boxShadow: [
                                   BoxShadow(
                                     color: Colors.grey.withValues(alpha: 0.2),
@@ -177,13 +200,21 @@ class _SearchScreenState extends State<SearchScreen> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text('researchResults'.tr, style: AppTextStyle.text16BS()),
+                                  Text(
+                                    'researchResults'.tr,
+                                    style: AppTextStyle.text16BS(),
+                                  ),
                                   const SizedBox(height: 12),
                                   ApiResponseWidget(
-                                    apiResponse: searchController.lastSearchApiResponse,
-                                    onReload: () => searchController.getLastSearch(),
-                                    isEmpty: searchController.lastSearch.isEmpty,
-                                    emptyWidget: Center(child: Text('noSearchResults'.tr)),
+                                    apiResponse:
+                                        searchController.lastSearchApiResponse,
+                                    onReload: () =>
+                                        searchController.getLastSearch(),
+                                    isEmpty:
+                                        searchController.lastSearch.isEmpty,
+                                    emptyWidget: Center(
+                                      child: Text('noSearchResults'.tr),
+                                    ),
                                     child: Wrap(
                                       spacing: 10,
                                       runSpacing: 12,
@@ -192,26 +223,46 @@ class _SearchScreenState extends State<SearchScreen> {
                                         (index) => Container(
                                           padding: const EdgeInsets.all(10),
                                           decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(18),
-                                            border: Border.all(color: const Color(0xffF1F1F1)),
+                                            borderRadius: BorderRadius.circular(
+                                              18,
+                                            ),
+                                            border: Border.all(
+                                              color: FasakhanstaBrand.border,
+                                            ),
                                           ),
                                           child: InkWell(
                                             onTap: () {
                                               setState(() {
-                                                _searchEc.text = searchController.lastSearch[index].search ?? '';
-                                                search = searchController.lastSearch[index].search ?? '';
+                                                _searchEc.text =
+                                                    searchController
+                                                            .lastSearch[index]
+                                                            .search ??
+                                                        '';
+                                                search = searchController
+                                                        .lastSearch[index]
+                                                        .search ??
+                                                    '';
                                                 log(search ?? '');
                                               });
-                                              restaurantController.getRestaurants(search: search);
+                                              restaurantController
+                                                  .getRestaurants(
+                                                search: search,
+                                              );
                                             },
                                             child: Row(
                                               mainAxisSize: MainAxisSize.min,
                                               children: [
-                                                SvgPicture.asset(AppImages.reloadIcon),
+                                                SvgPicture.asset(
+                                                  AppImages.reloadIcon,
+                                                ),
                                                 const SizedBox(width: 6),
                                                 Text(
-                                                  searchController.lastSearch[index].search ?? '',
-                                                  style: AppTextStyle.text16MG(),
+                                                  searchController
+                                                          .lastSearch[index]
+                                                          .search ??
+                                                      '',
+                                                  style:
+                                                      AppTextStyle.text16MG(),
                                                 ),
                                               ],
                                             ),

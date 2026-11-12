@@ -1,3 +1,4 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
@@ -12,7 +13,11 @@ import '../controller/address_controller.dart';
 class TypeAddressWidget extends StatefulWidget {
   final String? typeAddressFormUpdate;
   final String? onSelectedFromUpdate;
-  const TypeAddressWidget({super.key, this.typeAddressFormUpdate, this.onSelectedFromUpdate});
+  const TypeAddressWidget({
+    super.key,
+    this.typeAddressFormUpdate,
+    this.onSelectedFromUpdate,
+  });
 
   @override
   State<TypeAddressWidget> createState() => _TypeAddressWidgetState();
@@ -27,16 +32,26 @@ class _TypeAddressWidgetState extends State<TypeAddressWidget> {
         Provider.of<AddressController>(
           context,
           listen: false,
-        ).setIndexSelectedOfficeOrHouseOrApartment(widget.typeAddressFormUpdate!);
+        ).setIndexSelectedOfficeOrHouseOrApartment(
+          widget.typeAddressFormUpdate!,
+        );
       }
     });
   }
 
-  Widget _buildAddressOption(BuildContext context, String icon, String label, String title) {
+  Widget _buildAddressOption(
+    BuildContext context,
+    String icon,
+    String label,
+    String title,
+  ) {
     final provider = Provider.of<AddressController>(context);
 
     final isSelected = provider.indexSelectedOfficeOrHouseOrApartment == title;
-    final colorFilter = ColorFilter.mode(isSelected ? AppColors.whiteColor : AppColors.lightTextColor, BlendMode.srcIn);
+    final colorFilter = ColorFilter.mode(
+      isSelected ? AppColors.whiteColor : AppColors.lightTextColor,
+      BlendMode.srcIn,
+    );
 
     return InkWell(
       onTap: () => provider.setIndexSelectedOfficeOrHouseOrApartment(title),
@@ -44,11 +59,16 @@ class _TypeAddressWidgetState extends State<TypeAddressWidget> {
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 6),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(15),
-          color: isSelected ? AppColors.mainAppColor : AppColors.whiteColor,
-          border: isSelected ? null : Border.all(color: AppColors.borderColorContainer),
+          color: isSelected ? AppColors.mainAppColor : FasakhanstaBrand.surface,
+          border: isSelected
+              ? null
+              : Border.all(color: AppColors.borderColorContainer),
           gradient: isSelected
               ? LinearGradient(
-                  colors: [AppColors.gridOneButtonColor, AppColors.gridTwoButtonColor],
+                  colors: [
+                    AppColors.gridOneButtonColor,
+                    AppColors.gridTwoButtonColor,
+                  ],
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                 )
@@ -62,7 +82,12 @@ class _TypeAddressWidgetState extends State<TypeAddressWidget> {
             Column(
               children: [
                 5.sbH,
-                Text(label.tr, style: isSelected ? AppTextStyle.text14MW() : AppTextStyle.text14RL()),
+                Text(
+                  label.tr,
+                  style: isSelected
+                      ? AppTextStyle.text14MW()
+                      : AppTextStyle.text14RL(),
+                ),
               ],
             ),
           ],
@@ -76,9 +101,19 @@ class _TypeAddressWidgetState extends State<TypeAddressWidget> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        _buildAddressOption(context, AppImages.apartmentIcon, 'apartment', 'office'),
+        _buildAddressOption(
+          context,
+          AppImages.apartmentIcon,
+          'apartment',
+          'office',
+        ),
         _buildAddressOption(context, AppImages.houseIcon, 'house', 'home'),
-        _buildAddressOption(context, AppImages.officeIcon, 'office', 'apartment'),
+        _buildAddressOption(
+          context,
+          AppImages.officeIcon,
+          'office',
+          'apartment',
+        ),
       ],
     );
   }

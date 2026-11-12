@@ -1,3 +1,4 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
 import 'package:flutter/material.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 
@@ -27,7 +28,9 @@ class MyTimeLineWidget extends StatelessWidget {
         isFirst: isFirst,
         isLast: isLast,
         endChild: endChild,
-        beforeLineStyle: LineStyle(color: AppColors.greyColor.withValues(alpha: .2)),
+        beforeLineStyle: LineStyle(
+          color: AppColors.greyColor.withValues(alpha: .2),
+        ),
         indicatorStyle: IndicatorStyle(
           width: context.width * 0.1,
           height: context.width * 0.3,
@@ -35,8 +38,14 @@ class MyTimeLineWidget extends StatelessWidget {
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: AppColors.whiteColor,
-              boxShadow: [BoxShadow(color: AppColors.greyColor, blurRadius: 8, offset: const Offset(0, 5))],
+              color: FasakhanstaBrand.surface,
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.greyColor,
+                  blurRadius: 8,
+                  offset: const Offset(0, 5),
+                ),
+              ],
             ),
             child: icon,
           ),

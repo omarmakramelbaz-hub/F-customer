@@ -1,3 +1,4 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../helpers/extensions/extensions.dart';
@@ -20,8 +21,9 @@ class SliderWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final sliderData =
-        controller.slider.isEmpty ? controller.defaultSlider : controller.slider;
+    final sliderData = controller.slider.isEmpty
+        ? controller.defaultSlider
+        : controller.slider;
 
     if (sliderData.isEmpty) return const SizedBox.shrink();
 
@@ -93,7 +95,7 @@ class RestaurantsNearYouWidget extends StatelessWidget {
                     vertical: 6,
                   ),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFFFF3E7),
+                    color: FasakhanstaBrand.surfaceRaised,
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
                       color: AppColors.mainAppColor.withValues(alpha: .18),
@@ -123,15 +125,18 @@ class RestaurantsNearYouWidget extends StatelessWidget {
                   onTap: () =>
                       NamedNavigatorImpl.push(RestaurantsScreen.routeName),
                   child: Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 4,
+                      vertical: 4,
+                    ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
                           'عرض الكل',
-                          style: AppTextStyle.text13BS()
-                              .copyWith(color: AppColors.mainAppColor),
+                          style: AppTextStyle.text13BS().copyWith(
+                            color: AppColors.mainAppColor,
+                          ),
                         ),
                         const SizedBox(width: 3),
                         Icon(

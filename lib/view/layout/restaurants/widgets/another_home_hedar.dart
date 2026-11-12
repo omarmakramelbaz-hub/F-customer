@@ -1,3 +1,4 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
@@ -15,9 +16,13 @@ import '../../cart/screen/cart_screen.dart';
 import '../../home/widgets/current_city_widget.dart';
 import '../model/details_restaurants_model.dart';
 
-class AnotherHomeHeaderCoverAndImageRestaurantDetailsWidget extends StatelessWidget {
+class AnotherHomeHeaderCoverAndImageRestaurantDetailsWidget
+    extends StatelessWidget {
   final DetailsRestaurantModel? detailsRestaurant;
-  const AnotherHomeHeaderCoverAndImageRestaurantDetailsWidget({super.key, required this.detailsRestaurant});
+  const AnotherHomeHeaderCoverAndImageRestaurantDetailsWidget({
+    super.key,
+    required this.detailsRestaurant,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +59,8 @@ class AnotherHomeHeaderCoverAndImageRestaurantDetailsWidget extends StatelessWid
                       top: 45,
                       left: 20,
                       child: InkWell(
-                        onTap: () => NamedNavigatorImpl.push(CartScreen.routeName),
+                        onTap: () =>
+                            NamedNavigatorImpl.push(CartScreen.routeName),
                         child: Stack(
                           clipBehavior: Clip.none,
                           children: [
@@ -66,7 +72,9 @@ class AnotherHomeHeaderCoverAndImageRestaurantDetailsWidget extends StatelessWid
                                 radius: 20,
                                 backgroundColor: AppColors.mainAppColor,
                                 child: InkWell(
-                                  onTap: () => NamedNavigatorImpl.push(CartScreen.routeName),
+                                  onTap: () => NamedNavigatorImpl.push(
+                                    CartScreen.routeName,
+                                  ),
                                   child: Stack(
                                     clipBehavior: Clip.none,
                                     children: [
@@ -76,14 +84,22 @@ class AnotherHomeHeaderCoverAndImageRestaurantDetailsWidget extends StatelessWid
                                         right: -2,
                                         child: CircleAvatar(
                                           radius: 8,
-                                          backgroundColor: AppColors.darkMainAppColor,
+                                          backgroundColor:
+                                              AppColors.darkMainAppColor,
                                           child: Text(
-                                            context.read<CartController>().cart?.carts?.length.toString() ?? '0',
+                                            context
+                                                    .read<CartController>()
+                                                    .cart
+                                                    ?.carts
+                                                    ?.length
+                                                    .toString() ??
+                                                '0',
                                             // context.read<HomeController>().countCart.toString(),
-                                            style: AppTextStyle.text16BW().copyWith(
+                                            style: AppTextStyle.text16BW()
+                                                .copyWith(
                                               height: 1.4,
                                               fontSize: 14,
-                                              color: AppColors.whiteColor,
+                                              color: FasakhanstaBrand.text,
                                             ),
                                           ),
                                         ),
@@ -108,7 +124,7 @@ class AnotherHomeHeaderCoverAndImageRestaurantDetailsWidget extends StatelessWid
                     height: 140,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20),
-                      color: AppColors.whiteColor,
+                      color: FasakhanstaBrand.surface,
                       border: Border.all(color: AppColors.borderColorContainer),
                     ),
                     child: Column(
@@ -117,15 +133,19 @@ class AnotherHomeHeaderCoverAndImageRestaurantDetailsWidget extends StatelessWid
                         Row(
                           children: [
                             Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 10),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 10,
+                              ),
                               child: Container(
                                 padding: const EdgeInsets.all(5),
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(10),
-                                  border: Border.all(color: AppColors.borderColorContainer),
+                                  border: Border.all(
+                                    color: AppColors.borderColorContainer,
+                                  ),
                                 ),
                                 child: CircleAvatar(
-                                  backgroundColor: AppColors.whiteColor,
+                                  backgroundColor: FasakhanstaBrand.surface,
                                   radius: 30,
                                   child: CustomNetworkImage(
                                     imageUrl: detailsRestaurant?.logo ?? '',
@@ -139,23 +159,35 @@ class AnotherHomeHeaderCoverAndImageRestaurantDetailsWidget extends StatelessWid
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(detailsRestaurant?.name ?? '', style: AppTextStyle.text18BS()),
+                                  Text(
+                                    detailsRestaurant?.name ?? '',
+                                    style: AppTextStyle.text18BS(),
+                                  ),
                                   10.sbH,
                                   Container(
-                                    padding: const EdgeInsets.only(left: 5, right: 5, top: 5),
+                                    padding: const EdgeInsets.only(
+                                      left: 5,
+                                      right: 5,
+                                      top: 5,
+                                    ),
                                     decoration: BoxDecoration(
                                       color: AppColors.lightGreyColor,
                                       borderRadius: BorderRadius.circular(3),
                                     ),
                                     child: Row(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
                                         SvgPicture.asset(AppImages.starIcon),
                                         const SizedBox(width: 5),
                                         Text(
-                                          detailsRestaurant?.avgRate?.toStringAsFixed(1).toString() ?? '',
-                                          style: AppTextStyle.text14RS().copyWith(height: 1.4),
+                                          detailsRestaurant?.avgRate
+                                                  ?.toStringAsFixed(1)
+                                                  .toString() ??
+                                              '',
+                                          style: AppTextStyle.text14RS()
+                                              .copyWith(height: 1.4),
                                         ),
                                       ],
                                     ),
@@ -171,12 +203,22 @@ class AnotherHomeHeaderCoverAndImageRestaurantDetailsWidget extends StatelessWid
                           children: [
                             const Icon(Icons.access_time, size: 20),
                             const SizedBox(width: 5),
-                            Text(detailsRestaurant?.deliveryTime ?? '', style: AppTextStyle.text14MS()),
+                            Text(
+                              detailsRestaurant?.deliveryTime ?? '',
+                              style: AppTextStyle.text14MS(),
+                            ),
                             const SizedBox(width: 40),
-                            const CustomImage(path: AppImages.fastDeliveryImage, width: 20, type: ImageType.asset),
+                            const CustomImage(
+                              path: AppImages.fastDeliveryImage,
+                              width: 20,
+                              type: ImageType.asset,
+                            ),
                             const SizedBox(width: 5),
                             Text(
-                              'egyPound'.tr.replaceAll('{}', '${detailsRestaurant?.kmPrice.toString()}'),
+                              'egyPound'.tr.replaceAll(
+                                    '{}',
+                                    '${detailsRestaurant?.kmPrice.toString()}',
+                                  ),
                               style: AppTextStyle.text14MS(),
                             ),
                           ],
