@@ -46,6 +46,8 @@ class DeliveryProvider extends ChangeNotifier with WidgetsBindingObserver {
   bool _foreground = true;
   bool _refreshing = false;
   String? _registered;
+  final _versions = <int, int>{};
+  final _finished = <int>{};
   int? orderId;
   String? latestActivityId;
   String? latestActivityPushToken;
@@ -144,6 +146,9 @@ class DeliveryProvider extends ChangeNotifier with WidgetsBindingObserver {
     _pending = _pending.then((_) async {
       if (_disposed || id <= 0 || status.isEmpty) return;
       try {
+        if (_finished.contains(id) && !isTerminal(status)) return;
+        final version = _timestamp(updatedAt);
+        if (version != null && version < (_versions[id] ?? 0)) return;
         if (!await _platform.supported() || _disposed) return;
         final model = DeliveryActivityModel(
           orderId: '$id',
@@ -152,6 +157,8 @@ class DeliveryProvider extends ChangeNotifier with WidgetsBindingObserver {
           updatedAt: _timestamp(updatedAt),
         );
         if (isTerminal(status)) {
+          _finished.add(id);
+          if (version != null) _versions[id] = version;
           await _platform.end(id, model.toMap());
           if (orderId == id) await _clearRegistration();
           return;
@@ -163,6 +170,7 @@ class DeliveryProvider extends ChangeNotifier with WidgetsBindingObserver {
           _registered = null;
         }
         orderId = id;
+        if (version != null) _versions[id] = version;
         deliveryModel = model;
         latestActivityId = snapshot.activityId;
         if (snapshot.pushToken?.isNotEmpty == true)

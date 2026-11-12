@@ -159,6 +159,28 @@ void main() {
     expect(platform.endings.single['order_status'], 'Delivered');
   });
 
+  test('late REST responses cannot regress a newer stage or reopen delivery',
+      () async {
+    final platform = _Platform();
+    final provider = DeliveryProvider(
+        platform: platform,
+        deviceToken: () async => null,
+        registerActivity: (_) async => true,
+        unregisterActivity: (_) async {});
+    addTearDown(provider.dispose);
+    await provider.syncOrder(
+        id: 10, status: 'shipped', updatedAt: '2026-11-12T14:30:00Z');
+    await provider.syncOrder(
+        id: 10, status: 'pending', updatedAt: '2026-11-12T14:20:00Z');
+    expect(platform.updates.length, 1);
+    expect(provider.deliveryModel?.orderStatus, 'On the Way');
+    await provider.syncOrder(
+        id: 10, status: 'completed', updatedAt: '2026-11-12T14:40:00Z');
+    await provider.syncOrder(id: 10, status: 'pending');
+    expect(platform.updates.length, 1);
+    expect(provider.orderId, isNull);
+  });
+
   test('an old finished order never closes the active order', () async {
     final platform = _Platform();
     final provider = DeliveryProvider(

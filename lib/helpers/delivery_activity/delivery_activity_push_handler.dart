@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:live_activities/live_activities.dart';
 
 import '../utils/logger.dart';
@@ -13,7 +14,7 @@ class DeliveryActivityPushHandler {
 
   static Future<void> handlePushData(Map<String, dynamic> payload) async {
     // iOS data pushes use the native typed ActivityKit state.
-    if (Platform.isIOS) return;
+    if (kIsWeb || Platform.isIOS) return;
     final data = _extractPayload(payload);
 
     final looksLikeLiveActivity = _looksLikeLiveActivityUpdate(data);
