@@ -29,6 +29,7 @@ jobs:
       - name: Check maintained code and test formatting
         run: >-
           dart format --output=none --set-exit-if-changed
+          lib/helpers/hive/hive_methods.dart
           lib/helpers/theme/theme.dart
           lib/helpers/theme/app_colors.dart
           lib/helpers/theme/fasakhansta_brand.dart
@@ -61,11 +62,15 @@ jobs:
           lib/view/custom_widgets/custom_payment_web_view/embedded_payment_browser.dart
           lib/view/layout/cart/widgets/execute_order_button.dart
           lib/view/layout/wallet/bottom_sheet/charge_wallet_bottom_sheet.dart
+          lib/view/layout/wallet/controller/wallet_controller.dart
+          lib/view/layout/wallet/model/wallet_checkout.dart
+          lib/view/layout/wallet/model/wallet_checkout_service.dart
           test
           tool/check_places_web_callbacks.dart
       - name: Analyze maintained code
         run: >-
           flutter analyze --no-pub --no-fatal-infos --no-fatal-warnings
+          lib/helpers/hive/hive_methods.dart
           lib/helpers/app/init_services.dart
           lib/helpers/delivery_activity/delivery_activity_push_handler.dart
           lib/helpers/delivery_activity/delivery_provider.dart
@@ -111,6 +116,9 @@ jobs:
           lib/view/custom_widgets/custom_payment_web_view/embedded_payment_browser.dart
           lib/view/layout/cart/widgets/execute_order_button.dart
           lib/view/layout/wallet/bottom_sheet/charge_wallet_bottom_sheet.dart
+          lib/view/layout/wallet/controller/wallet_controller.dart
+          lib/view/layout/wallet/model/wallet_checkout.dart
+          lib/view/layout/wallet/model/wallet_checkout_service.dart
           test
           tool/check_places_web_callbacks.dart
       - name: Verify JavaScript Places callbacks

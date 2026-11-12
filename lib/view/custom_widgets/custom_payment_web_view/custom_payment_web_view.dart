@@ -1,10 +1,9 @@
-import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
-
 import 'dart:async';
 
 import 'package:flutter/material.dart';
 
 import '../../../helpers/networking/urls.dart';
+import '../../../helpers/theme/fasakhansta_brand.dart';
 import '../../../helpers/payment/order_payment_confirmation.dart';
 import '../../../helpers/payment/payment_navigation_policy.dart';
 import 'embedded_payment_browser.dart';
@@ -183,8 +182,34 @@ class _CustomPaymentWebViewScreenState extends State<CustomPaymentWebViewScreen>
             },
           );
     return Scaffold(
+      backgroundColor: FasakhanstaBrand.background,
       appBar: AppBar(
-        title: Text(isArabic ? 'الدفع داخل التطبيق' : 'In-app payment'),
+        backgroundColor: FasakhanstaBrand.background,
+        foregroundColor: FasakhanstaBrand.text,
+        surfaceTintColor: Colors.transparent,
+        centerTitle: true,
+        title: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Image.asset(
+              'assets/images/home_brand_logo.webp',
+              width: 36,
+              height: 36,
+              excludeFromSemantics: true,
+            ),
+            const SizedBox(width: 8),
+            Flexible(
+              child: Text(
+                isArabic ? 'إتمام الدفع' : 'Complete payment',
+                style: const TextStyle(
+                  fontFamily: 'Tajawal',
+                  fontSize: 18,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ),
+          ],
+        ),
         leading: IconButton(
           key: const ValueKey('close-payment'),
           tooltip: isArabic ? 'إغلاق صفحة الدفع' : 'Close payment',
@@ -198,68 +223,104 @@ class _CustomPaymentWebViewScreenState extends State<CustomPaymentWebViewScreen>
           ),
         ],
       ),
-      body: SafeArea(
-        child: Column(
-          children: [
-            if (_progress < 1 && !_loadError && checkout != null)
-              LinearProgressIndicator(value: _progress == 0 ? null : _progress),
-            if (_awaitingConfirmation)
-              Padding(
-                padding: const EdgeInsets.all(12),
-                child: Text(
-                  isArabic
-                      ? 'جارٍ تأكيد الدفع من السيرفر...'
-                      : 'Confirming payment with the server...',
+      body: DecoratedBox(
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/images/home_hero_poster.jpg'),
+            fit: BoxFit.cover,
+            opacity: .12,
+          ),
+        ),
+        child: SafeArea(
+          child: Column(
+            children: [
+              if (_progress < 1 && !_loadError && checkout != null)
+                LinearProgressIndicator(
+                  value: _progress == 0 ? null : _progress,
+                  color: FasakhanstaBrand.orange,
+                  backgroundColor: FasakhanstaBrand.surfaceRaised,
                 ),
-              ),
-            Expanded(
-              child: events == null || _loadError
-                  ? Center(
-                      child: Padding(
-                        padding: const EdgeInsets.all(24),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const Icon(Icons.wifi_off_rounded, size: 40),
-                            const SizedBox(height: 12),
-                            Text(
-                              isArabic
-                                  ? 'تعذّر تحميل صفحة الدفع'
-                                  : 'Could not load the payment page',
-                              textAlign: TextAlign.center,
-                            ),
-                            if (events != null) ...[
-                              const SizedBox(height: 16),
-                              FilledButton(
-                                key: const ValueKey('retry-payment'),
-                                onPressed: _reload,
-                                child: Text(
-                                  isArabic ? 'إعادة المحاولة' : 'Retry',
+              if (_awaitingConfirmation)
+                Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: Text(
+                    isArabic
+                        ? 'جارٍ تأكيد الدفع...'
+                        : 'Confirming your payment...',
+                    style: const TextStyle(color: FasakhanstaBrand.text),
+                  ),
+                ),
+              Expanded(
+                child: events == null || _loadError
+                    ? Center(
+                        child: Padding(
+                          padding: const EdgeInsets.all(24),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Icon(
+                                Icons.wifi_off_rounded,
+                                size: 40,
+                                color: FasakhanstaBrand.orange,
+                              ),
+                              const SizedBox(height: 12),
+                              Text(
+                                isArabic
+                                    ? 'تعذّر تحميل صفحة الدفع'
+                                    : 'Could not load the payment page',
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(
+                                  color: FasakhanstaBrand.text,
                                 ),
                               ),
+                              if (events != null) ...[
+                                const SizedBox(height: 16),
+                                FilledButton(
+                                  key: const ValueKey('retry-payment'),
+                                  onPressed: _reload,
+                                  style: FilledButton.styleFrom(
+                                    backgroundColor: FasakhanstaBrand.orange,
+                                    foregroundColor:
+                                        FasakhanstaBrand.background,
+                                  ),
+                                  child: Text(
+                                    isArabic ? 'إعادة المحاولة' : 'Retry',
+                                  ),
+                                ),
+                              ],
                             ],
-                          ],
+                          ),
+                        ),
+                      )
+                    : Padding(
+                        padding: const EdgeInsets.fromLTRB(12, 8, 12, 0),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(18),
+                          child: KeyedSubtree(
+                            key: ValueKey(_loadAttempt),
+                            child:
+                                widget.browserBuilder?.call(context, events) ??
+                                    EmbeddedPaymentBrowser(events: events),
+                          ),
                         ),
                       ),
-                    )
-                  : KeyedSubtree(
-                      key: ValueKey(_loadAttempt),
-                      child: widget.browserBuilder?.call(context, events) ??
-                          EmbeddedPaymentBrowser(events: events),
-                    ),
-            ),
-            if (widget.args.orderId != null)
-              Padding(
-                padding: const EdgeInsets.all(12),
-                child: Text(
-                  isArabic
-                      ? 'بعد تأكيد الدفع سيتم فتح تتبع طلبك تلقائيًا'
-                      : 'Order tracking opens automatically after payment is confirmed',
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.bodySmall,
-                ),
               ),
-          ],
+              if (widget.args.orderId != null)
+                Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: Text(
+                    isArabic
+                        ? 'بعد تأكيد الدفع سيتم فتح تتبع طلبك تلقائيًا'
+                        : 'Order tracking opens automatically after payment is confirmed',
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodySmall
+                        ?.copyWith(color: FasakhanstaBrand.text),
+                  ),
+                ),
+            ],
+          ),
         ),
       ),
     );

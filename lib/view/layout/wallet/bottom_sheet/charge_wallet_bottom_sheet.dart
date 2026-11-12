@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../helpers/hive/hive_methods.dart';
 import '../../../../helpers/routes/app_routers_import.dart';
 import '../../../../helpers/theme/app_colors.dart';
 import '../../../../helpers/theme/app_text_style.dart';
@@ -12,6 +13,7 @@ import '../../../custom_widgets/custom_payment_web_view/custom_payment_web_view.
 import '../../auth/controller/auth_controller.dart';
 import '../../my_account/controller/my_account_controller.dart';
 import '../controller/wallet_controller.dart';
+import '../model/wallet_checkout.dart';
 import '../widget/chooseVCashOrVisaWidget.dart';
 
 class ChargeWalletBottomSheet extends StatefulWidget {
@@ -30,11 +32,14 @@ class ChargeWalletBottomSheet extends StatefulWidget {
 }
 
 class _ChargeWalletBottomSheetState extends State<ChargeWalletBottomSheet> {
-  void _pay(BuildContext context) {
+  Future<void> _pay(BuildContext context) async {
     final walletController = widget.walletController;
+    if (walletController.isCreatingCheckout) return;
     final authController = context.read<AuthController>();
+    final sessionToken = HiveMethods.getToken();
 
-    if (!walletController.chargeWalletFormKey.currentState!.validate()) {
+    if (!(walletController.chargeWalletFormKey.currentState?.validate() ??
+        false)) {
       return;
     }
 
@@ -43,30 +48,83 @@ class _ChargeWalletBottomSheetState extends State<ChargeWalletBottomSheet> {
       return;
     }
 
-    walletController.chargingWallet(
+    final checkout = await walletController.chargingWallet(
       amount: walletController.chargeAmountEc.text,
-      onSuccess: (link) {
-        NamedNavigatorImpl.push(
-          CustomPaymentWebViewScreen.routeName,
-          arguments: PaymentArgs(
-            url: link,
-            onFailed: () {
-              CommonMethods.showError(message: 'paymentFailed'.tr);
-            },
-            onSuccess: () {
-              Navigator.pop(context);
-              walletController.getWallet();
-              authController.getProfile();
-            },
-          ),
-        );
-      },
+    );
+    if (!mounted ||
+        !context.mounted ||
+        checkout == null ||
+        HiveMethods.getToken() != sessionToken ||
+        !(ModalRoute.of(context)?.isCurrent ?? true)) {
+      return;
+    }
+    NamedNavigatorImpl.push(
+      CustomPaymentWebViewScreen.routeName,
+      arguments: PaymentArgs(
+        url: checkout.url,
+        // Wallet orders have their own settlement flow. The restaurant
+        // order monitor must not treat a top-up as a food order.
+        onFailed: () {
+          if (mounted &&
+              context.mounted &&
+              HiveMethods.getToken() == sessionToken) {
+            CommonMethods.showError(message: 'paymentFailed'.tr);
+          }
+        },
+        onSuccess: () {
+          if (!mounted ||
+              !context.mounted ||
+              HiveMethods.getToken() != sessionToken) {
+            return;
+          }
+          if (ModalRoute.of(context)?.isCurrent ?? true) {
+            Navigator.pop(context);
+          }
+          walletController.getWallet();
+          authController.getProfile();
+        },
+      ),
     );
   }
 
   @override
-  Widget build(BuildContext context) {
+  void dispose() {
+    widget.walletController.cancelCheckoutCreation(notify: false);
+    super.dispose();
+  }
+
+  String _errorText(WalletCheckoutError error, bool isArabic) {
+    if ((error.type == WalletCheckoutErrorType.rejected ||
+            error.type == WalletCheckoutErrorType.invalidResponse) &&
+        error.message != null) {
+      return error.message!;
+    }
+    return switch (error.type) {
+      WalletCheckoutErrorType.offline => isArabic
+          ? 'اتأكد من اتصال الإنترنت وحاول تاني.'
+          : 'Check your internet connection and try again.',
+      WalletCheckoutErrorType.timedOut => isArabic
+          ? 'فتح صفحة الدفع اتأخر. انتظر قليلًا قبل المحاولة مرة أخرى.'
+          : 'Opening payment took too long. Please wait a moment before trying again.',
+      WalletCheckoutErrorType.signInRequired => isArabic
+          ? 'سجّل دخولك مرة أخرى لفتح صفحة الدفع.'
+          : 'Please sign in again to open payment.',
+      _ => isArabic
+          ? 'تعذّر فتح صفحة الدفع. حاول مرة أخرى بعد قليل.'
+          : 'Could not open payment. Please try again shortly.',
+    };
+  }
+
+  @override
+  Widget build(BuildContext context) => ListenableBuilder(
+        listenable: widget.walletController,
+        builder: (context, _) => _buildSheet(context),
+      );
+
+  Widget _buildSheet(BuildContext context) {
     final walletController = widget.walletController;
+    final isCreatingCheckout = walletController.isCreatingCheckout;
+    final checkoutError = walletController.checkoutError;
     final isArabic = Localizations.localeOf(context).languageCode == 'ar';
     final keyboardInset = MediaQuery.of(context).viewInsets.bottom;
 
@@ -182,6 +240,7 @@ class _ChargeWalletBottomSheetState extends State<ChargeWalletBottomSheet> {
                               ),
                               const SizedBox(height: 6),
                               TextFormField(
+                                enabled: !isCreatingCheckout,
                                 controller: walletController.chargeAmountEc,
                                 focusNode:
                                     walletController.chargeAmountFocusNode,
@@ -271,8 +330,15 @@ class _ChargeWalletBottomSheetState extends State<ChargeWalletBottomSheet> {
                                 style: AppTextStyle.text12BS(),
                               ),
                               const SizedBox(height: 6),
-                              ChooseVCashOrVisaWidget(
-                                myAccountController: widget.myAccountController,
+                              AbsorbPointer(
+                                absorbing: isCreatingCheckout,
+                                child: ExcludeFocus(
+                                  excluding: isCreatingCheckout,
+                                  child: ChooseVCashOrVisaWidget(
+                                    myAccountController:
+                                        widget.myAccountController,
+                                  ),
+                                ),
                               ),
                             ],
                           ),
@@ -280,6 +346,21 @@ class _ChargeWalletBottomSheetState extends State<ChargeWalletBottomSheet> {
                       ],
                     ),
                     const SizedBox(height: 10),
+                    if (checkoutError != null)
+                      Semantics(
+                        liveRegion: true,
+                        child: Padding(
+                          padding: const EdgeInsets.only(bottom: 10),
+                          child: Text(
+                            _errorText(checkoutError, isArabic),
+                            key: const ValueKey('wallet-checkout-error'),
+                            textAlign: TextAlign.center,
+                            style: AppTextStyle.text12BS().copyWith(
+                              color: AppColors.redColor,
+                            ),
+                          ),
+                        ),
+                      ),
                     Row(
                       children: [
                         Expanded(
@@ -320,11 +401,16 @@ class _ChargeWalletBottomSheetState extends State<ChargeWalletBottomSheet> {
                           width: 150,
                           height: 42,
                           child: ElevatedButton(
-                            onPressed: () => _pay(context),
+                            key: const ValueKey('wallet-checkout-submit'),
+                            onPressed:
+                                isCreatingCheckout ? null : () => _pay(context),
                             style: ElevatedButton.styleFrom(
                               elevation: 0,
                               backgroundColor: AppColors.mainAppColor,
                               foregroundColor: FasakhanstaBrand.onOrange,
+                              disabledBackgroundColor: FasakhanstaBrand.orange,
+                              disabledForegroundColor:
+                                  FasakhanstaBrand.onOrange,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(14),
                               ),
@@ -332,15 +418,31 @@ class _ChargeWalletBottomSheetState extends State<ChargeWalletBottomSheet> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                const Icon(
-                                  Icons.lock_outline_rounded,
-                                  size: 17,
-                                ),
+                                if (isCreatingCheckout)
+                                  const SizedBox(
+                                    width: 17,
+                                    height: 17,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                      color: FasakhanstaBrand.onOrange,
+                                    ),
+                                  )
+                                else
+                                  const Icon(
+                                    Icons.lock_outline_rounded,
+                                    size: 17,
+                                  ),
                                 const SizedBox(width: 6),
-                                Text(
-                                  'payNow'.tr,
-                                  style: AppTextStyle.text14BS(
-                                    color: FasakhanstaBrand.onOrange,
+                                Flexible(
+                                  child: Text(
+                                    isCreatingCheckout
+                                        ? (isArabic
+                                            ? 'جارٍ فتح الدفع'
+                                            : 'Opening payment')
+                                        : 'payNow'.tr,
+                                    style: AppTextStyle.text14BS(
+                                      color: FasakhanstaBrand.onOrange,
+                                    ),
                                   ),
                                 ),
                               ],

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
 
@@ -13,20 +14,47 @@ import '../routes/app_routers_import.dart';
 import '../translation/all_translation.dart';
 import '../utils/common_methods.dart';
 
-enum ResponseState { sleep, offline, loading, pagination, complete, error, unauthorized }
+enum ResponseState {
+  sleep,
+  offline,
+  loading,
+  pagination,
+  complete,
+  error,
+  unauthorized,
+}
+
+enum ApiFailureKind { timeout, cancelled, network }
 
 class ApiResponse {
   ResponseState state;
 
   dynamic data;
 
-  ApiResponse({required this.state, required this.data});
+  final ApiFailureKind? failure;
+  int? statusCode;
+
+  ApiResponse({
+    required this.state,
+    required this.data,
+    this.failure,
+    this.statusCode,
+  });
 }
 
 class ApiHelper {
   static ApiHelper? _instance;
 
-  ApiHelper._();
+  ApiHelper._()
+      : _dio = _defaultDio(),
+        _postConnection = CommonMethods.hasConnection;
+
+  @visibleForTesting
+  ApiHelper.forTesting({
+    required Dio dio,
+    required Future<bool> Function() hasConnection,
+  })  : _dio = dio,
+        _postConnection = hasConnection;
 
   static ApiHelper get instance {
     _instance ??= ApiHelper._();
@@ -34,7 +62,10 @@ class ApiHelper {
     return _instance!;
   }
 
-  final Dio _dio = Dio()
+  final Dio _dio;
+  final Future<bool> Function() _postConnection;
+
+  static Dio _defaultDio() => Dio()
     ..interceptors.add(
       PrettyDioLogger(
         requestHeader: false,
@@ -61,7 +92,9 @@ class ApiHelper {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
         'Lang': HiveMethods.getLang(),
-        if (HiveMethods.getToken() != null && hasToken) ...{'Authorization': 'Bearer ${HiveMethods.getToken()}'},
+        if (HiveMethods.getToken() != null && hasToken) ...{
+          'Authorization': 'Bearer ${HiveMethods.getToken()}',
+        },
         ...?headers,
       },
     );
@@ -85,7 +118,10 @@ class ApiHelper {
   }) async {
     ApiResponse responseJson;
     if (await CommonMethods.hasConnection() == false) {
-      responseJson = ApiResponse(state: ResponseState.offline, data: _offlineMessage());
+      responseJson = ApiResponse(
+        state: ResponseState.offline,
+        data: _offlineMessage(),
+      );
       Future.delayed(Duration.zero, onFinish);
       return responseJson;
     }
@@ -100,10 +136,16 @@ class ApiHelper {
       responseJson = _buildResponse(response);
       Future.delayed(Duration.zero, onFinish);
     } on DioException {
-      responseJson = ApiResponse(state: ResponseState.error, data: _errorMessage());
+      responseJson = ApiResponse(
+        state: ResponseState.error,
+        data: _errorMessage(),
+      );
       Future.delayed(Duration.zero, onFinish);
     } on SocketException {
-      responseJson = ApiResponse(state: ResponseState.offline, data: _offlineMessage());
+      responseJson = ApiResponse(
+        state: ResponseState.offline,
+        data: _offlineMessage(),
+      );
       Future.delayed(Duration.zero, onFinish);
       return responseJson;
     }
@@ -119,13 +161,86 @@ class ApiHelper {
     void Function(int, int)? onReceiveProgress,
     void Function(int, int)? onSendProgress,
     bool hasToken = true,
+    Duration? requestTimeout,
+    CancelToken? cancelToken,
+    bool Function()? canSendRequest,
   }) async {
+    if (requestTimeout != null) {
+      if (requestTimeout <= Duration.zero) {
+        throw ArgumentError.value(requestTimeout, 'requestTimeout');
+      }
+      final requestCancellation = cancelToken ?? CancelToken();
+      try {
+        // The deadline includes the connectivity preflight. Cancelling the Dio
+        // token stops an in-flight request; the guard below prevents a delayed
+        // preflight from starting a POST after this operation has ended.
+        return await Future.any<ApiResponse>([
+          post(
+            url,
+            queryParameters: queryParameters,
+            body: body,
+            headers: headers,
+            onReceiveProgress: onReceiveProgress,
+            onSendProgress: onSendProgress,
+            hasToken: hasToken,
+            cancelToken: requestCancellation,
+            canSendRequest: canSendRequest,
+          ),
+          requestCancellation.whenCancel.then(
+            (_) => ApiResponse(
+              state: ResponseState.error,
+              data: _errorMessage(),
+              failure: ApiFailureKind.cancelled,
+            ),
+          ),
+        ]).timeout(
+          requestTimeout,
+          onTimeout: () {
+            requestCancellation.cancel('request deadline reached');
+            return ApiResponse(
+              state: ResponseState.error,
+              data: _errorMessage(),
+              failure: ApiFailureKind.timeout,
+            );
+          },
+        );
+      } finally {
+        Future.delayed(Duration.zero, onFinish);
+      }
+    }
+
     ApiResponse responseJson;
 
-    if (await CommonMethods.hasConnection() == false) {
-      responseJson = ApiResponse(state: ResponseState.offline, data: _offlineMessage());
+    if (cancelToken?.isCancelled ?? false) {
+      return ApiResponse(
+        state: ResponseState.error,
+        data: _errorMessage(),
+        failure: ApiFailureKind.cancelled,
+      );
+    }
+    final connected = await _postConnection();
+    if (cancelToken?.isCancelled ?? false) {
+      return ApiResponse(
+        state: ResponseState.error,
+        data: _errorMessage(),
+        failure: ApiFailureKind.cancelled,
+      );
+    }
+    if (!connected) {
+      responseJson = ApiResponse(
+        state: ResponseState.offline,
+        data: _offlineMessage(),
+      );
       Future.delayed(Duration.zero, onFinish);
       return responseJson;
+    }
+    if (canSendRequest != null && !canSendRequest()) {
+      cancelToken?.cancel('request session changed');
+      return ApiResponse(
+        state: ResponseState.error,
+        data: _errorMessage(),
+        failure: ApiFailureKind.cancelled,
+      );
     }
     try {
       final response = await _dio.post(
@@ -135,15 +250,42 @@ class ApiHelper {
         options: _options(headers, hasToken),
         onReceiveProgress: onReceiveProgress,
         onSendProgress: onSendProgress,
+        cancelToken: cancelToken,
       );
-      responseJson = _buildResponse(response);
+      // An old session's response must not redirect a newly signed-in account.
+      if (canSendRequest != null && !canSendRequest()) {
+        cancelToken?.cancel('request session changed');
+        return ApiResponse(
+          state: ResponseState.error,
+          data: _errorMessage(),
+          failure: ApiFailureKind.cancelled,
+        );
+      }
+      responseJson = _buildResponse(response, canHandleResponse: canSendRequest)
+        ..statusCode = response.statusCode;
       Future.delayed(Duration.zero, onFinish);
-    } on DioException {
-      responseJson = ApiResponse(state: ResponseState.error, data: _errorMessage());
+    } on DioException catch (error) {
+      final failure = switch (error.type) {
+        DioExceptionType.cancel => ApiFailureKind.cancelled,
+        DioExceptionType.connectionTimeout ||
+        DioExceptionType.sendTimeout ||
+        DioExceptionType.receiveTimeout =>
+          ApiFailureKind.timeout,
+        _ => ApiFailureKind.network,
+      };
+      responseJson = ApiResponse(
+        state: ResponseState.error,
+        data: _errorMessage(),
+        failure: failure,
+      );
       Future.delayed(Duration.zero, onFinish);
       return responseJson;
     } on SocketException {
-      responseJson = ApiResponse(state: ResponseState.offline, data: _offlineMessage());
+      responseJson = ApiResponse(
+        state: ResponseState.offline,
+        data: _offlineMessage(),
+        failure: ApiFailureKind.network,
+      );
       Future.delayed(Duration.zero, onFinish);
       return responseJson;
     }
@@ -163,7 +305,10 @@ class ApiHelper {
     ApiResponse responseJson;
 
     if (await CommonMethods.hasConnection() == false) {
-      responseJson = ApiResponse(state: ResponseState.offline, data: _offlineMessage());
+      responseJson = ApiResponse(
+        state: ResponseState.offline,
+        data: _offlineMessage(),
+      );
       Future.delayed(Duration.zero, onFinish);
       return responseJson;
     }
@@ -179,10 +324,16 @@ class ApiHelper {
       responseJson = _buildResponse(response);
       Future.delayed(Duration.zero, onFinish);
     } on DioException {
-      responseJson = ApiResponse(state: ResponseState.error, data: _errorMessage());
+      responseJson = ApiResponse(
+        state: ResponseState.error,
+        data: _errorMessage(),
+      );
       Future.delayed(Duration.zero, onFinish);
     } on SocketException {
-      responseJson = ApiResponse(state: ResponseState.offline, data: _offlineMessage());
+      responseJson = ApiResponse(
+        state: ResponseState.offline,
+        data: _offlineMessage(),
+      );
       Future.delayed(Duration.zero, onFinish);
       return responseJson;
     }
@@ -202,7 +353,10 @@ class ApiHelper {
     ApiResponse responseJson;
 
     if (await CommonMethods.hasConnection() == false) {
-      responseJson = ApiResponse(state: ResponseState.offline, data: _offlineMessage());
+      responseJson = ApiResponse(
+        state: ResponseState.offline,
+        data: _offlineMessage(),
+      );
       Future.delayed(Duration.zero, onFinish);
       return responseJson;
     }
@@ -218,10 +372,16 @@ class ApiHelper {
       responseJson = _buildResponse(response);
       Future.delayed(Duration.zero, onFinish);
     } on DioException {
-      responseJson = ApiResponse(state: ResponseState.error, data: _errorMessage());
+      responseJson = ApiResponse(
+        state: ResponseState.error,
+        data: _errorMessage(),
+      );
       Future.delayed(Duration.zero, onFinish);
     } on SocketException {
-      responseJson = ApiResponse(state: ResponseState.offline, data: _offlineMessage());
+      responseJson = ApiResponse(
+        state: ResponseState.offline,
+        data: _offlineMessage(),
+      );
       Future.delayed(Duration.zero, onFinish);
       return responseJson;
     }
@@ -239,7 +399,10 @@ class ApiHelper {
     ApiResponse responseJson;
 
     if (await CommonMethods.hasConnection() == false) {
-      responseJson = ApiResponse(state: ResponseState.offline, data: _offlineMessage());
+      responseJson = ApiResponse(
+        state: ResponseState.offline,
+        data: _offlineMessage(),
+      );
       Future.delayed(Duration.zero, onFinish);
       return responseJson;
     }
@@ -253,17 +416,26 @@ class ApiHelper {
       responseJson = _buildResponse(response);
       Future.delayed(Duration.zero, onFinish);
     } on DioException {
-      responseJson = ApiResponse(state: ResponseState.error, data: _errorMessage());
+      responseJson = ApiResponse(
+        state: ResponseState.error,
+        data: _errorMessage(),
+      );
       Future.delayed(Duration.zero, onFinish);
     } on SocketException {
-      responseJson = ApiResponse(state: ResponseState.offline, data: _offlineMessage());
+      responseJson = ApiResponse(
+        state: ResponseState.offline,
+        data: _offlineMessage(),
+      );
       Future.delayed(Duration.zero, onFinish);
       return responseJson;
     }
     return responseJson;
   }
 
-  ApiResponse _buildResponse(Response<dynamic> response) {
+  ApiResponse _buildResponse(
+    Response<dynamic> response, {
+    bool Function()? canHandleResponse,
+  }) {
     switch (response.statusCode) {
       case 200:
         var responseJson = response.data;
@@ -277,11 +449,15 @@ class ApiHelper {
       case 401:
         var responseJson = response.data;
         Future.delayed(Duration.zero, () {
+          if (canHandleResponse != null && !canHandleResponse()) return;
           if (HiveMethods.isVisitor() == false) {
             NamedNavigatorImpl.push(LoginScreen.routeName, clean: true);
           }
         });
-        return ApiResponse(state: ResponseState.unauthorized, data: responseJson);
+        return ApiResponse(
+          state: ResponseState.unauthorized,
+          data: responseJson,
+        );
       case 422:
         var responseJson = response.data;
         return ApiResponse(state: ResponseState.error, data: responseJson);
@@ -302,11 +478,13 @@ class ApiHelper {
       'private_key_id': 'a44ba08e526bdad176c1c2a557eeb51a25ff44ff',
       'private_key':
           '-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCkEhTXsNnfDPBK\neDiaF99c/ZSBofZLoBKh8Zam8sBjvvqAavIE6G3MTZ0ZiXiVQ5KwMk7JBejyPGsW\nDnDn4/8ycszQWuR4Ei0sLIqQ5xOKBjCRFKY0aDc0UK5tcEYTHwJ6y+jS+aLYKTNi\nw1X3cfhMVuWjobaSrTJNMFkcuKNp0N6OH4wnIl4S+8yLTJ8VyxN+Azb/gn7v6CdK\nLPgjj45aG4wEv97/t0bs5trmQRFaUllxtvTC0ZjLqBE4xf+37gGfIz4x36OIERU5\nXVM2vyPNkeqrswe4Crxa6ne3bVYWwSyiVqsJYjoO3JuM58THXAgWHyE2xvNL3WDw\nGF0XxaxzAgMBAAECggEAGxLqwo7p3N83Naqx+GeREbi8jUmrKV6QRI3npMPxEGSe\n1JsRNdMe7zQthN3E+qiMZ6vdiVmCz5o9t4WJhxJ99ZaxCn69Lb0eHCh7cx7WgBO2\nZvJn3MUHuwfHSMLapWQcFiRY1pugDhh6ZMVEBdGWPg6m1UIlrP2Mi+U7BzzGpnqv\nbSagpHRr26+iuZBeAhi0r0cQ8BZ0LCY7OGvgDGXz2Y9svS4no5t4hjVeBs6B/NQz\n6ZHvx6MXZ/XfmiTtigueERCuXzPmxatIhy6t7P2FtlM2VNiIS/zEP7zpI8CWCUPc\no6MhYzl/lQwIJ69lOCSPzeQ+D9Xf6ZzIwbcZ0DNgyQKBgQDmW6GK0FX5/hEGzxvH\nRDa39gUGDhW5QG61r/1cPP4jleiaDlVSiNWbXxFlIfQCYnXB/H3faCfsNNEWNu6a\n8OMs7YuRm1EaujEw0soLLIw5GuLHAXk4BoySJAHXZryDjtLOqoI5iWduTlXnbXFX\nCSmC+UwohlOyeTDJZiRp4Nt3mwKBgQC2VYBvvjIjJac9D4B/UnHEJlEPvVNXp+na\nW9f88vXT1XwerSRsxfeBHi0KYwhCyje8Emh6aGhKkwuvPqpppIlp7dTnMNH57j6f\nX8nUrrtYWZW2Q4dGN9popim3D1/hmgfdLlcEYDPru1PW9nw+DhJT0SHMz775TG0S\nSiYNDp7oCQKBgQDMeHE/ggWOzVHXtWZ2zbm0OI/k/AOUV/jtFLXTdeAvPhUlCav6\ngrL4Ir6SAj1REIxuD+y6rP0i0Q72pPPOXBuJ+aB1MmQfUT3wlGn62SPuXEsHUeuD\nK20DGyr3Q535OIEuKHNHFwvUAXyG28JK+zr5osdTAUixlpkTa7LOuGSWGQKBgGQu\nvIApR9EJ+kbRgq/yc7Hrv7RfOTC7gQFKX3WLZUi8TxNn3NCrQV+/Xc4MNdjE1TTQ\nBHnlbhAzlUL3spiTIDGEzOsuZuDlZ6EX94SVcTiNGHZpyiTpwWaojdkYaH1Drbh4\norUzyrNmXR2Klx9difJlwSWQrAS8Wl2nQhsAgo1JAoGALViHBj2PP5iXn2LeWTlh\nl95ZBxgi3UirMzgbgP9i1JIKzzhygTAf2zI9JQHrs7d/geoMtUn0UmmTez9S1/X7\n74/JtiSp/qslKR0BHziyzTGiI3po8V9sbSjFblWmpC5rbiXDjvVQRmKNcg3+ZvC4\n3t93OhJGY4qMOHhwOTYs+6A=\n-----END PRIVATE KEY-----\n',
-      'client_email': 'fasakhaninjatest@fasakhaninjatest.iam.gserviceaccount.com',
+      'client_email':
+          'fasakhaninjatest@fasakhaninjatest.iam.gserviceaccount.com',
       'client_id': '107349182376266401546',
       'auth_uri': 'https://accounts.google.com/o/oauth2/auth',
       'token_uri': 'https://oauth2.googleapis.com/token',
-      'auth_provider_x509_cert_url': 'https://www.googleapis.com/oauth2/v1/certs',
+      'auth_provider_x509_cert_url':
+          'https://www.googleapis.com/oauth2/v1/certs',
       'client_x509_cert_url':
           'https://www.googleapis.com/robot/v1/metadata/x509/fasakhaninjatest%40fasakhaninjatest.iam.gserviceaccount.com',
       'universe_domain': 'googleapis.com',
@@ -345,16 +523,15 @@ class ApiHelper {
       return;
     }
 
-    const String url = 'https://fcm.googleapis.com/v1/projects/fasakhaninjatest/messages:send';
+    const String url =
+        'https://fcm.googleapis.com/v1/projects/fasakhaninjatest/messages:send';
     final payloadData = data ?? <String, dynamic>{};
-    final notificationType = payloadData['notification_type']?.toString().toLowerCase().trim();
+    final notificationType =
+        payloadData['notification_type']?.toString().toLowerCase().trim();
     final isLiveActivityPush = notificationType == 'live_activity';
 
     final Map<String, dynamic> messageBody = {
-      'message': {
-        'token': trimmedToken,
-        'data': payloadData,
-      },
+      'message': {'token': trimmedToken, 'data': payloadData},
     };
     if (isLiveActivityPush) {
       messageBody['message']['apns'] = {
@@ -364,9 +541,7 @@ class ApiHelper {
           'apns-topic': 'com.faskhaninja.clients',
         },
         'payload': {
-          'aps': {
-            'content-available': 1,
-          },
+          'aps': {'content-available': 1},
         },
       };
     } else {
@@ -395,7 +570,12 @@ class ApiHelper {
       final response = await dio.post(
         url,
         data: messageBody,
-        options: Options(headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer $accessToken'}),
+        options: Options(
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $accessToken',
+          },
+        ),
       );
 
       if (response.statusCode == 200) {
