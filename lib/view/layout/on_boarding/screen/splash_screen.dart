@@ -37,7 +37,7 @@ class _SplashScreenState extends State<SplashScreen> {
   ];
 
   // Match the very first frame of the opening video as closely as possible.
-  static const Color _openingBackground = Color(0xFF3788B6);
+  static const Color _openingBackground = Colors.transparent;
   static const Duration _maxOpeningDuration = Duration(seconds: 5);
 
   final LocalAuthentication _localAuth = LocalAuthentication();
@@ -249,10 +249,10 @@ class _SplashScreenState extends State<SplashScreen> {
     context.read<AuthController>().getProfile(
       onHaveIdANDToken: (id, token) {
         context.read<PusherController>().initPusher(
-              channelName: 'private-user.$id',
-              userId: id,
-              token: token,
-            );
+          channelName: 'private-user.$id',
+          userId: id,
+          token: token,
+        );
       },
       onSuccess: () async {
         if (!mounted || _isNavigationPending) return;

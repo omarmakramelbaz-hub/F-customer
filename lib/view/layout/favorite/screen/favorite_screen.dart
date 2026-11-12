@@ -1,3 +1,4 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -26,7 +27,7 @@ class FavoriteScreen extends StatelessWidget {
       child: Consumer<FavoriteController>(
         builder: (context, controller, _) {
           return Scaffold(
-            backgroundColor: const Color(0xFFF8F9FB),
+            backgroundColor: Colors.transparent,
             body: SafeArea(
               child: PageContainer(
                 child: Column(
@@ -50,9 +51,11 @@ class FavoriteScreen extends StatelessWidget {
                               const SizedBox(height: 18),
                               _sectionHeader(controller.favorite.length),
                               const SizedBox(height: 10),
-                              for (var index = 0;
-                                  index < controller.favorite.length;
-                                  index++) ...[
+                              for (
+                                var index = 0;
+                                index < controller.favorite.length;
+                                index++
+                              ) ...[
                                 _FavoriteRestaurantCard(
                                   model: controller.favorite[index],
                                   onRemove: () {
@@ -106,7 +109,7 @@ class FavoriteScreen extends StatelessWidget {
                   Text(
                     'مطاعمك المفضلة في مكان واحد',
                     style: AppTextStyle.text11RG().copyWith(
-                      color: const Color(0xFF989CA3),
+                      color: FasakhanstaBrand.muted,
                     ),
                   ),
                 ],
@@ -116,7 +119,7 @@ class FavoriteScreen extends StatelessWidget {
               width: 44,
               height: 44,
               decoration: BoxDecoration(
-                color: const Color(0xFFFFF3EA),
+                color: FasakhanstaBrand.surfaceRaised,
                 borderRadius: BorderRadius.circular(15),
               ),
               child: Icon(
@@ -136,7 +139,7 @@ class FavoriteScreen extends StatelessWidget {
     required VoidCallback onTap,
   }) {
     return Material(
-      color: Colors.white,
+      color: FasakhanstaBrand.surface,
       borderRadius: BorderRadius.circular(15),
       child: InkWell(
         borderRadius: BorderRadius.circular(15),
@@ -146,7 +149,7 @@ class FavoriteScreen extends StatelessWidget {
           height: 44,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15),
-            border: Border.all(color: const Color(0xFFECEEF1)),
+            border: Border.all(color: FasakhanstaBrand.border),
           ),
           child: Icon(icon, color: AppColors.mainAppColor, size: 20),
         ),
@@ -161,10 +164,13 @@ class FavoriteScreen extends StatelessWidget {
         gradient: const LinearGradient(
           begin: Alignment.topRight,
           end: Alignment.bottomLeft,
-          colors: [Color(0xFFFFF5ED), Color(0xFFFFFBF8)],
+          colors: [
+            FasakhanstaBrand.surfaceRaised,
+            FasakhanstaBrand.surfaceRaised,
+          ],
         ),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: const Color(0xFFFFE0C8)),
+        border: Border.all(color: FasakhanstaBrand.border),
       ),
       child: Row(
         textDirection: TextDirection.rtl,
@@ -185,7 +191,7 @@ class FavoriteScreen extends StatelessWidget {
             ),
             child: const Icon(
               Icons.favorite_rounded,
-              color: Colors.white,
+              color: FasakhanstaBrand.onOrange,
               size: 25,
             ),
           ),
@@ -201,7 +207,7 @@ class FavoriteScreen extends StatelessWidget {
                       ? 'لديك مطعم واحد محفوظ للوصول إليه بسرعة'
                       : 'لديك $count مطاعم محفوظة للوصول إليها بسرعة',
                   style: AppTextStyle.text11RG().copyWith(
-                    color: const Color(0xFF858A92),
+                    color: FasakhanstaBrand.muted,
                     height: 1.3,
                   ),
                 ),
@@ -212,9 +218,9 @@ class FavoriteScreen extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: FasakhanstaBrand.surface,
               borderRadius: BorderRadius.circular(11),
-              border: Border.all(color: const Color(0xFFFFDFC5)),
+              border: Border.all(color: FasakhanstaBrand.border),
             ),
             child: Text(
               '$count',
@@ -237,7 +243,7 @@ class FavoriteScreen extends StatelessWidget {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
           decoration: BoxDecoration(
-            color: const Color(0xFFFFF1E6),
+            color: FasakhanstaBrand.surfaceRaised,
             borderRadius: BorderRadius.circular(9),
           ),
           child: Text(
@@ -251,7 +257,7 @@ class FavoriteScreen extends StatelessWidget {
         Text(
           'اضغط على المطعم لفتحه',
           style: AppTextStyle.text10RG().copyWith(
-            color: const Color(0xFF9A9EA5),
+            color: FasakhanstaBrand.muted,
           ),
         ),
       ],
@@ -267,9 +273,9 @@ class FavoriteScreen extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: FasakhanstaBrand.surface,
             borderRadius: BorderRadius.circular(18),
-            border: Border.all(color: const Color(0xFFECEEF1)),
+            border: Border.all(color: FasakhanstaBrand.border),
           ),
           child: Row(
             textDirection: TextDirection.rtl,
@@ -278,7 +284,7 @@ class FavoriteScreen extends StatelessWidget {
                 width: 40,
                 height: 40,
                 decoration: BoxDecoration(
-                  color: const Color(0xFFFFF3EA),
+                  color: FasakhanstaBrand.surfaceRaised,
                   borderRadius: BorderRadius.circular(13),
                 ),
                 child: Icon(
@@ -297,7 +303,7 @@ class FavoriteScreen extends StatelessWidget {
                     Text(
                       'تصفح الفروع وأضف مطاعم أخرى إلى المفضلة',
                       style: AppTextStyle.text10RG().copyWith(
-                        color: const Color(0xFF92969D),
+                        color: FasakhanstaBrand.muted,
                       ),
                     ),
                   ],
@@ -325,40 +331,37 @@ class _FavoriteRestaurantCard extends StatelessWidget {
   final FavoriteModel model;
   final VoidCallback onRemove;
 
-  const _FavoriteRestaurantCard({
-    required this.model,
-    required this.onRemove,
-  });
+  const _FavoriteRestaurantCard({required this.model, required this.onRemove});
 
   @override
   Widget build(BuildContext context) {
-    final restaurantId =
-        model.id ?? model.resturantId ?? model.vendorId ?? 0;
+    final restaurantId = model.id ?? model.resturantId ?? model.vendorId ?? 0;
     final statusInfo = _restaurantStatus(context, model.status, model.openAt);
-    final title = (model.name ?? model.vendorName ?? model.resturantName ?? '').trim();
+    final title = (model.name ?? model.vendorName ?? model.resturantName ?? '')
+        .trim();
     final address = (model.address ?? '').trim();
     final image = model.bgImage?.isNotEmpty == true
         ? model.bgImage!
         : (model.logo ?? '');
 
     return Material(
-      color: Colors.white,
+      color: FasakhanstaBrand.surface,
       borderRadius: BorderRadius.circular(18),
       child: InkWell(
         borderRadius: BorderRadius.circular(18),
         onTap: restaurantId == 0
             ? null
             : () => NamedNavigatorImpl.push(
-                  RestaurantDetailsScreen.routeName,
-                  arguments: RestaurantDetailsArgs(id: restaurantId),
-                ),
+                RestaurantDetailsScreen.routeName,
+                arguments: RestaurantDetailsArgs(id: restaurantId),
+              ),
         child: Container(
           height: 116,
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: FasakhanstaBrand.surface,
             borderRadius: BorderRadius.circular(18),
-            border: Border.all(color: const Color(0xFFEDEFF2)),
+            border: Border.all(color: FasakhanstaBrand.border),
             boxShadow: const [
               BoxShadow(
                 color: Color(0x10000000),
@@ -436,7 +439,7 @@ class _FavoriteRestaurantCard extends StatelessWidget {
                         ),
                         const SizedBox(width: 6),
                         Material(
-                          color: const Color(0xFFFFF2E9),
+                          color: FasakhanstaBrand.surfaceRaised,
                           borderRadius: BorderRadius.circular(11),
                           child: InkWell(
                             borderRadius: BorderRadius.circular(11),
@@ -465,12 +468,14 @@ class _FavoriteRestaurantCard extends StatelessWidget {
                         const SizedBox(width: 3),
                         Expanded(
                           child: Text(
-                            address.isEmpty ? 'اضغط لعرض تفاصيل المطعم' : address,
+                            address.isEmpty
+                                ? 'اضغط لعرض تفاصيل المطعم'
+                                : address,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             textAlign: TextAlign.right,
                             style: AppTextStyle.text10RG().copyWith(
-                              color: const Color(0xFF92969D),
+                              color: FasakhanstaBrand.muted,
                             ),
                           ),
                         ),
@@ -482,7 +487,7 @@ class _FavoriteRestaurantCard extends StatelessWidget {
                       children: [
                         _InfoChip(
                           icon: Icons.star_rounded,
-                          iconColor: const Color(0xFFFFB000),
+                          iconColor: FasakhanstaBrand.orange,
                           text: _formatRate(model.avgRate),
                         ),
                         const SizedBox(width: 6),
@@ -498,13 +503,13 @@ class _FavoriteRestaurantCard extends StatelessWidget {
                           width: 30,
                           height: 30,
                           decoration: BoxDecoration(
-                            color: const Color(0xFFF7F8FA),
+                            color: FasakhanstaBrand.surfaceRaised,
                             borderRadius: BorderRadius.circular(10),
                           ),
                           child: const Icon(
                             Icons.arrow_back_ios_new_rounded,
                             size: 14,
-                            color: Color(0xFF6E737B),
+                            color: FasakhanstaBrand.muted,
                           ),
                         ),
                       ],
@@ -563,7 +568,7 @@ class _InfoChip extends StatelessWidget {
       constraints: const BoxConstraints(maxWidth: 92),
       padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 5),
       decoration: BoxDecoration(
-        color: const Color(0xFFF8F9FB),
+        color: FasakhanstaBrand.surfaceRaised,
         borderRadius: BorderRadius.circular(9),
       ),
       child: Row(
@@ -577,7 +582,7 @@ class _InfoChip extends StatelessWidget {
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: AppTextStyle.text9RG().copyWith(
-                color: const Color(0xFF5F646C),
+                color: FasakhanstaBrand.muted,
                 fontWeight: FontWeight.w600,
               ),
             ),

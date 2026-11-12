@@ -1,3 +1,4 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -40,25 +41,37 @@ class _DeliveryActivityScreenState extends State<DeliveryActivityScreen> {
                 if (provider.deliveryModel != null) ...[
                   Card(
                     elevation: 4,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
                     child: Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: Column(
                         children: [
                           const Text(
                             'Fasakhansta',
-                            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                           10.sbH,
                           Text(
                             provider.deliveryModel?.orderStatus ?? '',
-                            style: const TextStyle(fontSize: 24, color: Colors.orange, fontWeight: FontWeight.w900),
+                            style: const TextStyle(
+                              fontSize: 24,
+                              color: FasakhanstaBrand.orange,
+                              fontWeight: FontWeight.w900,
+                            ),
                           ),
                           10.sbH,
                           LinearProgressIndicator(
-                            value: _getProgress(provider.deliveryModel?.orderStatus),
+                            value: _getProgress(
+                              provider.deliveryModel?.orderStatus,
+                            ),
                             color: Colors.orange,
-                            backgroundColor: Colors.orange.withOpacity(0.2),
+                            backgroundColor: FasakhanstaBrand.orange
+                                .withOpacity(0.2),
                           ),
                         ],
                       ),
@@ -80,16 +93,26 @@ class _DeliveryActivityScreenState extends State<DeliveryActivityScreen> {
                     onPressed: () => provider.stopDelivery(),
                     icon: const Icon(Icons.stop),
                     label: const Text('End Delivery'),
-                    style: ElevatedButton.styleFrom(backgroundColor: Colors.red, foregroundColor: Colors.white),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: FasakhanstaBrand.dangerTint,
+                      foregroundColor: FasakhanstaBrand.text,
+                    ),
                   ),
                 ] else
                   Center(
                     child: ElevatedButton.icon(
-                      onPressed: () => provider.init(5657).whenComplete(() => provider.startDelivery('Preparing')),
+                      onPressed: () => provider
+                          .init(5657)
+                          .whenComplete(
+                            () => provider.startDelivery('Preparing'),
+                          ),
                       icon: const Icon(Icons.local_pizza),
                       label: const Text('Start Delivery Order'),
                       style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 32,
+                          vertical: 16,
+                        ),
                         textStyle: const TextStyle(fontSize: 18),
                       ),
                     ),
@@ -100,14 +123,17 @@ class _DeliveryActivityScreenState extends State<DeliveryActivityScreen> {
                     await FirebaseNotifications.getToken();
                     final message = await provider.checkLiveActivitiesSupport();
                     if (context.mounted) {
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+                      ScaffoldMessenger.of(context)
+                          .showSnackBar(SnackBar(content: Text(message)));
                     }
                     final token = FirebaseNotifications.fcmToken ?? '';
                     if (token.trim().isEmpty) {
                       if (context.mounted) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
-                            content: Text('FCM token is empty. Check APNS registration and permissions.'),
+                            content: Text(
+                              'FCM token is empty. Check APNS registration and permissions.',
+                            ),
                           ),
                         );
                       }
@@ -136,7 +162,10 @@ class _DeliveryActivityScreenState extends State<DeliveryActivityScreen> {
   }
 
   ElevatedButton _btn(DeliveryProvider provider, String status) {
-    return ElevatedButton(onPressed: () => provider.updateStatus(status), child: Text(status));
+    return ElevatedButton(
+      onPressed: () => provider.updateStatus(status),
+      child: Text(status),
+    );
   }
 
   double _getProgress(String? status) {

@@ -1,3 +1,5 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
+
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -36,7 +38,11 @@ class _ZoomImageScreenState extends State<ZoomImageScreen> {
           return const Center(child: CustomLoading());
         },
         errorBuilder: (context, error, stackTrace) {
-          return Container(width: double.infinity, height: double.infinity, color: Colors.grey.shade200);
+          return Container(
+            width: double.infinity,
+            height: double.infinity,
+            color: FasakhanstaBrand.surfaceRaised,
+          );
         },
       ),
     );

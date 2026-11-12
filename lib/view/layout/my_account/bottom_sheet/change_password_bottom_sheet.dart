@@ -1,3 +1,4 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -13,7 +14,8 @@ class ChangePasswordBottomSheet extends StatefulWidget {
   const ChangePasswordBottomSheet({super.key});
 
   @override
-  State<ChangePasswordBottomSheet> createState() => _ChangePasswordBottomSheetState();
+  State<ChangePasswordBottomSheet> createState() =>
+      _ChangePasswordBottomSheetState();
 }
 
 class _ChangePasswordBottomSheetState extends State<ChangePasswordBottomSheet>
@@ -56,7 +58,7 @@ class _ChangePasswordBottomSheetState extends State<ChangePasswordBottomSheet>
             width: double.infinity,
             padding: const EdgeInsets.fromLTRB(18, 8, 18, 16),
             decoration: const BoxDecoration(
-              color: Colors.white,
+              color: FasakhanstaBrand.surface,
               borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(28),
                 topRight: Radius.circular(28),
@@ -82,7 +84,7 @@ class _ChangePasswordBottomSheetState extends State<ChangePasswordBottomSheet>
                         width: 42,
                         height: 4,
                         decoration: BoxDecoration(
-                          color: const Color(0xFFD7D9DD),
+                          color: FasakhanstaBrand.surfaceRaised,
                           borderRadius: BorderRadius.circular(20),
                         ),
                       ),
@@ -105,12 +107,16 @@ class _ChangePasswordBottomSheetState extends State<ChangePasswordBottomSheet>
                     CustomFormField(
                       validator: validateEmptyField,
                       controller: _currentPasswordEC,
-                      title: isArabic ? 'كلمة المرور الحالية' : 'Current password',
-                      hintText: isArabic ? 'أدخل كلمة المرور الحالية' : 'Enter current password',
+                      title: isArabic
+                          ? 'كلمة المرور الحالية'
+                          : 'Current password',
+                      hintText: isArabic
+                          ? 'أدخل كلمة المرور الحالية'
+                          : 'Enter current password',
                       isPassword: true,
                       focusNode: _currentPasswordFocusNode,
                       radius: 16,
-                      fillColor: const Color(0xFFFAFAFB),
+                      fillColor: FasakhanstaBrand.field,
                       titleStyle: AppTextStyle.text13BS(),
                       prefixIcon: Icon(
                         Icons.lock_outline_rounded,
@@ -118,7 +124,8 @@ class _ChangePasswordBottomSheetState extends State<ChangePasswordBottomSheet>
                         color: AppColors.mainAppColor,
                       ),
                       onFieldSubmitted: (_) {
-                        FocusScope.of(context).requestFocus(_newPasswordFocusNode);
+                        FocusScope.of(context)
+                            .requestFocus(_newPasswordFocusNode);
                       },
                     ),
                     const SizedBox(height: 14),
@@ -126,11 +133,13 @@ class _ChangePasswordBottomSheetState extends State<ChangePasswordBottomSheet>
                       validator: validatePassword,
                       controller: _newPasswordEC,
                       title: 'newPassword'.tr,
-                      hintText: isArabic ? 'أدخل كلمة المرور الجديدة' : 'Enter new password',
+                      hintText: isArabic
+                          ? 'أدخل كلمة المرور الجديدة'
+                          : 'Enter new password',
                       isPassword: true,
                       focusNode: _newPasswordFocusNode,
                       radius: 16,
-                      fillColor: const Color(0xFFFAFAFB),
+                      fillColor: FasakhanstaBrand.field,
                       titleStyle: AppTextStyle.text13BS(),
                       prefixIcon: Icon(
                         Icons.key_rounded,
@@ -154,7 +163,7 @@ class _ChangePasswordBottomSheetState extends State<ChangePasswordBottomSheet>
                       isPassword: true,
                       focusNode: _passwordConfirmationFocusNode,
                       radius: 16,
-                      fillColor: const Color(0xFFFAFAFB),
+                      fillColor: FasakhanstaBrand.field,
                       titleStyle: AppTextStyle.text13BS(),
                       prefixIcon: Icon(
                         Icons.verified_user_outlined,
@@ -175,7 +184,9 @@ class _ChangePasswordBottomSheetState extends State<ChangePasswordBottomSheet>
                                 AppColors.gridTwoButtonColor,
                               ],
                             ),
-                            text: isArabic ? 'حفظ كلمة المرور' : 'Save password',
+                            text: isArabic
+                                ? 'حفظ كلمة المرور'
+                                : 'Save password',
                             onPressed: () {
                               FocusScope.of(context).unfocus();
                               if (_formKey.currentState!.validate()) {
@@ -204,7 +215,11 @@ class _ChangePasswordBottomSheetState extends State<ChangePasswordBottomSheet>
 }
 
 class _Header extends StatelessWidget {
-  const _Header({required this.icon, required this.title, required this.subtitle});
+  const _Header({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+  });
 
   final IconData icon;
   final String title;
@@ -222,11 +237,15 @@ class _Header extends StatelessWidget {
             width: 36,
             height: 36,
             decoration: BoxDecoration(
-              color: const Color(0xFFFFF5EC),
+              color: FasakhanstaBrand.surfaceRaised,
               shape: BoxShape.circle,
-              border: Border.all(color: const Color(0xFFFFDCC0)),
+              border: Border.all(color: FasakhanstaBrand.border),
             ),
-            child: Icon(Icons.close_rounded, size: 21, color: AppColors.mainAppColor),
+            child: Icon(
+              Icons.close_rounded,
+              size: 21,
+              color: AppColors.mainAppColor,
+            ),
           ),
         ),
         const Spacer(),
@@ -244,7 +263,7 @@ class _Header extends StatelessWidget {
                     width: 34,
                     height: 34,
                     decoration: BoxDecoration(
-                      color: const Color(0xFFFFF2E7),
+                      color: FasakhanstaBrand.surfaceRaised,
                       borderRadius: BorderRadius.circular(11),
                     ),
                     child: Icon(icon, size: 20, color: AppColors.mainAppColor),
@@ -257,7 +276,9 @@ class _Header extends StatelessWidget {
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 textAlign: TextAlign.end,
-                style: AppTextStyle.text11RG().copyWith(color: const Color(0xFF8A8E95)),
+                style: AppTextStyle.text11RG().copyWith(
+                  color: FasakhanstaBrand.muted,
+                ),
               ),
             ],
           ),
@@ -277,9 +298,9 @@ class _SecurityHint extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       decoration: BoxDecoration(
-        color: const Color(0xFFFFF9F4),
+        color: FasakhanstaBrand.surfaceRaised,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: const Color(0xFFFFE5CF)),
+        border: Border.all(color: FasakhanstaBrand.border),
       ),
       child: Row(
         children: [
@@ -289,7 +310,7 @@ class _SecurityHint extends StatelessWidget {
             child: Text(
               text,
               style: AppTextStyle.text11RG().copyWith(
-                color: const Color(0xFF6E737B),
+                color: FasakhanstaBrand.muted,
                 height: 1.35,
               ),
             ),

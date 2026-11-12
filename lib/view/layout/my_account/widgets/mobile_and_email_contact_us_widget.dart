@@ -1,3 +1,4 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -39,10 +40,11 @@ class MobileAndEmailContactUsWidget extends StatelessWidget {
           value: hasMobile
               ? mobile
               : context.languageCode == 'ar'
-                  ? 'غير متاح حاليًا'
-                  : 'Not available right now',
-          onTap:
-              hasMobile ? () => UrlLauncherMethods.makePhoneCall(mobile) : null,
+              ? 'غير متاح حاليًا'
+              : 'Not available right now',
+          onTap: hasMobile
+              ? () => UrlLauncherMethods.makePhoneCall(mobile)
+              : null,
         ),
         const SizedBox(height: 10),
         _ContactActionCard(
@@ -51,10 +53,11 @@ class MobileAndEmailContactUsWidget extends StatelessWidget {
           value: hasEmail
               ? email
               : context.languageCode == 'ar'
-                  ? 'غير متاح حاليًا'
-                  : 'Not available right now',
-          onTap:
-              hasEmail ? () => UrlLauncherMethods.makeMailMessage(email) : null,
+              ? 'غير متاح حاليًا'
+              : 'Not available right now',
+          onTap: hasEmail
+              ? () => UrlLauncherMethods.makeMailMessage(email)
+              : null,
         ),
         if (HiveMethods.getToken() != null) ...[
           const SizedBox(height: 10),
@@ -106,7 +109,7 @@ class _ContactActionCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: Colors.white,
+      color: FasakhanstaBrand.surface,
       borderRadius: BorderRadius.circular(19),
       child: InkWell(
         onTap: onTap,
@@ -116,7 +119,7 @@ class _ContactActionCard extends StatelessWidget {
           padding: const EdgeInsets.all(13),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(19),
-            border: Border.all(color: const Color(0xFFE7EAEE)),
+            border: Border.all(color: FasakhanstaBrand.border),
             boxShadow: const [
               BoxShadow(
                 color: Color(0x08000000),
@@ -131,14 +134,10 @@ class _ContactActionCard extends StatelessWidget {
                 width: 47,
                 height: 47,
                 decoration: BoxDecoration(
-                  color: const Color(0xFFFFF3E7),
+                  color: FasakhanstaBrand.surfaceRaised,
                   borderRadius: BorderRadius.circular(15),
                 ),
-                child: Icon(
-                  icon,
-                  color: AppColors.mainAppColor,
-                  size: 23,
-                ),
+                child: Icon(icon, color: AppColors.mainAppColor, size: 23),
               ),
               const SizedBox(width: 12),
               Expanded(
@@ -148,7 +147,7 @@ class _ContactActionCard extends StatelessWidget {
                     Text(
                       title,
                       style: AppTextStyle.text11RG().copyWith(
-                        color: const Color(0xFF858B94),
+                        color: FasakhanstaBrand.muted,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -158,7 +157,7 @@ class _ContactActionCard extends StatelessWidget {
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: AppTextStyle.text14BS().copyWith(
-                        color: const Color(0xFF171A1F),
+                        color: FasakhanstaBrand.text,
                         fontWeight: FontWeight.w800,
                         height: 1.3,
                       ),
@@ -172,7 +171,7 @@ class _ContactActionCard extends StatelessWidget {
                 height: 34,
                 decoration: BoxDecoration(
                   color: onTap == null
-                      ? const Color(0xFFF2F3F5)
+                      ? FasakhanstaBrand.surfaceRaised
                       : AppColors.mainAppColor.withValues(alpha: .10),
                   shape: BoxShape.circle,
                 ),
@@ -181,7 +180,7 @@ class _ContactActionCard extends StatelessWidget {
                       ? Icons.arrow_back_rounded
                       : Icons.arrow_forward_rounded,
                   color: onTap == null
-                      ? const Color(0xFFB7BBC1)
+                      ? FasakhanstaBrand.muted
                       : AppColors.mainAppColor,
                   size: 18,
                 ),

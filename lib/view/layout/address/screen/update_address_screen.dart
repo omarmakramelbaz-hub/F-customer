@@ -1,3 +1,5 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
+
 import 'dart:async';
 import 'dart:developer';
 
@@ -69,7 +71,8 @@ class UpdateAddressScreen extends StatefulWidget {
   State<UpdateAddressScreen> createState() => _AddAddressScreenState();
 }
 
-class _AddAddressScreenState extends State<UpdateAddressScreen> with ValidationMixin {
+class _AddAddressScreenState extends State<UpdateAddressScreen>
+    with ValidationMixin {
   final AddressLookupService _addressLookupService = AddressLookupService();
   final _formKey = GlobalKey<FormState>();
   final _areaNameEc = TextEditingController();
@@ -115,11 +118,16 @@ class _AddAddressScreenState extends State<UpdateAddressScreen> with ValidationM
       }
 
       if (permission == LocationPermission.deniedForever) {
-        log('Location permissions are permanently denied, we cannot request permissions.');
+        log(
+          'Location permissions are permanently denied, we cannot request permissions.',
+        );
         return;
       }
 
-      _updateLocation(double.parse(widget.args.lat), double.parse(widget.args.lng));
+      _updateLocation(
+        double.parse(widget.args.lat),
+        double.parse(widget.args.lng),
+      );
     } catch (e) {
       log('Failed to get location: $e');
     }
@@ -131,7 +139,12 @@ class _AddAddressScreenState extends State<UpdateAddressScreen> with ValidationM
       currentLat = lat;
       currentLng = lng;
       markers.clear();
-      markers.add(Marker(markerId: const MarkerId('currentLocation'), position: LatLng(lat, lng)));
+      markers.add(
+        Marker(
+          markerId: const MarkerId('currentLocation'),
+          position: LatLng(lat, lng),
+        ),
+      );
     });
 
     if (gmc != null) {
@@ -154,10 +167,13 @@ class _AddAddressScreenState extends State<UpdateAddressScreen> with ValidationM
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<AddressController>().initialAddressDetails();
-      context.read<AddressController>().getAddressDetails(id: widget.args.id).then((value) {
-        currentLat = double.parse(widget.args.lat);
-        currentLng = double.parse(widget.args.lng);
-      });
+      context
+          .read<AddressController>()
+          .getAddressDetails(id: widget.args.id)
+          .then((value) {
+            currentLat = double.parse(widget.args.lat);
+            currentLng = double.parse(widget.args.lng);
+          });
     });
     _determinePosition();
     _country = CountryParser.parsePhoneCode('20');
@@ -202,7 +218,8 @@ class _AddAddressScreenState extends State<UpdateAddressScreen> with ValidationM
         return Scaffold(
           body: ApiResponseWidget(
             apiResponse: addressController.addressDetailsResponse,
-            onReload: () => addressController.getAddressDetails(id: widget.args.id),
+            onReload: () =>
+                addressController.getAddressDetails(id: widget.args.id),
             isEmpty: addressController.addressDetails == null,
             child: PageContainer(
               child: SingleChildScrollView(
@@ -220,14 +237,17 @@ class _AddAddressScreenState extends State<UpdateAddressScreen> with ValidationM
                               onPressed: () => Navigator.pop(context),
                               icon: SvgPicture.asset(AppImages.backIosIcon),
                             ),
-                            Text('addresses'.tr, style: AppTextStyle.text18BS()),
+                            Text(
+                              'addresses'.tr,
+                              style: AppTextStyle.text18BS(),
+                            ),
                           ],
                         ),
                       ),
                       32.sbH,
                       Container(
                         decoration: BoxDecoration(
-                          color: AppColors.whiteColor,
+                          color: FasakhanstaBrand.surface,
                           borderRadius: const BorderRadius.only(
                             topLeft: Radius.circular(34),
                             topRight: Radius.circular(34),
@@ -243,49 +263,74 @@ class _AddAddressScreenState extends State<UpdateAddressScreen> with ValidationM
                         child: Column(
                           children: [
                             Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 20,
+                                vertical: 10,
+                              ),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Row(
                                     children: [
-                                      Provider.of<AuthController>(context).profile?.gender == 'male'
-                                          ? SvgPicture.asset(AppImages.avatarMale)
-                                          : Provider.of<AuthController>(context).profile?.gender == 'female'
-                                              ? SvgPicture.asset(AppImages.avatarFemale)
-                                              : Container(
-                                                  height: 20,
-                                                  width: 20,
-                                                  decoration: BoxDecoration(
-                                                    color: AppColors.mainAppColor,
-                                                    shape: BoxShape.circle,
-                                                  ),
-                                                  child: Center(
-                                                    child: Text(
-                                                      Provider.of<AuthController>(context)
-                                                              .profile
-                                                              ?.name
-                                                              ?.substring(0, 1) ??
-                                                          '',
-                                                      style: AppTextStyle.text18BW().copyWith(fontSize: 40),
-                                                    ),
-                                                  ),
+                                      Provider.of<AuthController>(context)
+                                                  .profile
+                                                  ?.gender ==
+                                              'male'
+                                          ? SvgPicture.asset(
+                                              AppImages.avatarMale,
+                                            )
+                                          : Provider.of<AuthController>(context)
+                                                    .profile
+                                                    ?.gender ==
+                                                'female'
+                                          ? SvgPicture.asset(
+                                              AppImages.avatarFemale,
+                                            )
+                                          : Container(
+                                              height: 20,
+                                              width: 20,
+                                              decoration: BoxDecoration(
+                                                color: AppColors.mainAppColor,
+                                                shape: BoxShape.circle,
+                                              ),
+                                              child: Center(
+                                                child: Text(
+                                                  Provider.of<AuthController>(
+                                                            context,
+                                                          ).profile?.name
+                                                          ?.substring(0, 1) ??
+                                                      '',
+                                                  style: AppTextStyle.text18BW(
+                                                    color: FasakhanstaBrand
+                                                        .onOrange,
+                                                  ).copyWith(fontSize: 40),
                                                 ),
+                                              ),
+                                            ),
                                       const SizedBox(width: 10),
                                       Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            Provider.of<AuthController>(context).profile?.name ?? '',
+                                            Provider.of<AuthController>(context)
+                                                    .profile
+                                                    ?.name ??
+                                                '',
                                             style: AppTextStyle.text18MS(),
                                           ),
                                           5.sbH,
                                           Row(
                                             children: [
-                                              SvgPicture.asset(AppImages.egyptIcon),
+                                              SvgPicture.asset(
+                                                AppImages.egyptIcon,
+                                              ),
                                               const SizedBox(width: 10),
                                               Text(
-                                                Provider.of<AuthController>(context).profile?.areaTitle ?? '',
+                                                Provider.of<AuthController>(
+                                                      context,
+                                                    ).profile?.areaTitle ??
+                                                    '',
                                                 style: AppTextStyle.text16RG(),
                                               ),
                                             ],
@@ -300,61 +345,94 @@ class _AddAddressScreenState extends State<UpdateAddressScreen> with ValidationM
                             const Divider(),
                             // this column for add address
                             Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 15,
+                                vertical: 10,
+                              ),
                               child: Column(
                                 // this column for add address
                                 children: [
                                   Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 10,
+                                    ),
                                     child: ClipRRect(
                                       borderRadius: BorderRadius.circular(25),
                                       child: SizedBox(
                                         height: context.height * 0.5,
-                                        child: currentLat != null && currentLng != null
+                                        child:
+                                            currentLat != null &&
+                                                currentLng != null
                                             ? GoogleMap(
                                                 onTap: (m) {
                                                   NamedNavigatorImpl.push(
                                                     MapScreen.routeName,
                                                     arguments: MapScreenArgs(
                                                       onBack: (lat, lng) {
-                                                        _updateLocation(lat, lng);
+                                                        _updateLocation(
+                                                          lat,
+                                                          lng,
+                                                        );
                                                       },
                                                     ),
                                                   );
                                                 },
                                                 markers: markers,
                                                 mapType: MapType.normal,
-                                                onMapCreated: (GoogleMapController controller) {
-                                                  gmc = controller;
-                                                  if (addressController.addressDetails != null) {
-                                                    gmc!.animateCamera(
-                                                      CameraUpdate.newLatLng(LatLng(currentLat!, currentLng!)),
-                                                    );
-                                                  }
-                                                },
-                                                initialCameraPosition: CameraPosition(
-                                                  target: LatLng(currentLat!, currentLng!),
-                                                  zoom: 12,
-                                                ),
+                                                onMapCreated:
+                                                    (
+                                                      GoogleMapController
+                                                      controller,
+                                                    ) {
+                                                      gmc = controller;
+                                                      if (addressController
+                                                              .addressDetails !=
+                                                          null) {
+                                                        gmc!.animateCamera(
+                                                          CameraUpdate.newLatLng(
+                                                            LatLng(
+                                                              currentLat!,
+                                                              currentLng!,
+                                                            ),
+                                                          ),
+                                                        );
+                                                      }
+                                                    },
+                                                initialCameraPosition:
+                                                    CameraPosition(
+                                                      target: LatLng(
+                                                        currentLat!,
+                                                        currentLng!,
+                                                      ),
+                                                      zoom: 12,
+                                                    ),
                                               )
-                                            : const Center(child: CustomLoading()),
+                                            : const Center(
+                                                child: CustomLoading(),
+                                              ),
                                       ),
                                     ),
                                   ),
                                   20.sbH,
                                   10.sbH,
                                   ApiResponseWidget(
-                                    apiResponse: addressController.addressDetailsResponse,
+                                    apiResponse: addressController
+                                        .addressDetailsResponse,
                                     loadingSize: 20,
-                                    onReload: () => addressController.getAddressDetails(id: widget.args.id),
-                                    isEmpty: addressController.addressDetails == null,
+                                    onReload: () => addressController
+                                        .getAddressDetails(id: widget.args.id),
+                                    isEmpty:
+                                        addressController.addressDetails ==
+                                        null,
                                     child: ChangeAddressWidget(
                                       addressController: addressController,
                                       placemarks: placemarks,
                                     ),
                                   ),
                                   15.sbH,
-                                  TypeAddressWidget(typeAddressFormUpdate: typeAddress),
+                                  TypeAddressWidget(
+                                    typeAddressFormUpdate: typeAddress,
+                                  ),
                                   16.sbH,
                                   CustomFormField(
                                     controller: _areaNameEc,
@@ -362,7 +440,8 @@ class _AddAddressScreenState extends State<UpdateAddressScreen> with ValidationM
                                     hintText: 'buildingName'.tr,
                                     focusNode: _areaNameFocusNode,
                                     onFieldSubmitted: (_) {
-                                      FocusScope.of(context).requestFocus(_apartmentNoFocusNode);
+                                      FocusScope.of(context)
+                                          .requestFocus(_apartmentNoFocusNode);
                                     },
                                   ),
                                   16.sbH,
@@ -376,7 +455,9 @@ class _AddAddressScreenState extends State<UpdateAddressScreen> with ValidationM
                                           hintText: 'apartmentNumber'.tr,
                                           focusNode: _apartmentNoFocusNode,
                                           onFieldSubmitted: (_) {
-                                            FocusScope.of(context).requestFocus(_floorNoFocusNode);
+                                            FocusScope.of(
+                                              context,
+                                            ).requestFocus(_floorNoFocusNode);
                                           },
                                         ),
                                       ),
@@ -389,7 +470,9 @@ class _AddAddressScreenState extends State<UpdateAddressScreen> with ValidationM
                                           hintText: 'theRoleIsOptional'.tr,
                                           focusNode: _floorNoFocusNode,
                                           onFieldSubmitted: (_) {
-                                            FocusScope.of(context).requestFocus(_streetNameFocusNode);
+                                            FocusScope.of(context).requestFocus(
+                                              _streetNameFocusNode,
+                                            );
                                           },
                                         ),
                                       ),
@@ -402,7 +485,8 @@ class _AddAddressScreenState extends State<UpdateAddressScreen> with ValidationM
                                     hintText: 'street'.tr,
                                     focusNode: _streetNameFocusNode,
                                     onFieldSubmitted: (_) {
-                                      FocusScope.of(context).requestFocus(_badgeFocusNode);
+                                      FocusScope.of(context)
+                                          .requestFocus(_badgeFocusNode);
                                     },
                                   ),
                                   16.sbH,
@@ -411,19 +495,22 @@ class _AddAddressScreenState extends State<UpdateAddressScreen> with ValidationM
                                     hintText: 'optionalDistinctiveSign'.tr,
                                     focusNode: _badgeFocusNode,
                                     onFieldSubmitted: (_) {
-                                      FocusScope.of(context).requestFocus(_mobileFocusNode);
+                                      FocusScope.of(context)
+                                          .requestFocus(_mobileFocusNode);
                                     },
                                   ),
                                   16.sbH,
                                   CustomFormField(
-                                    validator: (v) => validatePhone(v, country: _country),
+                                    validator: (v) =>
+                                        validatePhone(v, country: _country),
                                     controller: _mobileEc,
                                     keyboardType: TextInputType.number,
                                     hintText: 'mobileNumber'.tr,
                                     country: _country,
                                     focusNode: _mobileFocusNode,
                                     onFieldSubmitted: (_) {
-                                      FocusScope.of(context).requestFocus(_addressNameFocusNode);
+                                      FocusScope.of(context)
+                                          .requestFocus(_addressNameFocusNode);
                                     },
                                   ),
                                   16.sbH,
@@ -445,40 +532,73 @@ class _AddAddressScreenState extends State<UpdateAddressScreen> with ValidationM
                                           log(_mobileEc.text);
                                           log(_addressNameEc.text);
 
-                                          if (_formKey.currentState!.validate()) {
-                                            context.read<AddressController>().updateAddress(
+                                          if (_formKey.currentState!
+                                              .validate()) {
+                                            context
+                                                .read<AddressController>()
+                                                .updateAddress(
                                                   id: widget.args.id,
                                                   areaName: _areaNameEc.text,
-                                                  apartmentNo: _apartmentNoEc.text,
+                                                  apartmentNo:
+                                                      _apartmentNoEc.text,
                                                   floorNo: _floorNoEc.text,
-                                                  streetName: _streetNameEc.text,
+                                                  streetName:
+                                                      _streetNameEc.text,
                                                   mobile: _mobileEc.text,
-                                                  addressName: _addressNameEc.text,
-                                                  type: addressController.indexSelectedOfficeOrHouseOrApartment ==
+                                                  addressName:
+                                                      _addressNameEc.text,
+                                                  type:
+                                                      addressController
+                                                              .indexSelectedOfficeOrHouseOrApartment ==
                                                           'office'
                                                       ? 'office'
-                                                      : addressController.indexSelectedOfficeOrHouseOrApartment ==
-                                                              'home'
-                                                          ? 'home'
-                                                          : 'apartment',
-                                                  lat: currentLat ??
+                                                      : addressController
+                                                                .indexSelectedOfficeOrHouseOrApartment ==
+                                                            'home'
+                                                      ? 'home'
+                                                      : 'apartment',
+                                                  lat:
+                                                      currentLat ??
                                                       double.parse(
-                                                          addressController.addressDetails?.lat.toString() ?? '0'),
-                                                  lang: currentLng ??
+                                                        addressController
+                                                                .addressDetails
+                                                                ?.lat
+                                                                .toString() ??
+                                                            '0',
+                                                      ),
+                                                  lang:
+                                                      currentLng ??
                                                       double.parse(
-                                                          addressController.addressDetails?.lng.toString() ?? '0'),
-                                                  countryName: placemarks![0].country ??
-                                                      addressController.addressDetails?.countryName ??
+                                                        addressController
+                                                                .addressDetails
+                                                                ?.lng
+                                                                .toString() ??
+                                                            '0',
+                                                      ),
+                                                  countryName:
+                                                      placemarks![0].country ??
+                                                      addressController
+                                                          .addressDetails
+                                                          ?.countryName ??
                                                       '',
-                                                  cityName: placemarks![0].locality ??
-                                                      addressController.addressDetails?.cityName ??
+                                                  cityName:
+                                                      placemarks![0].locality ??
+                                                      addressController
+                                                          .addressDetails
+                                                          ?.cityName ??
                                                       '',
-                                                  address: placemarks![0].street ??
-                                                      addressController.addressDetails?.address ??
+                                                  address:
+                                                      placemarks![0].street ??
+                                                      addressController
+                                                          .addressDetails
+                                                          ?.address ??
                                                       '',
                                                   onSuccess: () {
-                                                    widget.args.onSuccess!.call();
-                                                    context.read<AuthController>().getProfile();
+                                                    widget.args.onSuccess!
+                                                        .call();
+                                                    context
+                                                        .read<AuthController>()
+                                                        .getProfile();
                                                     Navigator.pop(context);
                                                   },
                                                 );

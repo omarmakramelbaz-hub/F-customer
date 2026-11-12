@@ -1,3 +1,4 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -37,9 +38,9 @@ class ExceptionWidget extends StatelessWidget {
           constraints: const BoxConstraints(maxWidth: 430),
           padding: const EdgeInsets.fromLTRB(24, 28, 24, 24),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: FasakhanstaBrand.surface,
             borderRadius: BorderRadius.circular(28),
-            border: Border.all(color: const Color(0xFFEEEFF2)),
+            border: Border.all(color: FasakhanstaBrand.border),
             boxShadow: const [
               BoxShadow(
                 color: Color(0x0D000000),
@@ -56,7 +57,7 @@ class ExceptionWidget extends StatelessWidget {
                 height: 96,
                 padding: const EdgeInsets.all(23),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFFFF4EA),
+                  color: FasakhanstaBrand.surfaceRaised,
                   shape: BoxShape.circle,
                   border: Border.all(
                     color: AppColors.mainAppColor.withValues(alpha: .16),
@@ -76,7 +77,7 @@ class ExceptionWidget extends StatelessWidget {
                 message ?? 'An error occurred'.tr,
                 textAlign: TextAlign.center,
                 style: AppTextStyle.text18BS().copyWith(
-                  color: const Color(0xFF181A1F),
+                  color: FasakhanstaBrand.text,
                   fontWeight: FontWeight.w800,
                 ),
               ),
@@ -87,7 +88,7 @@ class ExceptionWidget extends StatelessWidget {
                     : 'We couldn’t load this content right now. Please try again in a moment.',
                 textAlign: TextAlign.center,
                 style: AppTextStyle.text13RM().copyWith(
-                  color: const Color(0xFF8A8F98),
+                  color: FasakhanstaBrand.muted,
                   height: 1.55,
                 ),
               ),
@@ -101,13 +102,13 @@ class ExceptionWidget extends StatelessWidget {
                   label: Text(
                     'Reload'.tr,
                     style: AppTextStyle.text15BS().copyWith(
-                      color: Colors.white,
+                      color: FasakhanstaBrand.text,
                       fontWeight: FontWeight.w800,
                     ),
                   ),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.mainAppColor,
-                    foregroundColor: Colors.white,
+                    foregroundColor: FasakhanstaBrand.onOrange,
                     elevation: 0,
                     shadowColor: Colors.transparent,
                     shape: RoundedRectangleBorder(
@@ -127,9 +128,9 @@ class ExceptionWidget extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: FasakhanstaBrand.surface,
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: const Color(0xFFEEEFF2)),
+        border: Border.all(color: FasakhanstaBrand.border),
       ),
       child: Row(
         children: [
@@ -138,7 +139,7 @@ class ExceptionWidget extends StatelessWidget {
             height: 44,
             padding: const EdgeInsets.all(10),
             decoration: const BoxDecoration(
-              color: Color(0xFFFFF4EA),
+              color: FasakhanstaBrand.surfaceRaised,
               shape: BoxShape.circle,
             ),
             child: SvgPicture.asset(
@@ -154,7 +155,7 @@ class ExceptionWidget extends StatelessWidget {
             child: Text(
               message ?? 'An error occurred'.tr,
               style: AppTextStyle.text13MS().copyWith(
-                color: const Color(0xFF31343A),
+                color: FasakhanstaBrand.text,
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -163,10 +164,7 @@ class ExceptionWidget extends StatelessWidget {
           IconButton(
             onPressed: onReload,
             tooltip: 'Reload'.tr,
-            icon: Icon(
-              Icons.refresh_rounded,
-              color: AppColors.mainAppColor,
-            ),
+            icon: Icon(Icons.refresh_rounded, color: AppColors.mainAppColor),
           ),
         ],
       ),

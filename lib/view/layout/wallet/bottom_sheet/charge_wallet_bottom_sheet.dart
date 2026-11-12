@@ -1,3 +1,4 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -81,7 +82,7 @@ class _ChargeWalletBottomSheetState extends State<ChargeWalletBottomSheet> {
             width: double.infinity,
             padding: const EdgeInsets.fromLTRB(18, 8, 18, 12),
             decoration: const BoxDecoration(
-              color: Colors.white,
+              color: FasakhanstaBrand.surface,
               borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(28),
                 topRight: Radius.circular(28),
@@ -105,7 +106,7 @@ class _ChargeWalletBottomSheetState extends State<ChargeWalletBottomSheet> {
                       width: 42,
                       height: 4,
                       decoration: BoxDecoration(
-                        color: const Color(0xFFD7D7D7),
+                        color: FasakhanstaBrand.surfaceRaised,
                         borderRadius: BorderRadius.circular(20),
                       ),
                     ),
@@ -119,10 +120,10 @@ class _ChargeWalletBottomSheetState extends State<ChargeWalletBottomSheet> {
                             width: 34,
                             height: 34,
                             decoration: BoxDecoration(
-                              color: const Color(0xFFFFF6EE),
+                              color: FasakhanstaBrand.surfaceRaised,
                               shape: BoxShape.circle,
                               border: Border.all(
-                                color: const Color(0xFFFFD7B7),
+                                color: FasakhanstaBrand.border,
                               ),
                             ),
                             child: Icon(
@@ -165,7 +166,7 @@ class _ChargeWalletBottomSheetState extends State<ChargeWalletBottomSheet> {
                       ],
                     ),
                     const SizedBox(height: 9),
-                    const Divider(height: 1, color: Color(0xFFE9E9E9)),
+                    const Divider(height: 1, color: FasakhanstaBrand.border),
                     const SizedBox(height: 9),
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -198,9 +199,10 @@ class _ChargeWalletBottomSheetState extends State<ChargeWalletBottomSheet> {
                                   }
                                   final amount = double.tryParse(value) ?? 0;
                                   if (amount < 50) {
-                                    return 'minimumChargeAmount'
-                                        .tr
-                                        .replaceAll('{}', '50');
+                                    return 'minimumChargeAmount'.tr.replaceAll(
+                                      '{}',
+                                      '50',
+                                    );
                                   }
                                   return null;
                                 },
@@ -209,7 +211,7 @@ class _ChargeWalletBottomSheetState extends State<ChargeWalletBottomSheet> {
                                   isDense: true,
                                   hintText: '0.00',
                                   hintStyle: AppTextStyle.text14RG().copyWith(
-                                    color: const Color(0xFFB9B9B9),
+                                    color: FasakhanstaBrand.muted,
                                   ),
                                   suffixText: isArabic ? 'جنيه' : 'EGP',
                                   suffixStyle: AppTextStyle.text11RG().copyWith(
@@ -220,7 +222,7 @@ class _ChargeWalletBottomSheetState extends State<ChargeWalletBottomSheet> {
                                     vertical: 13,
                                   ),
                                   filled: true,
-                                  fillColor: Colors.white,
+                                  fillColor: FasakhanstaBrand.field,
                                   enabledBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(14),
                                     borderSide: BorderSide(
@@ -285,7 +287,7 @@ class _ChargeWalletBottomSheetState extends State<ChargeWalletBottomSheet> {
                             height: 42,
                             padding: const EdgeInsets.symmetric(horizontal: 12),
                             decoration: BoxDecoration(
-                              color: const Color(0xFFFFF9F4),
+                              color: FasakhanstaBrand.surfaceRaised,
                               borderRadius: BorderRadius.circular(13),
                             ),
                             child: Row(
@@ -322,7 +324,7 @@ class _ChargeWalletBottomSheetState extends State<ChargeWalletBottomSheet> {
                             style: ElevatedButton.styleFrom(
                               elevation: 0,
                               backgroundColor: AppColors.mainAppColor,
-                              foregroundColor: Colors.white,
+                              foregroundColor: FasakhanstaBrand.onOrange,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(14),
                               ),
@@ -330,13 +332,15 @@ class _ChargeWalletBottomSheetState extends State<ChargeWalletBottomSheet> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                const Icon(Icons.lock_outline_rounded,
-                                    size: 17),
+                                const Icon(
+                                  Icons.lock_outline_rounded,
+                                  size: 17,
+                                ),
                                 const SizedBox(width: 6),
                                 Text(
                                   'payNow'.tr,
                                   style: AppTextStyle.text14BS(
-                                    color: Colors.white,
+                                    color: FasakhanstaBrand.onOrange,
                                   ),
                                 ),
                               ],

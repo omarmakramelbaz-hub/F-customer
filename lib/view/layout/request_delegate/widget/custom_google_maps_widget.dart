@@ -1,3 +1,5 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
+
 import 'dart:async';
 import 'dart:math' as math;
 import 'dart:ui' as ui;
@@ -30,8 +32,7 @@ class CustomGoogleMapsWidget extends StatefulWidget {
   final double? deliveryLan;
 
   @override
-  State<CustomGoogleMapsWidget> createState() =>
-      _CustomGoogleMapsWidgetState();
+  State<CustomGoogleMapsWidget> createState() => _CustomGoogleMapsWidgetState();
 }
 
 class _CustomGoogleMapsWidgetState extends State<CustomGoogleMapsWidget> {
@@ -136,10 +137,7 @@ class _CustomGoogleMapsWidgetState extends State<CustomGoogleMapsWidget> {
         googleMapController = controller;
         _refreshMapState(moveCamera: true);
       },
-      initialCameraPosition: CameraPosition(
-        target: _pickup,
-        zoom: 14.5,
-      ),
+      initialCameraPosition: CameraPosition(target: _pickup, zoom: 14.5),
     );
   }
 
@@ -150,16 +148,14 @@ class _CustomGoogleMapsWidgetState extends State<CustomGoogleMapsWidget> {
 
     final toLat = double.tryParse('${order?.toLat ?? controller.toLat ?? ''}');
     final toLng = double.tryParse('${order?.toLng ?? controller.toLan ?? ''}');
-    final nextDelivery = toLat != null &&
-            toLng != null &&
-            toLat != 0 &&
-            toLng != 0
+    final nextDelivery =
+        toLat != null && toLng != null && toLat != 0 && toLng != 0
         ? LatLng(toLat, toLng)
         : null;
 
     final deliveryChanged =
         (_controllerDelivery?.latitude != nextDelivery?.latitude) ||
-            (_controllerDelivery?.longitude != nextDelivery?.longitude);
+        (_controllerDelivery?.longitude != nextDelivery?.longitude);
 
     if (_delegateResponded == responded && !deliveryChanged) return;
 
@@ -239,16 +235,13 @@ class _CustomGoogleMapsWidgetState extends State<CustomGoogleMapsWidget> {
         ..lineTo(canvasWidth - 7, 44)
         ..lineTo(poleX, 44)
         ..close();
-      canvas.drawPath(
-        flagPath,
-        ui.Paint()..color = AppColors.mainAppColor,
-      );
+      canvas.drawPath(flagPath, ui.Paint()..color = AppColors.mainAppColor);
 
       final textPainter = TextPainter(
         text: const TextSpan(
           text: 'GO Drive',
           style: TextStyle(
-            color: Colors.white,
+            color: FasakhanstaBrand.text,
             fontSize: 13,
             fontWeight: FontWeight.w800,
           ),
@@ -258,10 +251,7 @@ class _CustomGoogleMapsWidgetState extends State<CustomGoogleMapsWidget> {
       )..layout(maxWidth: canvasWidth - poleX - 16);
       textPainter.paint(
         canvas,
-        Offset(
-          poleX + 10,
-          29 - (textPainter.height / 2),
-        ),
+        Offset(poleX + 10, 29 - (textPainter.height / 2)),
       );
 
       final picture = recorder.endRecording();
@@ -318,18 +308,17 @@ class _CustomGoogleMapsWidgetState extends State<CustomGoogleMapsWidget> {
   void _startSearchingAnimation() {
     if (_searchAnimationTimer?.isActive == true || _canShowRoute) return;
 
-    _searchAnimationTimer = Timer.periodic(
-      const Duration(milliseconds: 60),
-      (_) {
-        if (!mounted || _canShowRoute) return;
-        _searchAngle += 0.045;
-        if (_searchAngle >= math.pi * 2) {
-          _searchAngle -= math.pi * 2;
-        }
-        _updateSearchingRider();
-        if (mounted) setState(() {});
-      },
-    );
+    _searchAnimationTimer = Timer.periodic(const Duration(milliseconds: 60), (
+      _,
+    ) {
+      if (!mounted || _canShowRoute) return;
+      _searchAngle += 0.045;
+      if (_searchAngle >= math.pi * 2) {
+        _searchAngle -= math.pi * 2;
+      }
+      _updateSearchingRider();
+      if (mounted) setState(() {});
+    });
   }
 
   void _stopSearchingAnimation() {
@@ -348,7 +337,8 @@ class _CustomGoogleMapsWidgetState extends State<CustomGoogleMapsWidget> {
       Marker(
         markerId: const MarkerId('searchingRider'),
         position: riderPosition,
-        icon: _riderIcon ??
+        icon:
+            _riderIcon ??
             BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueOrange),
         anchor: const Offset(.5, .5),
         zIndex: 30,
@@ -368,10 +358,7 @@ class _CustomGoogleMapsWidgetState extends State<CustomGoogleMapsWidget> {
     final lngOffset =
         (radiusMeters / (metersPerDegree * cosLat)) * math.sin(angle);
 
-    return LatLng(
-      center.latitude + latOffset,
-      center.longitude + lngOffset,
-    );
+    return LatLng(center.latitude + latOffset, center.longitude + lngOffset);
   }
 
   Future<void> _showRouteState({required bool moveCamera}) async {
@@ -383,7 +370,8 @@ class _CustomGoogleMapsWidgetState extends State<CustomGoogleMapsWidget> {
       Marker(
         markerId: const MarkerId('goDrivePickup'),
         position: _pickup,
-        icon: _pickupGoDriveIcon ??
+        icon:
+            _pickupGoDriveIcon ??
             _riderIcon ??
             BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueOrange),
         anchor: const Offset(.31, 1),
@@ -396,12 +384,11 @@ class _CustomGoogleMapsWidgetState extends State<CustomGoogleMapsWidget> {
       Marker(
         markerId: const MarkerId('goDriveDelivery'),
         position: delivery,
-        icon: _deliveryPinIcon ??
+        icon:
+            _deliveryPinIcon ??
             BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
         zIndex: 90,
-        infoWindow: const InfoWindow(
-          title: 'نقطة التوصيل',
-        ),
+        infoWindow: const InfoWindow(title: 'نقطة التوصيل'),
       ),
     };
     if (mounted) setState(() {});
@@ -416,11 +403,7 @@ class _CustomGoogleMapsWidgetState extends State<CustomGoogleMapsWidget> {
     }
   }
 
-  Future<void> _loadRoute(
-    LatLng pickup,
-    LatLng delivery,
-    String key,
-  ) async {
+  Future<void> _loadRoute(LatLng pickup, LatLng delivery, String key) async {
     try {
       final route = await _mapServices.getRouteData(
         originFrom: pickup,

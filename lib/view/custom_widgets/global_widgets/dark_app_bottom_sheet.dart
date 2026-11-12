@@ -1,3 +1,4 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
 import 'package:flutter/material.dart';
 
 import '../../../helpers/extensions/extensions.dart';
@@ -21,9 +22,18 @@ class DarkAppBottomSheet extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(top: 20),
       decoration: BoxDecoration(
-        color: isDark == true ? AppColors.blackColor : AppColors.whiteColor,
-        borderRadius: const BorderRadius.only(topLeft: Radius.circular(36), topRight: Radius.circular(36)),
-        border: Border.all(color: showBorder == true ? AppColors.lightDarkColor : AppColors.blackColor),
+        color: isDark == true
+            ? FasakhanstaBrand.surfaceRaised
+            : FasakhanstaBrand.surface,
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(36),
+          topRight: Radius.circular(36),
+        ),
+        border: Border.all(
+          color: showBorder == true
+              ? AppColors.lightDarkColor
+              : FasakhanstaBrand.border,
+        ),
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -33,7 +43,14 @@ class DarkAppBottomSheet extends StatelessWidget {
               15.sbH,
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: [Text(title, style: AppTextStyle.text16MS().copyWith(color: AppColors.whiteColor))],
+                children: [
+                  Text(
+                    title,
+                    style: AppTextStyle.text16MS().copyWith(
+                      color: FasakhanstaBrand.text,
+                    ),
+                  ),
+                ],
               ),
               15.sbH,
               15.sbH,

@@ -1,3 +1,4 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
@@ -28,7 +29,8 @@ class AccountInformationScreen extends StatefulWidget {
   const AccountInformationScreen({super.key, required this.args});
 
   @override
-  State<AccountInformationScreen> createState() => _AccountInformationScreenState();
+  State<AccountInformationScreen> createState() =>
+      _AccountInformationScreenState();
 }
 
 class _AccountInformationScreenState extends State<AccountInformationScreen> {
@@ -51,8 +53,11 @@ class _AccountInformationScreenState extends State<AccountInformationScreen> {
                 Container(
                   width: context.width,
                   decoration: BoxDecoration(
-                    color: AppColors.whiteColor,
-                    borderRadius: const BorderRadius.only(topLeft: Radius.circular(34), topRight: Radius.circular(34)),
+                    color: FasakhanstaBrand.surface,
+                    borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(34),
+                      topRight: Radius.circular(34),
+                    ),
                     boxShadow: [
                       BoxShadow(
                         color: AppColors.greyColor.withValues(alpha: 0.2),
@@ -68,28 +73,45 @@ class _AccountInformationScreenState extends State<AccountInformationScreen> {
                         padding: const EdgeInsets.symmetric(horizontal: 20),
                         child: Row(
                           children: [
-                            Provider.of<AuthController>(context).profile?.gender == 'male'
+                            Provider.of<AuthController>(context)
+                                        .profile
+                                        ?.gender ==
+                                    'male'
                                 ? SvgPicture.asset(AppImages.avatarMale)
-                                : Provider.of<AuthController>(context).profile?.gender == 'female'
-                                    ? SvgPicture.asset(AppImages.avatarFemale)
-                                    : Container(
-                                        height: 56,
-                                        width: 56,
-                                        decoration:
-                                            BoxDecoration(color: AppColors.mainAppColor, shape: BoxShape.circle),
-                                        child: Center(
-                                          child: Text(
-                                            Provider.of<AuthController>(context).profile?.name?.substring(0, 1) ?? '',
-                                            style: AppTextStyle.text18BW().copyWith(fontSize: 40),
-                                          ),
-                                        ),
+                                : Provider.of<AuthController>(context)
+                                          .profile
+                                          ?.gender ==
+                                      'female'
+                                ? SvgPicture.asset(AppImages.avatarFemale)
+                                : Container(
+                                    height: 56,
+                                    width: 56,
+                                    decoration: BoxDecoration(
+                                      color: AppColors.mainAppColor,
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: Center(
+                                      child: Text(
+                                        Provider.of<AuthController>(context)
+                                                .profile
+                                                ?.name
+                                                ?.substring(0, 1) ??
+                                            '',
+                                        style: AppTextStyle.text18BW(
+                                          color: FasakhanstaBrand.onOrange,
+                                        ).copyWith(fontSize: 40),
                                       ),
+                                    ),
+                                  ),
                             const SizedBox(width: 20),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  Provider.of<AuthController>(context).profile?.name ?? '',
+                                  Provider.of<AuthController>(context)
+                                          .profile
+                                          ?.name ??
+                                      '',
                                   style: AppTextStyle.text18BS(),
                                 ),
                                 10.sbH,
@@ -99,7 +121,10 @@ class _AccountInformationScreenState extends State<AccountInformationScreen> {
                                     SvgPicture.asset(AppImages.egyptIcon),
                                     const SizedBox(width: 8),
                                     Text(
-                                      Provider.of<AuthController>(context).profile?.areaTitle ?? '',
+                                      Provider.of<AuthController>(context)
+                                              .profile
+                                              ?.areaTitle ??
+                                          '',
                                       style: AppTextStyle.text18RS(),
                                     ),
                                   ],
@@ -110,11 +135,16 @@ class _AccountInformationScreenState extends State<AccountInformationScreen> {
                         ),
                       ),
                       const SizedBox(height: 29),
-                      Divider(color: AppColors.greyColor.withValues(alpha: 0.2), height: 2),
+                      Divider(
+                        color: AppColors.greyColor.withValues(alpha: 0.2),
+                        height: 2,
+                      ),
                       const SizedBox(height: 24),
                       SettingButton(
                         title: 'personalInformation'.tr,
-                        onTap: () => NamedNavigatorImpl.push(PersonalInformationScreen.routeName),
+                        onTap: () => NamedNavigatorImpl.push(
+                          PersonalInformationScreen.routeName,
+                        ),
                       ),
                       const SizedBox(height: 32),
                       SettingButton(

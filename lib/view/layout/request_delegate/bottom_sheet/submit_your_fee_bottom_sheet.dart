@@ -1,3 +1,4 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -46,16 +47,21 @@ class _SubmitYourFeeBottomSheetState extends State<SubmitYourFeeBottomSheet> {
     _feeEC.text = widget.requestDelegateController.priceEC.text;
 
     final currentFare =
-        double.tryParse(widget.requestDelegateController.priceEC.text.trim()) ?? 0;
+        double.tryParse(widget.requestDelegateController.priceEC.text.trim()) ??
+        0;
 
     _referenceFare = currentFare > 0 ? currentFare : widget.distance.toDouble();
-    final dashboardReduction = widget.requestDelegateController.delegatesOnMap
+    final dashboardReduction =
+        widget
+            .requestDelegateController
+            .delegatesOnMap
             ?.shippingMinPricePrecentage ??
         widget.shippingPercentage;
-    _maximumReductionPercentage =
-        dashboardReduction.toDouble().clamp(0.0, 100.0).toDouble();
-    _minimumFare = (_referenceFare *
-            (1 - (_maximumReductionPercentage / 100)))
+    _maximumReductionPercentage = dashboardReduction
+        .toDouble()
+        .clamp(0.0, 100.0)
+        .toDouble();
+    _minimumFare = (_referenceFare * (1 - (_maximumReductionPercentage / 100)))
         .ceilToDouble();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -102,7 +108,7 @@ class _SubmitYourFeeBottomSheetState extends State<SubmitYourFeeBottomSheet> {
           maxHeight: MediaQuery.of(context).size.height * .86,
         ),
         decoration: const BoxDecoration(
-          color: Colors.white,
+          color: FasakhanstaBrand.surface,
           borderRadius: BorderRadius.only(
             topLeft: Radius.circular(30),
             topRight: Radius.circular(30),
@@ -132,16 +138,18 @@ class _SubmitYourFeeBottomSheetState extends State<SubmitYourFeeBottomSheet> {
                         width: 44,
                         height: 5,
                         decoration: BoxDecoration(
-                          color: const Color(0xFFD8DCE1),
+                          color: FasakhanstaBrand.surfaceRaised,
                           borderRadius: BorderRadius.circular(20),
                         ),
                       ),
                     ),
                     const SizedBox(height: 16),
                     Text(
-                      _isArabic ? 'عاوز تدفع كام؟' : 'How much do you want to pay?',
+                      _isArabic
+                          ? 'عاوز تدفع كام؟'
+                          : 'How much do you want to pay?',
                       style: const TextStyle(
-                        color: Color(0xFF171A1F),
+                        color: FasakhanstaBrand.text,
                         fontSize: 22,
                         fontWeight: FontWeight.w800,
                       ),
@@ -152,7 +160,7 @@ class _SubmitYourFeeBottomSheetState extends State<SubmitYourFeeBottomSheet> {
                           ? 'حدد المبلغ المناسب ليك، ويمكن تقليله بحد أقصى $reductionLabel%.'
                           : 'Choose your fare. You can reduce it by up to $reductionLabel%.',
                       style: const TextStyle(
-                        color: Color(0xFF8A9098),
+                        color: FasakhanstaBrand.muted,
                         fontSize: 12,
                         fontWeight: FontWeight.w500,
                       ),
@@ -161,7 +169,7 @@ class _SubmitYourFeeBottomSheetState extends State<SubmitYourFeeBottomSheet> {
                     Container(
                       padding: const EdgeInsets.all(14),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFFFF8F1),
+                        color: FasakhanstaBrand.surfaceRaised,
                         borderRadius: BorderRadius.circular(17),
                         border: Border.all(
                           color: AppColors.mainAppColor.withOpacity(.20),
@@ -173,7 +181,7 @@ class _SubmitYourFeeBottomSheetState extends State<SubmitYourFeeBottomSheet> {
                             width: 42,
                             height: 42,
                             decoration: BoxDecoration(
-                              color: Colors.white,
+                              color: FasakhanstaBrand.surface,
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: Icon(
@@ -188,9 +196,11 @@ class _SubmitYourFeeBottomSheetState extends State<SubmitYourFeeBottomSheet> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  _isArabic ? 'السعر المحدد' : 'Calculated fare',
+                                  _isArabic
+                                      ? 'السعر المحدد'
+                                      : 'Calculated fare',
                                   style: const TextStyle(
-                                    color: Color(0xFF777D86),
+                                    color: FasakhanstaBrand.muted,
                                     fontSize: 11,
                                     fontWeight: FontWeight.w600,
                                   ),
@@ -199,7 +209,7 @@ class _SubmitYourFeeBottomSheetState extends State<SubmitYourFeeBottomSheet> {
                                 Text(
                                   '${_referenceFare.toStringAsFixed(0)} ${_isArabic ? 'ج' : 'EGP'}',
                                   style: const TextStyle(
-                                    color: Color(0xFF171A1F),
+                                    color: FasakhanstaBrand.text,
                                     fontSize: 19,
                                     fontWeight: FontWeight.w800,
                                   ),
@@ -213,7 +223,7 @@ class _SubmitYourFeeBottomSheetState extends State<SubmitYourFeeBottomSheet> {
                               vertical: 7,
                             ),
                             decoration: BoxDecoration(
-                              color: Colors.white,
+                              color: FasakhanstaBrand.surface,
                               borderRadius: BorderRadius.circular(11),
                             ),
                             child: Text(
@@ -239,14 +249,16 @@ class _SubmitYourFeeBottomSheetState extends State<SubmitYourFeeBottomSheet> {
                       validator: _validateFare,
                       textAlign: TextAlign.start,
                       style: const TextStyle(
-                        color: Color(0xFF171A1F),
+                        color: FasakhanstaBrand.text,
                         fontSize: 20,
                         fontWeight: FontWeight.w800,
                       ),
                       decoration: InputDecoration(
-                        labelText: _isArabic ? 'المبلغ اللي هتدفعه' : 'Your fare',
+                        labelText: _isArabic
+                            ? 'المبلغ اللي هتدفعه'
+                            : 'Your fare',
                         labelStyle: const TextStyle(
-                          color: Color(0xFF858B94),
+                          color: FasakhanstaBrand.muted,
                           fontSize: 12,
                           fontWeight: FontWeight.w600,
                         ),
@@ -257,7 +269,7 @@ class _SubmitYourFeeBottomSheetState extends State<SubmitYourFeeBottomSheet> {
                             child: Text(
                               _isArabic ? 'جنيه مصري' : 'EGP',
                               style: const TextStyle(
-                                color: Color(0xFF6D737C),
+                                color: FasakhanstaBrand.muted,
                                 fontSize: 12,
                                 fontWeight: FontWeight.w700,
                               ),
@@ -265,7 +277,7 @@ class _SubmitYourFeeBottomSheetState extends State<SubmitYourFeeBottomSheet> {
                           ),
                         ),
                         filled: true,
-                        fillColor: const Color(0xFFF8F9FB),
+                        fillColor: FasakhanstaBrand.field,
                         contentPadding: const EdgeInsets.symmetric(
                           horizontal: 15,
                           vertical: 17,
@@ -273,7 +285,7 @@ class _SubmitYourFeeBottomSheetState extends State<SubmitYourFeeBottomSheet> {
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(15),
                           borderSide: const BorderSide(
-                            color: Color(0xFFE4E7EB),
+                            color: FasakhanstaBrand.border,
                           ),
                         ),
                         focusedBorder: OutlineInputBorder(
@@ -286,13 +298,13 @@ class _SubmitYourFeeBottomSheetState extends State<SubmitYourFeeBottomSheet> {
                         errorBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(15),
                           borderSide: const BorderSide(
-                            color: Color(0xFFE84B4B),
+                            color: FasakhanstaBrand.border,
                           ),
                         ),
                         focusedErrorBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(15),
                           borderSide: const BorderSide(
-                            color: Color(0xFFE84B4B),
+                            color: FasakhanstaBrand.border,
                             width: 1.4,
                           ),
                         ),
@@ -302,7 +314,7 @@ class _SubmitYourFeeBottomSheetState extends State<SubmitYourFeeBottomSheet> {
                     Text(
                       _isArabic ? 'طريقة الدفع' : 'Payment method',
                       style: const TextStyle(
-                        color: Color(0xFF171A1F),
+                        color: FasakhanstaBrand.text,
                         fontSize: 15,
                         fontWeight: FontWeight.w800,
                       ),
@@ -315,16 +327,18 @@ class _SubmitYourFeeBottomSheetState extends State<SubmitYourFeeBottomSheet> {
                       child: ElevatedButton(
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
-                            widget.requestDelegateController
-                                .setPriceEC(_feeEC.text.trim());
-                            widget.requestDelegateController
-                                .setActualPrice(_feeEC.text.trim());
+                            widget.requestDelegateController.setPriceEC(
+                              _feeEC.text.trim(),
+                            );
+                            widget.requestDelegateController.setActualPrice(
+                              _feeEC.text.trim(),
+                            );
                             NamedNavigatorImpl.pop();
                           }
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.mainAppColor,
-                          foregroundColor: Colors.white,
+                          foregroundColor: FasakhanstaBrand.onOrange,
                           elevation: 0,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(17),

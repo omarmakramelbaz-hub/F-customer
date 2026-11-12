@@ -1,3 +1,4 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../helpers/routes/app_routers_import.dart';
@@ -19,7 +20,7 @@ class HomeSearchBar extends StatelessWidget {
           height: 52,
           padding: const EdgeInsets.symmetric(horizontal: 16),
           decoration: BoxDecoration(
-            color: AppColors.whiteColor,
+            color: FasakhanstaBrand.surface,
             borderRadius: BorderRadius.circular(18),
             border: Border.all(color: AppColors.borderColorContainer),
             boxShadow: [
@@ -32,7 +33,11 @@ class HomeSearchBar extends StatelessWidget {
           ),
           child: Row(
             children: [
-              Icon(Icons.search_rounded, size: 28, color: AppColors.blackColor),
+              Icon(
+                Icons.search_rounded,
+                size: 28,
+                color: FasakhanstaBrand.text,
+              ),
               const SizedBox(width: 10),
               Expanded(
                 child: Text(

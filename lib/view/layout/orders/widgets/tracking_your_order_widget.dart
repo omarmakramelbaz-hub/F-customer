@@ -1,3 +1,4 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -11,7 +12,11 @@ class TrackingYourOrderWidget extends StatelessWidget {
   final String status;
   final String? orderDate;
 
-  const TrackingYourOrderWidget({super.key, required this.status, this.orderDate});
+  const TrackingYourOrderWidget({
+    super.key,
+    required this.status,
+    this.orderDate,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -29,25 +34,40 @@ class TrackingYourOrderWidget extends StatelessWidget {
       return const SizedBox.shrink();
     }
 
-    final isAccepted = status != 'pending' && status != 'declined' && status != 'cancelled';
+    final isAccepted =
+        status != 'pending' && status != 'declined' && status != 'cancelled';
     final isPreparing = isAccepted;
     final isShipped = status == 'shipped' || status == 'completed';
     final isDelivered = status == 'completed';
 
-    final activeStage = isDelivered ? 3 : isShipped ? 2 : isPreparing ? 1 : 0;
+    final activeStage = isDelivered
+        ? 3
+        : isShipped
+        ? 2
+        : isPreparing
+        ? 1
+        : 0;
 
     final stages = <_StatusStage>[
       _StatusStage('accepted'.tr, AppImages.checkIcon, activeStage >= 0),
-      _StatusStage('prepareTheOrder'.tr, AppImages.prepareIcon, activeStage >= 1),
+      _StatusStage(
+        'prepareTheOrder'.tr,
+        AppImages.prepareIcon,
+        activeStage >= 1,
+      ),
       _StatusStage('inTheWay'.tr, AppImages.inTheWayIconDone, activeStage >= 2),
-      _StatusStage('delivered'.tr, AppImages.deliveredIconDone, activeStage >= 3),
+      _StatusStage(
+        'delivered'.tr,
+        AppImages.deliveredIconDone,
+        activeStage >= 3,
+      ),
     ];
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),
       decoration: BoxDecoration(
-        color: AppColors.whiteColor,
+        color: FasakhanstaBrand.surface,
         borderRadius: BorderRadius.circular(26),
         border: Border.all(color: AppColors.greyColor.withValues(alpha: .10)),
         boxShadow: [
@@ -66,14 +86,19 @@ class TrackingYourOrderWidget extends StatelessWidget {
               Text('orderStatus'.tr, style: AppTextStyle.text16BS()),
               const Spacer(),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 5,
+                ),
                 decoration: BoxDecoration(
                   color: AppColors.mainAppColor.withValues(alpha: .09),
                   borderRadius: BorderRadius.circular(14),
                 ),
                 child: Text(
                   '${activeStage + 1}/4',
-                  style: AppTextStyle.text11BM().copyWith(color: AppColors.mainAppColor),
+                  style: AppTextStyle.text11BM().copyWith(
+                    color: AppColors.mainAppColor,
+                  ),
                 ),
               ),
             ],
@@ -93,12 +118,16 @@ class TrackingYourOrderWidget extends StatelessWidget {
                   width: 42,
                   height: 42,
                   decoration: BoxDecoration(
-                    color: AppColors.whiteColor,
+                    color: FasakhanstaBrand.surface,
                     shape: BoxShape.circle,
-                    border: Border.all(color: AppColors.mainAppColor.withValues(alpha: .18)),
+                    border: Border.all(
+                      color: AppColors.mainAppColor.withValues(alpha: .18),
+                    ),
                   ),
                   child: Icon(
-                    isDelivered ? Icons.check_circle_rounded : Icons.delivery_dining_rounded,
+                    isDelivered
+                        ? Icons.check_circle_rounded
+                        : Icons.delivery_dining_rounded,
                     color: AppColors.mainAppColor,
                   ),
                 ),
@@ -115,7 +144,9 @@ class TrackingYourOrderWidget extends StatelessWidget {
   Widget _statusMessage() {
     final String message;
     if (status == 'shipped') {
-      message = 'theRepresentativeHasReceivedTheOrderAndIsNowHeadingToYourDestination'.tr;
+      message =
+          'theRepresentativeHasReceivedTheOrderAndIsNowHeadingToYourDestination'
+              .tr;
     } else if (status == 'declined') {
       message = 'orderDeclinedFromRestaurant'.tr;
     } else if (status == 'cancelled') {
@@ -123,9 +154,15 @@ class TrackingYourOrderWidget extends StatelessWidget {
     } else if (status == 'completed') {
       message = 'yourOrderHasBeenDelivered'.tr;
     } else {
-      message = 'yourOrderHasBeenReceivedAndIsBeingPreparedPleaseWaitALittle'.tr;
+      message =
+          'yourOrderHasBeenReceivedAndIsBeingPreparedPleaseWaitALittle'.tr;
     }
-    return Text(message, style: AppTextStyle.text13RG(), maxLines: 3, overflow: TextOverflow.ellipsis);
+    return Text(
+      message,
+      style: AppTextStyle.text13RG(),
+      maxLines: 3,
+      overflow: TextOverflow.ellipsis,
+    );
   }
 }
 
@@ -149,7 +186,7 @@ class _StageRouteMap extends StatelessWidget {
       height: 172,
       width: double.infinity,
       decoration: BoxDecoration(
-        color: const Color(0xFFF7F8FA),
+        color: FasakhanstaBrand.surfaceRaised,
         borderRadius: BorderRadius.circular(22),
         border: Border.all(color: AppColors.greyColor.withValues(alpha: .10)),
       ),
@@ -170,7 +207,7 @@ class _StageRouteMap extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
               decoration: BoxDecoration(
-                color: AppColors.whiteColor,
+                color: FasakhanstaBrand.surface,
                 borderRadius: BorderRadius.circular(14),
               ),
               child: Text('تتبع المراحل', style: AppTextStyle.text11BM()),
@@ -195,7 +232,9 @@ class _StageRouteMap extends StatelessWidget {
                           height: current ? 54 : 46,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            color: stage.done ? AppColors.mainAppColor : AppColors.whiteColor,
+                            color: stage.done
+                                ? AppColors.mainAppColor
+                                : FasakhanstaBrand.surface,
                             border: Border.all(
                               color: stage.done
                                   ? AppColors.mainAppColor
@@ -205,7 +244,9 @@ class _StageRouteMap extends StatelessWidget {
                             boxShadow: current
                                 ? [
                                     BoxShadow(
-                                      color: AppColors.mainAppColor.withValues(alpha: .22),
+                                      color: AppColors.mainAppColor.withValues(
+                                        alpha: .22,
+                                      ),
                                       blurRadius: 14,
                                       spreadRadius: 1,
                                     ),
@@ -216,7 +257,9 @@ class _StageRouteMap extends StatelessWidget {
                           child: SvgPicture.asset(
                             stage.icon,
                             colorFilter: ColorFilter.mode(
-                              stage.done ? AppColors.whiteColor : AppColors.greyColor,
+                              stage.done
+                                  ? AppColors.whiteColor
+                                  : AppColors.greyColor,
                               BlendMode.srcIn,
                             ),
                           ),
@@ -227,7 +270,9 @@ class _StageRouteMap extends StatelessWidget {
                           textAlign: TextAlign.center,
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
-                          style: current ? AppTextStyle.text11BS() : AppTextStyle.text10RG(),
+                          style: current
+                              ? AppTextStyle.text11BS()
+                              : AppTextStyle.text10RG(),
                         ),
                       ],
                     ),
@@ -247,7 +292,11 @@ class _RoutePainter extends CustomPainter {
   final Color activeColor;
   final Color inactiveColor;
 
-  const _RoutePainter({required this.activeStage, required this.activeColor, required this.inactiveColor});
+  const _RoutePainter({
+    required this.activeStage,
+    required this.activeColor,
+    required this.inactiveColor,
+  });
 
   @override
   void paint(Canvas canvas, Size size) {

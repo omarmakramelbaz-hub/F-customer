@@ -1,3 +1,4 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -19,20 +20,14 @@ class ResetPasswordScreenArgs {
   final String mobile;
   final String email;
 
-  ResetPasswordScreenArgs({
-    required this.email,
-    required this.mobile,
-  });
+  ResetPasswordScreenArgs({required this.email, required this.mobile});
 }
 
 class ResetPasswordScreen extends StatefulWidget {
   static const routeName = 'ResetPasswordScreen';
   final ResetPasswordScreenArgs args;
 
-  const ResetPasswordScreen({
-    super.key,
-    required this.args,
-  });
+  const ResetPasswordScreen({super.key, required this.args});
 
   @override
   State<ResetPasswordScreen> createState() => _ResetPasswordScreenState();
@@ -44,9 +39,9 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen>
   final _passwordEC = TextEditingController();
   final _confirmPasswordEC = TextEditingController();
 
-  static const _text = Color(0xFF171A1F);
-  static const _muted = Color(0xFF858B94);
-  static const _border = Color(0xFFE7EAEE);
+  static const _text = FasakhanstaBrand.text;
+  static const _muted = FasakhanstaBrand.muted;
+  static const _border = FasakhanstaBrand.border;
 
   @override
   void dispose() {
@@ -60,7 +55,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen>
     return Form(
       key: _formKey,
       child: Scaffold(
-        backgroundColor: const Color(0xFFF7F8FA),
+        backgroundColor: Colors.transparent,
         appBar: CustomAppBar(
           centerTitle: false,
           height: 70,
@@ -70,7 +65,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen>
             height: 52,
             radius: 12,
           ),
-          appBarColor: Colors.white,
+          appBarColor: Colors.transparent,
         ),
         body: SafeArea(
           top: false,
@@ -103,10 +98,13 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen>
         gradient: const LinearGradient(
           begin: Alignment.topRight,
           end: Alignment.bottomLeft,
-          colors: [Color(0xFFFFF8F1), Color(0xFFFFF1E4)],
+          colors: [
+            FasakhanstaBrand.surfaceRaised,
+            FasakhanstaBrand.surfaceRaised,
+          ],
         ),
         borderRadius: BorderRadius.circular(22),
-        border: Border.all(color: const Color(0xFFFFDFC2)),
+        border: Border.all(color: FasakhanstaBrand.border),
       ),
       child: Row(
         children: [
@@ -114,7 +112,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen>
             width: 52,
             height: 52,
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: FasakhanstaBrand.surface,
               borderRadius: BorderRadius.circular(16),
             ),
             child: Icon(
@@ -158,7 +156,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen>
     return Container(
       padding: const EdgeInsets.fromLTRB(16, 18, 16, 18),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: FasakhanstaBrand.surface,
         borderRadius: BorderRadius.circular(24),
         border: Border.all(color: _border),
         boxShadow: const [
@@ -186,10 +184,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen>
             context.languageCode == 'ar'
                 ? 'اكتب كلمة المرور مرتين للتأكد من عدم وجود خطأ.'
                 : 'Enter the password twice to make sure there are no typing mistakes.',
-            style: AppTextStyle.text11RG().copyWith(
-              color: _muted,
-              height: 1.4,
-            ),
+            style: AppTextStyle.text11RG().copyWith(color: _muted, height: 1.4),
           ),
           const SizedBox(height: 18),
           CustomFormField(
@@ -210,7 +205,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen>
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: const Color(0xFFF8F9FB),
+              color: FasakhanstaBrand.surfaceRaised,
               borderRadius: BorderRadius.circular(14),
               border: Border.all(color: _border),
             ),
@@ -229,7 +224,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen>
                         ? 'استخدم كلمة مرور يصعب تخمينها ولا تشاركها مع أي شخص.'
                         : 'Use a password that is hard to guess and never share it with anyone.',
                     style: AppTextStyle.text11RG().copyWith(
-                      color: const Color(0xFF656B74),
+                      color: FasakhanstaBrand.muted,
                       height: 1.4,
                     ),
                   ),
@@ -253,13 +248,13 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen>
     if (!_formKey.currentState!.validate()) return;
 
     context.read<AuthController>().resetPassword(
-          mobile: widget.args.mobile,
-          email: widget.args.email,
-          newPassword: _passwordEC.text,
-          confirmNewPassword: _confirmPasswordEC.text,
-          onSuccess: () {
-            NamedNavigatorImpl.push(LoginScreen.routeName, clean: true);
-          },
-        );
+      mobile: widget.args.mobile,
+      email: widget.args.email,
+      newPassword: _passwordEC.text,
+      confirmNewPassword: _confirmPasswordEC.text,
+      onSuccess: () {
+        NamedNavigatorImpl.push(LoginScreen.routeName, clean: true);
+      },
+    );
   }
 }

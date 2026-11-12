@@ -1,3 +1,4 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
 import 'package:flutter/material.dart';
 
 import '../../../helpers/networking/api_helper.dart';
@@ -26,7 +27,7 @@ class CustomButton extends StatelessWidget {
   final List<BoxShadow>? boxShadow;
   const CustomButton({
     super.key,
-    this.radius = 23.5,
+    this.radius = 14,
     this.width,
     this.height = 47,
     this.style,
@@ -48,22 +49,30 @@ class CustomButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final primary = isMainColor && color == null;
+    final effectiveRadius = borderRadius ?? BorderRadius.circular(radius);
     return apiResponse?.state == ResponseState.loading || isLoading
         ? const Center(child: CustomLoading())
         : Container(
             width: width ?? double.infinity,
             height: height,
             decoration: BoxDecoration(
-              color: color ?? (isMainColor ? AppColors.mainAppColor : AppColors.secondAppColor),
-              gradient: gradient ??
-                  LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [AppColors.gridOneButtonColor, AppColors.gridTwoButtonColor],
-                  ),
-              borderRadius: borderRadius ?? BorderRadius.circular(radius),
-              border: Border.all(color: borderColor ?? Colors.transparent),
-              boxShadow: boxShadow ??
+              color:
+                  color ??
+                  (isMainColor
+                      ? AppColors.mainAppColor
+                      : FasakhanstaBrand.surfaceRaised),
+              gradient:
+                  gradient ??
+                  (primary ? FasakhanstaBrand.buttonGradient : null),
+              borderRadius: effectiveRadius,
+              border: Border.all(
+                color:
+                    borderColor ??
+                    (primary ? Colors.transparent : FasakhanstaBrand.border),
+              ),
+              boxShadow:
+                  boxShadow ??
                   (hasShadow
                       ? [
                           BoxShadow(
@@ -81,12 +90,29 @@ class CustomButton extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        if (prefixIcon != null) ...{prefixIcon!, const SizedBox(width: 10)},
+                        if (prefixIcon != null) ...{
+                          prefixIcon!,
+                          const SizedBox(width: 10),
+                        },
                         Flexible(
-                          child: child ??
-                              Text(text ?? '', textAlign: TextAlign.center, style: style ?? AppTextStyle.buttonStyle),
+                          child:
+                              child ??
+                              Text(
+                                text ?? '',
+                                textAlign: TextAlign.center,
+                                style:
+                                    style ??
+                                    AppTextStyle.buttonStyle.copyWith(
+                                      color: primary
+                                          ? FasakhanstaBrand.onOrange
+                                          : FasakhanstaBrand.text,
+                                    ),
+                              ),
                         ),
-                        if (suffixIcon != null) ...{const SizedBox(width: 5), suffixIcon!},
+                        if (suffixIcon != null) ...{
+                          const SizedBox(width: 5),
+                          suffixIcon!,
+                        },
                       ],
                     ),
                   ),
@@ -94,11 +120,18 @@ class CustomButton extends StatelessWidget {
                 Positioned.fill(
                   child: Material(
                     color: Colors.transparent,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(radius)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: effectiveRadius,
+                    ),
                     child: InkWell(
-                      borderRadius: BorderRadius.circular(radius),
+                      customBorder: RoundedRectangleBorder(
+                        borderRadius: effectiveRadius,
+                      ),
                       onTap: onPressed,
-                      child: SizedBox(width: width ?? double.infinity, height: height),
+                      child: SizedBox(
+                        width: width ?? double.infinity,
+                        height: height,
+                      ),
                     ),
                   ),
                 ),

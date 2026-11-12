@@ -1,3 +1,5 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
+
 import 'dart:developer';
 
 import 'package:country_picker/country_picker.dart';
@@ -62,10 +64,10 @@ class _AddAddressScreenState extends State<AddAddressScreen>
   final LocationService _locationService = LocationService();
   final AddressLookupService _addressLookupService = AddressLookupService();
 
-  static const _text = Color(0xFF171A1F);
-  static const _muted = Color(0xFF858B94);
-  static const _border = Color(0xFFE7EAEE);
-  static const _softOrange = Color(0xFFFFF3E7);
+  static const _text = FasakhanstaBrand.text;
+  static const _muted = FasakhanstaBrand.muted;
+  static const _border = FasakhanstaBrand.border;
+  static const _softOrange = FasakhanstaBrand.orangeTint;
 
   bool _isArabic(BuildContext context) => context.languageCode == 'ar';
 
@@ -173,7 +175,7 @@ class _AddAddressScreenState extends State<AddAddressScreen>
             textDirection: isArabic ? TextDirection.rtl : TextDirection.ltr,
             child: Scaffold(
               resizeToAvoidBottomInset: true,
-              backgroundColor: const Color(0xFFF7F8FA),
+              backgroundColor: Colors.transparent,
               appBar: _buildAppBar(context),
               body: SafeArea(
                 top: false,
@@ -187,8 +189,8 @@ class _AddAddressScreenState extends State<AddAddressScreen>
                       final mapHeight = keyboardOpen
                           ? 0.0
                           : (constraints.maxHeight * 0.23)
-                              .clamp(compact ? 120.0 : 150.0, 190.0)
-                              .toDouble();
+                                .clamp(compact ? 120.0 : 150.0, 190.0)
+                                .toDouble();
 
                       return Center(
                         child: ConstrainedBox(
@@ -251,7 +253,7 @@ class _AddAddressScreenState extends State<AddAddressScreen>
     return AppBar(
       elevation: 0,
       scrolledUnderElevation: 0,
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.transparent,
       automaticallyImplyLeading: false,
       toolbarHeight: 58,
       titleSpacing: 12,
@@ -292,12 +294,9 @@ class _AddAddressScreenState extends State<AddAddressScreen>
   Widget _intro(BuildContext context, bool compact) {
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.symmetric(
-        horizontal: 11,
-        vertical: compact ? 7 : 9,
-      ),
+      padding: EdgeInsets.symmetric(horizontal: 11, vertical: compact ? 7 : 9),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: FasakhanstaBrand.surface,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: _border),
       ),
@@ -359,7 +358,7 @@ class _AddAddressScreenState extends State<AddAddressScreen>
       height: height,
       clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: FasakhanstaBrand.surface,
         borderRadius: BorderRadius.circular(18),
         border: Border.all(color: _border),
         boxShadow: const [
@@ -422,7 +421,7 @@ class _AddAddressScreenState extends State<AddAddressScreen>
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 6),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(.96),
+        color: FasakhanstaBrand.surface.withOpacity(.96),
         borderRadius: BorderRadius.circular(11),
         boxShadow: const [
           BoxShadow(
@@ -442,7 +441,9 @@ class _AddAddressScreenState extends State<AddAddressScreen>
           ),
           const SizedBox(width: 5),
           Text(
-            _isArabic(context) ? 'اضغط لتعديل الموقع' : 'Tap to adjust location',
+            _isArabic(context)
+                ? 'اضغط لتعديل الموقع'
+                : 'Tap to adjust location',
             style: const TextStyle(
               color: _text,
               fontSize: 10,
@@ -459,7 +460,7 @@ class _AddAddressScreenState extends State<AddAddressScreen>
       height: 38,
       padding: const EdgeInsets.symmetric(horizontal: 9),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(.97),
+        color: FasakhanstaBrand.surface.withOpacity(.97),
         borderRadius: BorderRadius.circular(12),
         boxShadow: const [
           BoxShadow(
@@ -507,7 +508,7 @@ class _AddAddressScreenState extends State<AddAddressScreen>
 
   Widget _compactLocationBar(BuildContext context) {
     return Material(
-      color: Colors.white,
+      color: FasakhanstaBrand.surface,
       borderRadius: BorderRadius.circular(13),
       child: InkWell(
         onTap: _openMapPicker,
@@ -602,15 +603,13 @@ class _AddAddressScreenState extends State<AddAddressScreen>
     required IconData icon,
     required bool compact,
   }) {
-    final selected =
-        controller.indexSelectedOfficeOrHouseOrApartment == value;
+    final selected = controller.indexSelectedOfficeOrHouseOrApartment == value;
 
     return Material(
-      color: selected ? _softOrange : Colors.white,
+      color: selected ? _softOrange : FasakhanstaBrand.surface,
       borderRadius: BorderRadius.circular(13),
       child: InkWell(
-        onTap: () =>
-            controller.setIndexSelectedOfficeOrHouseOrApartment(value),
+        onTap: () => controller.setIndexSelectedOfficeOrHouseOrApartment(value),
         borderRadius: BorderRadius.circular(13),
         child: Container(
           height: compact ? 38 : 42,
@@ -789,14 +788,14 @@ class _AddAddressScreenState extends State<AddAddressScreen>
         prefixIcon: Icon(
           icon,
           size: compact ? 16 : 18,
-          color: const Color(0xFF9AA0A8),
+          color: FasakhanstaBrand.muted,
         ),
         prefixIconConstraints: BoxConstraints(
           minWidth: compact ? 34 : 38,
           minHeight: compact ? 38 : 42,
         ),
         filled: true,
-        fillColor: Colors.white,
+        fillColor: FasakhanstaBrand.field,
         contentPadding: EdgeInsets.symmetric(
           horizontal: 9,
           vertical: compact ? 9 : 11,
@@ -812,11 +811,11 @@ class _AddAddressScreenState extends State<AddAddressScreen>
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(13),
-          borderSide: const BorderSide(color: Color(0xFFE35B5B)),
+          borderSide: const BorderSide(color: FasakhanstaBrand.border),
         ),
         focusedErrorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(13),
-          borderSide: const BorderSide(color: Color(0xFFE35B5B)),
+          borderSide: const BorderSide(color: FasakhanstaBrand.border),
         ),
       ),
     );
@@ -835,7 +834,7 @@ class _AddAddressScreenState extends State<AddAddressScreen>
         style: ElevatedButton.styleFrom(
           elevation: 0,
           backgroundColor: AppColors.mainAppColor,
-          foregroundColor: Colors.white,
+          foregroundColor: FasakhanstaBrand.onOrange,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15),
           ),
@@ -851,10 +850,7 @@ class _AddAddressScreenState extends State<AddAddressScreen>
     );
   }
 
-  void _saveAddress(
-    BuildContext context,
-    AddressController addressController,
-  ) {
+  void _saveAddress(BuildContext context, AddressController addressController) {
     FocusManager.instance.primaryFocus?.unfocus();
     if (!_formKey.currentState!.validate()) return;
 
@@ -875,27 +871,27 @@ class _AddAddressScreenState extends State<AddAddressScreen>
     final mapStreet = (place?.street ?? '').trim();
 
     context.read<AddressController>().storeAddress(
-          areaName: _areaNameEc.text.trim(),
-          apartmentNo: _apartmentNoEc.text.trim(),
-          floorNo: _floorNoEc.text.trim(),
-          streetName: _streetNameEc.text.trim(),
-          mobile: _mobileEc.text.trim(),
-          addressName: _addressNameEc.text.trim(),
-          type: addressController.indexSelectedOfficeOrHouseOrApartment,
-          lat: lat,
-          lang: lng,
-          countryName: place?.country ?? fallback?.countryName ?? '',
-          cityName: place?.locality ?? fallback?.cityName ?? '',
-          address: mapStreet.isNotEmpty
-              ? mapStreet
-              : (fallback?.address ?? _streetNameEc.text.trim()),
-          badge: _badgeEc.text.trim(),
-          onSuccess: ({int? userAddressId}) {
-            NamedNavigatorImpl.pop();
-            context.read<AuthController>().getProfile();
-            widget.args.onSuccess.call();
-          },
-        );
+      areaName: _areaNameEc.text.trim(),
+      apartmentNo: _apartmentNoEc.text.trim(),
+      floorNo: _floorNoEc.text.trim(),
+      streetName: _streetNameEc.text.trim(),
+      mobile: _mobileEc.text.trim(),
+      addressName: _addressNameEc.text.trim(),
+      type: addressController.indexSelectedOfficeOrHouseOrApartment,
+      lat: lat,
+      lang: lng,
+      countryName: place?.country ?? fallback?.countryName ?? '',
+      cityName: place?.locality ?? fallback?.cityName ?? '',
+      address: mapStreet.isNotEmpty
+          ? mapStreet
+          : (fallback?.address ?? _streetNameEc.text.trim()),
+      badge: _badgeEc.text.trim(),
+      onSuccess: ({int? userAddressId}) {
+        NamedNavigatorImpl.pop();
+        context.read<AuthController>().getProfile();
+        widget.args.onSuccess.call();
+      },
+    );
   }
 
   String _resolvedAddress(BuildContext context) {

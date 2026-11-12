@@ -1,3 +1,5 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
+
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -32,10 +34,12 @@ class TrackingDelegateOrderScreen extends StatefulWidget {
   static const routeName = 'TrackingDelegateOrderScreen';
   const TrackingDelegateOrderScreen({super.key, required this.args});
   @override
-  State<TrackingDelegateOrderScreen> createState() => _TrackingDelegateOrderScreenState();
+  State<TrackingDelegateOrderScreen> createState() =>
+      _TrackingDelegateOrderScreenState();
 }
 
-class _TrackingDelegateOrderScreenState extends State<TrackingDelegateOrderScreen> {
+class _TrackingDelegateOrderScreenState
+    extends State<TrackingDelegateOrderScreen> {
   late RequestDelegateController requestDelegateController;
   late MapServices mapServices;
   LatLng? origin;
@@ -50,7 +54,8 @@ class _TrackingDelegateOrderScreenState extends State<TrackingDelegateOrderScree
   bool _offerDialogOpen = false; // New flag for checking if map is ready
 
   void initMapStyle() async {
-    var mapStyle = await DefaultAssetBundle.of(context).loadString('assets/map_styles/dark_map_style.json');
+    var mapStyle = await DefaultAssetBundle.of(context)
+        .loadString('assets/map_styles/dark_map_style.json');
     setState(() {
       _mapStyle = mapStyle;
     });
@@ -60,18 +65,31 @@ class _TrackingDelegateOrderScreenState extends State<TrackingDelegateOrderScree
   void initState() {
     initMapStyle();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      requestDelegateController = Provider.of<RequestDelegateController>(context, listen: false);
-      Provider.of<RequestDelegateController>(context, listen: false).initialDelegateOrderDetails();
+      requestDelegateController = Provider.of<RequestDelegateController>(
+        context,
+        listen: false,
+      );
+      Provider.of<RequestDelegateController>(
+        context,
+        listen: false,
+      ).initialDelegateOrderDetails();
 
-      Provider.of<RequestDelegateController>(context, listen: false).getDelegateOrderDetails(id: widget.args.id).then((
-        value,
-      ) async {
+      Provider.of<RequestDelegateController>(
+        context,
+        listen: false,
+      ).getDelegateOrderDetails(id: widget.args.id).then((value) async {
         mapServices = MapServices();
         final orderDetails = requestDelegateController.delegateOrderDetails;
 
         // Set origin and destination
-        origin = LatLng(double.parse(orderDetails?.fromLat ?? '0.0'), double.parse(orderDetails?.fromLng ?? '0.0'));
-        destination = LatLng(double.parse(orderDetails?.toLat ?? '0.0'), double.parse(orderDetails?.toLng ?? '0.0'));
+        origin = LatLng(
+          double.parse(orderDetails?.fromLat ?? '0.0'),
+          double.parse(orderDetails?.fromLng ?? '0.0'),
+        );
+        destination = LatLng(
+          double.parse(orderDetails?.toLat ?? '0.0'),
+          double.parse(orderDetails?.toLng ?? '0.0'),
+        );
 
         // Ensure the coordinates are valid before proceeding
         if (origin!.latitude != 0.0 && destination!.latitude != 0.0) {
@@ -93,13 +111,22 @@ class _TrackingDelegateOrderScreenState extends State<TrackingDelegateOrderScree
             // );
 
             // Add markers for origin and destination
-            markers.add(Marker(markerId: const MarkerId('origin'), position: origin!));
-            markers.add(Marker(markerId: const MarkerId('destination'), position: destination!));
+            markers.add(
+              Marker(markerId: const MarkerId('origin'), position: origin!),
+            );
+            markers.add(
+              Marker(
+                markerId: const MarkerId('destination'),
+                position: destination!,
+              ),
+            );
             setState(() {});
           });
         }
         _startLiveOrderRefresh();
-        await requestDelegateController.getAcceptedDelegate(delegateOrderId: widget.args.id);
+        await requestDelegateController.getAcceptedDelegate(
+          delegateOrderId: widget.args.id,
+        );
         if (mounted) _showRevisedOfferIfNeeded();
       });
     });
@@ -110,15 +137,23 @@ class _TrackingDelegateOrderScreenState extends State<TrackingDelegateOrderScree
     _liveTimer?.cancel();
     _liveTimer = Timer.periodic(const Duration(seconds: 5), (_) async {
       if (!mounted) return;
-      await requestDelegateController.getDelegateOrderDetails(id: widget.args.id);
-      await requestDelegateController.getAcceptedDelegate(delegateOrderId: widget.args.id);
+      await requestDelegateController.getDelegateOrderDetails(
+        id: widget.args.id,
+      );
+      await requestDelegateController.getAcceptedDelegate(
+        delegateOrderId: widget.args.id,
+      );
       if (mounted) _showRevisedOfferIfNeeded();
     });
   }
 
   Future<void> _showRevisedOfferIfNeeded() async {
     final offer = requestDelegateController.acceptedDelegate?.activeOffer;
-    if (_offerDialogOpen || offer == null || offer.status != 'price_revision' || !mounted) return;
+    if (_offerDialogOpen ||
+        offer == null ||
+        offer.status != 'price_revision' ||
+        !mounted)
+      return;
     _offerDialogOpen = true;
     final ar = context.languageCode == 'ar';
     await showDialog<void>(
@@ -126,23 +161,33 @@ class _TrackingDelegateOrderScreenState extends State<TrackingDelegateOrderScree
       barrierDismissible: false,
       builder: (dialogContext) => AlertDialog(
         title: Text(ar ? 'عرض سعر جديد من المندوب' : 'New price offer'),
-        content: Text(ar
-            ? 'المندوب اقترح سعر توصيل جديد بقيمة ${offer.price} جنيه. لن يتغير سعر الطلب إلا بعد موافقتك.'
-            : 'The driver proposed a new fare of ${offer.price} EGP. Your fare changes only if you accept.'),
+        content: Text(
+          ar
+              ? 'المندوب اقترح سعر توصيل جديد بقيمة ${offer.price} جنيه. لن يتغير سعر الطلب إلا بعد موافقتك.'
+              : 'The driver proposed a new fare of ${offer.price} EGP. Your fare changes only if you accept.',
+        ),
         actions: [
           TextButton(
             onPressed: () async {
-              final ok = await requestDelegateController.respondToRevisedOffer(orderId: widget.args.id, status: 'declined');
+              final ok = await requestDelegateController.respondToRevisedOffer(
+                orderId: widget.args.id,
+                status: 'declined',
+              );
               if (ok && dialogContext.mounted) Navigator.pop(dialogContext);
             },
             child: Text(ar ? 'رفض' : 'Decline'),
           ),
           FilledButton(
             onPressed: () async {
-              final ok = await requestDelegateController.respondToRevisedOffer(orderId: widget.args.id, status: 'accepted');
+              final ok = await requestDelegateController.respondToRevisedOffer(
+                orderId: widget.args.id,
+                status: 'accepted',
+              );
               if (ok && dialogContext.mounted) Navigator.pop(dialogContext);
               if (ok && mounted) {
-                await requestDelegateController.getDelegateOrderDetails(id: widget.args.id);
+                await requestDelegateController.getDelegateOrderDetails(
+                  id: widget.args.id,
+                );
               }
             },
             child: Text(ar ? 'قبول السعر الجديد' : 'Accept new fare'),
@@ -179,18 +224,25 @@ class _TrackingDelegateOrderScreenState extends State<TrackingDelegateOrderScree
           final orderDetails = requestDelegateController.delegateOrderDetails;
 
           return ApiResponseWidget(
-            apiResponse: requestDelegateController.delegateOrderDetailsApiResponse,
-            onReload: () => requestDelegateController.getDelegateOrderDetails(id: widget.args.id),
+            apiResponse:
+                requestDelegateController.delegateOrderDetailsApiResponse,
+            onReload: () => requestDelegateController.getDelegateOrderDetails(
+              id: widget.args.id,
+            ),
             isEmpty: orderDetails == null,
             child: Container(
-              color: AppColors.blackColor,
+              color: FasakhanstaBrand.surfaceRaised,
               child: Scaffold(
-                backgroundColor: AppColors.blackColor,
+                backgroundColor: Colors.transparent,
                 appBar: CustomAppBar(
-                  appBarColor: AppColors.blackColor,
+                  appBarColor: Colors.transparent,
                   title: Text(
-                    DateMethods.formatDateToArabic(orderDetails?.createdAt ?? ''),
-                    style: AppTextStyle.text18BS().copyWith(color: AppColors.whiteColor),
+                    DateMethods.formatDateToArabic(
+                      orderDetails?.createdAt ?? '',
+                    ),
+                    style: AppTextStyle.text18BS().copyWith(
+                      color: FasakhanstaBrand.text,
+                    ),
                   ),
                 ),
                 body: Column(
@@ -207,12 +259,17 @@ class _TrackingDelegateOrderScreenState extends State<TrackingDelegateOrderScree
                               20.sbH,
                               Row(
                                 children: [
-                                  const CustomImage(path: AppImages.radioToIcon, type: ImageType.svg),
+                                  const CustomImage(
+                                    path: AppImages.radioToIcon,
+                                    type: ImageType.svg,
+                                  ),
                                   const SizedBox(width: 10),
                                   Expanded(
                                     child: Text(
                                       orderDetails?.fromAddress ?? '',
-                                      style: AppTextStyle.text16MS().copyWith(color: AppColors.whiteColor),
+                                      style: AppTextStyle.text16MS().copyWith(
+                                        color: FasakhanstaBrand.text,
+                                      ),
                                     ),
                                   ),
                                 ],
@@ -220,12 +277,17 @@ class _TrackingDelegateOrderScreenState extends State<TrackingDelegateOrderScree
                               20.sbH,
                               Row(
                                 children: [
-                                  const CustomImage(path: AppImages.radioFromIcon, type: ImageType.svg),
+                                  const CustomImage(
+                                    path: AppImages.radioFromIcon,
+                                    type: ImageType.svg,
+                                  ),
                                   const SizedBox(width: 10),
                                   Expanded(
                                     child: Text(
                                       orderDetails?.toAddress ?? '',
-                                      style: AppTextStyle.text16MS().copyWith(color: AppColors.whiteColor),
+                                      style: AppTextStyle.text16MS().copyWith(
+                                        color: FasakhanstaBrand.text,
+                                      ),
                                     ),
                                   ),
                                 ],
@@ -240,7 +302,9 @@ class _TrackingDelegateOrderScreenState extends State<TrackingDelegateOrderScree
                                       path: orderDetails?.delegateLogo == null
                                           ? AppImages.delegateRDIcon
                                           : orderDetails?.delegateLogo ?? '',
-                                      type: orderDetails?.delegateLogo == null ? ImageType.svg : ImageType.network,
+                                      type: orderDetails?.delegateLogo == null
+                                          ? ImageType.svg
+                                          : ImageType.network,
                                       width: 45,
                                       height: 45,
                                       radius: 30,
@@ -249,7 +313,9 @@ class _TrackingDelegateOrderScreenState extends State<TrackingDelegateOrderScree
                                     Expanded(
                                       child: Text(
                                         orderDetails?.delegateName ?? '',
-                                        style: AppTextStyle.text16MS().copyWith(color: AppColors.whiteColor),
+                                        style: AppTextStyle.text16MS().copyWith(
+                                          color: FasakhanstaBrand.text,
+                                        ),
                                       ),
                                     ),
                                     GestureDetector(
@@ -260,47 +326,67 @@ class _TrackingDelegateOrderScreenState extends State<TrackingDelegateOrderScree
                                       },
                                       child: Card(
                                         elevation: 10,
-                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            20,
+                                          ),
+                                        ),
                                         child: CircleAvatar(
                                           radius: 20,
-                                          backgroundColor: AppColors.whiteColor,
+                                          backgroundColor:
+                                              FasakhanstaBrand.surface,
                                           child: CustomImage(
                                             path: AppImages.callIcon,
                                             type: ImageType.svg,
-                                            color: AppColors.blackColor,
+                                            color: FasakhanstaBrand.text,
                                           ),
                                         ),
                                       ),
                                     ),
-                                    if (orderDetails?.delegateFcmId != null) ...[
+                                    if (orderDetails?.delegateFcmId !=
+                                        null) ...[
                                       GestureDetector(
                                         onTap: () {
                                           NamedNavigatorImpl.push(
                                             ChatScreen.routeName,
                                             arguments: ChatScreenArgs(
-                                              senderDeviceToken: orderDetails?.userFcmId ?? '',
+                                              senderDeviceToken:
+                                                  orderDetails?.userFcmId ?? '',
                                               accountType: 'vendor',
                                               isVendor: false,
-                                              vendorDeviceToken: requestDelegateController
-                                                      .delegateOrderDetails?.resturantVendorDeviceToken ??
+                                              vendorDeviceToken:
+                                                  requestDelegateController
+                                                      .delegateOrderDetails
+                                                      ?.resturantVendorDeviceToken ??
                                                   '',
-                                              receiverDeviceToken: orderDetails?.delegateFcmId ?? '',
-                                              senderName: orderDetails?.userName ?? '',
-                                              receiverName: orderDetails?.delegateName ?? '',
-                                              orderId: "VD${orderDetails?.id ?? ""}",
+                                              receiverDeviceToken:
+                                                  orderDetails?.delegateFcmId ??
+                                                  '',
+                                              senderName:
+                                                  orderDetails?.userName ?? '',
+                                              receiverName:
+                                                  orderDetails?.delegateName ??
+                                                  '',
+                                              orderId:
+                                                  "VD${orderDetails?.id ?? ""}",
                                             ),
                                           );
                                         },
                                         child: Card(
                                           elevation: 10,
-                                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(
+                                              20,
+                                            ),
+                                          ),
                                           child: CircleAvatar(
                                             radius: 20,
-                                            backgroundColor: AppColors.whiteColor,
+                                            backgroundColor:
+                                                FasakhanstaBrand.surface,
                                             child: CustomImage(
                                               path: AppImages.chatIcon,
                                               type: ImageType.svg,
-                                              color: AppColors.blackColor,
+                                              color: FasakhanstaBrand.text,
                                             ),
                                           ),
                                         ),
@@ -314,29 +400,38 @@ class _TrackingDelegateOrderScreenState extends State<TrackingDelegateOrderScree
                               10.sbH,
                               Text(
                                 'orderDetails'.tr,
-                                style: AppTextStyle.text16MS().copyWith(color: AppColors.whiteColor),
+                                style: AppTextStyle.text16MS().copyWith(
+                                  color: FasakhanstaBrand.text,
+                                ),
                               ),
                               10.sbH,
                               Text(
                                 orderDetails?.description ?? '',
-                                style: AppTextStyle.text16MS().copyWith(color: AppColors.whiteColor),
+                                style: AppTextStyle.text16MS().copyWith(
+                                  color: FasakhanstaBrand.text,
+                                ),
                               ),
                               10.sbH,
                               Divider(color: AppColors.darkGreyColor),
                               10.sbH,
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
                                     'deliverCost'.tr,
-                                    style: AppTextStyle.text16MS().copyWith(color: AppColors.whiteColor),
+                                    style: AppTextStyle.text16MS().copyWith(
+                                      color: FasakhanstaBrand.text,
+                                    ),
                                   ),
                                   Text(
                                     'pound'.tr.replaceAll(
-                                          '{}',
-                                          '${orderDetails?.actualPrice}',
-                                        ),
-                                    style: AppTextStyle.text16MS().copyWith(color: AppColors.whiteColor),
+                                      '{}',
+                                      '${orderDetails?.actualPrice}',
+                                    ),
+                                    style: AppTextStyle.text16MS().copyWith(
+                                      color: FasakhanstaBrand.text,
+                                    ),
                                   ),
                                 ],
                               ),
@@ -345,10 +440,14 @@ class _TrackingDelegateOrderScreenState extends State<TrackingDelegateOrderScree
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   Padding(
-                                    padding: const EdgeInsets.symmetric(vertical: 16),
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 16,
+                                    ),
                                     child: Text(
                                       'paymentMethod'.tr,
-                                      style: AppTextStyle.text16BS().copyWith(color: AppColors.whiteColor),
+                                      style: AppTextStyle.text16BS().copyWith(
+                                        color: FasakhanstaBrand.text,
+                                      ),
                                     ),
                                   ),
                                 ],
@@ -376,12 +475,12 @@ class _TrackingDelegateOrderScreenState extends State<TrackingDelegateOrderScree
                                     path: orderDetails?.paymentType == 'cash'
                                         ? AppImages.cashIcon
                                         : orderDetails?.paymentType == 'online'
-                                            ? AppImages.visaIcon
-                                            : orderDetails?.paymentType == 'v_cash'
-                                                ? AppImages.vfCash
-                                                : orderDetails?.paymentType == 'wallet'
-                                                    ? AppImages.payWalletIcon.tr
-                                                    : '',
+                                        ? AppImages.visaIcon
+                                        : orderDetails?.paymentType == 'v_cash'
+                                        ? AppImages.vfCash
+                                        : orderDetails?.paymentType == 'wallet'
+                                        ? AppImages.payWalletIcon.tr
+                                        : '',
                                     type: ImageType.svg,
                                     color: AppColors.mainAppColor,
                                   ),
@@ -390,12 +489,12 @@ class _TrackingDelegateOrderScreenState extends State<TrackingDelegateOrderScree
                                     orderDetails?.paymentType == 'cash'
                                         ? 'cash'.tr
                                         : orderDetails?.paymentType == 'online'
-                                            ? 'visa'.tr
-                                            : orderDetails?.paymentType == 'v_cash'
-                                                ? 'vfCash'.tr
-                                                : orderDetails?.paymentType == 'wallet'
-                                                    ? 'appWallet'.tr
-                                                    : '',
+                                        ? 'visa'.tr
+                                        : orderDetails?.paymentType == 'v_cash'
+                                        ? 'vfCash'.tr
+                                        : orderDetails?.paymentType == 'wallet'
+                                        ? 'appWallet'.tr
+                                        : '',
                                     style: AppTextStyle.text16BM(),
                                   ),
                                 ],
@@ -451,9 +550,16 @@ class _TrackingDelegateOrderScreenState extends State<TrackingDelegateOrderScree
           onMapCreated: (GoogleMapController controller) {
             googleMapController = controller;
             // googleMapController.setMapStyle(_mapStyle);
-            markers.add(Marker(markerId: const MarkerId('origin'), position: origin!));
+            markers.add(
+              Marker(markerId: const MarkerId('origin'), position: origin!),
+            );
 
-            markers.add(Marker(markerId: const MarkerId('destination'), position: destination!));
+            markers.add(
+              Marker(
+                markerId: const MarkerId('destination'),
+                position: destination!,
+              ),
+            );
 
             setState(() {
               isMapReady = true; // Set flag when map is ready
@@ -464,12 +570,20 @@ class _TrackingDelegateOrderScreenState extends State<TrackingDelegateOrderScree
               CameraUpdate.newLatLngBounds(
                 LatLngBounds(
                   southwest: LatLng(
-                    origin!.latitude < destination!.latitude ? origin!.latitude : destination!.latitude,
-                    origin!.longitude < destination!.longitude ? origin!.longitude : destination!.longitude,
+                    origin!.latitude < destination!.latitude
+                        ? origin!.latitude
+                        : destination!.latitude,
+                    origin!.longitude < destination!.longitude
+                        ? origin!.longitude
+                        : destination!.longitude,
                   ),
                   northeast: LatLng(
-                    origin!.latitude > destination!.latitude ? origin!.latitude : destination!.latitude,
-                    origin!.longitude > destination!.longitude ? origin!.longitude : destination!.longitude,
+                    origin!.latitude > destination!.latitude
+                        ? origin!.latitude
+                        : destination!.latitude,
+                    origin!.longitude > destination!.longitude
+                        ? origin!.longitude
+                        : destination!.longitude,
                   ),
                 ),
                 100.0,

@@ -1,3 +1,4 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
 import 'package:flutter/material.dart';
 
 import '../hive/hive_methods.dart';
@@ -31,9 +32,9 @@ class GuestAccessGuard {
             child: Container(
               padding: const EdgeInsets.fromLTRB(12, 11, 12, 11),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: FasakhanstaBrand.surface,
                 borderRadius: BorderRadius.circular(18),
-                border: Border.all(color: const Color(0xFFFFD8B5)),
+                border: Border.all(color: FasakhanstaBrand.border),
                 boxShadow: const [
                   BoxShadow(
                     color: Color(0x24000000),
@@ -48,7 +49,7 @@ class GuestAccessGuard {
                     width: 44,
                     height: 44,
                     decoration: const BoxDecoration(
-                      color: Color(0xFFFFF1E4),
+                      color: FasakhanstaBrand.surfaceRaised,
                       shape: BoxShape.circle,
                     ),
                     child: Icon(
@@ -68,7 +69,7 @@ class GuestAccessGuard {
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
-                            color: Color(0xFF202328),
+                            color: FasakhanstaBrand.text,
                             fontSize: 14.5,
                             fontWeight: FontWeight.w800,
                           ),
@@ -79,7 +80,7 @@ class GuestAccessGuard {
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
-                            color: Color(0xFF7C828A),
+                            color: FasakhanstaBrand.muted,
                             fontSize: 11.5,
                             height: 1.3,
                             fontWeight: FontWeight.w500,
@@ -96,7 +97,7 @@ class GuestAccessGuard {
                       padding: EdgeInsets.all(5),
                       child: Icon(
                         Icons.close_rounded,
-                        color: Color(0xFF999999),
+                        color: FasakhanstaBrand.muted,
                         size: 19,
                       ),
                     ),

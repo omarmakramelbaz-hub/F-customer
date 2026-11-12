@@ -1,3 +1,4 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -22,10 +23,10 @@ class AddressWidget extends StatelessWidget {
     this.onSelect,
   });
 
-  static const _text = Color(0xFF171A1F);
-  static const _muted = Color(0xFF8D939C);
-  static const _border = Color(0xFFE8EBEF);
-  static const _softOrange = Color(0xFFFFF4E8);
+  static const _text = FasakhanstaBrand.text;
+  static const _muted = FasakhanstaBrand.muted;
+  static const _border = FasakhanstaBrand.border;
+  static const _softOrange = FasakhanstaBrand.orangeTint;
   static const _delete = Color(0xFFE53935);
 
   bool _isArabic(BuildContext context) => context.languageCode == 'ar';
@@ -38,7 +39,7 @@ class AddressWidget extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: FasakhanstaBrand.surface,
           borderRadius: BorderRadius.circular(18),
           border: Border.all(
             color: selectionMode
@@ -199,8 +200,8 @@ class AddressWidget extends StatelessWidget {
   }
 
   IconData get _addressIcon {
-    final value =
-        '${address.addressName} ${address.badge} ${address.type}'.toLowerCase();
+    final value = '${address.addressName} ${address.badge} ${address.type}'
+        .toLowerCase();
     if (value.contains('home') || value.contains('منزل')) {
       return Icons.home_outlined;
     }
@@ -232,8 +233,7 @@ class AddressWidget extends StatelessWidget {
 
   String get _secondaryAddress {
     final parts = <String>[
-      if ((address.areaName ?? '').trim().isNotEmpty)
-        address.areaName!.trim(),
+      if ((address.areaName ?? '').trim().isNotEmpty) address.areaName!.trim(),
       if ((address.floorNo ?? '').trim().isNotEmpty)
         'Floor ${address.floorNo!.trim()}',
       if ((address.apartmentNo ?? '').trim().isNotEmpty)

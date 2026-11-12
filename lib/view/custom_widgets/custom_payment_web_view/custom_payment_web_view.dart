@@ -1,3 +1,5 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
+
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -192,7 +194,7 @@ class _CustomPaymentWebViewScreenState extends State<CustomPaymentWebViewScreen>
         actions: const [
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 16),
-            child: Icon(Icons.lock_outline, color: Color(0xFFFD7201)),
+            child: Icon(Icons.lock_outline, color: FasakhanstaBrand.orange),
           ),
         ],
       ),
@@ -204,9 +206,11 @@ class _CustomPaymentWebViewScreenState extends State<CustomPaymentWebViewScreen>
             if (_awaitingConfirmation)
               Padding(
                 padding: const EdgeInsets.all(12),
-                child: Text(isArabic
-                    ? 'جارٍ تأكيد الدفع من السيرفر...'
-                    : 'Confirming payment with the server...'),
+                child: Text(
+                  isArabic
+                      ? 'جارٍ تأكيد الدفع من السيرفر...'
+                      : 'Confirming payment with the server...',
+                ),
               ),
             Expanded(
               child: events == null || _loadError
@@ -229,8 +233,9 @@ class _CustomPaymentWebViewScreenState extends State<CustomPaymentWebViewScreen>
                               FilledButton(
                                 key: const ValueKey('retry-payment'),
                                 onPressed: _reload,
-                                child:
-                                    Text(isArabic ? 'إعادة المحاولة' : 'Retry'),
+                                child: Text(
+                                  isArabic ? 'إعادة المحاولة' : 'Retry',
+                                ),
                               ),
                             ],
                           ],
@@ -239,7 +244,8 @@ class _CustomPaymentWebViewScreenState extends State<CustomPaymentWebViewScreen>
                     )
                   : KeyedSubtree(
                       key: ValueKey(_loadAttempt),
-                      child: widget.browserBuilder?.call(context, events) ??
+                      child:
+                          widget.browserBuilder?.call(context, events) ??
                           EmbeddedPaymentBrowser(events: events),
                     ),
             ),
@@ -247,9 +253,7 @@ class _CustomPaymentWebViewScreenState extends State<CustomPaymentWebViewScreen>
               Padding(
                 padding: const EdgeInsets.all(12),
                 child: Text(
-                  isArabic
-                      ? 'بعد تأكيد الدفع سيتم فتح تتبع طلبك تلقائيًا'
-                      : 'Order tracking opens automatically after payment is confirmed',
+                  isArabic ? 'بعد تأكيد الدفع سيتم فتح تتبع طلبك تلقائيًا' : 'Order tracking opens automatically after payment is confirmed',
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.bodySmall,
                 ),

@@ -1,3 +1,5 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
+
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
@@ -23,7 +25,10 @@ class ChooseAddressFromMapScreenArgs {
   final List<int> areaId;
   final int resturantId;
 
-  ChooseAddressFromMapScreenArgs({required this.areaId, required this.resturantId});
+  ChooseAddressFromMapScreenArgs({
+    required this.areaId,
+    required this.resturantId,
+  });
 }
 
 class ChooseAddressFromMapScreen extends StatefulWidget {
@@ -33,10 +38,12 @@ class ChooseAddressFromMapScreen extends StatefulWidget {
   const ChooseAddressFromMapScreen({super.key, required this.args});
 
   @override
-  State<ChooseAddressFromMapScreen> createState() => _ChooseAddressFromMapScreenState();
+  State<ChooseAddressFromMapScreen> createState() =>
+      _ChooseAddressFromMapScreenState();
 }
 
-class _ChooseAddressFromMapScreenState extends State<ChooseAddressFromMapScreen> {
+class _ChooseAddressFromMapScreenState
+    extends State<ChooseAddressFromMapScreen> {
   int? selectedAddressId;
   String? selectedAddressLat;
   String? selectedAddressLang;
@@ -52,7 +59,8 @@ class _ChooseAddressFromMapScreenState extends State<ChooseAddressFromMapScreen>
         ..getAddress(areaId: widget.args.areaId),
       child: Consumer<AddressController>(
         builder: (context, addressController, _) {
-          if (selectedAddressId == null && addressController.address.isNotEmpty) {
+          if (selectedAddressId == null &&
+              addressController.address.isNotEmpty) {
             selectedAddressId = addressController.address[0].id;
             selectedAddressLat = addressController.address[0].lat;
             selectedAddressLang = addressController.address[0].lng;
@@ -60,15 +68,17 @@ class _ChooseAddressFromMapScreenState extends State<ChooseAddressFromMapScreen>
           }
 
           return Scaffold(
-            backgroundColor: const Color(0xFFF8F8F8),
+            backgroundColor: Colors.transparent,
             appBar: AppBar(
               elevation: 0,
-              backgroundColor: AppColors.mainAppColor,
-              foregroundColor: AppColors.whiteColor,
+              backgroundColor: Colors.transparent,
+              foregroundColor: FasakhanstaBrand.text,
               centerTitle: true,
               title: Text(
                 'deliveryLocations'.tr,
-                style: AppTextStyle.text18BS().copyWith(color: AppColors.whiteColor),
+                style: AppTextStyle.text18BS().copyWith(
+                  color: FasakhanstaBrand.text,
+                ),
               ),
               leading: IconButton(
                 icon: const Icon(Icons.arrow_back_ios_new_rounded),
@@ -77,21 +87,24 @@ class _ChooseAddressFromMapScreenState extends State<ChooseAddressFromMapScreen>
             ),
             body: ApiResponseWidget(
               apiResponse: addressController.addressResponse,
-              onReload: () => addressController.getAddress(areaId: widget.args.areaId),
+              onReload: () =>
+                  addressController.getAddress(areaId: widget.args.areaId),
               isEmpty: addressController.address.isEmpty,
-              emptyWidget: NoDeliveryLocationWidget(addressController: addressController),
+              emptyWidget: NoDeliveryLocationWidget(
+                addressController: addressController,
+              ),
               child: SingleChildScrollView(
                 physics: const BouncingScrollPhysics(),
                 padding: const EdgeInsets.fromLTRB(16, 16, 16, 110),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('deliveryLocations'.tr, style: AppTextStyle.text18BS()),
-                    5.sbH,
                     Text(
-                      'chooseAddress'.tr,
-                      style: AppTextStyle.text13RG(),
+                      'deliveryLocations'.tr,
+                      style: AppTextStyle.text18BS(),
                     ),
+                    5.sbH,
+                    Text('chooseAddress'.tr, style: AppTextStyle.text13RG()),
                     16.sbH,
                     ...List.generate(addressController.address.length, (index) {
                       final address = addressController.address[index];
@@ -113,15 +126,21 @@ class _ChooseAddressFromMapScreenState extends State<ChooseAddressFromMapScreen>
                             duration: const Duration(milliseconds: 180),
                             padding: const EdgeInsets.all(15),
                             decoration: BoxDecoration(
-                              color: AppColors.whiteColor,
+                              color: FasakhanstaBrand.surface,
                               borderRadius: BorderRadius.circular(18),
                               border: Border.all(
-                                color: selected ? AppColors.mainAppColor : AppColors.greyColor.withValues(alpha: .12),
+                                color: selected
+                                    ? AppColors.mainAppColor
+                                    : AppColors.greyColor.withValues(
+                                        alpha: .12,
+                                      ),
                                 width: selected ? 1.6 : 1,
                               ),
                               boxShadow: [
                                 BoxShadow(
-                                  color: Colors.black.withValues(alpha: selected ? .06 : .035),
+                                  color: Colors.black.withValues(
+                                    alpha: selected ? .06 : .035,
+                                  ),
                                   blurRadius: 12,
                                   offset: const Offset(0, 4),
                                 ),
@@ -134,32 +153,46 @@ class _ChooseAddressFromMapScreenState extends State<ChooseAddressFromMapScreen>
                                   height: 46,
                                   decoration: BoxDecoration(
                                     color: selected
-                                        ? AppColors.mainAppColor.withValues(alpha: .12)
-                                        : AppColors.greyColor.withValues(alpha: .08),
+                                        ? AppColors.mainAppColor.withValues(
+                                            alpha: .12,
+                                          )
+                                        : AppColors.greyColor.withValues(
+                                            alpha: .08,
+                                          ),
                                     shape: BoxShape.circle,
                                   ),
                                   child: Icon(
-                                    address.type == 'home' ? Icons.home_rounded : Icons.location_on_rounded,
-                                    color: selected ? AppColors.mainAppColor : AppColors.greyColor,
+                                    address.type == 'home'
+                                        ? Icons.home_rounded
+                                        : Icons.location_on_rounded,
+                                    color: selected
+                                        ? AppColors.mainAppColor
+                                        : AppColors.greyColor,
                                   ),
                                 ),
                                 12.sbW,
                                 Expanded(
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Row(
                                         children: [
                                           Expanded(
                                             child: Text(
-                                              address.addressName?.isNotEmpty == true
+                                              address.addressName?.isNotEmpty ==
+                                                      true
                                                   ? address.addressName!
                                                   : 'area'.tr,
                                               style: AppTextStyle.text15BS(),
                                             ),
                                           ),
                                           if (selected)
-                                            Icon(Icons.check_circle_rounded, color: AppColors.mainAppColor, size: 22),
+                                            Icon(
+                                              Icons.check_circle_rounded,
+                                              color: AppColors.mainAppColor,
+                                              size: 22,
+                                            ),
                                         ],
                                       ),
                                       5.sbH,
@@ -190,14 +223,26 @@ class _ChooseAddressFromMapScreenState extends State<ChooseAddressFromMapScreen>
                                         type: address.type ?? '',
                                         lat: address.lat ?? '',
                                         lng: address.lng ?? '',
-                                        onSuccess: () => addressController.getAddress(areaId: widget.args.areaId),
-                                        userAddressId: context.read<AuthController>().profile?.id ?? 0,
+                                        onSuccess: () =>
+                                            addressController.getAddress(
+                                              areaId: widget.args.areaId,
+                                            ),
+                                        userAddressId:
+                                            context
+                                                .read<AuthController>()
+                                                .profile
+                                                ?.id ??
+                                            0,
                                       ),
                                     );
                                   },
                                   child: Padding(
                                     padding: const EdgeInsets.all(6),
-                                    child: Icon(Icons.edit_outlined, color: AppColors.mainAppColor, size: 20),
+                                    child: Icon(
+                                      Icons.edit_outlined,
+                                      color: AppColors.mainAppColor,
+                                      size: 20,
+                                    ),
                                   ),
                                 ),
                               ],
@@ -224,8 +269,12 @@ class _ChooseAddressFromMapScreenState extends State<ChooseAddressFromMapScreen>
                               type: 'home',
                               lat: '',
                               lng: '',
-                              onSuccess: () => addressController.getAddress(areaId: widget.args.areaId),
-                              userAddressId: context.read<AuthController>().profile?.id ?? 0,
+                              onSuccess: () => addressController.getAddress(
+                                areaId: widget.args.areaId,
+                              ),
+                              userAddressId:
+                                  context.read<AuthController>().profile?.id ??
+                                  0,
                             ),
                           );
                         },
@@ -233,16 +282,30 @@ class _ChooseAddressFromMapScreenState extends State<ChooseAddressFromMapScreen>
                           width: double.infinity,
                           padding: const EdgeInsets.symmetric(vertical: 14),
                           decoration: BoxDecoration(
-                            color: AppColors.mainAppColor.withValues(alpha: .07),
+                            color: AppColors.mainAppColor.withValues(
+                              alpha: .07,
+                            ),
                             borderRadius: BorderRadius.circular(16),
-                            border: Border.all(color: AppColors.mainAppColor.withValues(alpha: .25)),
+                            border: Border.all(
+                              color: AppColors.mainAppColor.withValues(
+                                alpha: .25,
+                              ),
+                            ),
                           ),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(Icons.add_location_alt_outlined, color: AppColors.mainAppColor),
+                              Icon(
+                                Icons.add_location_alt_outlined,
+                                color: AppColors.mainAppColor,
+                              ),
                               8.sbW,
-                              Text('addAddress'.tr, style: AppTextStyle.text14BS().copyWith(color: AppColors.mainAppColor)),
+                              Text(
+                                'addAddress'.tr,
+                                style: AppTextStyle.text14BS().copyWith(
+                                  color: AppColors.mainAppColor,
+                                ),
+                              ),
                             ],
                           ),
                         ),
@@ -256,9 +319,13 @@ class _ChooseAddressFromMapScreenState extends State<ChooseAddressFromMapScreen>
               child: Container(
                 padding: const EdgeInsets.fromLTRB(16, 10, 16, 12),
                 decoration: BoxDecoration(
-                  color: AppColors.whiteColor,
+                  color: FasakhanstaBrand.surface,
                   boxShadow: [
-                    BoxShadow(color: Colors.black.withValues(alpha: .1), blurRadius: 16, offset: const Offset(0, -4)),
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: .1),
+                      blurRadius: 16,
+                      offset: const Offset(0, -4),
+                    ),
                   ],
                 ),
                 child: CustomButton(
@@ -274,7 +341,9 @@ class _ChooseAddressFromMapScreenState extends State<ChooseAddressFromMapScreen>
                       onSuccess: () {
                         NamedNavigatorImpl.push(
                           ExecuteTheOrderScreen.routeName,
-                          arguments: ExecuteTheOrderArgs(userAddressId: selectedAddressId),
+                          arguments: ExecuteTheOrderArgs(
+                            userAddressId: selectedAddressId,
+                          ),
                         );
                       },
                     );

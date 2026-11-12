@@ -1,3 +1,5 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
+
 import 'dart:convert';
 import 'dart:developer';
 
@@ -22,7 +24,8 @@ import '../../../custom_widgets/custom_image/custom_network_image.dart';
 import '../../cart/controller/cart_controller.dart';
 import '../../cart/screen/cart_screen.dart';
 import '../../restaurants/controller/restaurants_controller.dart';
-import '../../restaurants/model/details_restaurants_model.dart' as details_restaurant_model;
+import '../../restaurants/model/details_restaurants_model.dart'
+    as details_restaurant_model;
 import '../../restaurants/model/highst_rated_model.dart';
 import '../../restaurants/model/previous_order_model.dart';
 import '../../restaurants/model/products_restaurant_model.dart';
@@ -50,22 +53,52 @@ class _AnotherHomeScreenState extends State<AnotherHomeScreen> {
   void initState() {
     _verticalScrollController.addListener(animateToTab);
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<RestaurantsController>(context, listen: false).initialRestaurantsDetails();
+      Provider.of<RestaurantsController>(
+        context,
+        listen: false,
+      ).initialRestaurantsDetails();
       HiveMethods.getToken() != null
-          ? Provider.of<RestaurantsController>(context, listen: false).initialPreviousOrder()
+          ? Provider.of<RestaurantsController>(
+              context,
+              listen: false,
+            ).initialPreviousOrder()
           : null;
-      Provider.of<RestaurantsController>(context, listen: false).initialProductsRestaurant();
+      Provider.of<RestaurantsController>(
+        context,
+        listen: false,
+      ).initialProductsRestaurant();
       Future.wait([
-        Provider.of<RestaurantsController>(context, listen: false).getRestaurantsDetails(id: widget.id),
-        Provider.of<RestaurantsController>(context, listen: false).getPreviousOrder(id: widget.id),
-        Provider.of<RestaurantsController>(context, listen: false).getProductsRestaurant(id: widget.id),
+        Provider.of<RestaurantsController>(
+          context,
+          listen: false,
+        ).getRestaurantsDetails(id: widget.id),
+        Provider.of<RestaurantsController>(
+          context,
+          listen: false,
+        ).getPreviousOrder(id: widget.id),
+        Provider.of<RestaurantsController>(
+          context,
+          listen: false,
+        ).getProductsRestaurant(id: widget.id),
       ]);
     });
     _pusherController = context.read<PusherController>();
-    _pusherController.addEventListener('product.updated', _handleProductUpdated);
-    _pusherController.addEventListener('product.updated', _handlePreviousProductUpdated);
-    _pusherController.addEventListener('product.updated', _handleHightsRatedUpdated);
-    _pusherController.addEventListener('resturant.updated', _handleResturantUpdated);
+    _pusherController.addEventListener(
+      'product.updated',
+      _handleProductUpdated,
+    );
+    _pusherController.addEventListener(
+      'product.updated',
+      _handlePreviousProductUpdated,
+    );
+    _pusherController.addEventListener(
+      'product.updated',
+      _handleHightsRatedUpdated,
+    );
+    _pusherController.addEventListener(
+      'resturant.updated',
+      _handleResturantUpdated,
+    );
     super.initState();
   }
 
@@ -75,8 +108,12 @@ class _AnotherHomeScreenState extends State<AnotherHomeScreen> {
       final resturantData = decodedData['product'];
 
       if (mounted) {
-        final resturantModel = ResturantItems.fromJson(resturantData as Map<String, dynamic>);
-        context.read<RestaurantsController>().updateResturantProductOrder(resturantModel);
+        final resturantModel = ResturantItems.fromJson(
+          resturantData as Map<String, dynamic>,
+        );
+        context.read<RestaurantsController>().updateResturantProductOrder(
+          resturantModel,
+        );
         log('=================== update resturant product');
       }
     } catch (e, stackTrace) {
@@ -91,8 +128,12 @@ class _AnotherHomeScreenState extends State<AnotherHomeScreen> {
       final resturantData = decodedData['product'];
 
       if (mounted) {
-        final resturantModel = HighestRated.fromJson(resturantData as Map<String, dynamic>);
-        context.read<RestaurantsController>().updateAccordingToYourTasteResturantProductOrder(resturantModel);
+        final resturantModel = HighestRated.fromJson(
+          resturantData as Map<String, dynamic>,
+        );
+        context
+            .read<RestaurantsController>()
+            .updateAccordingToYourTasteResturantProductOrder(resturantModel);
         log('=================== update resturant product');
       }
     } catch (e, stackTrace) {
@@ -107,8 +148,12 @@ class _AnotherHomeScreenState extends State<AnotherHomeScreen> {
       final resturantData = decodedData['product'];
 
       if (mounted) {
-        final resturantModel = PreviousOrderModel.fromJson(resturantData as Map<String, dynamic>);
-        context.read<RestaurantsController>().updateResturantPreviousProductOrder(resturantModel);
+        final resturantModel = PreviousOrderModel.fromJson(
+          resturantData as Map<String, dynamic>,
+        );
+        context
+            .read<RestaurantsController>()
+            .updateResturantPreviousProductOrder(resturantModel);
         log('=================== update previous product');
       }
     } catch (e, stackTrace) {
@@ -123,10 +168,13 @@ class _AnotherHomeScreenState extends State<AnotherHomeScreen> {
       final resturantData = decodedData['resturant'];
 
       if (mounted) {
-        final resturantModel = details_restaurant_model.DetailsRestaurantModel.fromJson(
-          resturantData as Map<String, dynamic>,
+        final resturantModel =
+            details_restaurant_model.DetailsRestaurantModel.fromJson(
+              resturantData as Map<String, dynamic>,
+            );
+        context.read<RestaurantsController>().updateResturantDetails(
+          resturantModel,
         );
-        context.read<RestaurantsController>().updateResturantDetails(resturantModel);
         // context.read<HomeController>().updateSpacialResturant(resturantModel);
       }
     } catch (e, stackTrace) {
@@ -137,7 +185,10 @@ class _AnotherHomeScreenState extends State<AnotherHomeScreen> {
 
   @override
   void dispose() {
-    _pusherController.removeEventListener('product.updated', _handleResturantUpdated);
+    _pusherController.removeEventListener(
+      'product.updated',
+      _handleResturantUpdated,
+    );
     _verticalScrollController.dispose();
     super.dispose();
   }
@@ -145,12 +196,20 @@ class _AnotherHomeScreenState extends State<AnotherHomeScreen> {
   void _scrollToCategory(int index) {
     final keyContext = _categoryKeys[index].currentContext;
     if (keyContext != null) {
-      Scrollable.ensureVisible(keyContext, duration: const Duration(milliseconds: 500), curve: Curves.easeInOut);
+      Scrollable.ensureVisible(
+        keyContext,
+        duration: const Duration(milliseconds: 500),
+        curve: Curves.easeInOut,
+      );
     }
   }
 
   void _scrollToTop() {
-    _verticalScrollController.animateTo(0.0, duration: const Duration(milliseconds: 500), curve: Curves.easeInOut);
+    _verticalScrollController.animateTo(
+      0.0,
+      duration: const Duration(milliseconds: 500),
+      curve: Curves.easeInOut,
+    );
   }
 
   void _onBottomSheetSuccess(int index) {
@@ -171,7 +230,8 @@ class _AnotherHomeScreenState extends State<AnotherHomeScreen> {
       });
     } else {
       for (var i = 0; i < _categoryKeys.length; i++) {
-        final box = _categoryKeys[i].currentContext!.findRenderObject() as RenderBox;
+        final box =
+            _categoryKeys[i].currentContext!.findRenderObject() as RenderBox;
         final position = box.localToGlobal(Offset.zero);
 
         if (_verticalScrollController.offset >= position.dy) {
@@ -188,11 +248,16 @@ class _AnotherHomeScreenState extends State<AnotherHomeScreen> {
     return Consumer<RestaurantsController>(
       builder: (BuildContext context, restaurantsController, _) {
         _categoryKeys.clear();
-        _categoryKeys.addAll(List.generate(restaurantsController.productsRestaurant.length, (index) => GlobalKey()));
+        _categoryKeys.addAll(
+          List.generate(
+            restaurantsController.productsRestaurant.length,
+            (index) => GlobalKey(),
+          ),
+        );
 
         final cartController = context.read<CartController>();
         return Container(
-          color: AppColors.whiteColor,
+          color: FasakhanstaBrand.surface,
           child: ApiResponseWidget(
             apiResponse: restaurantsController.restaurantsDetailsApiResponse,
             onReload: () {
@@ -207,12 +272,16 @@ class _AnotherHomeScreenState extends State<AnotherHomeScreen> {
                   physics: const ClampingScrollPhysics(),
                   children: [
                     AnotherHomeHeaderCoverAndImageRestaurantDetailsWidget(
-                      detailsRestaurant: restaurantsController.detailsRestaurant,
+                      detailsRestaurant:
+                          restaurantsController.detailsRestaurant,
                     ),
                     16.sbH,
                     const Padding(
                       padding: EdgeInsets.symmetric(horizontal: 16),
-                      child: CustomImage(path: AppImages.bannerAnotherHome, type: ImageType.asset),
+                      child: CustomImage(
+                        path: AppImages.bannerAnotherHome,
+                        type: ImageType.asset,
+                      ),
                     ),
                     15.sbH,
                     _buildTabs(context, restaurantsController),
@@ -221,10 +290,20 @@ class _AnotherHomeScreenState extends State<AnotherHomeScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         restaurantsController.previousOrders.isNotEmpty
-                            ? _buildPreviousOrders(context, restaurantsController)
+                            ? _buildPreviousOrders(
+                                context,
+                                restaurantsController,
+                              )
                             : const SizedBox.shrink(),
-                        restaurantsController.detailsRestaurant?.highestRated?.isNotEmpty == true
-                            ? _buildChoicesAccordingToYourTaste(context, restaurantsController)
+                        restaurantsController
+                                    .detailsRestaurant
+                                    ?.highestRated
+                                    ?.isNotEmpty ==
+                                true
+                            ? _buildChoicesAccordingToYourTaste(
+                                context,
+                                restaurantsController,
+                              )
                             : const SizedBox.shrink(),
                         ..._buildCategories(context, restaurantsController),
                       ],
@@ -232,35 +311,53 @@ class _AnotherHomeScreenState extends State<AnotherHomeScreen> {
                   ],
                 ),
               ),
-              bottomNavigationBar: (cartController.cart == null || (cartController.cart?.carts?.isEmpty ?? false))
+              bottomNavigationBar:
+                  (cartController.cart == null ||
+                      (cartController.cart?.carts?.isEmpty ?? false))
                   ? Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 12,
+                      ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
                             'minOrderPrice'.tr.replaceAll(
-                                  '{}',
-                                  restaurantsController.detailsRestaurant?.minOrderPrice.toString() ?? '',
-                                ),
+                              '{}',
+                              restaurantsController
+                                      .detailsRestaurant
+                                      ?.minOrderPrice
+                                      .toString() ??
+                                  '',
+                            ),
                             style: AppTextStyle.text16BS(),
                           ),
                         ],
                       ),
                     )
                   : Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 10,
+                        horizontal: 20,
+                      ),
                       child: Row(
                         children: [
                           Container(
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(8),
-                              border: Border.all(color: AppColors.darkMainAppColor),
+                              border: Border.all(
+                                color: AppColors.darkMainAppColor,
+                              ),
                             ),
                             child: Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 13),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 15,
+                                vertical: 13,
+                              ),
                               child: Text(
-                                cartController.cart?.carts?.length.toString() ?? '0',
+                                cartController.cart?.carts?.length.toString() ??
+                                    '0',
                                 style: AppTextStyle.text16BS(),
                               ),
                             ),
@@ -268,17 +365,26 @@ class _AnotherHomeScreenState extends State<AnotherHomeScreen> {
                           10.sbW,
                           Expanded(
                             child: InkWell(
-                              onTap: () => NamedNavigatorImpl.push(CartScreen.routeName),
+                              onTap: () =>
+                                  NamedNavigatorImpl.push(CartScreen.routeName),
                               child: Container(
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(8),
                                   color: AppColors.darkMainAppColor,
                                 ),
                                 child: Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 13),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 15,
+                                    vertical: 13,
+                                  ),
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [Text('showCart'.tr, style: AppTextStyle.text16BW())],
+                                    children: [
+                                      Text(
+                                        'showCart'.tr,
+                                        style: AppTextStyle.text16BW(),
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ),
@@ -288,15 +394,21 @@ class _AnotherHomeScreenState extends State<AnotherHomeScreen> {
                           Container(
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(8),
-                              border: Border.all(color: AppColors.darkMainAppColor),
+                              border: Border.all(
+                                color: AppColors.darkMainAppColor,
+                              ),
                             ),
                             child: Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 13),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 15,
+                                vertical: 13,
+                              ),
                               child: Text(
                                 'egyp'.tr.replaceAll(
-                                      '{}',
-                                      cartController.cart?.totalCart.toString() ?? '0',
-                                    ),
+                                  '{}',
+                                  cartController.cart?.totalCart.toString() ??
+                                      '0',
+                                ),
                                 style: AppTextStyle.text16BS(),
                               ),
                             ),
@@ -311,7 +423,10 @@ class _AnotherHomeScreenState extends State<AnotherHomeScreen> {
     );
   }
 
-  Widget _buildTabs(BuildContext context, RestaurantsController restaurantsController) {
+  Widget _buildTabs(
+    BuildContext context,
+    RestaurantsController restaurantsController,
+  ) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -342,8 +457,16 @@ class _AnotherHomeScreenState extends State<AnotherHomeScreen> {
                     ? _buildTabItem(context, 'previousOrders'.tr, -2)
                     : const SizedBox.shrink(),
                 8.sbW,
-                restaurantsController.detailsRestaurant?.highestRated?.isNotEmpty == true
-                    ? _buildTabItem(context, 'choicesAccordingToYourTaste'.tr, -1)
+                restaurantsController
+                            .detailsRestaurant
+                            ?.highestRated
+                            ?.isNotEmpty ==
+                        true
+                    ? _buildTabItem(
+                        context,
+                        'choicesAccordingToYourTaste'.tr,
+                        -1,
+                      )
                     : const SizedBox.shrink(),
                 ...List.generate(
                   restaurantsController.productsRestaurant.length,
@@ -351,7 +474,10 @@ class _AnotherHomeScreenState extends State<AnotherHomeScreen> {
                     padding: const EdgeInsets.only(right: 16),
                     child: _buildTabItem(
                       context,
-                      restaurantsController.productsRestaurant[index].categoryName ?? '',
+                      restaurantsController
+                              .productsRestaurant[index]
+                              .categoryName ??
+                          '',
                       index,
                     ),
                   ),
@@ -379,14 +505,24 @@ class _AnotherHomeScreenState extends State<AnotherHomeScreen> {
       },
       child: Column(
         children: [
-          Text(title, style: currentIndex == index ? AppTextStyle.text16BM() : AppTextStyle.text16MG()),
+          Text(
+            title,
+            style: currentIndex == index
+                ? AppTextStyle.text16BM()
+                : AppTextStyle.text16MG(),
+          ),
           5.sbH,
           Container(
             height: 5,
             width: 100,
             decoration: BoxDecoration(
-              borderRadius: const BorderRadius.only(topLeft: Radius.circular(7), topRight: Radius.circular(7)),
-              color: currentIndex == index ? AppColors.mainAppColor : Colors.transparent,
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(7),
+                topRight: Radius.circular(7),
+              ),
+              color: currentIndex == index
+                  ? AppColors.mainAppColor
+                  : Colors.transparent,
             ),
           ),
         ],
@@ -394,7 +530,10 @@ class _AnotherHomeScreenState extends State<AnotherHomeScreen> {
     );
   }
 
-  Widget _buildPreviousOrders(BuildContext context, RestaurantsController restaurantsController) {
+  Widget _buildPreviousOrders(
+    BuildContext context,
+    RestaurantsController restaurantsController,
+  ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -406,21 +545,33 @@ class _AnotherHomeScreenState extends State<AnotherHomeScreen> {
         if (restaurantsController.previousOrders.isNotEmpty)
           const PreviousOrdersListViewWidget()
         else
-          Center(child: Text('thereAreNoPreviousRequests'.tr, style: AppTextStyle.text16RS())),
+          Center(
+            child: Text(
+              'thereAreNoPreviousRequests'.tr,
+              style: AppTextStyle.text16RS(),
+            ),
+          ),
         22.sbH,
       ],
     );
   }
 
-  Widget _buildChoicesAccordingToYourTaste(BuildContext context, RestaurantsController restaurantsController) {
+  Widget _buildChoicesAccordingToYourTaste(
+    BuildContext context,
+    RestaurantsController restaurantsController,
+  ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Text('choicesAccordingToYourTaste'.tr, style: AppTextStyle.text18BS()),
+          child: Text(
+            'choicesAccordingToYourTaste'.tr,
+            style: AppTextStyle.text18BS(),
+          ),
         ),
-        if (restaurantsController.detailsRestaurant?.highestRated?.isNotEmpty == true)
+        if (restaurantsController.detailsRestaurant?.highestRated?.isNotEmpty ==
+            true)
           const ChoicesAccordingToYourTasteWidget()
         else
           const SizedBox.shrink(),
@@ -429,7 +580,10 @@ class _AnotherHomeScreenState extends State<AnotherHomeScreen> {
     );
   }
 
-  List<Widget> _buildCategories(BuildContext context, RestaurantsController restaurantsController) {
+  List<Widget> _buildCategories(
+    BuildContext context,
+    RestaurantsController restaurantsController,
+  ) {
     return List.generate(
       restaurantsController.productsRestaurant.length,
       (index) => Padding(
@@ -438,28 +592,47 @@ class _AnotherHomeScreenState extends State<AnotherHomeScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(restaurantsController.productsRestaurant[index].categoryName ?? '', style: AppTextStyle.text18BS()),
+            Text(
+              restaurantsController.productsRestaurant[index].categoryName ??
+                  '',
+              style: AppTextStyle.text18BS(),
+            ),
             16.sbH,
             ...List.generate(
-              restaurantsController.productsRestaurant[index].resturantItems?.length ?? 0,
+              restaurantsController
+                      .productsRestaurant[index]
+                      .resturantItems
+                      ?.length ??
+                  0,
               (indexRestaurantItems) => InkWell(
                 onTap: () {
-                  if (restaurantsController.detailsRestaurant?.status == 'closed') {
-                    CommonMethods.showError(message: 'thisRestaurantIsClosed'.tr);
+                  if (restaurantsController.detailsRestaurant?.status ==
+                      'closed') {
+                    CommonMethods.showError(
+                      message: 'thisRestaurantIsClosed'.tr,
+                    );
                   } else {
-                    if (restaurantsController.productsRestaurant[index].resturantItems?[indexRestaurantItems].status ==
+                    if (restaurantsController
+                            .productsRestaurant[index]
+                            .resturantItems?[indexRestaurantItems]
+                            .status ==
                         'show') {
                       NamedNavigatorImpl.push(
                         ProductDetailsScreen.routeName,
                         arguments: ProductDetailsDetailsArgs(
                           onSuccessAddItem: () {},
-                          id: restaurantsController
-                                  .productsRestaurant[index].resturantItems?[indexRestaurantItems].id ??
+                          id:
+                              restaurantsController
+                                  .productsRestaurant[index]
+                                  .resturantItems?[indexRestaurantItems]
+                                  .id ??
                               0,
                         ),
                       );
                     } else {
-                      CommonMethods.showError(message: 'productNotAvailable'.tr);
+                      CommonMethods.showError(
+                        message: 'productNotAvailable'.tr,
+                      );
                     }
                   }
                 },
@@ -473,30 +646,42 @@ class _AnotherHomeScreenState extends State<AnotherHomeScreen> {
                           children: [
                             Text(
                               restaurantsController
-                                      .productsRestaurant[index].resturantItems?[indexRestaurantItems].productName ??
+                                      .productsRestaurant[index]
+                                      .resturantItems?[indexRestaurantItems]
+                                      .productName ??
                                   '',
                               style: AppTextStyle.text18RS(),
                             ),
                             8.sbH,
                             if (restaurantsController
-                                    .productsRestaurant[index].resturantItems?[indexRestaurantItems].highestRated ==
+                                    .productsRestaurant[index]
+                                    .resturantItems?[indexRestaurantItems]
+                                    .highestRated ==
                                 'yes')
                               Container(
                                 decoration: BoxDecoration(
-                                  color: AppColors.mainAppColor.withValues(alpha: 0.2),
+                                  color: AppColors.mainAppColor.withValues(
+                                    alpha: 0.2,
+                                  ),
                                   borderRadius: BorderRadius.circular(8),
                                 ),
                                 child: Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: Row(
                                     mainAxisSize: MainAxisSize.min,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
-                                      const CustomImage(path: AppImages.starIcon, type: ImageType.svg),
+                                      const CustomImage(
+                                        path: AppImages.starIcon,
+                                        type: ImageType.svg,
+                                      ),
                                       5.sbW,
                                       Text(
                                         'highestRate'.tr,
-                                        style: AppTextStyle.text16BS().copyWith(color: AppColors.darkMainAppColor),
+                                        style: AppTextStyle.text16BS().copyWith(
+                                          color: AppColors.darkMainAppColor,
+                                        ),
                                       ),
                                     ],
                                   ),
@@ -506,21 +691,28 @@ class _AnotherHomeScreenState extends State<AnotherHomeScreen> {
                               const SizedBox.shrink(),
                             8.sbH,
                             if (restaurantsController
-                                    .productsRestaurant[index].resturantItems?[indexRestaurantItems].status ==
+                                    .productsRestaurant[index]
+                                    .resturantItems?[indexRestaurantItems]
+                                    .status ==
                                 'show')
                               Text(
                                 'pound'.tr.replaceAll(
-                                      '{}',
-                                      restaurantsController.productsRestaurant[index]
-                                              .resturantItems?[indexRestaurantItems].productPrice
-                                              ?.toStringAsFixed(2)
-                                              .toString() ??
-                                          '',
-                                    ),
+                                  '{}',
+                                  restaurantsController
+                                          .productsRestaurant[index]
+                                          .resturantItems?[indexRestaurantItems]
+                                          .productPrice
+                                          ?.toStringAsFixed(2)
+                                          .toString() ??
+                                      '',
+                                ),
                                 style: AppTextStyle.text16RG(),
                               )
                             else
-                              Text('notAvailable'.tr, style: AppTextStyle.text16RG()),
+                              Text(
+                                'notAvailable'.tr,
+                                style: AppTextStyle.text16RG(),
+                              ),
                           ],
                         ),
                       ),
@@ -533,8 +725,11 @@ class _AnotherHomeScreenState extends State<AnotherHomeScreen> {
                           color: AppColors.mainAppColor.withValues(alpha: 0.15),
                         ),
                         child: CustomNetworkImage(
-                          imageUrl: restaurantsController
-                                  .productsRestaurant[index].resturantItems?[indexRestaurantItems].productImage
+                          imageUrl:
+                              restaurantsController
+                                  .productsRestaurant[index]
+                                  .resturantItems?[indexRestaurantItems]
+                                  .productImage
                                   .toString() ??
                               '',
                           radius: 12,

@@ -1,3 +1,5 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
+
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
@@ -50,7 +52,7 @@ class _CartScreenState extends State<CartScreen> {
         final totalPrice = cartController.totalPrice;
         final serviceFees =
             ((cartController.cart?.resturant?.serviceFees ?? 0) * totalPrice) /
-                100;
+            100;
         final addedPrice =
             ((cartController.cart?.resturant?.tax ?? 0) * totalPrice) / 100;
         final grandTotal = serviceFees + addedPrice + totalPrice;
@@ -60,16 +62,17 @@ class _CartScreenState extends State<CartScreen> {
                 .toDouble();
 
         return Scaffold(
-          backgroundColor: const Color(0xFFF8F8F8),
+          backgroundColor: Colors.transparent,
           appBar: AppBar(
             elevation: 0,
-            backgroundColor: AppColors.mainAppColor,
-            foregroundColor: AppColors.whiteColor,
+            backgroundColor: Colors.transparent,
+            foregroundColor: FasakhanstaBrand.text,
             centerTitle: true,
             title: Text(
               'shoppingCart'.tr,
-              style: AppTextStyle.text18BS()
-                  .copyWith(color: AppColors.whiteColor),
+              style: AppTextStyle.text18BS().copyWith(
+                color: FasakhanstaBrand.text,
+              ),
             ),
             leading: IconButton(
               icon: const Icon(Icons.arrow_back_ios_new_rounded),
@@ -144,7 +147,7 @@ class _CartScreenState extends State<CartScreen> {
       margin: const EdgeInsets.symmetric(horizontal: 16),
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       decoration: BoxDecoration(
-        color: AppColors.whiteColor,
+        color: FasakhanstaBrand.surface,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color: AppColors.mainAppColor.withValues(alpha: .15),
@@ -203,11 +206,10 @@ class _CartScreenState extends State<CartScreen> {
                   ),
                   5.sbW,
                   Text(
-                    context.languageCode == 'ar'
-                        ? 'حذف السلة'
-                        : 'Clear cart',
-                    style: AppTextStyle.text12MS()
-                        .copyWith(color: AppColors.redColor),
+                    context.languageCode == 'ar' ? 'حذف السلة' : 'Clear cart',
+                    style: AppTextStyle.text12MS().copyWith(
+                      color: AppColors.redColor,
+                    ),
                   ),
                 ],
               ),
@@ -256,9 +258,7 @@ class _CartScreenState extends State<CartScreen> {
             ],
           ),
           content: Text(
-            isArabic
-                ? 'هل أنت متأكد أنك تريد حذف جميع المنتجات من السلة؟'
-                : 'Are you sure you want to remove all products from your cart?',
+            isArabic ? 'هل أنت متأكد أنك تريد حذف جميع المنتجات من السلة؟' : 'Are you sure you want to remove all products from your cart?',
             style: AppTextStyle.text14RG(),
           ),
           actions: [
@@ -266,16 +266,19 @@ class _CartScreenState extends State<CartScreen> {
               onPressed: () => Navigator.pop(dialogContext),
               child: Text(
                 isArabic ? 'إلغاء' : 'Cancel',
-                style: AppTextStyle.text14MS()
-                    .copyWith(color: AppColors.greyColor),
+                style: AppTextStyle.text14MS().copyWith(
+                  color: AppColors.greyColor,
+                ),
               ),
             ),
             FilledButton.icon(
               style: FilledButton.styleFrom(
                 backgroundColor: AppColors.redColor,
-                foregroundColor: Colors.white,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 11),
+                foregroundColor: FasakhanstaBrand.onOrange,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 11,
+                ),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -307,10 +310,7 @@ class _CartScreenState extends State<CartScreen> {
       children: [
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
-          child: Text(
-            'youMayAlsoLike'.tr,
-            style: AppTextStyle.text17BS(),
-          ),
+          child: Text('youMayAlsoLike'.tr, style: AppTextStyle.text17BS()),
         ),
         SizedBox(
           height: 168,
@@ -325,7 +325,7 @@ class _CartScreenState extends State<CartScreen> {
                 width: 132,
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: AppColors.whiteColor,
+                  color: FasakhanstaBrand.surface,
                   borderRadius: BorderRadius.circular(16),
                   border: Border.all(
                     color: AppColors.greyColor.withValues(alpha: .12),
@@ -358,7 +358,7 @@ class _CartScreenState extends State<CartScreen> {
                               width: 30,
                               height: 30,
                               decoration: BoxDecoration(
-                                color: AppColors.whiteColor,
+                                color: FasakhanstaBrand.surface,
                                 borderRadius: BorderRadius.circular(10),
                               ),
                               child: Icon(
@@ -384,8 +384,9 @@ class _CartScreenState extends State<CartScreen> {
                         '{}',
                         '${product.productPrice ?? 0}',
                       ),
-                      style: AppTextStyle.text12MS()
-                          .copyWith(color: AppColors.mainAppColor),
+                      style: AppTextStyle.text12MS().copyWith(
+                        color: AppColors.mainAppColor,
+                      ),
                     ),
                   ],
                 ),
@@ -408,11 +409,9 @@ class _CartScreenState extends State<CartScreen> {
       margin: const EdgeInsets.symmetric(horizontal: 16),
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: AppColors.whiteColor,
+        color: FasakhanstaBrand.surface,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: AppColors.greyColor.withValues(alpha: .12),
-        ),
+        border: Border.all(color: AppColors.greyColor.withValues(alpha: .12)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -433,8 +432,9 @@ class _CartScreenState extends State<CartScreen> {
               const Spacer(),
               Text(
                 'pound'.tr.replaceAll('{}', total.toStringAsFixed(2)),
-                style: AppTextStyle.text18BS()
-                    .copyWith(color: AppColors.mainAppColor),
+                style: AppTextStyle.text18BS().copyWith(
+                  color: AppColors.mainAppColor,
+                ),
               ),
             ],
           ),
@@ -442,8 +442,9 @@ class _CartScreenState extends State<CartScreen> {
             6.sbH,
             Text(
               'thisTotalWithoutDeliveryCharge'.tr,
-              style: AppTextStyle.text12MS()
-                  .copyWith(color: AppColors.redColor),
+              style: AppTextStyle.text12MS().copyWith(
+                color: AppColors.redColor,
+              ),
             ),
           ],
         ],
@@ -498,7 +499,8 @@ class _CartScreenState extends State<CartScreen> {
       ChooseAddressFromMapScreen.routeName,
       arguments: ChooseAddressFromMapScreenArgs(
         resturantId: controller.cart?.resturant?.resturantId ?? 0,
-        areaId: controller.cart?.resturant?.resturantAreas
+        areaId:
+            controller.cart?.resturant?.resturantAreas
                 ?.map((area) => area.areaId)
                 .whereType<int>()
                 .toList() ??
@@ -527,9 +529,9 @@ class _CartScreenState extends State<CartScreen> {
                 constraints: const BoxConstraints(maxWidth: 430),
                 padding: const EdgeInsets.fromLTRB(22, 28, 22, 22),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: FasakhanstaBrand.surface,
                   borderRadius: BorderRadius.circular(26),
-                  border: Border.all(color: const Color(0xFFEEEEF1)),
+                  border: Border.all(color: FasakhanstaBrand.border),
                   boxShadow: const [
                     BoxShadow(
                       color: Color(0x10000000),
@@ -551,12 +553,14 @@ class _CartScreenState extends State<CartScreen> {
                             width: 164,
                             height: 164,
                             decoration: BoxDecoration(
-                              color: AppColors.mainAppColor
-                                  .withValues(alpha: .065),
+                              color: AppColors.mainAppColor.withValues(
+                                alpha: .065,
+                              ),
                               shape: BoxShape.circle,
                               border: Border.all(
-                                color: AppColors.mainAppColor
-                                    .withValues(alpha: .10),
+                                color: AppColors.mainAppColor.withValues(
+                                  alpha: .10,
+                                ),
                               ),
                             ),
                           ),
@@ -564,12 +568,13 @@ class _CartScreenState extends State<CartScreen> {
                             width: 130,
                             height: 130,
                             decoration: BoxDecoration(
-                              color: Colors.white,
+                              color: FasakhanstaBrand.surface,
                               shape: BoxShape.circle,
                               boxShadow: [
                                 BoxShadow(
-                                  color: AppColors.mainAppColor
-                                      .withValues(alpha: .08),
+                                  color: AppColors.mainAppColor.withValues(
+                                    alpha: .08,
+                                  ),
                                   blurRadius: 18,
                                   offset: const Offset(0, 7),
                                 ),
@@ -603,8 +608,9 @@ class _CartScreenState extends State<CartScreen> {
                               width: 9,
                               height: 9,
                               decoration: BoxDecoration(
-                                color: AppColors.mainAppColor
-                                    .withValues(alpha: .32),
+                                color: AppColors.mainAppColor.withValues(
+                                  alpha: .32,
+                                ),
                                 shape: BoxShape.circle,
                               ),
                             ),
@@ -617,7 +623,7 @@ class _CartScreenState extends State<CartScreen> {
                       isArabic ? 'السلة فارغة' : 'Your cart is empty',
                       textAlign: TextAlign.center,
                       style: AppTextStyle.text22BS().copyWith(
-                        color: const Color(0xFF17191D),
+                        color: FasakhanstaBrand.text,
                         fontSize: 24,
                         fontWeight: FontWeight.w800,
                       ),
@@ -629,7 +635,7 @@ class _CartScreenState extends State<CartScreen> {
                           : 'You have not added any products yet.\nBrowse restaurants and add your favorites to the cart.',
                       textAlign: TextAlign.center,
                       style: AppTextStyle.text14RG().copyWith(
-                        color: const Color(0xFF858A93),
+                        color: FasakhanstaBrand.muted,
                         height: 1.65,
                       ),
                     ),
@@ -643,7 +649,7 @@ class _CartScreenState extends State<CartScreen> {
                         ),
                         style: FilledButton.styleFrom(
                           backgroundColor: AppColors.mainAppColor,
-                          foregroundColor: Colors.white,
+                          foregroundColor: FasakhanstaBrand.onOrange,
                           elevation: 0,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(16),
@@ -653,7 +659,7 @@ class _CartScreenState extends State<CartScreen> {
                         label: Text(
                           isArabic ? 'تصفح المطاعم' : 'Browse restaurants',
                           style: AppTextStyle.text15BS().copyWith(
-                            color: Colors.white,
+                            color: FasakhanstaBrand.onOrange,
                           ),
                         ),
                       ),
@@ -697,7 +703,7 @@ class _CartScreenState extends State<CartScreen> {
       width: 38,
       height: 38,
       decoration: BoxDecoration(
-        color: const Color(0xFFFFF7F0),
+        color: FasakhanstaBrand.surfaceRaised,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
           color: AppColors.mainAppColor.withValues(alpha: .13),

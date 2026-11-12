@@ -1,3 +1,4 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
 import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
@@ -15,7 +16,11 @@ class SOnBoardingTab extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Image.asset(AppImages.sOnBoardingImage, height: 300, fit: BoxFit.contain),
+        Image.asset(
+          AppImages.sOnBoardingImage,
+          height: 300,
+          fit: BoxFit.contain,
+        ),
         Expanded(
           child: Stack(
             children: [
@@ -34,9 +39,16 @@ class SOnBoardingTab extends StatelessWidget {
                     height: 80,
                     radius: 40,
                     onPressed: () {
-                      controller.nextPage(duration: const Duration(milliseconds: 500), curve: Curves.linear);
+                      controller.nextPage(
+                        duration: const Duration(milliseconds: 500),
+                        curve: Curves.linear,
+                      );
                     },
-                    child: Icon(Icons.arrow_forward_rounded, size: 40, color: AppColors.whiteColor),
+                    child: Icon(
+                      Icons.arrow_forward_rounded,
+                      size: 40,
+                      color: FasakhanstaBrand.onOrange,
+                    ),
                   ),
                 ),
               ),

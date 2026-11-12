@@ -1,3 +1,5 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
+
 import 'dart:async';
 
 import 'package:bot_toast/bot_toast.dart';
@@ -20,7 +22,7 @@ class CommonMethods {
             ? Text(
                 title,
                 style: const TextStyle(
-                  color: Colors.black,
+                  color: FasakhanstaBrand.text,
                   fontSize: 16,
                   fontWeight: FontWeight.w700,
                 ),
@@ -29,7 +31,7 @@ class CommonMethods {
         content: Text(
           message,
           style: const TextStyle(
-            color: Colors.black,
+            color: FasakhanstaBrand.text,
             fontSize: 15,
             fontWeight: FontWeight.w500,
           ),
@@ -39,7 +41,7 @@ class CommonMethods {
             child: Text(
               'ok'.tr,
               style: const TextStyle(
-                color: Colors.red,
+                color: FasakhanstaBrand.danger,
                 fontSize: 16,
                 fontWeight: FontWeight.w700,
               ),
@@ -64,7 +66,7 @@ class CommonMethods {
             ? Text(
                 title,
                 style: const TextStyle(
-                  color: Colors.black,
+                  color: FasakhanstaBrand.text,
                   fontSize: 16,
                   fontWeight: FontWeight.w700,
                 ),
@@ -73,7 +75,7 @@ class CommonMethods {
         content: Text(
           message,
           style: const TextStyle(
-            color: Colors.black,
+            color: FasakhanstaBrand.text,
             fontSize: 15,
             fontWeight: FontWeight.w500,
           ),
@@ -119,7 +121,8 @@ class CommonMethods {
     final isArabic = _isArabic();
     final isSuccess = type == ToastType.success;
 
-    final isLoginSuccess = isSuccess &&
+    final isLoginSuccess =
+        isSuccess &&
         (message.contains('تسجيل الدخول') ||
             message.contains('تم الدخول') ||
             normalizedMessage.contains('logged in') ||
@@ -127,14 +130,16 @@ class CommonMethods {
             normalizedMessage.contains('login successfully') ||
             normalizedMessage.contains('signed in'));
 
-    final isLogoutSuccess = isSuccess &&
+    final isLogoutSuccess =
+        isSuccess &&
         (message.contains('تسجيل الخروج') ||
             normalizedMessage.contains('logged out') ||
             normalizedMessage.contains('logout success') ||
             normalizedMessage.contains('logout successfully') ||
             normalizedMessage.contains('signed out'));
 
-    final isDeliveryCancellation = isSuccess &&
+    final isDeliveryCancellation =
+        isSuccess &&
         (message.contains('تم الإلغاء') ||
             message.contains('تم الالغاء') ||
             message.contains('تم الغاء') ||
@@ -142,7 +147,8 @@ class CommonMethods {
                 (normalizedMessage.contains('order') ||
                     normalizedMessage.contains('success'))));
 
-    final hasFareKeyword = message.contains('أجرة') ||
+    final hasFareKeyword =
+        message.contains('أجرة') ||
         message.contains('اجرة') ||
         message.contains('تسعير') ||
         message.contains('السعر') ||
@@ -150,7 +156,8 @@ class CommonMethods {
         normalizedMessage.contains('fare') ||
         normalizedMessage.contains('price');
 
-    final hasFareUpdateKeyword = message.contains('تم') ||
+    final hasFareUpdateKeyword =
+        message.contains('تم') ||
         message.contains('تحديث') ||
         message.contains('تعديل') ||
         message.contains('رفع') ||
@@ -163,7 +170,8 @@ class CommonMethods {
     final isDeliveryFareUpdate =
         isSuccess && hasFareKeyword && hasFareUpdateKeyword;
 
-    final isAddToCartSuccess = isSuccess &&
+    final isAddToCartSuccess =
+        isSuccess &&
         ((message.contains('إضاف') && message.contains('السلة')) ||
             (normalizedMessage.contains('add') &&
                 normalizedMessage.contains('cart')));
@@ -201,9 +209,7 @@ class CommonMethods {
       _showBrandedToast(
         type: ToastType.warning,
         title: isArabic ? 'تم إلغاء طلب التوصيل' : 'Delivery request cancelled',
-        message: isArabic
-            ? 'تم إيقاف البحث عن مندوب ولن يتم تنفيذ الطلب.'
-            : 'The courier search has stopped and the request will not be processed.',
+        message: isArabic ? 'تم إيقاف البحث عن مندوب ولن يتم تنفيذ الطلب.' : 'The courier search has stopped and the request will not be processed.',
         accentColor: const Color(0xFFD84A4A),
         seconds: seconds,
       );
@@ -233,10 +239,7 @@ class CommonMethods {
     );
   }
 
-  static void showCartSuccess({
-    required String message,
-    int seconds = 3,
-  }) {
+  static void showCartSuccess({required String message, int seconds = 3}) {
     final isArabic = _isArabic();
 
     _showBrandedToast(
@@ -280,9 +283,12 @@ class CommonMethods {
 
     _showBrandedToast(
       type: isOffline ? ToastType.offline : ToastType.error,
-      title: title ??
+      title:
+          title ??
           (isOffline
-              ? (isArabic ? 'لا يوجد اتصال بالإنترنت' : 'No internet connection')
+              ? (isArabic
+                    ? 'لا يوجد اتصال بالإنترنت'
+                    : 'No internet connection')
               : (isArabic ? 'تعذر إتمام العملية' : 'Something went wrong')),
       message: message,
       icon: icon,

@@ -1,3 +1,4 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
 import 'package:custom_timer/custom_timer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -25,7 +26,8 @@ class OrderOTPScreen extends StatefulWidget {
   State<OrderOTPScreen> createState() => _OrderOTPScreenState();
 }
 
-class _OrderOTPScreenState extends State<OrderOTPScreen> with SingleTickerProviderStateMixin {
+class _OrderOTPScreenState extends State<OrderOTPScreen>
+    with SingleTickerProviderStateMixin {
   final _formKey = GlobalKey<FormState>();
   final _codeEC = TextEditingController();
   late final CustomTimerController _timerController = CustomTimerController(
@@ -56,8 +58,13 @@ class _OrderOTPScreenState extends State<OrderOTPScreen> with SingleTickerProvid
       key: _formKey,
       child: Scaffold(
         appBar: CustomAppBar(
-          title: const CustomImage(path: AppImages.appLogo, type: ImageType.asset, height: 65, radius: 12),
-          appBarColor: AppColors.whiteColor,
+          title: const CustomImage(
+            path: AppImages.appLogo,
+            type: ImageType.asset,
+            height: 65,
+            radius: 12,
+          ),
+          appBarColor: Colors.transparent,
         ),
         body: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
@@ -67,17 +74,20 @@ class _OrderOTPScreenState extends State<OrderOTPScreen> with SingleTickerProvid
               const SizedBox(height: 25),
               Text('verificationCode'.tr, style: AppTextStyle.text20BS()),
               18.sbH,
-              Text('pleaseEnterTheVerificationCodeSentToTheNumber'.tr, style: AppTextStyle.text18RDG()),
+              Text(
+                'pleaseEnterTheVerificationCodeSentToTheNumber'.tr,
+                style: AppTextStyle.text18RDG(),
+              ),
               const SizedBox(height: 25),
               CustomOtpField(
                 controller: _codeEC,
                 onCompleted: (v) {
                   context.read<CartController>().otpChecker(
-                        otp: _codeEC.text,
-                        onSuccess: () {
-                          Navigator.pop(context);
-                        },
-                      );
+                    otp: _codeEC.text,
+                    onSuccess: () {
+                      Navigator.pop(context);
+                    },
+                  );
                 },
               ),
               const SizedBox(height: 25),
@@ -85,7 +95,10 @@ class _OrderOTPScreenState extends State<OrderOTPScreen> with SingleTickerProvid
                 child: CustomTimer(
                   controller: _timerController,
                   builder: (state, time) {
-                    return Text('${time.minutes}:${time.seconds}', style: AppTextStyle.text18MS());
+                    return Text(
+                      '${time.minutes}:${time.seconds}',
+                      style: AppTextStyle.text18MS(),
+                    );
                   },
                 ),
               ),
@@ -93,14 +106,15 @@ class _OrderOTPScreenState extends State<OrderOTPScreen> with SingleTickerProvid
               Center(
                 child: TextButton(
                   onPressed: () {
-                    if (_timerController.state.value == CustomTimerState.finished) {
+                    if (_timerController.state.value ==
+                        CustomTimerState.finished) {
                       _timerController.reset();
                       _timerController.start();
                     } else {
                       CommonMethods.showToast(
                         message: 'Wait for the end of time'.tr,
                         type: ToastType.warning,
-                        backgroundColor: Colors.orange.shade900,
+                        backgroundColor: FasakhanstaBrand.orange,
                       );
                     }
                   },
@@ -109,7 +123,10 @@ class _OrderOTPScreenState extends State<OrderOTPScreen> with SingleTickerProvid
                     children: [
                       SvgPicture.asset(
                         AppImages.refreshIcon,
-                        colorFilter: ColorFilter.mode(AppColors.whiteColor, BlendMode.srcIn),
+                        colorFilter: ColorFilter.mode(
+                          AppColors.whiteColor,
+                          BlendMode.srcIn,
+                        ),
                         width: 22,
                         height: 22,
                         fit: BoxFit.contain,
@@ -120,7 +137,7 @@ class _OrderOTPScreenState extends State<OrderOTPScreen> with SingleTickerProvid
                         style: TextStyle(
                           decoration: TextDecoration.underline,
                           fontSize: 14,
-                          color: AppColors.blackColor,
+                          color: FasakhanstaBrand.text,
                           fontWeight: FontWeight.w400,
                         ),
                       ),
@@ -134,15 +151,15 @@ class _OrderOTPScreenState extends State<OrderOTPScreen> with SingleTickerProvid
         bottomNavigationBar: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
           child: CustomButton(
-            style: AppTextStyle.text18BW(),
+            style: AppTextStyle.text18BW(color: FasakhanstaBrand.onOrange),
             onPressed: () {
               if (_formKey.currentState!.validate()) {
                 context.read<CartController>().otpChecker(
-                      otp: _codeEC.text,
-                      onSuccess: () {
-                        Navigator.pop(context);
-                      },
-                    );
+                  otp: _codeEC.text,
+                  onSuccess: () {
+                    Navigator.pop(context);
+                  },
+                );
               }
             },
             text: 'next'.tr,

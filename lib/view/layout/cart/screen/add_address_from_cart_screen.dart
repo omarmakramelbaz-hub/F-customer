@@ -1,3 +1,5 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
+
 import 'dart:async';
 import 'dart:developer';
 
@@ -30,10 +32,12 @@ class AddAddressFromCartScreen extends StatefulWidget {
   const AddAddressFromCartScreen({super.key});
 
   @override
-  State<AddAddressFromCartScreen> createState() => _AddAddressFromCartScreenState();
+  State<AddAddressFromCartScreen> createState() =>
+      _AddAddressFromCartScreenState();
 }
 
-class _AddAddressFromCartScreenState extends State<AddAddressFromCartScreen> with ValidationMixin {
+class _AddAddressFromCartScreenState extends State<AddAddressFromCartScreen>
+    with ValidationMixin {
   final _formKey = GlobalKey<FormState>();
   final _areaNameEc = TextEditingController();
   final _apartmentNoEc = TextEditingController();
@@ -86,7 +90,12 @@ class _AddAddressFromCartScreenState extends State<AddAddressFromCartScreen> wit
       currentLat = lat;
       currentLng = lng;
       markers.clear();
-      markers.add(Marker(markerId: const MarkerId('currentLocation'), position: LatLng(lat, lng)));
+      markers.add(
+        Marker(
+          markerId: const MarkerId('currentLocation'),
+          position: LatLng(lat, lng),
+        ),
+      );
     });
 
     if (gmc != null) {
@@ -152,111 +161,177 @@ class _AddAddressFromCartScreenState extends State<AddAddressFromCartScreen> wit
                     Column(
                       children: [
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 15,
+                            vertical: 10,
+                          ),
                           child: Column(
                             // this column for add address
                             children: [
                               Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 10),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 10,
+                                ),
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(25),
                                   child: SizedBox(
                                     height: context.height * 0.5,
-                                    child: currentLat != null && currentLng != null
+                                    child:
+                                        currentLat != null && currentLng != null
                                         ? GoogleMap(
                                             onTap: _onMapTap,
                                             markers: {
                                               Marker(
-                                                markerId: const MarkerId('currentLocation'),
+                                                markerId: const MarkerId(
+                                                  'currentLocation',
+                                                ),
                                                 position: LatLng(
                                                   currentLat ??
                                                       double.parse(
-                                                        addressController.addressDetails?.lat.toString() ?? '0',
+                                                        addressController
+                                                                .addressDetails
+                                                                ?.lat
+                                                                .toString() ??
+                                                            '0',
                                                       ),
                                                   currentLng ??
                                                       double.parse(
-                                                        addressController.addressDetails?.lng.toString() ?? '0',
+                                                        addressController
+                                                                .addressDetails
+                                                                ?.lng
+                                                                .toString() ??
+                                                            '0',
                                                       ),
                                                 ),
                                               ),
                                             },
                                             mapType: MapType.normal,
-                                            onMapCreated: (GoogleMapController controller) {
-                                              gmc = controller;
-                                              if (addressController.addressDetails != null) {
-                                                gmc!.animateCamera(
-                                                  CameraUpdate.newLatLng(
-                                                    LatLng(
-                                                      double.parse(
-                                                        addressController.addressDetails?.lat.toString() ?? '0',
+                                            onMapCreated:
+                                                (
+                                                  GoogleMapController
+                                                  controller,
+                                                ) {
+                                                  gmc = controller;
+                                                  if (addressController
+                                                          .addressDetails !=
+                                                      null) {
+                                                    gmc!.animateCamera(
+                                                      CameraUpdate.newLatLng(
+                                                        LatLng(
+                                                          double.parse(
+                                                            addressController
+                                                                    .addressDetails
+                                                                    ?.lat
+                                                                    .toString() ??
+                                                                '0',
+                                                          ),
+                                                          double.parse(
+                                                            addressController
+                                                                    .addressDetails
+                                                                    ?.lng
+                                                                    .toString() ??
+                                                                '0',
+                                                          ),
+                                                        ),
                                                       ),
-                                                      double.parse(
-                                                        addressController.addressDetails?.lng.toString() ?? '0',
-                                                      ),
+                                                    );
+                                                  }
+                                                },
+                                            initialCameraPosition:
+                                                CameraPosition(
+                                                  target: LatLng(
+                                                    double.parse(
+                                                      addressController
+                                                              .addressDetails
+                                                              ?.lat
+                                                              .toString() ??
+                                                          '0',
+                                                    ),
+                                                    double.parse(
+                                                      addressController
+                                                              .addressDetails
+                                                              ?.lng
+                                                              .toString() ??
+                                                          '0',
                                                     ),
                                                   ),
-                                                );
-                                              }
-                                            },
-                                            initialCameraPosition: CameraPosition(
-                                              target: LatLng(
-                                                double.parse(addressController.addressDetails?.lat.toString() ?? '0'),
-                                                double.parse(addressController.addressDetails?.lng.toString() ?? '0'),
-                                              ),
-                                              zoom: 12,
-                                            ),
+                                                  zoom: 12,
+                                                ),
                                           )
                                         : const Center(child: CustomLoading()),
                                   ),
                                 ),
                               ),
                               const SizedBox(height: 14),
-                              ...List.generate(addressController.address.length, (index) {
-                                final address = addressController.address[index];
+                              ...List.generate(addressController.address.length, (
+                                index,
+                              ) {
+                                final address =
+                                    addressController.address[index];
                                 return InkWell(
                                   onTap: () {
                                     setState(() {
                                       selectedAddress = index;
-                                      selectedAddressId = addressController.address[index].id;
+                                      selectedAddressId =
+                                          addressController.address[index].id;
                                       log(selectedAddressId.toString());
                                     });
                                   },
                                   child: Container(
-                                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                                    margin: const EdgeInsets.symmetric(vertical: 8),
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 20,
+                                      vertical: 15,
+                                    ),
+                                    margin: const EdgeInsets.symmetric(
+                                      vertical: 8,
+                                    ),
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(10),
-                                      color: AppColors.whiteColor,
+                                      color: FasakhanstaBrand.surface,
                                       boxShadow: [
                                         BoxShadow(
-                                          color: AppColors.greyColor.withValues(alpha: 0.3),
+                                          color: AppColors.greyColor.withValues(
+                                            alpha: 0.3,
+                                          ),
                                           offset: const Offset(0, 0),
                                           blurRadius: 10,
                                         ),
                                       ],
                                       border: Border.all(
-                                        color:
-                                            selectedAddress == index ? AppColors.mainAppColor : AppColors.borderColor,
+                                        color: selectedAddress == index
+                                            ? AppColors.mainAppColor
+                                            : AppColors.borderColor,
                                       ),
                                     ),
                                     child: Row(
                                       children: [
                                         Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           children: [
                                             Row(
-                                              mainAxisAlignment: MainAxisAlignment.start,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
                                               children: [
-                                                SvgPicture.asset(AppImages.addressIcon, width: 16),
+                                                SvgPicture.asset(
+                                                  AppImages.addressIcon,
+                                                  width: 16,
+                                                ),
                                                 const SizedBox(width: 10),
                                                 Column(
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
                                                   children: [
-                                                    Text('area'.tr, style: AppTextStyle.text14MG()),
+                                                    Text(
+                                                      'area'.tr,
+                                                      style:
+                                                          AppTextStyle.text14MG(),
+                                                    ),
                                                     5.sbH,
                                                     Text(
                                                       "${address.addressName ?? ''} ${address.areaName ?? ''} ${address.streetName ?? ''} ",
-                                                      style: AppTextStyle.text14RG(),
+                                                      style:
+                                                          AppTextStyle.text14RG(),
                                                     ),
                                                   ],
                                                 ),
@@ -267,7 +342,9 @@ class _AddAddressFromCartScreenState extends State<AddAddressFromCartScreen> wit
                                         const Spacer(),
                                         Radio(
                                           fillColor: WidgetStateProperty.all(
-                                            selectedAddress == index ? AppColors.mainAppColor : AppColors.borderColor,
+                                            selectedAddress == index
+                                                ? AppColors.mainAppColor
+                                                : AppColors.borderColor,
                                           ),
                                           value: selectedAddress,
                                           groupValue: index,
@@ -323,7 +400,8 @@ class _AddAddressFromCartScreenState extends State<AddAddressFromCartScreen> wit
                               ),
                               const SizedBox(height: 16),
                               CustomFormField(
-                                validator: (v) => validatePhone(v, country: _country),
+                                validator: (v) =>
+                                    validatePhone(v, country: _country),
                                 controller: _mobileEc,
                                 keyboardType: TextInputType.number,
                                 country: _country,
@@ -340,42 +418,76 @@ class _AddAddressFromCartScreenState extends State<AddAddressFromCartScreen> wit
                                   if (selectedAddressId != null) {
                                     NamedNavigatorImpl.push(
                                       ExecuteTheOrderScreen.routeName,
-                                      arguments: ExecuteTheOrderArgs(userAddressId: selectedAddressId),
+                                      arguments: ExecuteTheOrderArgs(
+                                        userAddressId: selectedAddressId,
+                                      ),
                                     );
                                   }
-                                  if (_formKey.currentState!.validate() && selectedAddressId == null) {
+                                  if (_formKey.currentState!.validate() &&
+                                      selectedAddressId == null) {
                                     context.read<AddressController>().storeAddress(
-                                          areaName: _areaNameEc.text,
-                                          apartmentNo: _apartmentNoEc.text,
-                                          floorNo: _floorNoEc.text,
-                                          streetName: _streetNameEc.text,
-                                          mobile: _mobileEc.text,
-                                          addressName: _addressNameEc.text,
-                                          type: addressController.indexSelectedOfficeOrHouseOrApartment == 'office'
-                                              ? 'office'
-                                              : addressController.indexSelectedOfficeOrHouseOrApartment == 'home'
-                                                  ? 'home'
-                                                  : 'apartment',
-                                          lat: currentLat ??
-                                              double.parse(addressController.addressDetails?.lat.toString() ?? '0'),
-                                          lang: currentLng ??
-                                              double.parse(addressController.addressDetails?.lng.toString() ?? '0'),
-                                          countryName: placemarks![0].country ??
-                                              addressController.addressDetails?.countryName ??
-                                              '',
-                                          cityName: placemarks![0].locality ??
-                                              addressController.addressDetails?.cityName ??
-                                              '',
-                                          address:
-                                              placemarks![0].street ?? addressController.addressDetails?.address ?? '',
-                                          badge: _badgeEc.text,
-                                          onSuccess: ({int? userAddressId}) {
-                                            NamedNavigatorImpl.push(
-                                              ExecuteTheOrderScreen.routeName,
-                                              arguments: ExecuteTheOrderArgs(userAddressId: userAddressId),
-                                            );
-                                          },
+                                      areaName: _areaNameEc.text,
+                                      apartmentNo: _apartmentNoEc.text,
+                                      floorNo: _floorNoEc.text,
+                                      streetName: _streetNameEc.text,
+                                      mobile: _mobileEc.text,
+                                      addressName: _addressNameEc.text,
+                                      type:
+                                          addressController
+                                                  .indexSelectedOfficeOrHouseOrApartment ==
+                                              'office'
+                                          ? 'office'
+                                          : addressController
+                                                    .indexSelectedOfficeOrHouseOrApartment ==
+                                                'home'
+                                          ? 'home'
+                                          : 'apartment',
+                                      lat:
+                                          currentLat ??
+                                          double.parse(
+                                            addressController
+                                                    .addressDetails
+                                                    ?.lat
+                                                    .toString() ??
+                                                '0',
+                                          ),
+                                      lang:
+                                          currentLng ??
+                                          double.parse(
+                                            addressController
+                                                    .addressDetails
+                                                    ?.lng
+                                                    .toString() ??
+                                                '0',
+                                          ),
+                                      countryName:
+                                          placemarks![0].country ??
+                                          addressController
+                                              .addressDetails
+                                              ?.countryName ??
+                                          '',
+                                      cityName:
+                                          placemarks![0].locality ??
+                                          addressController
+                                              .addressDetails
+                                              ?.cityName ??
+                                          '',
+                                      address:
+                                          placemarks![0].street ??
+                                          addressController
+                                              .addressDetails
+                                              ?.address ??
+                                          '',
+                                      badge: _badgeEc.text,
+                                      onSuccess: ({int? userAddressId}) {
+                                        NamedNavigatorImpl.push(
+                                          ExecuteTheOrderScreen.routeName,
+                                          arguments: ExecuteTheOrderArgs(
+                                            userAddressId: userAddressId,
+                                          ),
                                         );
+                                      },
+                                    );
                                   }
                                 },
                                 text: 'confirm'.tr,

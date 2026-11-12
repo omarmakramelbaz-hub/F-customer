@@ -41,29 +41,38 @@ class CustomAppBar extends PreferredSize {
     this.onPop,
     this.showLang = false,
   }) : super(
-          preferredSize: Size.fromHeight(height),
-          child: AppBar(
-            elevation: elevation,
-            backgroundColor: appBarColor ?? AppColors.whiteColor,
-            toolbarHeight: height,
-            automaticallyImplyLeading: automaticallyImplyLeading,
-            shadowColor: shadowColor,
-            centerTitle: centerTitle,
-            title: title,
-            leading: leading,
-            actions: actions ??
-                [
-                  if (showLang == true)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 5),
-                      child: GestureDetector(
-                        onTap: () => Utils.showAppBottomSheet(const ChangeLangBottomSheet()),
-                        child: SvgPicture.asset(AppImages.langIcon, color: AppColors.mainAppColor),
-                      ),
-                    ),
-                ],
-            leadingWidth: leadingWidth,
-            bottom: bottom,
-          ),
-        );
+         preferredSize: Size.fromHeight(height),
+         child: AppBar(
+           elevation: elevation,
+           backgroundColor: appBarColor ?? Colors.transparent,
+           toolbarHeight: height,
+           automaticallyImplyLeading: automaticallyImplyLeading,
+           shadowColor: shadowColor,
+           centerTitle: centerTitle,
+           title: title,
+           leading: leading,
+           actions:
+               actions ??
+               [
+                 if (showLang == true)
+                   Padding(
+                     padding: const EdgeInsets.symmetric(
+                       horizontal: 25,
+                       vertical: 5,
+                     ),
+                     child: GestureDetector(
+                       onTap: () => Utils.showAppBottomSheet(
+                         const ChangeLangBottomSheet(),
+                       ),
+                       child: SvgPicture.asset(
+                         AppImages.langIcon,
+                         color: AppColors.mainAppColor,
+                       ),
+                     ),
+                   ),
+               ],
+           leadingWidth: leadingWidth,
+           bottom: bottom,
+         ),
+       );
 }

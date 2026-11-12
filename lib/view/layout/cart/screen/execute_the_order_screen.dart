@@ -1,3 +1,5 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
+
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
@@ -99,10 +101,24 @@ class _ExecuteTheOrderScreenState extends State<ExecuteTheOrderScreen> {
       Provider.of<MyAccountController>(context, listen: false).getSetting();
 
       Provider.of<CartController>(context, listen: false).initialCart();
-      Provider.of<CartController>(context, listen: false).getCart().then((value) {
-        resturantStatus = context.read<CartController>().cart?.resturant?.resturantStatus;
-        resturantOpenAt = context.read<CartController>().cart?.resturant?.resturantOpenAt;
-        resturantId = context.read<CartController>().cart?.resturant?.resturantId;
+      Provider.of<CartController>(context, listen: false).getCart().then((
+        value,
+      ) {
+        resturantStatus = context
+            .read<CartController>()
+            .cart
+            ?.resturant
+            ?.resturantStatus;
+        resturantOpenAt = context
+            .read<CartController>()
+            .cart
+            ?.resturant
+            ?.resturantOpenAt;
+        resturantId = context
+            .read<CartController>()
+            .cart
+            ?.resturant
+            ?.resturantId;
         setState(() {});
         // log("================>$resturantStatus");
         // log("================>$resturantId");
@@ -111,7 +127,10 @@ class _ExecuteTheOrderScreenState extends State<ExecuteTheOrderScreen> {
       // Provider.of<AuthController>(context, listen: false).getProfile();
     });
     _pusherController = context.read<PusherController>();
-    _pusherController.addEventListener('resturant.updated', _handleResturantUpdated);
+    _pusherController.addEventListener(
+      'resturant.updated',
+      _handleResturantUpdated,
+    );
 
     super.initState();
   }
@@ -122,7 +141,9 @@ class _ExecuteTheOrderScreenState extends State<ExecuteTheOrderScreen> {
       final resturantData = decodedData['resturant'];
 
       if (mounted) {
-        final resturantModel = DetailsRestaurantModel.fromJson(resturantData as Map<String, dynamic>);
+        final resturantModel = DetailsRestaurantModel.fromJson(
+          resturantData as Map<String, dynamic>,
+        );
         resturantStatus = resturantModel.status;
         resturantOpenAt = resturantModel.openAt;
         resturantId = resturantModel.id;
@@ -154,7 +175,7 @@ class _ExecuteTheOrderScreenState extends State<ExecuteTheOrderScreen> {
           height: 90,
           radius: 60,
           leading: IconButton(
-            icon: Icon(Icons.arrow_back_ios, color: AppColors.blackColor),
+            icon: Icon(Icons.arrow_back_ios, color: FasakhanstaBrand.text),
             onPressed: () {
               Navigator.pop(context);
             },
@@ -179,26 +200,57 @@ class _ExecuteTheOrderScreenState extends State<ExecuteTheOrderScreen> {
               hasExpiryDate = false;
             }
 
-            final dist = Geolocator.distanceBetween(
-                  double.parse(addressController.addressDetails?.lat.toString() ?? '0.0'),
-                  double.parse(addressController.addressDetails?.lng.toString() ?? '0.0'),
-                  double.parse(cartController.cart?.carts?[0].resturantLat.toString() ?? '0.0'),
-                  double.parse(cartController.cart?.carts?[0].resturantLng.toString() ?? '0.0'),
+            final dist =
+                Geolocator.distanceBetween(
+                  double.parse(
+                    addressController.addressDetails?.lat.toString() ?? '0.0',
+                  ),
+                  double.parse(
+                    addressController.addressDetails?.lng.toString() ?? '0.0',
+                  ),
+                  double.parse(
+                    cartController.cart?.carts?[0].resturantLat.toString() ??
+                        '0.0',
+                  ),
+                  double.parse(
+                    cartController.cart?.carts?[0].resturantLng.toString() ??
+                        '0.0',
+                  ),
                 ) /
                 1000;
             num kmPrice;
             kmPrice = switch (dist.toStringAsFixed(0)) {
-              '0' => num.parse(cartController.cart?.resturant?.default_0_1.toString() ?? '0'),
-              '1' => num.parse(cartController.cart?.resturant?.default_1_2.toString() ?? '0'),
-              '2' => num.parse(cartController.cart?.resturant?.default_2_3.toString() ?? '0'),
-              '3' => num.parse(context.watch<MyAccountController>().setting?.default23.toString() ?? '0'),
-              _ => (cartController.cart?.resturant?.resturantKmPrice ?? 0) * dist,
+              '0' => num.parse(
+                cartController.cart?.resturant?.default_0_1.toString() ?? '0',
+              ),
+              '1' => num.parse(
+                cartController.cart?.resturant?.default_1_2.toString() ?? '0',
+              ),
+              '2' => num.parse(
+                cartController.cart?.resturant?.default_2_3.toString() ?? '0',
+              ),
+              '3' => num.parse(
+                context
+                        .watch<MyAccountController>()
+                        .setting
+                        ?.default23
+                        .toString() ??
+                    '0',
+              ),
+              _ =>
+                (cartController.cart?.resturant?.resturantKmPrice ?? 0) * dist,
             };
 
             final totalPrice = cartController.totalPrice;
-            final num serviceFees = (((cartController.cart?.resturant?.serviceFees ?? 0) * (totalPrice)) / 100);
-            final num addedPrice = (((cartController.cart?.resturant?.tax ?? 0) * (totalPrice)) / 100);
-            num resturantMinOrderPrice = cartController.cart?.resturant?.resturantMinOrderPrice ?? 0;
+            final num serviceFees =
+                (((cartController.cart?.resturant?.serviceFees ?? 0) *
+                    (totalPrice)) /
+                100);
+            final num addedPrice =
+                (((cartController.cart?.resturant?.tax ?? 0) * (totalPrice)) /
+                100);
+            num resturantMinOrderPrice =
+                cartController.cart?.resturant?.resturantMinOrderPrice ?? 0;
             // final num grandTotal = (kmPrice + serviceFees + addedPrice + (totalPrice));
             // log('kmPrice====> $kmPrice');
             // log('dist====> $dist');
@@ -208,7 +260,9 @@ class _ExecuteTheOrderScreenState extends State<ExecuteTheOrderScreen> {
               apiResponse: cartController.cartResponse,
               onReload: () {
                 cartController.getCart();
-                addressController.getAddressDetails(id: widget.args.userAddressId ?? 0);
+                addressController.getAddressDetails(
+                  id: widget.args.userAddressId ?? 0,
+                );
               },
               isEmpty: cartController.cart == null,
               emptyWidget: const SizedBox(),
@@ -222,124 +276,194 @@ class _ExecuteTheOrderScreenState extends State<ExecuteTheOrderScreen> {
                       18.sbH,
 
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 15,
+                          vertical: 10,
+                        ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             //=========================== address =============================
                             ApiResponseWidget(
-                              apiResponse: addressController.addressDetailsResponse,
-                              onReload: () => addressController.getAddressDetails(id: widget.args.userAddressId ?? 0),
+                              apiResponse:
+                                  addressController.addressDetailsResponse,
+                              onReload: () =>
+                                  addressController.getAddressDetails(
+                                    id: widget.args.userAddressId ?? 0,
+                                  ),
                               isEmpty: addressController.addressDetails == null,
                               loadingWidget: CustomShimmer(
                                 height: 70,
                                 width: double.infinity,
-                                fillColor: AppColors.greyColor.withValues(alpha: 0.08),
+                                fillColor: AppColors.greyColor.withValues(
+                                  alpha: 0.08,
+                                ),
                                 shimmerColor: AppColors.mainAppColor,
                               ),
                               child: Column(
                                 children: [
                                   SizedBox(
                                     height: context.height * 0.2,
-                                    child: addressController.addressDetails?.lat != null &&
-                                            addressController.addressDetails?.lng != null
+                                    child:
+                                        addressController.addressDetails?.lat !=
+                                                null &&
+                                            addressController
+                                                    .addressDetails
+                                                    ?.lng !=
+                                                null
                                         ? GoogleMap(
                                             markers: {
                                               Marker(
-                                                markerId: const MarkerId('currentLocation'),
+                                                markerId: const MarkerId(
+                                                  'currentLocation',
+                                                ),
                                                 position: LatLng(
                                                   double.parse(
-                                                    addressController.addressDetails?.lat.toString() ?? '0',
+                                                    addressController
+                                                            .addressDetails
+                                                            ?.lat
+                                                            .toString() ??
+                                                        '0',
                                                   ),
                                                   double.parse(
-                                                    addressController.addressDetails?.lng.toString() ?? '0',
+                                                    addressController
+                                                            .addressDetails
+                                                            ?.lng
+                                                            .toString() ??
+                                                        '0',
                                                   ),
                                                 ),
                                               ),
                                             },
                                             mapType: MapType.normal,
-                                            onMapCreated: (GoogleMapController controller) {
-                                              gmc = controller;
-                                              if (addressController.addressDetails != null) {
-                                                gmc!.animateCamera(
-                                                  CameraUpdate.newLatLng(
-                                                    LatLng(
-                                                      double.parse(
-                                                        addressController.addressDetails?.lat.toString() ?? '0',
+                                            onMapCreated:
+                                                (
+                                                  GoogleMapController
+                                                  controller,
+                                                ) {
+                                                  gmc = controller;
+                                                  if (addressController
+                                                          .addressDetails !=
+                                                      null) {
+                                                    gmc!.animateCamera(
+                                                      CameraUpdate.newLatLng(
+                                                        LatLng(
+                                                          double.parse(
+                                                            addressController
+                                                                    .addressDetails
+                                                                    ?.lat
+                                                                    .toString() ??
+                                                                '0',
+                                                          ),
+                                                          double.parse(
+                                                            addressController
+                                                                    .addressDetails
+                                                                    ?.lng
+                                                                    .toString() ??
+                                                                '0',
+                                                          ),
+                                                        ),
                                                       ),
-                                                      double.parse(
-                                                        addressController.addressDetails?.lng.toString() ?? '0',
-                                                      ),
+                                                    );
+                                                  }
+                                                },
+                                            initialCameraPosition:
+                                                CameraPosition(
+                                                  target: LatLng(
+                                                    double.parse(
+                                                      addressController
+                                                              .addressDetails
+                                                              ?.lat
+                                                              .toString() ??
+                                                          '0',
+                                                    ),
+                                                    double.parse(
+                                                      addressController
+                                                              .addressDetails
+                                                              ?.lng
+                                                              .toString() ??
+                                                          '0',
                                                     ),
                                                   ),
-                                                );
-                                              }
-                                            },
-                                            initialCameraPosition: CameraPosition(
-                                              target: LatLng(
-                                                double.parse(
-                                                  addressController.addressDetails?.lat.toString() ?? '0',
+                                                  zoom: 12,
                                                 ),
-                                                double.parse(
-                                                  addressController.addressDetails?.lng.toString() ?? '0',
-                                                ),
-                                              ),
-                                              zoom: 12,
-                                            ),
                                           )
-                                        : const Center(child: CircularProgressIndicator()),
+                                        : const Center(
+                                            child: CircularProgressIndicator(),
+                                          ),
                                   ),
                                   14.sbH,
                                   Container(
-                                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 20,
+                                      vertical: 15,
+                                    ),
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(10),
-                                      color: AppColors.whiteColor,
+                                      color: FasakhanstaBrand.surface,
                                       boxShadow: [
                                         BoxShadow(
-                                          color: AppColors.greyColor.withValues(alpha: 0.3),
+                                          color: AppColors.greyColor.withValues(
+                                            alpha: 0.3,
+                                          ),
                                           offset: const Offset(0, 0),
                                           blurRadius: 10,
                                         ),
                                       ],
                                     ),
                                     child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
                                       children: [
                                         Expanded(
                                           child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
                                             children: [
                                               Row(
-                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
                                                 children: [
                                                   SvgPicture.asset(
                                                     AppImages.addressIcon,
-                                                    colorFilter: ColorFilter.mode(
-                                                      AppColors.secondAppColor,
-                                                      BlendMode.srcIn,
-                                                    ),
+                                                    colorFilter:
+                                                        ColorFilter.mode(
+                                                          AppColors
+                                                              .secondAppColor,
+                                                          BlendMode.srcIn,
+                                                        ),
                                                     width: 16,
                                                   ),
                                                   const SizedBox(width: 10),
-                                                  Text('area'.tr, style: AppTextStyle.text14MG()),
+                                                  Text(
+                                                    'area'.tr,
+                                                    style:
+                                                        AppTextStyle.text14MG(),
+                                                  ),
                                                 ],
                                               ),
                                               5.sbH,
                                               Column(
-                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
                                                 children: [
                                                   5.sbH,
                                                   Text(
                                                     '${addressController.addressDetails?.countryName}, ${addressController.addressDetails?.cityName},${addressController.addressDetails?.address} ',
-                                                    style: AppTextStyle.text14RG(),
-                                                    overflow: TextOverflow.ellipsis,
+                                                    style:
+                                                        AppTextStyle.text14RG(),
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
                                                   ),
-                                                  if (addressController.addressDetails?.mobile != null) ...[
+                                                  if (addressController
+                                                          .addressDetails
+                                                          ?.mobile !=
+                                                      null) ...[
                                                     5.sbH,
                                                     Text(
                                                       '${'mobileNumber'.tr} : ${addressController.addressDetails?.mobile ?? ""}',
-                                                      style: AppTextStyle.text14RG(),
+                                                      style:
+                                                          AppTextStyle.text14RG(),
                                                     ),
                                                   ],
                                                 ],
@@ -353,9 +477,11 @@ class _ExecuteTheOrderScreenState extends State<ExecuteTheOrderScreen> {
                                           },
                                           child: Text(
                                             'change'.tr,
-                                            style: AppTextStyle.text14MM().copyWith(
-                                              decoration: TextDecoration.underline,
-                                            ),
+                                            style: AppTextStyle.text14MM()
+                                                .copyWith(
+                                                  decoration:
+                                                      TextDecoration.underline,
+                                                ),
                                           ),
                                         ),
                                       ],
@@ -366,16 +492,27 @@ class _ExecuteTheOrderScreenState extends State<ExecuteTheOrderScreen> {
                             ),
 
                             24.sbH,
-                            if (cartController.cart?.carts?.isNotEmpty == true &&
-                                cartController.cart?.carts?.first.resturantDeliveryTime != null)
+                            if (cartController.cart?.carts?.isNotEmpty ==
+                                    true &&
+                                cartController
+                                        .cart
+                                        ?.carts
+                                        ?.first
+                                        .resturantDeliveryTime !=
+                                    null)
                               Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 20,
+                                  vertical: 15,
+                                ),
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(10),
-                                  color: AppColors.whiteColor,
+                                  color: FasakhanstaBrand.surface,
                                   boxShadow: [
                                     BoxShadow(
-                                      color: AppColors.greyColor.withValues(alpha: 0.3),
+                                      color: AppColors.greyColor.withValues(
+                                        alpha: 0.3,
+                                      ),
                                       offset: const Offset(0, 0),
                                       blurRadius: 10,
                                     ),
@@ -385,28 +522,42 @@ class _ExecuteTheOrderScreenState extends State<ExecuteTheOrderScreen> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Row(
-                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
                                       children: [
-                                        SvgPicture.asset(AppImages.reloadIcon, width: 18),
+                                        SvgPicture.asset(
+                                          AppImages.reloadIcon,
+                                          width: 18,
+                                        ),
                                         const SizedBox(width: 10),
                                         Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           children: [
-                                            Text('delivery'.tr, style: AppTextStyle.text14MG()),
+                                            Text(
+                                              'delivery'.tr,
+                                              style: AppTextStyle.text14MG(),
+                                            ),
                                             5.sbH,
                                             if (hasExpiryDate) ...[
                                               Text(
                                                 'deliveryAfterDays'.tr.replaceAll(
-                                                      '{}',
-                                                      "${(cartController.cart?.resturant?.resturantAreas?.firstWhere((e) => e.areaId == addressController.addressDetails?.cityId && e.type == "day" && e.expectedDelivery != "0"))?.expectedDelivery}",
-                                                    ),
+                                                  '{}',
+                                                  "${(cartController.cart?.resturant?.resturantAreas?.firstWhere((e) => e.areaId == addressController.addressDetails?.cityId && e.type == "day" && e.expectedDelivery != "0"))?.expectedDelivery}",
+                                                ),
                                                 style: AppTextStyle.text14RG(),
                                               ),
                                             ],
                                             !hasExpiryDate
                                                 ? Text(
-                                                    cartController.cart?.carts?.first.resturantDeliveryTime ?? '',
-                                                    style: AppTextStyle.text14RG(),
+                                                    cartController
+                                                            .cart
+                                                            ?.carts
+                                                            ?.first
+                                                            .resturantDeliveryTime ??
+                                                        '',
+                                                    style:
+                                                        AppTextStyle.text14RG(),
                                                   )
                                                 : const SizedBox(),
                                           ],
@@ -417,35 +568,58 @@ class _ExecuteTheOrderScreenState extends State<ExecuteTheOrderScreen> {
                                 ),
                               ),
                             32.sbH,
-                            Text('paymentThrough'.tr, style: AppTextStyle.text16BS()),
+                            Text(
+                              'paymentThrough'.tr,
+                              style: AppTextStyle.text16BS(),
+                            ),
                             14.sbH,
                             const ChooseCashOrVisaOrVCashWidget(),
                             32.sbH,
-                            if (cartController.cart?.resturant?.resturantAreas?.any(
-                                  (e) =>
-                                      e.areaId == addressController.addressDetails?.cityId &&
-                                      e.type == 'day' &&
-                                      e.expectedDelivery != '0',
-                                ) ==
+                            if (cartController.cart?.resturant?.resturantAreas
+                                    ?.any(
+                                      (e) =>
+                                          e.areaId ==
+                                              addressController
+                                                  .addressDetails
+                                                  ?.cityId &&
+                                          e.type == 'day' &&
+                                          e.expectedDelivery != '0',
+                                    ) ==
                                 true)
                               Row(
                                 children: [
-                                  Text('chooseReDeliveryOrder'.tr, style: AppTextStyle.text16BS()),
+                                  Text(
+                                    'chooseReDeliveryOrder'.tr,
+                                    style: AppTextStyle.text16BS(),
+                                  ),
                                   const Spacer(),
                                   IconButton(
                                     onPressed: () {
-                                      final selectedArea = cartController.cart?.resturant?.resturantAreas?.firstWhere(
-                                        (e) =>
-                                            e.areaId == addressController.addressDetails?.cityId &&
-                                            e.type == 'day' &&
-                                            e.expectedDelivery != '0',
-                                      );
+                                      final selectedArea = cartController
+                                          .cart
+                                          ?.resturant
+                                          ?.resturantAreas
+                                          ?.firstWhere(
+                                            (e) =>
+                                                e.areaId ==
+                                                    addressController
+                                                        .addressDetails
+                                                        ?.cityId &&
+                                                e.type == 'day' &&
+                                                e.expectedDelivery != '0',
+                                          );
                                       if (selectedArea != null) {
                                         DateMethods.pickTime(
                                           context,
                                           initialDate: DateTime.now().add(
                                             Duration(
-                                              days: int.tryParse(selectedArea.expectedDelivery.toString()) ?? 0,
+                                              days:
+                                                  int.tryParse(
+                                                    selectedArea
+                                                        .expectedDelivery
+                                                        .toString(),
+                                                  ) ??
+                                                  0,
                                             ),
                                           ),
                                           onSuccess: (date) {
@@ -460,12 +634,24 @@ class _ExecuteTheOrderScreenState extends State<ExecuteTheOrderScreen> {
                                           context,
                                           initialDate: DateTime.now().add(
                                             Duration(
-                                              days: int.tryParse(selectedArea.expectedDelivery.toString()) ?? 0,
+                                              days:
+                                                  int.tryParse(
+                                                    selectedArea
+                                                        .expectedDelivery
+                                                        .toString(),
+                                                  ) ??
+                                                  0,
                                             ),
                                           ),
                                           firstDate: DateTime.now().add(
                                             Duration(
-                                              days: int.tryParse(selectedArea.expectedDelivery.toString()) ?? 0,
+                                              days:
+                                                  int.tryParse(
+                                                    selectedArea
+                                                        .expectedDelivery
+                                                        .toString(),
+                                                  ) ??
+                                                  0,
                                             ),
                                           ),
                                           onSuccess: (dateZone) {
@@ -478,7 +664,10 @@ class _ExecuteTheOrderScreenState extends State<ExecuteTheOrderScreen> {
                                         );
                                       }
                                     },
-                                    icon: Icon(Icons.date_range_outlined, color: AppColors.mainAppColor),
+                                    icon: Icon(
+                                      Icons.date_range_outlined,
+                                      color: AppColors.mainAppColor,
+                                    ),
                                   ),
                                 ],
                               )
@@ -491,9 +680,12 @@ class _ExecuteTheOrderScreenState extends State<ExecuteTheOrderScreen> {
                                   ),
                                   const Spacer(),
                                   Switch(
-                                    value: cartController.isSwitchedscheduleDate,
+                                    value:
+                                        cartController.isSwitchedscheduleDate,
                                     onChanged: (value) {
-                                      cartController.setIsSwitchedscheduleDate(value);
+                                      cartController.setIsSwitchedscheduleDate(
+                                        value,
+                                      );
                                       if (value == true) {
                                         DateMethods.pickTime(
                                           context,
@@ -535,7 +727,10 @@ class _ExecuteTheOrderScreenState extends State<ExecuteTheOrderScreen> {
 
                       if (selectedTime != null)
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 20,
+                            vertical: 10,
+                          ),
                           child: Row(
                             children: [
                               Text('orderReceiveDate'.tr),
@@ -558,19 +753,29 @@ class _ExecuteTheOrderScreenState extends State<ExecuteTheOrderScreen> {
                       ),
                       24.sbH,
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 20,
+                          vertical: 10,
+                        ),
                         child: CustomFormField(
                           controller: noteEC,
                           title: 'didYouHaveAnyNotes'.tr,
                           radius: 5,
                           hintText: 'writeNotes'.tr,
                           onChanged: (value) {
-                            if (_debounce?.isActive ?? false) _debounce?.cancel();
-                            _debounce = Timer(const Duration(milliseconds: 500), () {
-                              cartController.setNotes(value);
-                            });
+                            if (_debounce?.isActive ?? false)
+                              _debounce?.cancel();
+                            _debounce = Timer(
+                              const Duration(milliseconds: 500),
+                              () {
+                                cartController.setNotes(value);
+                              },
+                            );
                           },
-                          prefixIcon: Icon(Icons.edit_square, color: AppColors.mainAppColor),
+                          prefixIcon: Icon(
+                            Icons.edit_square,
+                            color: AppColors.mainAppColor,
+                          ),
                         ),
                       ),
                       24.sbH,
@@ -578,7 +783,11 @@ class _ExecuteTheOrderScreenState extends State<ExecuteTheOrderScreen> {
                         resturantMinOrderPrice: resturantMinOrderPrice,
                         addedPrice: addedPrice,
                         totalPrice: totalPrice,
-                        kmPrice: cartController.cart?.resturant?.resturantKmPrice != 0 ? kmPrice : 0,
+                        kmPrice:
+                            cartController.cart?.resturant?.resturantKmPrice !=
+                                0
+                            ? kmPrice
+                            : 0,
                         serviceFees: serviceFees,
                         cartController: cartController,
                       ),
@@ -589,11 +798,19 @@ class _ExecuteTheOrderScreenState extends State<ExecuteTheOrderScreen> {
                       //     ?
                       Column(
                         children: [
-                          context.read<AuthController>().profile?.otpFirstOrder == 0
+                          context
+                                      .read<AuthController>()
+                                      .profile
+                                      ?.otpFirstOrder ==
+                                  0
                               ? Container(
                                   padding: const EdgeInsets.all(10),
                                   margin: const EdgeInsets.all(10),
-                                  decoration: BoxDecoration(border: Border.all(color: AppColors.borderColor)),
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                      color: AppColors.borderColor,
+                                    ),
+                                  ),
                                   child: Center(
                                     child: Text(
                                       'vrCode'.tr,
@@ -605,16 +822,27 @@ class _ExecuteTheOrderScreenState extends State<ExecuteTheOrderScreen> {
                               : const SizedBox(),
                           10.sbH,
                           ((resturantStatus != 'opened' &&
-                                  (resturantId == cartController.cart?.resturant?.resturantId)))
+                                  (resturantId ==
+                                      cartController
+                                          .cart
+                                          ?.resturant
+                                          ?.resturantId)))
                               ? Container(
                                   width: double.infinity,
-                                  margin: const EdgeInsets.symmetric(horizontal: 16),
-                                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                                  margin: const EdgeInsets.symmetric(
+                                    horizontal: 16,
+                                  ),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 16,
+                                    vertical: 14,
+                                  ),
                                   decoration: BoxDecoration(
-                                    color: const Color(0xFFFFF4EE),
+                                    color: FasakhanstaBrand.surfaceRaised,
                                     borderRadius: BorderRadius.circular(16),
                                     border: Border.all(
-                                      color: AppColors.mainAppColor.withValues(alpha: .22),
+                                      color: AppColors.mainAppColor.withValues(
+                                        alpha: .22,
+                                      ),
                                     ),
                                   ),
                                   child: Text(
@@ -628,7 +856,14 @@ class _ExecuteTheOrderScreenState extends State<ExecuteTheOrderScreen> {
                                   ),
                                 )
                               : ExecuteOrderButton(
-                                  deliveryPrice: cartController.cart?.resturant?.resturantKmPrice != 0 ? kmPrice : 0,
+                                  deliveryPrice:
+                                      cartController
+                                              .cart
+                                              ?.resturant
+                                              ?.resturantKmPrice !=
+                                          0
+                                      ? kmPrice
+                                      : 0,
                                   cartController: cartController,
                                   addressController: addressController,
                                   userAddressId: widget.args.userAddressId ?? 0,

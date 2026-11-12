@@ -1,3 +1,4 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -45,7 +46,7 @@ class _HelpScreenState extends State<HelpScreen> {
                       child: Container(
                         width: context.width,
                         decoration: BoxDecoration(
-                          color: AppColors.whiteColor,
+                          color: FasakhanstaBrand.surface,
                           borderRadius: const BorderRadius.only(
                             topLeft: Radius.circular(34),
                             topRight: Radius.circular(34),
@@ -62,8 +63,11 @@ class _HelpScreenState extends State<HelpScreen> {
                           itemCount: myAccountController.help.length,
                           itemBuilder: (context, index) {
                             return HelpBoxWidget(
-                              question: myAccountController.help[index].question ?? '',
-                              answer: myAccountController.help[index].answer ?? '',
+                              question:
+                                  myAccountController.help[index].question ??
+                                  '',
+                              answer:
+                                  myAccountController.help[index].answer ?? '',
                             );
                           },
                         ),

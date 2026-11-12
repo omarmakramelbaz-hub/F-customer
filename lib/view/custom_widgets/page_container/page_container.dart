@@ -30,14 +30,22 @@ class PageContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(color: AppColors.whiteColor),
+      decoration: BoxDecoration(color: AppColors.scaffoldColor),
       child: AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle(
           statusBarColor: statusBarForegroundColor,
-          statusBarIconBrightness: _android(statusBarTheme ?? StatusBarTheme.dark),
-          statusBarBrightness: _ios(statusBarTheme ?? StatusBarTheme.dark),
+          statusBarIconBrightness: _android(
+            statusBarTheme ?? StatusBarTheme.light,
+          ),
+          statusBarBrightness: _ios(statusBarTheme ?? StatusBarTheme.light),
         ),
-        child: SafeArea(top: top, bottom: bottom, right: right, left: left, child: child),
+        child: SafeArea(
+          top: top,
+          bottom: bottom,
+          right: right,
+          left: left,
+          child: child,
+        ),
       ),
     );
   }

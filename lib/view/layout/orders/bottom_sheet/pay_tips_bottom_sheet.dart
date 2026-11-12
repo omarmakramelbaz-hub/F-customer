@@ -1,3 +1,4 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
@@ -15,13 +16,18 @@ import '../controller/orders_controller.dart';
 class PayTipsBottomSheet extends StatefulWidget {
   final int orderId;
   final VoidCallback onSuccess;
-  const PayTipsBottomSheet({super.key, required this.orderId, required this.onSuccess});
+  const PayTipsBottomSheet({
+    super.key,
+    required this.orderId,
+    required this.onSuccess,
+  });
 
   @override
   State<PayTipsBottomSheet> createState() => _PayTipsBottomSheetState();
 }
 
-class _PayTipsBottomSheetState extends State<PayTipsBottomSheet> with ValidationMixin {
+class _PayTipsBottomSheetState extends State<PayTipsBottomSheet>
+    with ValidationMixin {
   final commissionEc = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   final _focusNode = FocusNode();
@@ -39,31 +45,41 @@ class _PayTipsBottomSheetState extends State<PayTipsBottomSheet> with Validation
       child: ChangeNotifierProvider(
         create: (BuildContext context) => OrdersController(),
         child: Padding(
-          padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+          ),
           child: Form(
             key: _formKey,
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
               // height: context.height * .4,
               decoration: BoxDecoration(
-                color: AppColors.whiteColor,
-                borderRadius: const BorderRadius.only(topLeft: Radius.circular(36), topRight: Radius.circular(36)),
+                color: FasakhanstaBrand.surface,
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(36),
+                  topRight: Radius.circular(36),
+                ),
               ),
               child: Column(
                 children: [
                   20.sbH,
                   Row(
                     children: [
-                      Text('payATipsToTheRepresentative'.tr, style: AppTextStyle.text16MS()),
+                      Text(
+                        'payATipsToTheRepresentative'.tr,
+                        style: AppTextStyle.text16MS(),
+                      ),
                       const Spacer(),
                       GestureDetector(
                         onTap: () => Navigator.pop(context),
                         child: Card(
                           elevation: 10,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
                           child: CircleAvatar(
                             radius: 20,
-                            backgroundColor: AppColors.whiteColor,
+                            backgroundColor: FasakhanstaBrand.surface,
                             child: SvgPicture.asset(AppImages.cancelIcon),
                           ),
                         ),
@@ -90,18 +106,20 @@ class _PayTipsBottomSheetState extends State<PayTipsBottomSheet> with Validation
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
                             context.read<OrdersController>().commissionOrder(
-                                  orderId: widget.orderId,
-                                  commission: int.parse(commissionEc.text),
-                                  onSuccess: () {
-                                    Navigator.pop(context);
-                                    widget.onSuccess.call();
-                                  },
-                                );
+                              orderId: widget.orderId,
+                              commission: int.parse(commissionEc.text),
+                              onSuccess: () {
+                                Navigator.pop(context);
+                                widget.onSuccess.call();
+                              },
+                            );
                           }
                         },
                         radius: 23,
                         text: 'send'.tr,
-                        style: AppTextStyle.text16BW(),
+                        style: AppTextStyle.text16BW(
+                          color: FasakhanstaBrand.onOrange,
+                        ),
                       );
                     },
                   ),

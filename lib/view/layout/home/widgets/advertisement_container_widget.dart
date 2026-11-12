@@ -1,3 +1,4 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../helpers/routes/app_routers_import.dart';
@@ -73,7 +74,7 @@ class AdvertisementContainerWidget extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(horizontal: 13),
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: .96),
+                      color: FasakhanstaBrand.surface.withValues(alpha: .96),
                       borderRadius: BorderRadius.circular(11),
                       border: Border.all(
                         color: AppColors.mainAppColor.withValues(alpha: .18),

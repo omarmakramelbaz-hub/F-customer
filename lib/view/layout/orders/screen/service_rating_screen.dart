@@ -1,3 +1,4 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
@@ -55,7 +56,7 @@ class _ServiceRatingScreenState extends State<ServiceRatingScreen> {
                   Container(
                     width: double.infinity,
                     decoration: BoxDecoration(
-                      color: AppColors.whiteColor,
+                      color: FasakhanstaBrand.surface,
                       borderRadius: const BorderRadius.only(
                         topRight: Radius.circular(36),
                         topLeft: Radius.circular(36),
@@ -71,12 +72,18 @@ class _ServiceRatingScreenState extends State<ServiceRatingScreen> {
                     child: Column(
                       children: [
                         const SizedBox(height: 90),
-                        Text(widget.args.detailsOrder?.resturantName ?? '', style: AppTextStyle.text18BS()),
+                        Text(
+                          widget.args.detailsOrder?.resturantName ?? '',
+                          style: AppTextStyle.text18BS(),
+                        ),
                         10.sbH,
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text('requestCode'.tr, style: AppTextStyle.text14RS()),
+                            Text(
+                              'requestCode'.tr,
+                              style: AppTextStyle.text14RS(),
+                            ),
                             const SizedBox(width: 5),
                             Text(':', style: AppTextStyle.text16RS()),
                             const SizedBox(width: 6),
@@ -84,9 +91,15 @@ class _ServiceRatingScreenState extends State<ServiceRatingScreen> {
                           ],
                         ),
                         10.sbH,
-                        Divider(color: AppColors.greyColor.withValues(alpha: .1), thickness: 5),
+                        Divider(
+                          color: AppColors.greyColor.withValues(alpha: .1),
+                          thickness: 5,
+                        ),
                         15.sbH,
-                        Text('evaluateYourApplication'.tr, style: AppTextStyle.text18BS()),
+                        Text(
+                          'evaluateYourApplication'.tr,
+                          style: AppTextStyle.text18BS(),
+                        ),
                       ],
                     ),
                   ),
@@ -105,16 +118,31 @@ class _ServiceRatingScreenState extends State<ServiceRatingScreen> {
                             clipBehavior: Clip.none,
                             children: [
                               Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                                margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 20,
+                                  vertical: 10,
+                                ),
+                                margin: const EdgeInsets.symmetric(
+                                  horizontal: 20,
+                                  vertical: 15,
+                                ),
                                 decoration: BoxDecoration(
                                   border: Border.all(
-                                    color: _rating == index ? AppColors.mainAppColor : AppColors.lightTextColor,
+                                    color: _rating == index
+                                        ? AppColors.mainAppColor
+                                        : AppColors.lightTextColor,
                                   ),
-                                  color: Colors.white,
-                                  borderRadius: const BorderRadius.all(Radius.circular(10)),
+                                  color: FasakhanstaBrand.surface,
+                                  borderRadius: const BorderRadius.all(
+                                    Radius.circular(10),
+                                  ),
                                 ),
-                                child: Center(child: Text(_getString(index), style: AppTextStyle.text16RS())),
+                                child: Center(
+                                  child: Text(
+                                    _getString(index),
+                                    style: AppTextStyle.text16RS(),
+                                  ),
+                                ),
                               ),
                               if (_rating == index)
                                 Positioned(
@@ -123,8 +151,14 @@ class _ServiceRatingScreenState extends State<ServiceRatingScreen> {
                                   child: Card(
                                     shape: const CircleBorder(),
                                     child: Padding(
-                                      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
-                                      child: SvgPicture.asset(width: 15, AppImages.rateIcon),
+                                      padding: const EdgeInsets.symmetric(
+                                        vertical: 10,
+                                        horizontal: 5,
+                                      ),
+                                      child: SvgPicture.asset(
+                                        width: 15,
+                                        AppImages.rateIcon,
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -142,20 +176,24 @@ class _ServiceRatingScreenState extends State<ServiceRatingScreen> {
                         child: CustomButton(
                           onPressed: () {
                             _rating == null
-                                ? CommonMethods.showError(message: 'evaluateYourApplication'.tr)
+                                ? CommonMethods.showError(
+                                    message: 'evaluateYourApplication'.tr,
+                                  )
                                 : context.read<OrdersController>().reviewOrders(
-                                      orderId: widget.args.detailsOrder?.id ?? 0,
-                                      restaurantId: widget.args.detailsOrder?.resturantId ?? 0,
-                                      rate: _rating == 0
-                                          ? 5
-                                          : _rating == 1
-                                              ? 3
-                                              : 1,
-                                      onSuccess: () {
-                                        Navigator.of(context).pop();
-                                        widget.args.onRatingChanged.call();
-                                      },
-                                    );
+                                    orderId: widget.args.detailsOrder?.id ?? 0,
+                                    restaurantId:
+                                        widget.args.detailsOrder?.resturantId ??
+                                        0,
+                                    rate: _rating == 0
+                                        ? 5
+                                        : _rating == 1
+                                        ? 3
+                                        : 1,
+                                    onSuccess: () {
+                                      Navigator.of(context).pop();
+                                      widget.args.onRatingChanged.call();
+                                    },
+                                  );
                           },
                           text: 'submitYourRating'.tr,
                         ),
@@ -171,10 +209,13 @@ class _ServiceRatingScreenState extends State<ServiceRatingScreen> {
                 top: 14,
                 child: Container(
                   width: context.width * 0.4,
-                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(120)),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(120),
+                  ),
                   child: CustomNetworkImage(
                     radius: 120,
-                    imageUrl: widget.args.detailsOrder?.resturantLogo ??
+                    imageUrl:
+                        widget.args.detailsOrder?.resturantLogo ??
                         ''
                             '',
                   ),
@@ -189,12 +230,14 @@ class _ServiceRatingScreenState extends State<ServiceRatingScreen> {
 
   String _getString(int index) {
     if (index == 0) {
-      return 'myExperienceWasExcellentTheTasteWasGreatAndTheServiceWasExcellent'.tr;
+      return 'myExperienceWasExcellentTheTasteWasGreatAndTheServiceWasExcellent'
+          .tr;
     } else {
       if (index == 1) {
         return 'foodWasAcceptableButThereIsRoomForImprovement'.tr;
       } else {
-        return 'unfortunatelyIDidNotLikeMyExperienceIAmCompletelyUnsatisfied'.tr;
+        return 'unfortunatelyIDidNotLikeMyExperienceIAmCompletelyUnsatisfied'
+            .tr;
       }
     }
   }

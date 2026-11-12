@@ -1,3 +1,4 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../helpers/theme/app_colors.dart';
@@ -7,7 +8,11 @@ class CartMinimumOrderWidget extends StatelessWidget {
   final double current;
   final double minimum;
 
-  const CartMinimumOrderWidget({super.key, required this.current, required this.minimum});
+  const CartMinimumOrderWidget({
+    super.key,
+    required this.current,
+    required this.minimum,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -21,9 +26,9 @@ class CartMinimumOrderWidget extends StatelessWidget {
       margin: const EdgeInsets.fromLTRB(16, 12, 16, 6),
       padding: const EdgeInsets.fromLTRB(18, 18, 18, 16),
       decoration: BoxDecoration(
-        color: AppColors.whiteColor,
+        color: FasakhanstaBrand.surface,
         borderRadius: BorderRadius.circular(22),
-        border: Border.all(color: const Color(0xFFF0F0F0)),
+        border: Border.all(color: FasakhanstaBrand.border),
         boxShadow: const [
           BoxShadow(
             color: Color(0x0F000000),
@@ -38,7 +43,11 @@ class CartMinimumOrderWidget extends StatelessWidget {
         children: [
           _buildStatusIcon(reached),
           const SizedBox(width: 18),
-          Container(width: 1, height: 84, color: const Color(0xFFECECEC)),
+          Container(
+            width: 1,
+            height: 84,
+            color: FasakhanstaBrand.surfaceRaised,
+          ),
           const SizedBox(width: 18),
           Expanded(
             child: Column(
@@ -61,9 +70,11 @@ class CartMinimumOrderWidget extends StatelessWidget {
                   child: LinearProgressIndicator(
                     value: progress,
                     minHeight: 8,
-                    backgroundColor: const Color(0xFFF0F0F0),
+                    backgroundColor: FasakhanstaBrand.surfaceRaised,
                     valueColor: AlwaysStoppedAnimation<Color>(
-                      reached ? const Color(0xFF20B66A) : AppColors.mainAppColor,
+                      reached
+                          ? const Color(0xFF20B66A)
+                          : AppColors.mainAppColor,
                     ),
                   ),
                 ),
@@ -74,7 +85,9 @@ class CartMinimumOrderWidget extends StatelessWidget {
                         ? [
                             TextSpan(
                               text: 'تم الوصول للحد الأدنى للطلب',
-                              style: AppTextStyle.text12BS(color: const Color(0xFF168A51)),
+                              style: AppTextStyle.text12BS(
+                                color: FasakhanstaBrand.success,
+                              ),
                             ),
                           ]
                         : [
@@ -84,7 +97,9 @@ class CartMinimumOrderWidget extends StatelessWidget {
                             ),
                             TextSpan(
                               text: '${_formatAmount(remaining)} ج',
-                              style: AppTextStyle.text13BS(color: AppColors.mainAppColor),
+                              style: AppTextStyle.text13BS(
+                                color: AppColors.mainAppColor,
+                              ),
                             ),
                             TextSpan(
                               text: ' لإتمام الطلب',
@@ -103,7 +118,9 @@ class CartMinimumOrderWidget extends StatelessWidget {
   }
 
   Widget _buildStatusIcon(bool reached) {
-    final accentColor = reached ? const Color(0xFF20B66A) : AppColors.mainAppColor;
+    final accentColor = reached
+        ? const Color(0xFF20B66A)
+        : AppColors.mainAppColor;
 
     return Container(
       width: 64,
@@ -129,9 +146,9 @@ class CartMinimumOrderWidget extends StatelessWidget {
                 width: 20,
                 height: 20,
                 decoration: BoxDecoration(
-                  color: AppColors.whiteColor,
+                  color: FasakhanstaBrand.surface,
                   shape: BoxShape.circle,
-                  border: Border.all(color: AppColors.whiteColor, width: 2),
+                  border: Border.all(color: FasakhanstaBrand.border, width: 2),
                 ),
                 child: Icon(Icons.star_rounded, color: accentColor, size: 16),
               ),

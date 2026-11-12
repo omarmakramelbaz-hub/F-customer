@@ -1,3 +1,4 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -11,15 +12,22 @@ import '../../../custom_widgets/buttons/custom_button.dart';
 class CancelOrderBottomSheet extends StatelessWidget {
   final int orderId;
   final VoidCallback onPressed;
-  const CancelOrderBottomSheet({super.key, required this.orderId, required this.onPressed});
+  const CancelOrderBottomSheet({
+    super.key,
+    required this.orderId,
+    required this.onPressed,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
       decoration: BoxDecoration(
-        color: AppColors.whiteColor,
-        borderRadius: const BorderRadius.only(topLeft: Radius.circular(36), topRight: Radius.circular(36)),
+        color: FasakhanstaBrand.surface,
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(36),
+          topRight: Radius.circular(36),
+        ),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -27,16 +35,21 @@ class CancelOrderBottomSheet extends StatelessWidget {
           20.sbH,
           Row(
             children: [
-              Text('doYouReallyWantToCancelTheOrder'.tr, style: AppTextStyle.text16RS()),
+              Text(
+                'doYouReallyWantToCancelTheOrder'.tr,
+                style: AppTextStyle.text16RS(),
+              ),
               const Spacer(),
               GestureDetector(
                 onTap: () => Navigator.pop(context),
                 child: Card(
                   elevation: 10,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
                   child: CircleAvatar(
                     radius: 20,
-                    backgroundColor: AppColors.whiteColor,
+                    backgroundColor: FasakhanstaBrand.surface,
                     child: SvgPicture.asset(AppImages.cancelIcon),
                   ),
                 ),
@@ -52,7 +65,7 @@ class CancelOrderBottomSheet extends StatelessWidget {
                 onPressed: onPressed,
                 radius: 23,
                 text: 'yesIWantToCancelIt'.tr,
-                style: AppTextStyle.text16BW(),
+                style: AppTextStyle.text16BW(color: FasakhanstaBrand.onOrange),
               );
             },
           ),

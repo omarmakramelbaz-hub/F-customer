@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../helpers/theme/app_colors.dart';
+import '../../../../helpers/theme/fasakhansta_brand.dart';
 import '../../home/model/draw_badge.dart';
 import '../../home/widgets/draw_badge_chip.dart';
 
@@ -32,15 +33,16 @@ class MenuProductCard extends StatelessWidget {
     final eligible = draw != null;
     final radius = BorderRadius.circular(18);
     final textScale = MediaQuery.textScalerOf(context).scale(10) / 10;
-    final badgeWidthFactor =
-        (.5 + (textScale - 1) * .18).clamp(.5, .85).toDouble();
+    final badgeWidthFactor = (.5 + (textScale - 1) * .18)
+        .clamp(.5, .85)
+        .toDouble();
 
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: eligible ? const Color(0xFFFFFAEF) : Colors.white,
+        color: eligible ? const Color(0xFFFFFAEF) : FasakhanstaBrand.surface,
         borderRadius: radius,
         border: Border.all(
-          color: eligible ? const Color(0xFFE8B84C) : const Color(0xFFEAEAEA),
+          color: eligible ? const Color(0xFFE8B84C) : FasakhanstaBrand.border,
           width: eligible ? 2 : 1,
         ),
         boxShadow: eligible
@@ -49,7 +51,7 @@ class MenuProductCard extends StatelessWidget {
                   color: Color(0x22DDA038),
                   blurRadius: 12,
                   offset: Offset(0, 4),
-                )
+                ),
               ]
             : null,
       ),
@@ -90,7 +92,9 @@ class MenuProductCard extends StatelessWidget {
                             start: 8,
                             child: Container(
                               padding: const EdgeInsets.symmetric(
-                                  horizontal: 8, vertical: 4),
+                                horizontal: 8,
+                                vertical: 4,
+                              ),
                               decoration: BoxDecoration(
                                 color: AppColors.mainAppColor,
                                 borderRadius: BorderRadius.circular(8),
@@ -98,7 +102,7 @@ class MenuProductCard extends StatelessWidget {
                               child: const Text(
                                 'الأكثر طلباً',
                                 style: TextStyle(
-                                  color: Colors.white,
+                                  color: FasakhanstaBrand.onOrange,
                                   fontSize: 10,
                                   fontWeight: FontWeight.w700,
                                 ),
@@ -114,8 +118,10 @@ class MenuProductCard extends StatelessWidget {
                       name,
                       maxLines: eligible ? 2 : 1,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        color: Color(0xFF191C24),
+                      style: TextStyle(
+                        color: eligible
+                            ? const Color(0xFF191C24)
+                            : FasakhanstaBrand.text,
                         fontSize: 14,
                         height: 1.3,
                         fontWeight: FontWeight.w700,
@@ -133,8 +139,10 @@ class MenuProductCard extends StatelessWidget {
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
                               color: available
-                                  ? AppColors.mainAppColor
-                                  : Colors.grey,
+                                  ? (eligible
+                                        ? const Color(0xFF9A4A0B)
+                                        : FasakhanstaBrand.orange)
+                                  : FasakhanstaBrand.muted,
                               fontSize: compact ? 14 : 13,
                               fontWeight: FontWeight.w700,
                             ),
@@ -148,11 +156,15 @@ class MenuProductCard extends StatelessWidget {
                             color: available
                                 ? AppColors.mainAppColor
                                 : Colors.grey,
-                            borderRadius:
-                                BorderRadius.circular(compact ? 10 : 17),
+                            borderRadius: BorderRadius.circular(
+                              compact ? 10 : 17,
+                            ),
                           ),
-                          child: const Icon(Icons.add,
-                              color: Colors.white, size: 20),
+                          child: const Icon(
+                            Icons.add,
+                            color: FasakhanstaBrand.onOrange,
+                            size: 20,
+                          ),
                         ),
                       ],
                     ),

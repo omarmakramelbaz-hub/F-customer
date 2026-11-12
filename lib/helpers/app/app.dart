@@ -21,6 +21,7 @@ import '../routes/app_routers_import.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_text_style.dart';
 import '../theme/theme.dart';
+import '../theme/fasakhansta_brand.dart';
 import '../translation/all_translation.dart';
 import '../translation/main_app_bloc.dart';
 
@@ -72,7 +73,9 @@ class _MyAppState extends State<MyApp> {
               localizationsDelegates: context.localizationsDelegates,
               debugShowCheckedModeBanner: false,
               builder: (context, child) {
-                final appChild = botToastBuilder(context, child);
+                final appChild = FasakhanstaAppBackground(
+                  child: botToastBuilder(context, child),
+                );
 
                 // Web is only used for the review build. Store-version checks
                 // are enabled on the actual Android/iOS applications.
@@ -82,9 +85,7 @@ class _MyAppState extends State<MyApp> {
                   upgrader: Upgrader(
                     countryCode: 'EG',
                     durationUntilAlertAgain: Duration.zero,
-                    messages: _FasakhanstaUpgraderMessages(
-                      code: languageCode,
-                    ),
+                    messages: _FasakhanstaUpgraderMessages(code: languageCode),
                   ),
                   child: appChild,
                 );
@@ -105,19 +106,17 @@ class _MyAppState extends State<MyApp> {
 }
 
 class _FasakhanstaUpgradeAlert extends UpgradeAlert {
-  _FasakhanstaUpgradeAlert({
-    required Upgrader upgrader,
-    required Widget child,
-  }) : super(
-          upgrader: upgrader,
-          showIgnore: false,
-          showLater: false,
-          showPrompt: false,
-          showReleaseNotes: false,
-          barrierDismissible: false,
-          shouldPopScope: () => false,
-          child: child,
-        );
+  _FasakhanstaUpgradeAlert({required Upgrader upgrader, required Widget child})
+    : super(
+        upgrader: upgrader,
+        showIgnore: false,
+        showLater: false,
+        showPrompt: false,
+        showReleaseNotes: false,
+        barrierDismissible: false,
+        shouldPopScope: () => false,
+        child: child,
+      );
 
   @override
   UpgradeAlertState createState() => _FasakhanstaUpgradeAlertState();
@@ -161,7 +160,7 @@ class _FasakhanstaUpgradeAlertState extends UpgradeAlertState {
           child: Container(
             width: dialogWidth,
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: FasakhanstaBrand.surface,
               borderRadius: BorderRadius.circular(28),
               boxShadow: const [
                 BoxShadow(
@@ -188,7 +187,10 @@ class _FasakhanstaUpgradeAlertState extends UpgradeAlertState {
                             gradient: const LinearGradient(
                               begin: Alignment.topCenter,
                               end: Alignment.bottomCenter,
-                              colors: [Color(0xFFF2F7FF), Color(0xFFFFF7F0)],
+                              colors: [
+                                FasakhanstaBrand.surfaceRaised,
+                                FasakhanstaBrand.surfaceRaised,
+                              ],
                             ),
                             borderRadius: BorderRadius.circular(24),
                           ),
@@ -202,7 +204,7 @@ class _FasakhanstaUpgradeAlertState extends UpgradeAlertState {
                             height: 52,
                             padding: const EdgeInsets.all(5),
                             decoration: BoxDecoration(
-                              color: Colors.white,
+                              color: FasakhanstaBrand.surface,
                               borderRadius: BorderRadius.circular(15),
                               boxShadow: const [
                                 BoxShadow(
@@ -222,7 +224,7 @@ class _FasakhanstaUpgradeAlertState extends UpgradeAlertState {
                           width: 104,
                           height: 104,
                           decoration: const BoxDecoration(
-                            color: Color(0xFFE9F2FF),
+                            color: FasakhanstaBrand.surfaceRaised,
                             shape: BoxShape.circle,
                           ),
                           child: Stack(
@@ -242,7 +244,7 @@ class _FasakhanstaUpgradeAlertState extends UpgradeAlertState {
                                 child: Icon(
                                   Icons.auto_awesome_rounded,
                                   size: 18,
-                                  color: Color(0xFFFFC24A),
+                                  color: FasakhanstaBrand.orange,
                                 ),
                               ),
                               const Positioned(
@@ -251,7 +253,7 @@ class _FasakhanstaUpgradeAlertState extends UpgradeAlertState {
                                 child: Icon(
                                   Icons.auto_awesome_rounded,
                                   size: 14,
-                                  color: Color(0xFFFFC24A),
+                                  color: FasakhanstaBrand.orange,
                                 ),
                               ),
                             ],
@@ -269,7 +271,7 @@ class _FasakhanstaUpgradeAlertState extends UpgradeAlertState {
                         gradient: LinearGradient(
                           colors: [
                             AppColors.mainAppColor,
-                            const Color(0xFFFF8B21),
+                            FasakhanstaBrand.orange,
                           ],
                         ),
                         borderRadius: BorderRadius.circular(30),
@@ -279,7 +281,7 @@ class _FasakhanstaUpgradeAlertState extends UpgradeAlertState {
                         children: [
                           const Icon(
                             Icons.sync_rounded,
-                            color: Colors.white,
+                            color: FasakhanstaBrand.text,
                             size: 19,
                           ),
                           const SizedBox(width: 7),
@@ -297,7 +299,7 @@ class _FasakhanstaUpgradeAlertState extends UpgradeAlertState {
                       heading,
                       textAlign: TextAlign.center,
                       style: AppTextStyle.text24BS().copyWith(
-                        color: const Color(0xFF18243A),
+                        color: FasakhanstaBrand.text,
                         fontWeight: FontWeight.w900,
                         height: 1.15,
                       ),
@@ -307,7 +309,7 @@ class _FasakhanstaUpgradeAlertState extends UpgradeAlertState {
                       body,
                       textAlign: TextAlign.center,
                       style: AppTextStyle.text14RG().copyWith(
-                        color: const Color(0xFF697080),
+                        color: FasakhanstaBrand.muted,
                         height: 1.55,
                       ),
                     ),
@@ -318,9 +320,9 @@ class _FasakhanstaUpgradeAlertState extends UpgradeAlertState {
                         vertical: 14,
                       ),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFFFF7F1),
+                        color: FasakhanstaBrand.surfaceRaised,
                         borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: const Color(0xFFFFE4CF)),
+                        border: Border.all(color: FasakhanstaBrand.border),
                       ),
                       child: Row(
                         children: [
@@ -364,7 +366,7 @@ class _FasakhanstaUpgradeAlertState extends UpgradeAlertState {
                         style: ElevatedButton.styleFrom(
                           elevation: 0,
                           backgroundColor: AppColors.mainAppColor,
-                          foregroundColor: Colors.white,
+                          foregroundColor: FasakhanstaBrand.text,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(17),
                           ),
@@ -377,7 +379,7 @@ class _FasakhanstaUpgradeAlertState extends UpgradeAlertState {
                                   ? Icons.apple_rounded
                                   : Icons.play_arrow_rounded,
                               size: isIOS ? 24 : 27,
-                              color: Colors.white,
+                              color: FasakhanstaBrand.text,
                             ),
                             const SizedBox(width: 9),
                             Text(
@@ -410,7 +412,7 @@ class _FasakhanstaUpgradeAlertState extends UpgradeAlertState {
                         const Icon(
                           Icons.lock_rounded,
                           size: 15,
-                          color: Color(0xFF8C9098),
+                          color: FasakhanstaBrand.muted,
                         ),
                         const SizedBox(width: 6),
                         Flexible(
@@ -418,7 +420,7 @@ class _FasakhanstaUpgradeAlertState extends UpgradeAlertState {
                             requiredText,
                             textAlign: TextAlign.center,
                             style: AppTextStyle.text11RG().copyWith(
-                              color: const Color(0xFF8C9098),
+                              color: FasakhanstaBrand.muted,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
@@ -451,14 +453,10 @@ class _UpdateBenefit extends StatelessWidget {
           width: 34,
           height: 34,
           decoration: const BoxDecoration(
-            color: Colors.white,
+            color: FasakhanstaBrand.surface,
             shape: BoxShape.circle,
           ),
-          child: Icon(
-            icon,
-            size: 19,
-            color: AppColors.mainAppColor,
-          ),
+          child: Icon(icon, size: 19, color: AppColors.mainAppColor),
         ),
         const SizedBox(height: 6),
         Text(
@@ -467,7 +465,7 @@ class _UpdateBenefit extends StatelessWidget {
           overflow: TextOverflow.ellipsis,
           textAlign: TextAlign.center,
           style: AppTextStyle.text11BS().copyWith(
-            color: const Color(0xFF4F5662),
+            color: FasakhanstaBrand.muted,
           ),
         ),
       ],

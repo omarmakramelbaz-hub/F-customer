@@ -1,3 +1,4 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -7,7 +8,10 @@ import '../../my_account/controller/my_account_controller.dart';
 import '../controller/request_delegate_controller.dart';
 
 class PaymentRDBottomSheet extends StatelessWidget {
-  const PaymentRDBottomSheet({super.key, required this.requestDelegateController});
+  const PaymentRDBottomSheet({
+    super.key,
+    required this.requestDelegateController,
+  });
 
   final RequestDelegateController requestDelegateController;
 
@@ -29,13 +33,17 @@ class PaymentRDBottomSheet extends StatelessWidget {
                 _PaymentOption(
                   value: 'cash',
                   title: 'cash'.tr,
-                  subtitle: isAr ? 'الدفع نقدًا عند الاستلام' : 'Pay cash on delivery',
+                  subtitle: isAr
+                      ? 'الدفع نقدًا عند الاستلام'
+                      : 'Pay cash on delivery',
                   icon: Icons.payments_outlined,
                 ),
                 _PaymentOption(
                   value: 'wallet',
                   title: 'appWalletBalance'.tr,
-                  subtitle: isAr ? 'الدفع من رصيد المحفظة داخل التطبيق' : 'Pay from your app wallet balance',
+                  subtitle: isAr
+                      ? 'الدفع من رصيد المحفظة داخل التطبيق'
+                      : 'Pay from your app wallet balance',
                   icon: Icons.account_balance_wallet_outlined,
                 ),
               ];
@@ -56,7 +64,9 @@ class PaymentRDBottomSheet extends StatelessWidget {
                   _PaymentOption(
                     value: 'v_cash',
                     title: 'digitalWalletAndInstaPay'.tr,
-                    subtitle: isAr ? 'محفظة إلكترونية أو إنستا باي' : 'Digital wallet or InstaPay',
+                    subtitle: isAr
+                        ? 'محفظة إلكترونية أو إنستا باي'
+                        : 'Digital wallet or InstaPay',
                     icon: Icons.phone_android_rounded,
                   ),
                 );
@@ -65,7 +75,7 @@ class PaymentRDBottomSheet extends StatelessWidget {
               return Container(
                 padding: const EdgeInsets.fromLTRB(18, 12, 18, 22),
                 decoration: const BoxDecoration(
-                  color: Colors.white,
+                  color: FasakhanstaBrand.surface,
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(30),
                     topRight: Radius.circular(30),
@@ -84,7 +94,7 @@ class PaymentRDBottomSheet extends StatelessWidget {
                             width: 50,
                             height: 5,
                             decoration: BoxDecoration(
-                              color: const Color(0xFFD7DADF),
+                              color: FasakhanstaBrand.surfaceRaised,
                               borderRadius: BorderRadius.circular(20),
                             ),
                           ),
@@ -93,16 +103,18 @@ class PaymentRDBottomSheet extends StatelessWidget {
                         Text(
                           isAr ? 'اختر طريقة الدفع' : 'Choose payment method',
                           style: const TextStyle(
-                            color: Color(0xFF171A1F),
+                            color: FasakhanstaBrand.text,
                             fontSize: 21,
                             fontWeight: FontWeight.w800,
                           ),
                         ),
                         const SizedBox(height: 5),
                         Text(
-                          isAr ? 'يمكنك تغيير طريقة الدفع في أي وقت قبل تأكيد الطلب' : 'You can change it any time before confirming the order',
+                          isAr
+                              ? 'يمكنك تغيير طريقة الدفع في أي وقت قبل تأكيد الطلب'
+                              : 'You can change it any time before confirming the order',
                           style: const TextStyle(
-                            color: Color(0xFF888E97),
+                            color: FasakhanstaBrand.muted,
                             fontSize: 12,
                             fontWeight: FontWeight.w400,
                           ),
@@ -113,8 +125,11 @@ class PaymentRDBottomSheet extends StatelessWidget {
                             padding: const EdgeInsets.only(bottom: 10),
                             child: _PaymentOptionTile(
                               option: option,
-                              selected: requestDelegateController.selectedPayment == option.value,
-                              onTap: () => requestDelegateController.setSelectedPayment(option.value),
+                              selected:
+                                  requestDelegateController.selectedPayment ==
+                                  option.value,
+                              onTap: () => requestDelegateController
+                                  .setSelectedPayment(option.value),
                             ),
                           ),
                         ),
@@ -126,13 +141,15 @@ class PaymentRDBottomSheet extends StatelessWidget {
                             style: ElevatedButton.styleFrom(
                               elevation: 0,
                               backgroundColor: AppColors.mainAppColor,
-                              foregroundColor: Colors.white,
+                              foregroundColor: FasakhanstaBrand.onOrange,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(16),
                               ),
                             ),
                             child: Text(
-                              isAr ? 'تأكيد طريقة الدفع' : 'Confirm payment method',
+                              isAr
+                                  ? 'تأكيد طريقة الدفع'
+                                  : 'Confirm payment method',
                               style: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w800,
@@ -187,10 +204,14 @@ class _PaymentOptionTile extends StatelessWidget {
         borderRadius: BorderRadius.circular(17),
         child: Ink(
           decoration: BoxDecoration(
-            color: selected ? const Color(0xFFFFF6EC) : Colors.white,
+            color: selected
+                ? FasakhanstaBrand.surfaceRaised
+                : FasakhanstaBrand.surface,
             borderRadius: BorderRadius.circular(17),
             border: Border.all(
-              color: selected ? AppColors.mainAppColor : const Color(0xFFE8EBEF),
+              color: selected
+                  ? AppColors.mainAppColor
+                  : FasakhanstaBrand.border,
               width: selected ? 1.3 : 1,
             ),
           ),
@@ -202,10 +223,16 @@ class _PaymentOptionTile extends StatelessWidget {
                   width: 42,
                   height: 42,
                   decoration: BoxDecoration(
-                    color: selected ? Colors.white : const Color(0xFFFFF8F1),
+                    color: selected
+                        ? FasakhanstaBrand.surface
+                        : FasakhanstaBrand.surfaceRaised,
                     borderRadius: BorderRadius.circular(13),
                   ),
-                  child: Icon(option.icon, color: AppColors.mainAppColor, size: 22),
+                  child: Icon(
+                    option.icon,
+                    color: AppColors.mainAppColor,
+                    size: 22,
+                  ),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
@@ -215,7 +242,7 @@ class _PaymentOptionTile extends StatelessWidget {
                       Text(
                         option.title,
                         style: const TextStyle(
-                          color: Color(0xFF171A1F),
+                          color: FasakhanstaBrand.text,
                           fontSize: 14,
                           fontWeight: FontWeight.w700,
                         ),
@@ -226,7 +253,7 @@ class _PaymentOptionTile extends StatelessWidget {
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
-                          color: Color(0xFF888E97),
+                          color: FasakhanstaBrand.muted,
                           fontSize: 11.5,
                         ),
                       ),
@@ -240,14 +267,22 @@ class _PaymentOptionTile extends StatelessWidget {
                   height: 22,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: selected ? AppColors.mainAppColor : Colors.white,
+                    color: selected
+                        ? AppColors.mainAppColor
+                        : FasakhanstaBrand.surface,
                     border: Border.all(
-                      color: selected ? AppColors.mainAppColor : const Color(0xFFC8CCD2),
+                      color: selected
+                          ? AppColors.mainAppColor
+                          : FasakhanstaBrand.border,
                       width: 1.3,
                     ),
                   ),
                   child: selected
-                      ? const Icon(Icons.check_rounded, size: 15, color: Colors.white)
+                      ? const Icon(
+                          Icons.check_rounded,
+                          size: 15,
+                          color: FasakhanstaBrand.text,
+                        )
                       : null,
                 ),
               ],

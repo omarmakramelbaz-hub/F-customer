@@ -1,3 +1,4 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -27,7 +28,10 @@ class OfflineWidget extends StatelessWidget {
               children: [
                 SvgPicture.asset(
                   AppImages.offlineIcon,
-                  colorFilter: const ColorFilter.mode(Colors.black, BlendMode.srcIn),
+                  colorFilter: const ColorFilter.mode(
+                    Colors.black,
+                    BlendMode.srcIn,
+                  ),
                   width: 40,
                   height: 40,
                   fit: BoxFit.contain,
@@ -36,7 +40,11 @@ class OfflineWidget extends StatelessWidget {
                 Expanded(
                   child: Text(
                     'Make sure you are connected to the internet'.tr,
-                    style: const TextStyle(color: Colors.black, fontSize: 14, fontWeight: FontWeight.w500),
+                    style: const TextStyle(
+                      color: FasakhanstaBrand.onOrange,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                    ),
                     textAlign: TextAlign.justify,
                   ),
                 ),
@@ -45,7 +53,10 @@ class OfflineWidget extends StatelessWidget {
                   onPressed: onReload,
                   icon: SvgPicture.asset(
                     AppImages.refreshIcon,
-                    colorFilter: const ColorFilter.mode(Colors.black, BlendMode.srcIn),
+                    colorFilter: const ColorFilter.mode(
+                      Colors.black,
+                      BlendMode.srcIn,
+                    ),
                     width: 25,
                     height: 25,
                     fit: BoxFit.contain,
@@ -69,7 +80,10 @@ class OfflineWidget extends StatelessWidget {
             children: [
               SvgPicture.asset(
                 AppImages.offlineIcon,
-                colorFilter: const ColorFilter.mode(Colors.black, BlendMode.srcIn),
+                colorFilter: const ColorFilter.mode(
+                  Colors.black,
+                  BlendMode.srcIn,
+                ),
                 width: 80,
                 height: 80,
                 fit: BoxFit.contain,
@@ -77,7 +91,11 @@ class OfflineWidget extends StatelessWidget {
               10.sbH,
               Text(
                 'Make sure you are connected to the internet'.tr,
-                style: const TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w500),
+                style: const TextStyle(
+                  color: FasakhanstaBrand.onOrange,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                ),
                 textAlign: TextAlign.center,
               ),
               10.sbH,
@@ -86,7 +104,10 @@ class OfflineWidget extends StatelessWidget {
                 text: 'Reload'.tr,
                 prefixIcon: SvgPicture.asset(
                   AppImages.refreshIcon,
-                  colorFilter: ColorFilter.mode(AppColors.buttonTextColor, BlendMode.srcIn),
+                  colorFilter: ColorFilter.mode(
+                    AppColors.buttonTextColor,
+                    BlendMode.srcIn,
+                  ),
                   width: 20,
                   height: 20,
                   fit: BoxFit.contain,

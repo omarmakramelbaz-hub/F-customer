@@ -1,3 +1,4 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
 import 'package:country_picker/country_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -38,10 +39,10 @@ class _LoginScreenState extends State<LoginScreen> with ValidationMixin {
   final _passwordEC = TextEditingController();
   Country? _country;
 
-  static const _text = Color(0xFF171A1F);
-  static const _muted = Color(0xFF858B94);
-  static const _border = Color(0xFFE7EAEE);
-  static const _softOrange = Color(0xFFFFF3E7);
+  static const _text = FasakhanstaBrand.text;
+  static const _muted = FasakhanstaBrand.muted;
+  static const _border = FasakhanstaBrand.border;
+  static const _softOrange = FasakhanstaBrand.orangeTint;
 
   @override
   void initState() {
@@ -64,7 +65,7 @@ class _LoginScreenState extends State<LoginScreen> with ValidationMixin {
         return Form(
           key: _formKey,
           child: Scaffold(
-            backgroundColor: const Color(0xFFF7F8FA),
+            backgroundColor: Colors.transparent,
             appBar: CustomAppBar(
               centerTitle: false,
               title: const CustomImage(
@@ -73,7 +74,7 @@ class _LoginScreenState extends State<LoginScreen> with ValidationMixin {
                 height: 52,
                 radius: 12,
               ),
-              appBarColor: Colors.white,
+              appBarColor: Colors.transparent,
               showLang: true,
             ),
             body: SafeArea(
@@ -112,10 +113,13 @@ class _LoginScreenState extends State<LoginScreen> with ValidationMixin {
         gradient: const LinearGradient(
           begin: Alignment.topRight,
           end: Alignment.bottomLeft,
-          colors: [Color(0xFFFFF8F1), Color(0xFFFFF1E4)],
+          colors: [
+            FasakhanstaBrand.surfaceRaised,
+            FasakhanstaBrand.surfaceRaised,
+          ],
         ),
         borderRadius: BorderRadius.circular(22),
-        border: Border.all(color: const Color(0xFFFFDFC2)),
+        border: Border.all(color: FasakhanstaBrand.border),
       ),
       child: Row(
         children: [
@@ -123,7 +127,7 @@ class _LoginScreenState extends State<LoginScreen> with ValidationMixin {
             width: 52,
             height: 52,
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: FasakhanstaBrand.surface,
               borderRadius: BorderRadius.circular(16),
               boxShadow: const [
                 BoxShadow(
@@ -174,7 +178,7 @@ class _LoginScreenState extends State<LoginScreen> with ValidationMixin {
     return Container(
       padding: const EdgeInsets.fromLTRB(16, 18, 16, 16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: FasakhanstaBrand.surface,
         borderRadius: BorderRadius.circular(24),
         border: Border.all(color: _border),
         boxShadow: const [
@@ -263,10 +267,7 @@ class _LoginScreenState extends State<LoginScreen> with ValidationMixin {
           height: 54,
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              colors: [
-                AppColors.mainAppColor,
-                const Color(0xFFFF8B25),
-              ],
+              colors: [AppColors.mainAppColor, FasakhanstaBrand.orange],
             ),
             borderRadius: BorderRadius.circular(16),
             boxShadow: [
@@ -282,22 +283,20 @@ class _LoginScreenState extends State<LoginScreen> with ValidationMixin {
             children: [
               Text(
                 'login'.tr,
-                style: AppTextStyle.text18BW().copyWith(
-                  fontSize: 17,
-                  fontWeight: FontWeight.w800,
-                ),
+                style: AppTextStyle.text18BW(color: FasakhanstaBrand.onOrange)
+                    .copyWith(fontSize: 17, fontWeight: FontWeight.w800),
               ),
               const SizedBox(width: 9),
               Container(
                 width: 28,
                 height: 28,
                 decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: .20),
+                  color: FasakhanstaBrand.surface.withValues(alpha: .20),
                   shape: BoxShape.circle,
                 ),
                 child: const Icon(
                   Icons.arrow_forward_rounded,
-                  color: Colors.white,
+                  color: FasakhanstaBrand.text,
                   size: 17,
                 ),
               ),
@@ -344,7 +343,7 @@ class _LoginScreenState extends State<LoginScreen> with ValidationMixin {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: const Color(0xFFFFF8F2),
+        color: FasakhanstaBrand.surfaceRaised,
         borderRadius: BorderRadius.circular(17),
         border: Border.all(
           color: AppColors.mainAppColor.withValues(alpha: .16),
@@ -356,9 +355,9 @@ class _LoginScreenState extends State<LoginScreen> with ValidationMixin {
             width: 40,
             height: 40,
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: FasakhanstaBrand.surface,
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: const Color(0xFFFFE2C8)),
+              border: Border.all(color: FasakhanstaBrand.border),
             ),
             child: Icon(
               Icons.person_add_alt_1_rounded,
@@ -398,7 +397,7 @@ class _LoginScreenState extends State<LoginScreen> with ValidationMixin {
             onPressed: () => NamedNavigatorImpl.push(RegisterScreen.routeName),
             style: OutlinedButton.styleFrom(
               foregroundColor: AppColors.mainAppColor,
-              backgroundColor: Colors.white,
+              backgroundColor: FasakhanstaBrand.surface,
               side: BorderSide(
                 color: AppColors.mainAppColor.withValues(alpha: .35),
               ),
@@ -424,7 +423,7 @@ class _LoginScreenState extends State<LoginScreen> with ValidationMixin {
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: FasakhanstaBrand.surface,
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: _border),
       ),
@@ -488,8 +487,10 @@ class _LoginScreenState extends State<LoginScreen> with ValidationMixin {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(13),
                   ),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 14,
+                    vertical: 10,
+                  ),
                 ),
                 child: Icon(
                   Icons.arrow_forward_rounded,
@@ -509,32 +510,32 @@ class _LoginScreenState extends State<LoginScreen> with ValidationMixin {
     if (!_formKey.currentState!.validate()) return;
 
     context.read<AuthController>().login(
-          onHaveIdANDToken: (id, token) {
-            context.read<PusherController>().initPusher(
-                  channelName: 'private-user.$id',
-                  userId: id,
-                  token: token,
-                );
-          },
-          onFirstTime: () {
-            NamedNavigatorImpl.push(CreateNewAccountScreen.routeName);
-          },
-          mobile: _mobileEC.text.removeZero(),
-          password: _passwordEC.text,
-          onSuccess: (register, mobileVerifiedAt) {
-            HiveMethods.updateIsVisitor(false);
-            if (register == 0 && mobileVerifiedAt != null) {
-              NamedNavigatorImpl.push(
-                BottomNavigationBarScreen.routeName,
-                replace: true,
-              );
-            } else {
-              NamedNavigatorImpl.push(
-                BottomNavigationBarScreen.routeName,
-                clean: true,
-              );
-            }
-          },
+      onHaveIdANDToken: (id, token) {
+        context.read<PusherController>().initPusher(
+          channelName: 'private-user.$id',
+          userId: id,
+          token: token,
         );
+      },
+      onFirstTime: () {
+        NamedNavigatorImpl.push(CreateNewAccountScreen.routeName);
+      },
+      mobile: _mobileEC.text.removeZero(),
+      password: _passwordEC.text,
+      onSuccess: (register, mobileVerifiedAt) {
+        HiveMethods.updateIsVisitor(false);
+        if (register == 0 && mobileVerifiedAt != null) {
+          NamedNavigatorImpl.push(
+            BottomNavigationBarScreen.routeName,
+            replace: true,
+          );
+        } else {
+          NamedNavigatorImpl.push(
+            BottomNavigationBarScreen.routeName,
+            clean: true,
+          );
+        }
+      },
+    );
   }
 }

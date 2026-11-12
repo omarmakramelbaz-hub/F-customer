@@ -1,3 +1,4 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../helpers/images/app_images.dart';
@@ -21,7 +22,7 @@ class CelebrateWidget extends StatelessWidget {
       margin: const EdgeInsets.all(8),
       padding: const EdgeInsets.fromLTRB(18, 18, 18, 16),
       decoration: BoxDecoration(
-        color: const Color(0xFF073F46),
+        color: FasakhanstaBrand.infoTint,
         borderRadius: BorderRadius.circular(22),
         boxShadow: const [
           BoxShadow(
@@ -51,15 +52,22 @@ class CelebrateWidget extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: AppColors.mainAppColor,
                   shape: BoxShape.circle,
-                  border: Border.all(color: Colors.white.withValues(alpha: .25), width: 2),
+                  border: Border.all(
+                    color: FasakhanstaBrand.border.withValues(alpha: .25),
+                    width: 2,
+                  ),
                 ),
-                child: const Icon(Icons.emoji_events_rounded, color: Colors.white, size: 31),
+                child: const Icon(
+                  Icons.emoji_events_rounded,
+                  color: FasakhanstaBrand.onOrange,
+                  size: 31,
+                ),
               ),
               const SizedBox(height: 10),
               Text(
                 'مبروك للفائز!',
                 textAlign: TextAlign.center,
-                style: AppTextStyle.text20BS(color: Colors.white),
+                style: AppTextStyle.text20BS(color: FasakhanstaBrand.text),
               ),
               const SizedBox(height: 5),
               Text(
@@ -72,9 +80,12 @@ class CelebrateWidget extends StatelessWidget {
               const SizedBox(height: 13),
               Container(
                 width: double.infinity,
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 11,
+                ),
                 decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: .96),
+                  color: FasakhanstaBrand.surface.withValues(alpha: .96),
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: Row(
@@ -83,10 +94,16 @@ class CelebrateWidget extends StatelessWidget {
                       child: _WinnerInfo(
                         icon: Icons.card_giftcard_rounded,
                         label: 'قيمة الجائزة',
-                        value: prizeValue.isEmpty ? '—' : '${_formatAmount(prizeValue)} ج',
+                        value: prizeValue.isEmpty
+                            ? '—'
+                            : '${_formatAmount(prizeValue)} ج',
                       ),
                     ),
-                    Container(width: 1, height: 42, color: const Color(0xFFE7E9EA)),
+                    Container(
+                      width: 1,
+                      height: 42,
+                      color: FasakhanstaBrand.surfaceRaised,
+                    ),
                     Expanded(
                       child: _WinnerInfo(
                         icon: Icons.confirmation_number_rounded,
@@ -127,7 +144,7 @@ class _WinnerInfo extends StatelessWidget {
           textAlign: TextAlign.center,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
-          style: AppTextStyle.text10RG(color: const Color(0xFF737D80)),
+          style: AppTextStyle.text10RG(color: FasakhanstaBrand.muted),
         ),
         const SizedBox(height: 3),
         Text(
@@ -135,7 +152,7 @@ class _WinnerInfo extends StatelessWidget {
           textAlign: TextAlign.center,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
-          style: AppTextStyle.text13BS(color: const Color(0xFF173638)),
+          style: AppTextStyle.text13BS(color: FasakhanstaBrand.text),
         ),
       ],
     );

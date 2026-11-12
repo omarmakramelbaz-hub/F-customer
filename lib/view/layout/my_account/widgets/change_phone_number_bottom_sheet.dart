@@ -1,3 +1,4 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
 import 'package:country_picker/country_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -16,10 +17,12 @@ class ChangePhoneNumberBottomSheet extends StatefulWidget {
   const ChangePhoneNumberBottomSheet({super.key});
 
   @override
-  State<ChangePhoneNumberBottomSheet> createState() => _ChangePhoneNumberBottomSheetState();
+  State<ChangePhoneNumberBottomSheet> createState() =>
+      _ChangePhoneNumberBottomSheetState();
 }
 
-class _ChangePhoneNumberBottomSheetState extends State<ChangePhoneNumberBottomSheet>
+class _ChangePhoneNumberBottomSheetState
+    extends State<ChangePhoneNumberBottomSheet>
     with ValidationMixin {
   final _formKey = GlobalKey<FormState>();
   final _phoneNumberEc = TextEditingController();
@@ -62,7 +65,7 @@ class _ChangePhoneNumberBottomSheetState extends State<ChangePhoneNumberBottomSh
             width: double.infinity,
             padding: const EdgeInsets.fromLTRB(18, 8, 18, 16),
             decoration: const BoxDecoration(
-              color: Colors.white,
+              color: FasakhanstaBrand.surface,
               borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(28),
                 topRight: Radius.circular(28),
@@ -88,7 +91,7 @@ class _ChangePhoneNumberBottomSheetState extends State<ChangePhoneNumberBottomSh
                         width: 42,
                         height: 4,
                         decoration: BoxDecoration(
-                          color: const Color(0xFFD7D9DD),
+                          color: FasakhanstaBrand.surfaceRaised,
                           borderRadius: BorderRadius.circular(20),
                         ),
                       ),
@@ -109,16 +112,21 @@ class _ChangePhoneNumberBottomSheetState extends State<ChangePhoneNumberBottomSh
                       const SizedBox(height: 14),
                     ],
                     CustomFormField(
-                      validator: (value) => validatePhone(value, country: _country),
+                      validator: (value) =>
+                          validatePhone(value, country: _country),
                       controller: _phoneNumberEc,
                       keyboardType: TextInputType.phone,
                       inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                       country: _country,
-                      title: isArabic ? 'رقم الهاتف الجديد' : 'New phone number',
-                      hintText: isArabic ? 'أدخل رقم الهاتف الجديد' : 'Enter new phone number',
+                      title: isArabic
+                          ? 'رقم الهاتف الجديد'
+                          : 'New phone number',
+                      hintText: isArabic
+                          ? 'أدخل رقم الهاتف الجديد'
+                          : 'Enter new phone number',
                       focusNode: _phoneFocusNode,
                       radius: 16,
-                      fillColor: const Color(0xFFFAFAFB),
+                      fillColor: FasakhanstaBrand.field,
                       titleStyle: AppTextStyle.text13BS(),
                       prefixIcon: context.languageCode == 'en'
                           ? Icon(
@@ -142,14 +150,16 @@ class _ChangePhoneNumberBottomSheetState extends State<ChangePhoneNumberBottomSh
                     CustomFormField(
                       validator: validateEmptyField,
                       controller: _passwordEC,
-                      title: isArabic ? 'تأكيد كلمة المرور' : 'Confirm password',
+                      title: isArabic
+                          ? 'تأكيد كلمة المرور'
+                          : 'Confirm password',
                       hintText: isArabic
                           ? 'أدخل كلمة المرور لتأكيد التغيير'
                           : 'Enter your password to confirm the change',
                       isPassword: true,
                       focusNode: _passwordFocusNode,
                       radius: 16,
-                      fillColor: const Color(0xFFFAFAFB),
+                      fillColor: FasakhanstaBrand.field,
                       titleStyle: AppTextStyle.text13BS(),
                       prefixIcon: Icon(
                         Icons.lock_outline_rounded,
@@ -176,7 +186,9 @@ class _ChangePhoneNumberBottomSheetState extends State<ChangePhoneNumberBottomSh
                                 AppColors.gridTwoButtonColor,
                               ],
                             ),
-                            text: isArabic ? 'تحديث رقم الهاتف' : 'Update phone number',
+                            text: isArabic
+                                ? 'تحديث رقم الهاتف'
+                                : 'Update phone number',
                             onPressed: () {
                               FocusScope.of(context).unfocus();
                               if (_formKey.currentState!.validate()) {
@@ -224,11 +236,15 @@ class _PhoneHeader extends StatelessWidget {
             width: 36,
             height: 36,
             decoration: BoxDecoration(
-              color: const Color(0xFFFFF5EC),
+              color: FasakhanstaBrand.surfaceRaised,
               shape: BoxShape.circle,
-              border: Border.all(color: const Color(0xFFFFDCC0)),
+              border: Border.all(color: FasakhanstaBrand.border),
             ),
-            child: Icon(Icons.close_rounded, size: 21, color: AppColors.mainAppColor),
+            child: Icon(
+              Icons.close_rounded,
+              size: 21,
+              color: AppColors.mainAppColor,
+            ),
           ),
         ),
         const Spacer(),
@@ -246,7 +262,7 @@ class _PhoneHeader extends StatelessWidget {
                     width: 34,
                     height: 34,
                     decoration: BoxDecoration(
-                      color: const Color(0xFFFFF2E7),
+                      color: FasakhanstaBrand.surfaceRaised,
                       borderRadius: BorderRadius.circular(11),
                     ),
                     child: Icon(
@@ -263,7 +279,9 @@ class _PhoneHeader extends StatelessWidget {
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 textAlign: TextAlign.end,
-                style: AppTextStyle.text11RG().copyWith(color: const Color(0xFF8A8E95)),
+                style: AppTextStyle.text11RG().copyWith(
+                  color: FasakhanstaBrand.muted,
+                ),
               ),
             ],
           ),
@@ -284,9 +302,9 @@ class _CurrentNumberCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       decoration: BoxDecoration(
-        color: const Color(0xFFF8F9FB),
+        color: FasakhanstaBrand.surfaceRaised,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: const Color(0xFFE8EAED)),
+        border: Border.all(color: FasakhanstaBrand.border),
       ),
       child: Row(
         children: [
@@ -294,7 +312,7 @@ class _CurrentNumberCard extends StatelessWidget {
             width: 34,
             height: 34,
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: FasakhanstaBrand.surface,
               borderRadius: BorderRadius.circular(11),
             ),
             child: Icon(
@@ -310,7 +328,9 @@ class _CurrentNumberCard extends StatelessWidget {
               children: [
                 Text(
                   isArabic ? 'الرقم الحالي' : 'Current number',
-                  style: AppTextStyle.text10RG().copyWith(color: const Color(0xFF8B9098)),
+                  style: AppTextStyle.text10RG().copyWith(
+                    color: FasakhanstaBrand.muted,
+                  ),
                 ),
                 const SizedBox(height: 2),
                 Text(
@@ -324,7 +344,7 @@ class _CurrentNumberCard extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
             decoration: BoxDecoration(
-              color: const Color(0xFFFFF2E7),
+              color: FasakhanstaBrand.surfaceRaised,
               borderRadius: BorderRadius.circular(9),
             ),
             child: Text(
@@ -351,7 +371,7 @@ class _PrivacyNotice extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 9),
       decoration: BoxDecoration(
-        color: const Color(0xFFFFF9F4),
+        color: FasakhanstaBrand.surfaceRaised,
         borderRadius: BorderRadius.circular(14),
       ),
       child: Row(
@@ -362,7 +382,7 @@ class _PrivacyNotice extends StatelessWidget {
             child: Text(
               text,
               style: AppTextStyle.text10RG().copyWith(
-                color: const Color(0xFF72777F),
+                color: FasakhanstaBrand.muted,
                 height: 1.35,
               ),
             ),

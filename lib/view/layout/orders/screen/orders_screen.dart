@@ -1,3 +1,4 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pusher_channels_flutter/pusher_channels_flutter.dart';
@@ -83,14 +84,17 @@ class _OrdersScreenState extends State<OrdersScreen> {
               children: [
                 const SizedBox(height: 25),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 25,
+                    vertical: 10,
+                  ),
                   child: Text('orders'.tr, style: AppTextStyle.text18BS()),
                 ),
                 Expanded(
                   child: Container(
                     width: double.infinity,
                     decoration: BoxDecoration(
-                      color: AppColors.whiteColor,
+                      color: FasakhanstaBrand.surface,
                       borderRadius: const BorderRadius.only(
                         topRight: Radius.circular(36),
                         topLeft: Radius.circular(36),
@@ -116,10 +120,19 @@ class _OrdersScreenState extends State<OrdersScreen> {
                           children: [
                             const Row(
                               mainAxisAlignment: MainAxisAlignment.center,
-                              children: [CustomImage(height: 100, path: AppImages.noOrderIcon, type: ImageType.svg)],
+                              children: [
+                                CustomImage(
+                                  height: 100,
+                                  path: AppImages.noOrderIcon,
+                                  type: ImageType.svg,
+                                ),
+                              ],
                             ),
                             20.sbH,
-                            Text('youHaveNoOrders'.tr, style: AppTextStyle.text14BS()),
+                            Text(
+                              'youHaveNoOrders'.tr,
+                              style: AppTextStyle.text14BS(),
+                            ),
                           ],
                         ),
                         loadingWidget: loadingWidget,
@@ -129,7 +142,9 @@ class _OrdersScreenState extends State<OrdersScreen> {
                             return Column(
                               children: [
                                 15.sbH,
-                                InPreparationWidget(orders: ordersController.orders[index]),
+                                InPreparationWidget(
+                                  orders: ordersController.orders[index],
+                                ),
                               ],
                             );
                           },
@@ -157,11 +172,17 @@ class _OrdersScreenState extends State<OrdersScreen> {
             children: [
               15.sbH,
               Container(
-                margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 25),
-                padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
+                margin: const EdgeInsets.symmetric(
+                  vertical: 10,
+                  horizontal: 25,
+                ),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 15,
+                  vertical: 8,
+                ),
                 width: context.width * 0.9,
                 decoration: BoxDecoration(
-                  color: AppColors.whiteColor,
+                  color: FasakhanstaBrand.surface,
                   borderRadius: BorderRadius.circular(10),
                   boxShadow: [
                     BoxShadow(
@@ -185,13 +206,20 @@ class _OrdersScreenState extends State<OrdersScreen> {
                             color: AppColors.greyColor.withValues(alpha: .12),
                             borderRadius: BorderRadius.circular(6),
                           ),
-                          child: Center(child: Text('', style: AppTextStyle.text14RG())),
+                          child: Center(
+                            child: Text('', style: AppTextStyle.text14RG()),
+                          ),
                         ),
                       ],
                     ),
                     Row(
                       children: [
-                        const CustomNetworkImage(radius: 12, imageUrl: '', width: 60, height: 60),
+                        const CustomNetworkImage(
+                          radius: 12,
+                          imageUrl: '',
+                          width: 60,
+                          height: 60,
+                        ),
                         const SizedBox(width: 15),
                         Expanded(
                           child: Column(
@@ -202,7 +230,10 @@ class _OrdersScreenState extends State<OrdersScreen> {
                               Row(
                                 children: [
                                   const SizedBox(width: 10),
-                                  Text('-----------', style: AppTextStyle.text14RL()),
+                                  Text(
+                                    '-----------',
+                                    style: AppTextStyle.text14RL(),
+                                  ),
                                 ],
                               ),
                             ],

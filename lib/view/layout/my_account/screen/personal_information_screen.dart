@@ -1,3 +1,4 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
@@ -24,7 +25,8 @@ class PersonalInformationScreen extends StatefulWidget {
   const PersonalInformationScreen({super.key});
 
   @override
-  State<PersonalInformationScreen> createState() => _PersonalInformationScreenState();
+  State<PersonalInformationScreen> createState() =>
+      _PersonalInformationScreenState();
 }
 
 class _PersonalInformationScreenState extends State<PersonalInformationScreen>
@@ -76,7 +78,7 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen>
         final isArabic = context.languageCode == 'ar';
 
         return Scaffold(
-          backgroundColor: const Color(0xFFF6F7F9),
+          backgroundColor: Colors.transparent,
           body: SafeArea(
             child: Column(
               children: [
@@ -99,16 +101,18 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen>
                             _infoNotice(isArabic),
                             const SizedBox(height: 18),
                             _sectionLabel(
-                              isArabic ? 'البيانات الأساسية' : 'Basic information',
                               isArabic
-                                  ? 'حدّث معلوماتك التي تظهر داخل حسابك'
-                                  : 'Update the information shown in your account',
+                                  ? 'البيانات الأساسية'
+                                  : 'Basic information',
+                              isArabic ? 'حدّث معلوماتك التي تظهر داخل حسابك' : 'Update the information shown in your account',
                             ),
                             const SizedBox(height: 9),
                             _formCard(context, authController, isArabic),
                             const SizedBox(height: 18),
                             _sectionLabel(
-                              isArabic ? 'بيانات التواصل' : 'Contact information',
+                              isArabic
+                                  ? 'بيانات التواصل'
+                                  : 'Contact information',
                               isArabic
                                   ? 'رقم الهاتف المرتبط بالحساب'
                                   : 'The phone number linked to your account',
@@ -145,14 +149,16 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen>
                 width: 42,
                 height: 42,
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: FasakhanstaBrand.surface,
                   borderRadius: BorderRadius.circular(15),
-                  border: Border.all(color: const Color(0xFFE8EAED)),
+                  border: Border.all(color: FasakhanstaBrand.border),
                 ),
                 child: Icon(
-                  isArabic ? Icons.arrow_forward_ios_rounded : Icons.arrow_back_ios_new_rounded,
+                  isArabic
+                      ? Icons.arrow_forward_ios_rounded
+                      : Icons.arrow_back_ios_new_rounded,
                   size: 18,
-                  color: const Color(0xFF24272B),
+                  color: FasakhanstaBrand.text,
                 ),
               ),
             ),
@@ -197,10 +203,17 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen>
         gradient: const LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [Color(0xFF171717), Color(0xFF292929)],
+          colors: [
+            FasakhanstaBrand.surfaceRaised,
+            FasakhanstaBrand.surfaceRaised,
+          ],
         ),
         boxShadow: const [
-          BoxShadow(color: Color(0x16000000), blurRadius: 20, offset: Offset(0, 8)),
+          BoxShadow(
+            color: Color(0x16000000),
+            blurRadius: 20,
+            offset: Offset(0, 8),
+          ),
         ],
       ),
       child: ClipRRect(
@@ -224,7 +237,9 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen>
               child: Row(
                 children: [
                   InkWell(
-                    onTap: () => Utils.showAppBottomSheet(const ChooseAvatarBottomSheet()),
+                    onTap: () => Utils.showAppBottomSheet(
+                      const ChooseAvatarBottomSheet(),
+                    ),
                     borderRadius: BorderRadius.circular(45),
                     child: Stack(
                       clipBehavior: Clip.none,
@@ -234,8 +249,11 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen>
                           height: 84,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            color: const Color(0xFFFFF1E6),
-                            border: Border.all(color: Colors.white, width: 2.5),
+                            color: FasakhanstaBrand.surfaceRaised,
+                            border: Border.all(
+                              color: FasakhanstaBrand.border,
+                              width: 2.5,
+                            ),
                           ),
                           child: ClipOval(
                             child: photo.isNotEmpty
@@ -258,9 +276,16 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen>
                             decoration: BoxDecoration(
                               color: AppColors.mainAppColor,
                               shape: BoxShape.circle,
-                              border: Border.all(color: const Color(0xFF222222), width: 2),
+                              border: Border.all(
+                                color: FasakhanstaBrand.border,
+                                width: 2,
+                              ),
                             ),
-                            child: const Icon(Icons.camera_alt_outlined, size: 14, color: Colors.white),
+                            child: const Icon(
+                              Icons.camera_alt_outlined,
+                              size: 14,
+                              color: FasakhanstaBrand.onOrange,
+                            ),
                           ),
                         ),
                       ],
@@ -276,35 +301,60 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen>
                           name.isEmpty ? 'account'.tr : name,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: AppTextStyle.text20BS(color: Colors.white),
+                          style: AppTextStyle.text20BS(
+                            color: FasakhanstaBrand.text,
+                          ),
                         ),
                         const SizedBox(height: 7),
                         if (area.isNotEmpty)
                           Row(
                             children: [
-                              Icon(Icons.location_on_outlined, size: 16, color: AppColors.mainAppColor),
+                              Icon(
+                                Icons.location_on_outlined,
+                                size: 16,
+                                color: AppColors.mainAppColor,
+                              ),
                               const SizedBox(width: 5),
                               Expanded(
                                 child: Text(
                                   area,
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
-                                  style: AppTextStyle.text12RG(color: Colors.white.withValues(alpha: .72)),
+                                  style: AppTextStyle.text12RG(
+                                    color: FasakhanstaBrand.text.withValues(
+                                      alpha: .72,
+                                    ),
+                                  ),
                                 ),
                               ),
                             ],
                           ),
                         const SizedBox(height: 10),
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 6,
+                          ),
                           decoration: BoxDecoration(
-                            color: Colors.white.withValues(alpha: .08),
+                            color: FasakhanstaBrand.surface.withValues(
+                              alpha: .08,
+                            ),
                             borderRadius: BorderRadius.circular(18),
-                            border: Border.all(color: Colors.white.withValues(alpha: .09)),
+                            border: Border.all(
+                              color: FasakhanstaBrand.border.withValues(
+                                alpha: .09,
+                              ),
+                            ),
                           ),
                           child: Text(
-                            isArabic ? 'اضغط على الصورة لتغييرها' : 'Tap photo to change it',
-                            style: AppTextStyle.text10RG(color: Colors.white.withValues(alpha: .7)),
+                            isArabic
+                                ? 'اضغط على الصورة لتغييرها'
+                                : 'Tap photo to change it',
+                            style: AppTextStyle.text10RG(
+                              color: FasakhanstaBrand.text.withValues(
+                                alpha: .7,
+                              ),
+                            ),
                           ),
                         ),
                       ],
@@ -341,7 +391,7 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen>
       alignment: Alignment.center,
       child: Text(
         firstLetter,
-        style: AppTextStyle.text24BS(color: Colors.white),
+        style: AppTextStyle.text24BS(color: FasakhanstaBrand.onOrange),
       ),
     );
   }
@@ -350,9 +400,9 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen>
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 11),
       decoration: BoxDecoration(
-        color: const Color(0xFFFFF8F2),
+        color: FasakhanstaBrand.surfaceRaised,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFFFE2CB)),
+        border: Border.all(color: FasakhanstaBrand.border),
       ),
       child: Row(
         children: [
@@ -360,10 +410,14 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen>
             width: 34,
             height: 34,
             decoration: BoxDecoration(
-              color: const Color(0xFFFFEBD9),
+              color: FasakhanstaBrand.surfaceRaised,
               borderRadius: BorderRadius.circular(11),
             ),
-            child: Icon(Icons.verified_user_outlined, size: 19, color: AppColors.mainAppColor),
+            child: Icon(
+              Icons.verified_user_outlined,
+              size: 19,
+              color: AppColors.mainAppColor,
+            ),
           ),
           const SizedBox(width: 10),
           Expanded(
@@ -371,7 +425,8 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen>
               isArabic
                   ? 'حافظ على بياناتك محدثة لضمان تجربة أفضل واستلام طلباتك بسهولة.'
                   : 'Keep your details up to date for a smoother account and delivery experience.',
-              style: AppTextStyle.text11RG(color: const Color(0xFF6F747B)).copyWith(height: 1.35),
+              style: AppTextStyle.text11RG(color: FasakhanstaBrand.muted)
+                  .copyWith(height: 1.35),
             ),
           ),
         ],
@@ -395,7 +450,7 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen>
                   subtitle,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: AppTextStyle.text10RG(color: const Color(0xFF8D9299)),
+                  style: AppTextStyle.text10RG(color: FasakhanstaBrand.muted),
                 ),
               ],
             ),
@@ -421,11 +476,15 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen>
     return Container(
       padding: const EdgeInsets.fromLTRB(15, 16, 15, 15),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: FasakhanstaBrand.surface,
         borderRadius: BorderRadius.circular(22),
-        border: Border.all(color: const Color(0xFFE8EAED)),
+        border: Border.all(color: FasakhanstaBrand.border),
         boxShadow: const [
-          BoxShadow(color: Color(0x06000000), blurRadius: 14, offset: Offset(0, 5)),
+          BoxShadow(
+            color: Color(0x06000000),
+            blurRadius: 14,
+            offset: Offset(0, 5),
+          ),
         ],
       ),
       child: Column(
@@ -434,13 +493,13 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen>
           const SizedBox(height: 7),
           CustomFormField(controller: _nameEc, title: ''),
           const SizedBox(height: 15),
-          const Divider(height: 1, color: Color(0xFFF0F0F1)),
+          const Divider(height: 1, color: FasakhanstaBrand.border),
           const SizedBox(height: 15),
           _fieldHeader(Icons.alternate_email_rounded, 'email'.tr),
           const SizedBox(height: 7),
           CustomFormField(controller: _emailEc, title: ''),
           const SizedBox(height: 15),
-          const Divider(height: 1, color: Color(0xFFF0F0F1)),
+          const Divider(height: 1, color: FasakhanstaBrand.border),
           const SizedBox(height: 15),
           _fieldHeader(Icons.location_city_outlined, 'country'.tr),
           const SizedBox(height: 7),
@@ -448,8 +507,11 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen>
             validator: validateEmptyDropDown,
             apiResponse: authController.areaResponse,
             onReload: authController.getArea,
-            value: _country ??
-                (authController.area.isNotEmpty ? authController.area[0].id ?? 0 : 0),
+            value:
+                _country ??
+                (authController.area.isNotEmpty
+                    ? authController.area[0].id ?? 0
+                    : 0),
             onChanged: (value) {
               setState(() => _country = value);
             },
@@ -462,10 +524,8 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen>
           Align(
             alignment: AlignmentDirectional.centerStart,
             child: Text(
-              isArabic
-                  ? 'اختر المنطقة الصحيحة لتحسين نتائج المطاعم والتوصيل.'
-                  : 'Choose the correct area for better restaurant and delivery results.',
-              style: AppTextStyle.text9RG(color: const Color(0xFF9A9EA5)),
+              isArabic ? 'اختر المنطقة الصحيحة لتحسين نتائج المطاعم والتوصيل.' : 'Choose the correct area for better restaurant and delivery results.',
+              style: AppTextStyle.text9RG(color: FasakhanstaBrand.muted),
             ),
           ),
         ],
@@ -480,7 +540,7 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen>
           width: 31,
           height: 31,
           decoration: BoxDecoration(
-            color: const Color(0xFFFFF3E8),
+            color: FasakhanstaBrand.surfaceRaised,
             borderRadius: BorderRadius.circular(10),
           ),
           child: Icon(icon, size: 17, color: AppColors.mainAppColor),
@@ -496,9 +556,9 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen>
       height: 70,
       padding: const EdgeInsets.symmetric(horizontal: 14),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: FasakhanstaBrand.surface,
         borderRadius: BorderRadius.circular(19),
-        border: Border.all(color: const Color(0xFFE8EAED)),
+        border: Border.all(color: FasakhanstaBrand.border),
       ),
       child: Row(
         children: [
@@ -506,10 +566,14 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen>
             width: 42,
             height: 42,
             decoration: BoxDecoration(
-              color: const Color(0xFFFFF3E8),
+              color: FasakhanstaBrand.surfaceRaised,
               borderRadius: BorderRadius.circular(13),
             ),
-            child: Icon(Icons.phone_iphone_rounded, color: AppColors.mainAppColor, size: 22),
+            child: Icon(
+              Icons.phone_iphone_rounded,
+              color: AppColors.mainAppColor,
+              size: 22,
+            ),
           ),
           const SizedBox(width: 11),
           Expanded(
@@ -517,7 +581,10 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen>
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('mobile'.tr, style: AppTextStyle.text10RG(color: const Color(0xFF8C9198))),
+                Text(
+                  'mobile'.tr,
+                  style: AppTextStyle.text10RG(color: FasakhanstaBrand.muted),
+                ),
                 const SizedBox(height: 3),
                 Text(
                   _mobile.text,
@@ -532,12 +599,12 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen>
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
             decoration: BoxDecoration(
-              color: const Color(0xFFF4F5F6),
+              color: FasakhanstaBrand.surfaceRaised,
               borderRadius: BorderRadius.circular(12),
             ),
             child: Text(
               isArabic ? 'محمي' : 'Protected',
-              style: AppTextStyle.text10RG(color: const Color(0xFF747980)),
+              style: AppTextStyle.text10RG(color: FasakhanstaBrand.muted),
             ),
           ),
         ],
@@ -558,20 +625,22 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen>
           if (!valid) return;
 
           context.read<AuthController>().updateUserInfo(
-                name: _nameEc.text.trim(),
-                email: _emailEc.text.trim(),
-                id: _country ?? 1,
-                onSuccess: () {
-                  authController.getProfile();
-                  Navigator.pop(context);
-                },
-              );
+            name: _nameEc.text.trim(),
+            email: _emailEc.text.trim(),
+            id: _country ?? 1,
+            onSuccess: () {
+              authController.getProfile();
+              Navigator.pop(context);
+            },
+          );
         },
         style: ElevatedButton.styleFrom(
           elevation: 0,
           backgroundColor: AppColors.mainAppColor,
-          foregroundColor: Colors.white,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(17)),
+          foregroundColor: FasakhanstaBrand.onOrange,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(17),
+          ),
           shadowColor: Colors.transparent,
         ),
         child: Row(
@@ -579,11 +648,16 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen>
           children: [
             const Icon(Icons.check_circle_outline_rounded, size: 20),
             const SizedBox(width: 8),
-            Text('saveChanges'.tr, style: AppTextStyle.text15BS(color: Colors.white)),
+            Text(
+              'saveChanges'.tr,
+              style: AppTextStyle.text15BS(color: FasakhanstaBrand.text),
+            ),
             const SizedBox(width: 7),
             Text(
               isArabic ? 'بأمان' : 'securely',
-              style: AppTextStyle.text10RG(color: Colors.white.withValues(alpha: .8)),
+              style: AppTextStyle.text10RG(
+                color: FasakhanstaBrand.text.withValues(alpha: .8),
+              ),
             ),
           ],
         ),

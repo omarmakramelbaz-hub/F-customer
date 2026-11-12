@@ -1,3 +1,5 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
+
 import 'dart:async';
 import 'dart:developer';
 
@@ -39,10 +41,10 @@ class _SelectLocationFromMapScreenState
   bool isCheckingLocation = false;
   bool isConfirmingLocation = false;
 
-  static const _text = Color(0xFF171A1F);
-  static const _muted = Color(0xFF8D939C);
-  static const _border = Color(0xFFE8EBEF);
-  static const _softOrange = Color(0xFFFFF4E8);
+  static const _text = FasakhanstaBrand.text;
+  static const _muted = FasakhanstaBrand.muted;
+  static const _border = FasakhanstaBrand.border;
+  static const _softOrange = FasakhanstaBrand.orangeTint;
 
   bool _isArabic(BuildContext context) => context.languageCode == 'ar';
 
@@ -63,8 +65,10 @@ class _SelectLocationFromMapScreenState
   }
 
   Future<void> _loadInitialLocation() async {
-    final controller =
-        Provider.of<RequestDelegateController>(context, listen: false);
+    final controller = Provider.of<RequestDelegateController>(
+      context,
+      listen: false,
+    );
     final isFrom = widget.args?.isFromAddress == true;
 
     if (isFrom) {
@@ -155,9 +159,7 @@ class _SelectLocationFromMapScreenState
     }
 
     if (gmc != null) {
-      await gmc!.animateCamera(
-        CameraUpdate.newLatLng(LatLng(lat, lng)),
-      );
+      await gmc!.animateCamera(CameraUpdate.newLatLng(LatLng(lat, lng)));
     }
 
     try {
@@ -170,8 +172,10 @@ class _SelectLocationFromMapScreenState
   }
 
   void _applyCoordinatesToController(double lat, double lng) {
-    final controller =
-        Provider.of<RequestDelegateController>(context, listen: false);
+    final controller = Provider.of<RequestDelegateController>(
+      context,
+      listen: false,
+    );
     final point = LatLng(lat, lng);
 
     if (widget.args?.isFromAddress == true) {
@@ -188,11 +192,7 @@ class _SelectLocationFromMapScreenState
   void _onMapTap(LatLng point) {
     _debounce?.cancel();
     _debounce = Timer(const Duration(milliseconds: 180), () {
-      _updateLocation(
-        point.latitude,
-        point.longitude,
-        updateController: false,
-      );
+      _updateLocation(point.latitude, point.longitude, updateController: false);
     });
   }
 
@@ -208,10 +208,11 @@ class _SelectLocationFromMapScreenState
     return Consumer<RequestDelegateController>(
       builder: (context, controller, _) {
         return Directionality(
-          textDirection:
-              _isArabic(context) ? TextDirection.rtl : TextDirection.ltr,
+          textDirection: _isArabic(context)
+              ? TextDirection.rtl
+              : TextDirection.ltr,
           child: Scaffold(
-            backgroundColor: const Color(0xFFF7F7F7),
+            backgroundColor: Colors.transparent,
             body: currentLat == null || currentLng == null
                 ? _loadingState(context)
                 : Stack(
@@ -258,7 +259,7 @@ class _SelectLocationFromMapScreenState
                           height: 48,
                           alignment: Alignment.center,
                           decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: FasakhanstaBrand.surface,
                             borderRadius: BorderRadius.circular(18),
                             boxShadow: const [
                               BoxShadow(
@@ -344,7 +345,7 @@ class _SelectLocationFromMapScreenState
       width: double.infinity,
       padding: const EdgeInsets.fromLTRB(16, 9, 16, 16),
       decoration: const BoxDecoration(
-        color: Colors.white,
+        color: FasakhanstaBrand.surface,
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(30),
           topRight: Radius.circular(30),
@@ -366,7 +367,7 @@ class _SelectLocationFromMapScreenState
               width: 44,
               height: 4,
               decoration: BoxDecoration(
-                color: const Color(0xFFD4D7DC),
+                color: FasakhanstaBrand.surfaceRaised,
                 borderRadius: BorderRadius.circular(20),
               ),
             ),
@@ -408,7 +409,7 @@ class _SelectLocationFromMapScreenState
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
-                          color: Color(0xFF565B63),
+                          color: FasakhanstaBrand.muted,
                           fontSize: 12,
                           height: 1.4,
                           fontWeight: FontWeight.w500,
@@ -433,7 +434,7 @@ class _SelectLocationFromMapScreenState
               width: double.infinity,
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
               decoration: BoxDecoration(
-                color: const Color(0xFFF8F9FA),
+                color: FasakhanstaBrand.surfaceRaised,
                 borderRadius: BorderRadius.circular(14),
                 border: Border.all(color: _border),
               ),
@@ -451,7 +452,7 @@ class _SelectLocationFromMapScreenState
                           ? 'اضغط على الخريطة لتحديد المكان بدقة، أو استخدم زر موقعي الحالي.'
                           : 'Tap the map to fine-tune the location or use the current-location button.',
                       style: const TextStyle(
-                        color: Color(0xFF6E737B),
+                        color: FasakhanstaBrand.muted,
                         fontSize: 11,
                         height: 1.35,
                       ),
@@ -465,7 +466,8 @@ class _SelectLocationFromMapScreenState
               width: double.infinity,
               height: 55,
               child: ElevatedButton(
-                onPressed: currentLat == null ||
+                onPressed:
+                    currentLat == null ||
                         currentLng == null ||
                         isConfirmingLocation
                     ? null
@@ -473,7 +475,7 @@ class _SelectLocationFromMapScreenState
                 style: ElevatedButton.styleFrom(
                   elevation: 0,
                   backgroundColor: AppColors.mainAppColor,
-                  foregroundColor: Colors.white,
+                  foregroundColor: FasakhanstaBrand.onOrange,
                   disabledBackgroundColor: const Color(0xFFFFC896),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(17),
@@ -505,12 +507,9 @@ class _SelectLocationFromMapScreenState
     );
   }
 
-  Widget _roundButton({
-    required IconData icon,
-    required VoidCallback onTap,
-  }) {
+  Widget _roundButton({required IconData icon, required VoidCallback onTap}) {
     return Material(
-      color: Colors.white,
+      color: FasakhanstaBrand.surface,
       shape: const CircleBorder(),
       elevation: 3,
       shadowColor: const Color(0x26000000),
@@ -520,11 +519,7 @@ class _SelectLocationFromMapScreenState
         child: SizedBox(
           width: 48,
           height: 48,
-          child: Icon(
-            icon,
-            color: AppColors.mainAppColor,
-            size: 23,
-          ),
+          child: Icon(icon, color: AppColors.mainAppColor, size: 23),
         ),
       ),
     );
@@ -533,7 +528,7 @@ class _SelectLocationFromMapScreenState
   Widget _zoomButtons() {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: FasakhanstaBrand.surface,
         borderRadius: BorderRadius.circular(15),
         boxShadow: const [
           BoxShadow(
@@ -553,10 +548,7 @@ class _SelectLocationFromMapScreenState
               child: Icon(Icons.add_rounded, color: _text),
             ),
           ),
-          const SizedBox(
-            width: 30,
-            child: Divider(height: 1, color: _border),
-          ),
+          const SizedBox(width: 30, child: Divider(height: 1, color: _border)),
           InkWell(
             onTap: () => gmc?.animateCamera(CameraUpdate.zoomOut()),
             child: const SizedBox(
@@ -594,7 +586,8 @@ class _SelectLocationFromMapScreenState
   }
 
   Future<void> _confirmLocation(RequestDelegateController controller) async {
-    if (currentLat == null || currentLng == null || isConfirmingLocation) return;
+    if (currentLat == null || currentLng == null || isConfirmingLocation)
+      return;
 
     final lat = currentLat!;
     final lng = currentLng!;

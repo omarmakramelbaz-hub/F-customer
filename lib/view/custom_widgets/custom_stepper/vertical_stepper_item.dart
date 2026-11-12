@@ -1,3 +1,4 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
 import 'package:flutter/material.dart';
 
 import 'dot_provider.dart';
@@ -65,7 +66,11 @@ class VerticalStepperItem extends StatelessWidget {
     return [
       Column(
         children: [
-          Container(color: Colors.grey, width: barWidth, height: gap),
+          Container(
+            color: FasakhanstaBrand.surfaceRaised,
+            width: barWidth,
+            height: gap,
+          ),
           const SizedBox(height: 2),
           DotProvider(
             dotColor: dotColor,
@@ -77,19 +82,31 @@ class VerticalStepperItem extends StatelessWidget {
             iconWidth: iconWidth,
           ),
           const SizedBox(height: 2),
-          Container(color: Colors.grey, width: barWidth, height: gap),
+          Container(
+            color: FasakhanstaBrand.surfaceRaised,
+            width: barWidth,
+            height: gap,
+          ),
         ],
       ),
       const SizedBox(width: 8),
       Expanded(
         child: Column(
-          crossAxisAlignment: isInverted ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+          crossAxisAlignment: isInverted
+              ? CrossAxisAlignment.end
+              : CrossAxisAlignment.start,
           children: [
             if (item.title != null) ...[
               Text(
                 item.title!.text,
                 textAlign: TextAlign.start,
-                style: item.title!.textStyle ?? TextStyle(fontSize: 14, color: dotColor, fontWeight: FontWeight.w600),
+                style:
+                    item.title!.textStyle ??
+                    TextStyle(
+                      fontSize: 14,
+                      color: dotColor,
+                      fontWeight: FontWeight.w600,
+                    ),
               ),
             ],
             if (item.subtitle != null) ...[
@@ -97,10 +114,13 @@ class VerticalStepperItem extends StatelessWidget {
               Text(
                 item.subtitle!.text,
                 textAlign: TextAlign.start,
-                style: item.subtitle!.textStyle ??
+                style:
+                    item.subtitle!.textStyle ??
                     TextStyle(
                       fontSize: 12,
-                      color: (index <= activeIndex) ? Colors.blue : Colors.grey,
+                      color: (index <= activeIndex)
+                          ? FasakhanstaBrand.info
+                          : FasakhanstaBrand.muted,
                       fontWeight: FontWeight.w500,
                     ),
               ),

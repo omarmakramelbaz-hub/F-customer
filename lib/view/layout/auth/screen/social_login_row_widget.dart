@@ -1,3 +1,4 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -45,9 +46,9 @@ class SocialBtn extends StatelessWidget {
             height: 52,
             padding: const EdgeInsets.symmetric(horizontal: 10),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: FasakhanstaBrand.surface,
               borderRadius: BorderRadius.circular(15),
-              border: Border.all(color: const Color(0xFFE4E7EB)),
+              border: Border.all(color: FasakhanstaBrand.border),
               boxShadow: const [
                 BoxShadow(
                   color: Color(0x0D000000),
@@ -64,7 +65,7 @@ class SocialBtn extends StatelessWidget {
                   height: 30,
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
-                    color: const Color(0xFFFAFAFA),
+                    color: FasakhanstaBrand.surfaceRaised,
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Image.asset(
@@ -81,7 +82,7 @@ class SocialBtn extends StatelessWidget {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: AppTextStyle.text12BS().copyWith(
-                      color: const Color(0xFF30343A),
+                      color: FasakhanstaBrand.text,
                       fontWeight: FontWeight.w800,
                     ),
                   ),
@@ -103,8 +104,7 @@ class SocialLoginRowWidget extends StatelessWidget {
   // ID token whose audience can be verified safely by the backend.
   static const String _googleWebClientId = String.fromEnvironment(
     'GOOGLE_WEB_CLIENT_ID',
-    defaultValue:
-        '224648167390-efdtr7rjcnept7eiml1d642sdn8n9ki7.apps.googleusercontent.com',
+    defaultValue: '224648167390-efdtr7rjcnept7eiml1d642sdn8n9ki7.apps.googleusercontent.com',
   );
 
   void _onAuthSuccess(
@@ -119,25 +119,19 @@ class SocialLoginRowWidget extends StatelessWidget {
         replace: true,
       );
     } else {
-      NamedNavigatorImpl.push(
-        BottomNavigationBarScreen.routeName,
-        clean: true,
-      );
+      NamedNavigatorImpl.push(BottomNavigationBarScreen.routeName, clean: true);
     }
   }
 
   void _initPusher(BuildContext context, int id, String token) {
     context.read<PusherController>().initPusher(
-          channelName: 'private-user.$id',
-          userId: id,
-          token: token,
-        );
+      channelName: 'private-user.$id',
+      userId: id,
+      token: token,
+    );
   }
 
-  String _responseMessage(
-    dynamic data, {
-    required String fallback,
-  }) {
+  String _responseMessage(dynamic data, {required String fallback}) {
     if (data is Map) {
       final message = data['message'];
       if (message != null && message.toString().trim().isNotEmpty) {
@@ -271,9 +265,7 @@ class SocialLoginRowWidget extends StatelessWidget {
       );
 
       if (mobile.isEmpty) {
-        final socialAuthData = <String, dynamic>{
-          'provider': provider,
-        };
+        final socialAuthData = <String, dynamic>{'provider': provider};
         if (accessToken.trim().isNotEmpty) {
           socialAuthData['access_token'] = accessToken.trim();
         }
@@ -399,9 +391,9 @@ class SocialLoginRowWidget extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
-        color: const Color(0xFFF8F9FA),
+        color: FasakhanstaBrand.surfaceRaised,
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: const Color(0xFFEEF0F3)),
+        border: Border.all(color: FasakhanstaBrand.border),
       ),
       child: Row(
         children: [
@@ -411,18 +403,13 @@ class SocialLoginRowWidget extends StatelessWidget {
               label: 'Apple',
               onTap: () {
                 context.read<AuthController>().signInWithApple(
-                      onSuccess: (register, mobileVerifiedAt) =>
-                          _onAuthSuccess(
-                        context,
-                        register,
-                        mobileVerifiedAt,
-                      ),
-                      onFirstTime: () => NamedNavigatorImpl.push(
-                        CreateNewAccountScreen.routeName,
-                      ),
-                      onHaveIdANDToken: (id, token) =>
-                          _initPusher(context, id, token),
-                    );
+                  onSuccess: (register, mobileVerifiedAt) =>
+                      _onAuthSuccess(context, register, mobileVerifiedAt),
+                  onFirstTime: () =>
+                      NamedNavigatorImpl.push(CreateNewAccountScreen.routeName),
+                  onHaveIdANDToken: (id, token) =>
+                      _initPusher(context, id, token),
+                );
               },
             ),
             const SizedBox(width: 8),

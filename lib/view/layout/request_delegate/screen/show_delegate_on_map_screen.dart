@@ -1,3 +1,5 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
+
 import 'dart:async';
 
 import 'package:defer_pointer/defer_pointer.dart';
@@ -75,38 +77,45 @@ class _ShowDelegateOnMapScreenState extends State<ShowDelegateOnMapScreen>
           .read<RequestDelegateController>()
           .getAcceptedDelegate(delegateOrderId: widget.args.orderId)
           .then((_) {
-        if (mounted) {
-          setState(() {
-            acceptedDelegates =
-                requestDelegateController.acceptedDelegate?.delegates ?? [];
+            if (mounted) {
+              setState(() {
+                acceptedDelegates =
+                    requestDelegateController.acceptedDelegate?.delegates ?? [];
+              });
+            }
+            if (widget.args.orderId != null || widget.args.orderId != 0) {
+              final order = requestDelegateController.acceptedDelegate!.order;
+              requestDelegateController.setFromLat(
+                order?.fromLat.toString() ?? '0.0',
+              );
+              requestDelegateController.setFromLan(
+                order?.fromLng.toString() ?? '0.0',
+              );
+              requestDelegateController.setToLat(
+                order?.toLat.toString() ?? '0.0',
+              );
+              requestDelegateController.setToLan(
+                order?.toLng.toString() ?? '0.0',
+              );
+              _feeEC.text = requestDelegateController
+                  .acceptedDelegate!
+                  .order!
+                  .actualPrice
+                  .toString();
+              requestDelegateController.calculateDeliveryPrice(
+                kmPrice: widget.args.kmPrice,
+              );
+            }
           });
-        }
-        if (widget.args.orderId != null || widget.args.orderId != 0) {
-          final order = requestDelegateController.acceptedDelegate!.order;
-          requestDelegateController.setFromLat(
-            order?.fromLat.toString() ?? '0.0',
-          );
-          requestDelegateController.setFromLan(
-            order?.fromLng.toString() ?? '0.0',
-          );
-          requestDelegateController.setToLat(order?.toLat.toString() ?? '0.0');
-          requestDelegateController.setToLan(order?.toLng.toString() ?? '0.0');
-          _feeEC.text = requestDelegateController
-              .acceptedDelegate!.order!.actualPrice
-              .toString();
-          requestDelegateController.calculateDeliveryPrice(
-            kmPrice: widget.args.kmPrice,
-          );
-        }
-      });
     } catch (e) {
       // Keep polling silently while delegates are being searched.
     }
   }
 
   void _startCheckingAcceptedDelegate() {
-    _checkDelegateTimer =
-        Timer.periodic(const Duration(seconds: 5), (timer) async {
+    _checkDelegateTimer = Timer.periodic(const Duration(seconds: 5), (
+      timer,
+    ) async {
       try {
         await _checkAcceptedDelegate();
         if (mounted) {
@@ -182,8 +191,9 @@ class _ShowDelegateOnMapScreenState extends State<ShowDelegateOnMapScreen>
 
   void _resetCheckDelegateTimer() {
     _checkDelegateTimer?.cancel();
-    _checkDelegateTimer =
-        Timer.periodic(const Duration(seconds: 5), (timer) async {
+    _checkDelegateTimer = Timer.periodic(const Duration(seconds: 5), (
+      timer,
+    ) async {
       try {
         await _checkAcceptedDelegate();
         if (mounted) {
@@ -258,15 +268,21 @@ class _ShowDelegateOnMapScreenState extends State<ShowDelegateOnMapScreen>
                 if (!kIsWeb)
                   CustomGoogleMapsWidget(
                     showCircle: true,
-                    addressLat: double.tryParse(
+                    addressLat:
+                        double.tryParse(
                           '${requestDelegateController.acceptedDelegate?.order?.fromLat}',
                         ) ??
-                        double.tryParse('${requestDelegateController.fromLat}') ??
+                        double.tryParse(
+                          '${requestDelegateController.fromLat}',
+                        ) ??
                         0.0,
-                    addressLan: double.tryParse(
+                    addressLan:
+                        double.tryParse(
                           '${requestDelegateController.acceptedDelegate?.order?.fromLng}',
                         ) ??
-                        double.tryParse('${requestDelegateController.fromLan}') ??
+                        double.tryParse(
+                          '${requestDelegateController.fromLan}',
+                        ) ??
                         0.0,
                   )
                 else
@@ -289,13 +305,16 @@ class _ShowDelegateOnMapScreenState extends State<ShowDelegateOnMapScreen>
                                 onReject: () {
                                   setState(() {
                                     acceptedDelegates?.removeWhere(
-                                      (i) => i.id == acceptedDelegates?[index].id,
+                                      (i) =>
+                                          i.id == acceptedDelegates?[index].id,
                                     );
                                   });
                                 },
                                 order: requestDelegateController
-                                    .acceptedDelegate?.order,
-                                acceptedDelegateModel: acceptedDelegates?[index],
+                                    .acceptedDelegate
+                                    ?.order,
+                                acceptedDelegateModel:
+                                    acceptedDelegates?[index],
                                 cancelReCall: _cancelTimersAndOrder,
                               ),
                             ),
@@ -310,12 +329,13 @@ class _ShowDelegateOnMapScreenState extends State<ShowDelegateOnMapScreen>
                   right: 0,
                   left: 0,
                   child: Directionality(
-                    textDirection:
-                        isArabic ? TextDirection.rtl : TextDirection.ltr,
+                    textDirection: isArabic
+                        ? TextDirection.rtl
+                        : TextDirection.ltr,
                     child: Container(
                       width: double.infinity,
                       decoration: const BoxDecoration(
-                        color: Colors.white,
+                        color: FasakhanstaBrand.surface,
                         borderRadius: BorderRadius.only(
                           topLeft: Radius.circular(28),
                           topRight: Radius.circular(28),
@@ -344,7 +364,7 @@ class _ShowDelegateOnMapScreenState extends State<ShowDelegateOnMapScreen>
                                 width: 44,
                                 height: 4,
                                 decoration: BoxDecoration(
-                                  color: const Color(0xFFD7DADF),
+                                  color: FasakhanstaBrand.surfaceRaised,
                                   borderRadius: BorderRadius.circular(20),
                                 ),
                               ),
@@ -355,7 +375,7 @@ class _ShowDelegateOnMapScreenState extends State<ShowDelegateOnMapScreen>
                                     width: 42,
                                     height: 42,
                                     decoration: BoxDecoration(
-                                      color: const Color(0xFFFFF3E8),
+                                      color: FasakhanstaBrand.surfaceRaised,
                                       borderRadius: BorderRadius.circular(14),
                                     ),
                                     child: Padding(
@@ -363,8 +383,9 @@ class _ShowDelegateOnMapScreenState extends State<ShowDelegateOnMapScreen>
                                       child: CircularProgressIndicator(
                                         strokeWidth: 2.6,
                                         color: AppColors.mainAppColor,
-                                        backgroundColor:
-                                            const Color(0xFFFFE1C7),
+                                        backgroundColor: const Color(
+                                          0xFFFFE1C7,
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -379,7 +400,7 @@ class _ShowDelegateOnMapScreenState extends State<ShowDelegateOnMapScreen>
                                               ? 'جاري البحث عن مندوب'
                                               : 'Searching for a driver',
                                           style: const TextStyle(
-                                            color: Color(0xFF171A1F),
+                                            color: FasakhanstaBrand.text,
                                             fontSize: 18,
                                             fontWeight: FontWeight.w800,
                                           ),
@@ -390,7 +411,7 @@ class _ShowDelegateOnMapScreenState extends State<ShowDelegateOnMapScreen>
                                               ? 'بنرسل طلبك لأقرب المندوبين المتاحين'
                                               : 'Sending your request to nearby available drivers',
                                           style: const TextStyle(
-                                            color: Color(0xFF8A9099),
+                                            color: FasakhanstaBrand.muted,
                                             fontSize: 11.5,
                                             fontWeight: FontWeight.w500,
                                           ),
@@ -409,10 +430,10 @@ class _ShowDelegateOnMapScreenState extends State<ShowDelegateOnMapScreen>
                                   10,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: const Color(0xFFF9FAFB),
+                                  color: FasakhanstaBrand.surfaceRaised,
                                   borderRadius: BorderRadius.circular(18),
                                   border: Border.all(
-                                    color: const Color(0xFFE8EBEF),
+                                    color: FasakhanstaBrand.border,
                                   ),
                                 ),
                                 child: Column(
@@ -422,7 +443,7 @@ class _ShowDelegateOnMapScreenState extends State<ShowDelegateOnMapScreen>
                                           ? 'الأجرة الحالية'
                                           : 'Current fare',
                                       style: const TextStyle(
-                                        color: Color(0xFF777D86),
+                                        color: FasakhanstaBrand.muted,
                                         fontSize: 11.5,
                                         fontWeight: FontWeight.w600,
                                       ),
@@ -432,7 +453,8 @@ class _ShowDelegateOnMapScreenState extends State<ShowDelegateOnMapScreen>
                                       children: [
                                         _FareStepButton(
                                           icon: Icons.remove_rounded,
-                                          enabled: (int.tryParse(_feeEC.text) ??
+                                          enabled:
+                                              (int.tryParse(_feeEC.text) ??
                                                   _minimumFare()) >
                                               _minimumFare(),
                                           onTap: () => _adjustFare(-1),
@@ -450,68 +472,71 @@ class _ShowDelegateOnMapScreenState extends State<ShowDelegateOnMapScreen>
                                             ],
                                             validator: (v) =>
                                                 validateFeeInShowDelegate(
-                                              paymentType:
-                                                  requestDelegateController
-                                                      .acceptedDelegate
-                                                      ?.order
-                                                      ?.paymentType,
-                                              actualPrice:
-                                                  requestDelegateController
+                                                  paymentType:
+                                                      requestDelegateController
+                                                          .acceptedDelegate
+                                                          ?.order
+                                                          ?.paymentType,
+                                                  actualPrice:
+                                                      requestDelegateController
                                                           .acceptedDelegate
                                                           ?.order
                                                           ?.actualPrice ??
                                                       0,
-                                              userBalance:
-                                                  requestDelegateController
+                                                  userBalance:
+                                                      requestDelegateController
                                                           .acceptedDelegate
                                                           ?.order
                                                           ?.userBalance ??
                                                       0,
-                                              value: _feeEC.text,
-                                              distance:
-                                                  requestDelegateController
+                                                  value: _feeEC.text,
+                                                  distance:
+                                                      requestDelegateController
                                                           .acceptedDelegate
                                                           ?.order
                                                           ?.expectedPrice ??
                                                       requestDelegateController
                                                           .distance ??
                                                       0,
-                                              percentage:
-                                                  widget.args.shippingPercentage,
-                                              kmPrice: widget.args.kmPrice,
-                                            ),
+                                                  percentage: widget
+                                                      .args
+                                                      .shippingPercentage,
+                                                  kmPrice: widget.args.kmPrice,
+                                                ),
                                             style: TextStyle(
                                               color: AppColors.mainAppColor,
                                               fontSize: 23,
                                               fontWeight: FontWeight.w900,
                                             ),
                                             decoration: InputDecoration(
-                                              suffixText: isArabic ? 'ج' : 'EGP',
+                                              suffixText: isArabic
+                                                  ? 'ج'
+                                                  : 'EGP',
                                               suffixStyle: TextStyle(
                                                 color: AppColors.mainAppColor,
                                                 fontSize: 13,
                                                 fontWeight: FontWeight.w800,
                                               ),
                                               filled: true,
-                                              fillColor: Colors.white,
+                                              fillColor: FasakhanstaBrand.field,
                                               contentPadding:
                                                   const EdgeInsets.symmetric(
-                                                horizontal: 12,
-                                                vertical: 13,
-                                              ),
+                                                    horizontal: 12,
+                                                    vertical: 13,
+                                                  ),
                                               enabledBorder: OutlineInputBorder(
                                                 borderRadius:
                                                     BorderRadius.circular(14),
                                                 borderSide: const BorderSide(
-                                                  color: Color(0xFFE4E7EB),
+                                                  color:
+                                                      FasakhanstaBrand.border,
                                                 ),
                                               ),
                                               focusedBorder: OutlineInputBorder(
                                                 borderRadius:
                                                     BorderRadius.circular(14),
                                                 borderSide: BorderSide(
-                                                  color:
-                                                      AppColors.mainAppColor,
+                                                  color: AppColors.mainAppColor,
                                                   width: 1.4,
                                                 ),
                                               ),
@@ -519,17 +544,23 @@ class _ShowDelegateOnMapScreenState extends State<ShowDelegateOnMapScreen>
                                                 borderRadius:
                                                     BorderRadius.circular(14),
                                                 borderSide: const BorderSide(
-                                                  color: Color(0xFFE34B4B),
+                                                  color:
+                                                      FasakhanstaBrand.border,
                                                 ),
                                               ),
                                               focusedErrorBorder:
                                                   OutlineInputBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(14),
-                                                borderSide: const BorderSide(
-                                                  color: Color(0xFFE34B4B),
-                                                ),
-                                              ),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          14,
+                                                        ),
+                                                    borderSide:
+                                                        const BorderSide(
+                                                          color:
+                                                              FasakhanstaBrand
+                                                                  .border,
+                                                        ),
+                                                  ),
                                             ),
                                             onChanged: (_) => setState(() {}),
                                           ),
@@ -561,7 +592,7 @@ class _ShowDelegateOnMapScreenState extends State<ShowDelegateOnMapScreen>
                                           : 'A higher fare may help your request get accepted faster',
                                       textAlign: TextAlign.center,
                                       style: const TextStyle(
-                                        color: Color(0xFF777D86),
+                                        color: FasakhanstaBrand.muted,
                                         fontSize: 10.5,
                                         fontWeight: FontWeight.w500,
                                       ),
@@ -578,31 +609,39 @@ class _ShowDelegateOnMapScreenState extends State<ShowDelegateOnMapScreen>
                                       height: 51,
                                       child: ElevatedButton(
                                         onPressed: () async {
-                                          if (_formKey.currentState!.validate()) {
+                                          if (_formKey.currentState!
+                                              .validate()) {
                                             await requestDelegateController
                                                 .riseActualPrice(
-                                              newPrice:
-                                                  int.parse(_feeEC.text),
-                                              onSuccess: () async {
-                                                requestDelegateController
-                                                    .setPriceEC(_feeEC.text);
-                                                requestDelegateController
-                                                    .setActualPrice(_feeEC.text);
-                                                _resetFiveMinuteTimer();
-                                                _resetCheckDelegateTimer();
-                                                await _fetchAcceptedDelegates();
-                                              },
-                                            );
+                                                  newPrice: int.parse(
+                                                    _feeEC.text,
+                                                  ),
+                                                  onSuccess: () async {
+                                                    requestDelegateController
+                                                        .setPriceEC(
+                                                          _feeEC.text,
+                                                        );
+                                                    requestDelegateController
+                                                        .setActualPrice(
+                                                          _feeEC.text,
+                                                        );
+                                                    _resetFiveMinuteTimer();
+                                                    _resetCheckDelegateTimer();
+                                                    await _fetchAcceptedDelegates();
+                                                  },
+                                                );
                                           }
                                         },
                                         style: ElevatedButton.styleFrom(
                                           elevation: 0,
                                           backgroundColor:
                                               AppColors.mainAppColor,
-                                          foregroundColor: Colors.white,
+                                          foregroundColor:
+                                              FasakhanstaBrand.onOrange,
                                           shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(16),
+                                            borderRadius: BorderRadius.circular(
+                                              16,
+                                            ),
                                           ),
                                         ),
                                         child: Text(
@@ -628,28 +667,28 @@ class _ShowDelegateOnMapScreenState extends State<ShowDelegateOnMapScreen>
                                             orderId: widget.args.orderId!,
                                             onSuccess: () =>
                                                 NamedNavigatorImpl.push(
-                                              clean: true,
-                                              BottomNavigationBarScreen
-                                                  .routeName,
-                                            ),
+                                                  clean: true,
+                                                  BottomNavigationBarScreen
+                                                      .routeName,
+                                                ),
                                           );
                                         },
                                         style: OutlinedButton.styleFrom(
-                                          backgroundColor: Colors.white,
+                                          backgroundColor:
+                                              FasakhanstaBrand.surface,
                                           foregroundColor:
-                                              const Color(0xFF626871),
+                                              FasakhanstaBrand.muted,
                                           side: const BorderSide(
-                                            color: Color(0xFFDDE1E6),
+                                            color: FasakhanstaBrand.border,
                                           ),
                                           shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(16),
+                                            borderRadius: BorderRadius.circular(
+                                              16,
+                                            ),
                                           ),
                                         ),
                                         child: Text(
-                                          isArabic
-                                              ? 'إلغاء الطلب'
-                                              : 'Cancel',
+                                          isArabic ? 'إلغاء الطلب' : 'Cancel',
                                           maxLines: 1,
                                           style: const TextStyle(
                                             fontSize: 13,
@@ -691,7 +730,9 @@ class _FareStepButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: enabled ? const Color(0xFFFFF0E2) : const Color(0xFFF0F1F3),
+      color: enabled
+          ? FasakhanstaBrand.surfaceRaised
+          : FasakhanstaBrand.surfaceRaised,
       borderRadius: BorderRadius.circular(14),
       child: InkWell(
         onTap: enabled ? onTap : null,
@@ -701,9 +742,7 @@ class _FareStepButton extends StatelessWidget {
           height: 48,
           child: Icon(
             icon,
-            color: enabled
-                ? AppColors.mainAppColor
-                : const Color(0xFFB7BBC1),
+            color: enabled ? AppColors.mainAppColor : FasakhanstaBrand.muted,
             size: 24,
           ),
         ),

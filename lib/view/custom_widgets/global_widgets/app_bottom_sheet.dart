@@ -1,3 +1,4 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -7,7 +8,12 @@ import '../../../helpers/theme/app_colors.dart';
 import '../../../helpers/theme/app_text_style.dart';
 
 class AppBottomSheet extends StatelessWidget {
-  const AppBottomSheet({super.key, required this.title, required this.children, this.isDark = false});
+  const AppBottomSheet({
+    super.key,
+    required this.title,
+    required this.children,
+    this.isDark = false,
+  });
   final String title;
   final List<Widget> children;
   final bool? isDark;
@@ -16,8 +22,13 @@ class AppBottomSheet extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(top: 20),
       decoration: BoxDecoration(
-        color: isDark == true ? AppColors.blackColor : AppColors.whiteColor,
-        borderRadius: const BorderRadius.only(topLeft: Radius.circular(36), topRight: Radius.circular(36)),
+        color: isDark == true
+            ? FasakhanstaBrand.surfaceRaised
+            : FasakhanstaBrand.surface,
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(36),
+          topRight: Radius.circular(36),
+        ),
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -32,7 +43,9 @@ class AppBottomSheet extends StatelessWidget {
                     child: Text(
                       title,
                       style: AppTextStyle.text16MS().copyWith(
-                        color: isDark == true ? AppColors.whiteColor : AppColors.blackColor,
+                        color: isDark == true
+                            ? FasakhanstaBrand.text
+                            : FasakhanstaBrand.text,
                       ),
                     ),
                   ),
@@ -40,10 +53,14 @@ class AppBottomSheet extends StatelessWidget {
                     onTap: () => Navigator.pop(context),
                     child: Card(
                       elevation: 10,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
                       child: CircleAvatar(
                         radius: 20,
-                        backgroundColor: isDark == true ? AppColors.blackColor : AppColors.whiteColor,
+                        backgroundColor: isDark == true
+                            ? FasakhanstaBrand.surfaceRaised
+                            : FasakhanstaBrand.surface,
                         child: SvgPicture.asset(AppImages.closeIcon),
                       ),
                     ),

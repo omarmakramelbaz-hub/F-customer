@@ -195,6 +195,14 @@ jobs:
           python3 -m unittest discover -s tool -p 'test_deploy_firebase_hosting.py' -v
           python3 tool/deploy_firebase_hosting.py --site fasakhaninjatest --config firebase.json --dry-run
 
+      - name: Save built web review for pull-request verification
+        if: github.event_name == 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: customer-web-review
+          path: build/web
+          retention-days: 3
+
       - name: Prune old Firebase Hosting versions before deploy
         if: github.event_name != 'pull_request'
         continue-on-error: true

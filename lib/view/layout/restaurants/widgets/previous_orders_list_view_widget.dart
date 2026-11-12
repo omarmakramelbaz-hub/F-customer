@@ -1,3 +1,4 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -72,9 +73,9 @@ class _PreviousProductCard extends StatelessWidget {
       child: Container(
         width: 155,
         decoration: BoxDecoration(
-          color: AppColors.whiteColor,
+          color: FasakhanstaBrand.surface,
           borderRadius: BorderRadius.circular(18),
-          border: Border.all(color: const Color(0xFFEAEAEA)),
+          border: Border.all(color: FasakhanstaBrand.border),
         ),
         clipBehavior: Clip.antiAlias,
         child: Column(
@@ -124,7 +125,7 @@ class _PreviousProductCard extends StatelessWidget {
                     ),
                     child: const Icon(
                       Icons.add,
-                      color: Colors.white,
+                      color: FasakhanstaBrand.onOrange,
                       size: 20,
                     ),
                   ),

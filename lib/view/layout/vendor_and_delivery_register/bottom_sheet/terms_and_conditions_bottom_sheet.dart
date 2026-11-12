@@ -1,3 +1,4 @@
+import 'package:faskhaninja/helpers/theme/fasakhansta_brand.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:provider/provider.dart';
@@ -30,7 +31,9 @@ class TermsAndConditionsBottomSheet extends StatelessWidget {
               child: Html(
                 data: myAccountController.setting?.terms ?? '',
                 style: {
-                  'body': Style.fromTextStyle(AppTextStyle.text16RS(color: AppColors.blackColor)),
+                  'body': Style.fromTextStyle(
+                    AppTextStyle.text16RS(color: FasakhanstaBrand.text),
+                  ),
                 },
               ),
             ),
@@ -38,7 +41,10 @@ class TermsAndConditionsBottomSheet extends StatelessWidget {
             CustomButton(
               text: 'acceptTermsAndConditions'.tr,
               onPressed: () {
-                NamedNavigatorImpl.push(clean: true, BottomNavigationBarScreen.routeName);
+                NamedNavigatorImpl.push(
+                  clean: true,
+                  BottomNavigationBarScreen.routeName,
+                );
               },
             ),
             20.sbH,
