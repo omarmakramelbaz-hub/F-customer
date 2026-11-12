@@ -298,7 +298,7 @@ class _CustomPaymentWebViewScreenState extends State<CustomPaymentWebViewScreen>
                             key: ValueKey(_loadAttempt),
                             child:
                                 widget.browserBuilder?.call(context, events) ??
-                                EmbeddedPaymentBrowser(events: events),
+                                    EmbeddedPaymentBrowser(events: events),
                           ),
                         ),
                       ),
@@ -307,9 +307,13 @@ class _CustomPaymentWebViewScreenState extends State<CustomPaymentWebViewScreen>
                 Padding(
                   padding: const EdgeInsets.all(12),
                   child: Text(
-                    isArabic ? 'بعد تأكيد الدفع سيتم فتح تتبع طلبك تلقائيًا' : 'Order tracking opens automatically after payment is confirmed',
+                    isArabic
+                        ? 'بعد تأكيد الدفع سيتم فتح تتبع طلبك تلقائيًا'
+                        : 'Order tracking opens automatically after payment is confirmed',
                     textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.bodySmall
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodySmall
                         ?.copyWith(color: const Color(0xFFFFF4E2)),
                   ),
                 ),

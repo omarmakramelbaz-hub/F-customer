@@ -175,7 +175,8 @@ void main() {
     },
   );
 
-  test('wallet Authorization remains bound to the captured account token', () async {
+  test('wallet Authorization remains bound to the captured account token',
+      () async {
     final adapter = _PendingAdapter();
     final dio = Dio()..httpClientAdapter = adapter;
     final api = ApiHelper.forTesting(dio: dio, hasConnection: () async => true);
@@ -239,7 +240,8 @@ void main() {
     },
   );
 
-  test('account switch after 401 response suppresses delayed login navigation', () async {
+  test('account switch after 401 response suppresses delayed login navigation',
+      () async {
     final adapter = _PendingAdapter();
     final dio = Dio()..httpClientAdapter = adapter;
     final api = ApiHelper.forTesting(dio: dio, hasConnection: () async => true);

@@ -99,28 +99,26 @@ class _ChargeWalletBottomSheetState extends State<ChargeWalletBottomSheet> {
       return error.message!;
     }
     return switch (error.type) {
-      WalletCheckoutErrorType.offline =>
-        isArabic
-            ? 'اتأكد من اتصال الإنترنت وحاول تاني.'
-            : 'Check your internet connection and try again.',
-      WalletCheckoutErrorType.timedOut =>
-        isArabic ? 'فتح صفحة الدفع اتأخر. انتظر قليلًا قبل المحاولة مرة أخرى.' : 'Opening payment took too long. Please wait a moment before trying again.',
-      WalletCheckoutErrorType.signInRequired =>
-        isArabic
-            ? 'سجّل دخولك مرة أخرى لفتح صفحة الدفع.'
-            : 'Please sign in again to open payment.',
-      _ =>
-        isArabic
-            ? 'تعذّر فتح صفحة الدفع. حاول مرة أخرى بعد قليل.'
-            : 'Could not open payment. Please try again shortly.',
+      WalletCheckoutErrorType.offline => isArabic
+          ? 'اتأكد من اتصال الإنترنت وحاول تاني.'
+          : 'Check your internet connection and try again.',
+      WalletCheckoutErrorType.timedOut => isArabic
+          ? 'فتح صفحة الدفع اتأخر. انتظر قليلًا قبل المحاولة مرة أخرى.'
+          : 'Opening payment took too long. Please wait a moment before trying again.',
+      WalletCheckoutErrorType.signInRequired => isArabic
+          ? 'سجّل دخولك مرة أخرى لفتح صفحة الدفع.'
+          : 'Please sign in again to open payment.',
+      _ => isArabic
+          ? 'تعذّر فتح صفحة الدفع. حاول مرة أخرى بعد قليل.'
+          : 'Could not open payment. Please try again shortly.',
     };
   }
 
   @override
   Widget build(BuildContext context) => ListenableBuilder(
-    listenable: widget.walletController,
-    builder: (context, _) => _buildSheet(context),
-  );
+        listenable: widget.walletController,
+        builder: (context, _) => _buildSheet(context),
+      );
 
   Widget _buildSheet(BuildContext context) {
     final walletController = widget.walletController;
@@ -260,9 +258,9 @@ class _ChargeWalletBottomSheetState extends State<ChargeWalletBottomSheet> {
                                   final amount = double.tryParse(value) ?? 0;
                                   if (amount < 50) {
                                     return 'minimumChargeAmount'.tr.replaceAll(
-                                      '{}',
-                                      '50',
-                                    );
+                                          '{}',
+                                          '50',
+                                        );
                                   }
                                   return null;
                                 },
@@ -403,9 +401,8 @@ class _ChargeWalletBottomSheetState extends State<ChargeWalletBottomSheet> {
                           height: 42,
                           child: ElevatedButton(
                             key: const ValueKey('wallet-checkout-submit'),
-                            onPressed: isCreatingCheckout
-                                ? null
-                                : () => _pay(context),
+                            onPressed:
+                                isCreatingCheckout ? null : () => _pay(context),
                             style: ElevatedButton.styleFrom(
                               elevation: 0,
                               backgroundColor: AppColors.mainAppColor,
@@ -435,8 +432,8 @@ class _ChargeWalletBottomSheetState extends State<ChargeWalletBottomSheet> {
                                   child: Text(
                                     isCreatingCheckout
                                         ? (isArabic
-                                              ? 'جارٍ فتح الدفع'
-                                              : 'Opening payment')
+                                            ? 'جارٍ فتح الدفع'
+                                            : 'Opening payment')
                                         : 'payNow'.tr,
                                     style: AppTextStyle.text14BS(
                                       color: Colors.white,

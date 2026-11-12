@@ -20,8 +20,8 @@ class WalletCheckout {
     final orderId = rawOrderId is int
         ? rawOrderId
         : rawOrderId is String
-        ? int.tryParse(rawOrderId)
-        : null;
+            ? int.tryParse(rawOrderId)
+            : null;
     if (rawOrderId != null && (orderId == null || orderId <= 0)) {
       throw const FormatException('Invalid wallet checkout order');
     }

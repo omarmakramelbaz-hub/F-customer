@@ -46,14 +46,14 @@ class _CheckoutService extends WalletCheckoutService {
 }
 
 ApiResponse _ready() => ApiResponse(
-  state: ResponseState.complete,
-  data: {
-    'data': {
-      'link': 'https://accept.paymob.com/unifiedcheckout/?test=synthetic',
-      'order_id': 42,
-    },
-  },
-);
+      state: ResponseState.complete,
+      data: {
+        'data': {
+          'link': 'https://accept.paymob.com/unifiedcheckout/?test=synthetic',
+          'order_id': 42,
+        },
+      },
+    );
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();

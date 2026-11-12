@@ -15,13 +15,15 @@ class WalletCheckoutService {
     required Duration timeout,
     required String sessionToken,
     required bool Function() canSendRequest,
-  }) => (_api ?? ApiHelper.instance).post(
-    Urls.chargingWallet,
-    body: FormData.fromMap({'amount': amount, 'payment_method': paymentMethod}),
-    requestTimeout: timeout,
-    cancelToken: cancelToken,
-    // Headers stay bound to the account that requested this checkout.
-    headers: {'Authorization': 'Bearer $sessionToken'},
-    canSendRequest: canSendRequest,
-  );
+  }) =>
+      (_api ?? ApiHelper.instance).post(
+        Urls.chargingWallet,
+        body: FormData.fromMap(
+            {'amount': amount, 'payment_method': paymentMethod}),
+        requestTimeout: timeout,
+        cancelToken: cancelToken,
+        // Headers stay bound to the account that requested this checkout.
+        headers: {'Authorization': 'Bearer $sessionToken'},
+        canSendRequest: canSendRequest,
+      );
 }
