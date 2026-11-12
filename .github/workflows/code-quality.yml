@@ -46,6 +46,8 @@ jobs:
           lib/view/layout/orders/widgets/live_order_tracking_hero.dart
           lib/view/layout/orders/widgets/live_order_tracking_content.dart
           lib/view/layout/orders/widgets/in_preparation_widget.dart
+          lib/view/layout/restaurants/widgets/menu_product_card.dart
+          lib/view/layout/home/widgets/draw_badge_chip.dart
           test
           tool/check_places_web_callbacks.dart
       - name: Analyze maintained code
@@ -80,6 +82,9 @@ jobs:
           lib/view/layout/orders/widgets/live_order_tracking_hero.dart
           lib/view/layout/orders/widgets/live_order_tracking_content.dart
           lib/view/layout/orders/widgets/in_preparation_widget.dart
+          lib/view/layout/restaurants/widgets/menu_product_card.dart
+          lib/view/layout/home/widgets/draw_badge_chip.dart
+          lib/view/layout/restaurants/screen/restaurant_details_screen.dart
           test
           tool/check_places_web_callbacks.dart
       - name: Verify JavaScript Places callbacks
